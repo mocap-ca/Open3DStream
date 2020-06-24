@@ -1,6 +1,8 @@
 #include "device.h"
 #include "layout.h"
 
+#include <sstream>
+
 #define OPEN3D_DEVICE__LAYOUT	Open3D_Device_Layout
 
 FBDeviceLayoutImplementation(OPEN3D_DEVICE__LAYOUT);
@@ -29,6 +31,8 @@ void Open3D_Device_Layout::FBDestroy()
 
 void Open3D_Device_Layout::UICreate()
 {
+	// Create the UI Elements and populate static values
+
 	int lS = 6;
 	int lH = 25;
 	int labelWidth = 80;
@@ -226,15 +230,17 @@ void Open3D_Device_Layout::UICreate()
 		lH, kFBAttachNone, NULL, 1.00);
 	mLayoutRight.SetControl("EditSampleRate", mEditSamplingRate);
 	mEditSamplingRate.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditSampleRate);
+
+	SetBorder("LeftLayout", kFBEmbossBorder, false, true, 2, 1, 90.0, 0);
+	SetBorder("RightLayout", kFBEmbossBorder, false, true, 2, 1, 90.0, 0);
+
 }
 
 void Open3D_Device_Layout::UIConfigure()
 {
-	char buffer[40];
+	// Populate the dynamic elements of the ui
 	
-	SetBorder("LeftLayout", kFBEmbossBorder,  false, true,  2, 1, 90.0, 0);
-	SetBorder("RightLayout", kFBEmbossBorder,  false, true, 2, 1, 90.0, 0);
-
+	mListProtocol.Items.Clear();
 	mListProtocol.Items.Add("UDP");
 	mListProtocol.Items.Add("TCP");
 
@@ -242,13 +248,13 @@ void Open3D_Device_Layout::UIConfigure()
 	if (protocol == Open3D_Device::kUDP) mListProtocol.ItemIndex = 0;
 	if (protocol == Open3D_Device::kTCP) mListProtocol.ItemIndex = 1;
 
-
 	PopulateSubjectList();
 	PopulateSubjectFields();
 
 	mEditSamplingRate.Value = mDevice->GetSamplingRate();
 	mEditDestIp.Text = mDevice->GetNetworkAddress();
 
+	char buffer[40];
 	sprintf_s(buffer, 40, "%d", mDevice->GetNetworkPort());
 	mEditDestPort.Text = buffer;
 
@@ -288,7 +294,6 @@ void Open3D_Device_Layout::EventEditSubject(HISender pSender, HKEvent pEvent)
 	mSourcesList.Items.RemoveAt(id);
 	mSourcesList.Items.InsertAt(id, newValue);
 	mSourcesList.Selected(id, true);
-
 }
 
 void Open3D_Device_Layout::EventDeviceStatusChange( HISender pSender, HKEvent pEvent )
@@ -320,14 +325,23 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 			FBComponent *model = mDevice->Items[id].mModel;
 			mEditSubject.Text = mDevice->Items[id].mName;
 			mEditSource.Text = model->LongName;
+
+			mDevice->Items[id].Traverse();
+
+			std::ostringstream oss;
+
 			if (model->Is(FBModelNull::TypeInfo))
-				mEditSourceInfo.Text = "Null\n";
+				oss << "Null" << std::endl;
 			if (model->Is(FBModelRoot::TypeInfo))
-				mEditSourceInfo.Text = "Root\n";
+				oss << "Root" << std::endl;
 			if (model->Is(FBCamera::TypeInfo))
-				mEditSourceInfo.Text = "Camera\n";
+				oss << "Camera" << std::endl;
 			if (model->Is(FBModelSkeleton::TypeInfo))
-				mEditSourceInfo.Text = "Joint\n";
+				oss << "Joint" << std::endl;
+
+			oss << "Items: " << mDevice->Items[id].mTransforms.size();
+
+			mEditSourceInfo.Text = oss.str().c_str();
 		}
 	}
 }

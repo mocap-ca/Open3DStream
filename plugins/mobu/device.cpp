@@ -62,6 +62,8 @@ bool Open3D_Device::DeviceOperation( kDeviceOperations pOperation )
 
 void Open3D_Device::AddItem(FBModel *model)
 {
+	// Add a model (called by the layout) 
+
 	FBString name;
 
 	FBNamespace *ns = model->GetOwnerNamespace();
@@ -74,22 +76,10 @@ void Open3D_Device::AddItem(FBModel *model)
 		name = model->Name.AsString();
 	}
 
-	if (model->Is(FBModelNull::TypeInfo))
-	{
-		Items.push_back(SubjectItem(model, name));
-	}
-
-	if (model->Is(FBModelRoot::TypeInfo))
-	{
-		Items.push_back(SubjectItem(model, name));
-	}
-
-	if (model->Is(FBCamera::TypeInfo))
-	{
-		Items.push_back(SubjectItem(model,  name));
-	}
-
-	if (model->Is(FBModelSkeleton::TypeInfo))
+	if (model->Is(FBModelNull::TypeInfo) ||
+		model->Is(FBModelRoot::TypeInfo) ||
+		model->Is(FBCamera::TypeInfo) ||
+		model->Is(FBModelSkeleton::TypeInfo))
 	{
 		Items.push_back(SubjectItem(model, name));
 	}
@@ -113,6 +103,23 @@ bool Open3D_Device::Start()
 	// Step 1: Open device communications
 	lProgress.Text	= "Opening device communications";
 	Status			= "Opening device communications";
+
+	for (auto subject : Items)
+	{
+		FBComponent *model = subject.mModel;
+		FBString name = subject.mName;
+
+		int id1 = model->GetTypeId();
+		int id2 = model->TypeInfo;
+
+		std::vector<Transform> skel;
+
+		if (model->Is(FBModelNull::TypeInfo))
+		{
+			subject.Traverse();
+		}
+	}
+
 
 	Status = "Ok";
 	return true;
@@ -162,12 +169,16 @@ void Open3D_Device::SetSamplingRate(double rate)
 }
 bool Open3D_Device::AnimationNodeNotify(FBAnimationNode* pAnimationNode ,FBEvaluateInfo* pEvaluateInfo)
 {
+
     return true;
 }
 
 
 bool Open3D_Device::DeviceEvaluationNotify( kTransportMode pMode, FBEvaluateInfo* pEvaluateInfo )
 {
+
+
+	
 	return true;
 }
 
@@ -179,6 +190,11 @@ void Open3D_Device::DeviceIONotify( kDeviceIOs  pAction,FBDeviceNotifyInfo &pDev
 		case kIOPlayModeWrite:
 		case kIOStopModeWrite:
 		{
+			for (auto subject : Items)
+			{
+				const char *name = subject.mName;
+			}
+			AckOneSampleSent();
 		}
 		break;
 
@@ -186,6 +202,7 @@ void Open3D_Device::DeviceIONotify( kDeviceIOs  pAction,FBDeviceNotifyInfo &pDev
 		case kIOStopModeRead:
 		case kIOPlayModeRead:
 		{
+			AckOneSampleReceived();
 		break;
 		}
 	}

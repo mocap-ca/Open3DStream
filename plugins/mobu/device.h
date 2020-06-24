@@ -3,17 +3,11 @@
 
 #include <fbsdk/fbsdk.h>
 #include <vector>
+#include "model.h"
 
-#define OPEN3D_DEVICE__CLASSNAME		Open3D_Device
+#define OPEN3D_DEVICE__CLASSNAME	Open3D_Device
 #define OPEN3D_DEVICE__CLASSSTR		"Open3D_Device"
 
-class SubjectItem
-{
-public:
-	SubjectItem(FBComponent *model, FBString name) : mModel(model), mName(name) {}
-	FBComponent *mModel;
-	FBString mName;
-};
 
 class Open3D_Device : public FBDevice
 {
