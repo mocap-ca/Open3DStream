@@ -1,0 +1,5 @@
+To build on windows:
+
+mkdir build
+cd build
+cmake .. -A x64
