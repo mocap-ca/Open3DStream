@@ -3,7 +3,7 @@
 #define OPEN3D_DEVICE__CLASS	OPEN3D_DEVICE__CLASSNAME
 #define OPEN3D_DEVICE__NAME	OPEN3D_DEVICE__CLASSSTR
 #define OPEN3D_DEVICE__LABEL	"Open3D_Device"
-#define OPEN3D_DEVICE__DESC	"Realtime Streaming"
+#define OPEN3D_DEVICE__DESC		"Realtime Streaming"
 #define OPEN3D_DEVICE__PREFIX	"DeviceTemplate"
 
 #define FBX_VERSION_TAG		"Version"

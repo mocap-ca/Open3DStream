@@ -1,9 +1,9 @@
 #include <fbsdk/fbsdk.h>
 
-FBLibraryDeclare( PeelDevice )
+FBLibraryDeclare(Open3D_Device)
 {
-	FBLibraryRegister( PeelDevice		);
-	FBLibraryRegister( PeelDevice_Layout	);
+	FBLibraryRegister(Open3D_Device);
+	FBLibraryRegister(Open3D_Device_Layout	);
 }
 FBLibraryDeclareEnd;
 
