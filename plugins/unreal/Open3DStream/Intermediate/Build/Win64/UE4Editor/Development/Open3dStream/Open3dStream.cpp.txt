@@ -1,2 +1,0 @@
-C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3dStream\Intermediate\Build\Win64\UE4Editor\Development\Open3dStream\Definitions.Open3dStream.h
-C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3dStream\Source\Open3dStream\Public\Open3dStream.h
