@@ -1,0 +1,9 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.Open3DStream.cpp.obj": [
+			"Open3DSource.cpp.obj",
+			"Open3DStream.cpp.obj"
+		]
+	}
+}

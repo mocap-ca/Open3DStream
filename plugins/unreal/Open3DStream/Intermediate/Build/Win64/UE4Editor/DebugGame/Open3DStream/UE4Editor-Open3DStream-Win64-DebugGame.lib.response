@@ -1,0 +1,14 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-Open3DStream-Win64-DebugGame.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"C:\Users\Al\Documents\Unreal Projects\MyProject\Intermediate\Build\Win64\MyProjectEditor\DebugGame\Engine\SharedPCH.Engine.NonOptimized.ShadowErrors.h.obj"
+"C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3DStream\Intermediate\Build\Win64\UE4Editor\DebugGame\Open3DStream\Module.Open3DStream.cpp.obj"
+"C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3DStream\Intermediate\Build\Win64\UE4Editor\DebugGame\Open3DStream\Module.Open3DStream.gen.cpp.obj"
+"C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3DStream\Intermediate\Build\Win64\UE4Editor\DebugGame\Open3DStream\Default.rc2.res"
+/OUT:"C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3DStream\Intermediate\Build\Win64\UE4Editor\DebugGame\Open3DStream\UE4Editor-Open3DStream-Win64-DebugGame.lib"
+/INCLUDE:IMPLEMENT_MODULE_Open3DStream

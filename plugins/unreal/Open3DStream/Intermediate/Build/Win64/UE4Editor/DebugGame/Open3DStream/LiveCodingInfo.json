@@ -1,0 +1,16 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.Open3DStream.cpp.obj": [
+			"Open3DStream.cpp.obj",
+			"Open3DStreamFactory.cpp.obj",
+			"Open3DStreamSource.cpp.obj",
+			"SOpen3DStreamFactory.cpp.obj"
+		],
+		"Module.Open3DStream.gen.cpp.obj": [
+			"Open3DStream.init.gen.cpp.obj",
+			"Open3DStreamData.gen.cpp.obj",
+			"Open3DStreamFactory.gen.cpp.obj"
+		]
+	}
+}

@@ -1,0 +1,49 @@
+C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3DStream\Intermediate\Build\Win64\UE4Editor\DebugGame\Open3DStream\Definitions.Open3DStream.h
+C:/Users/Al/Documents/Unreal Projects/MyProject/Plugins/Open3DStream/Source/Open3DStream/Private/Open3DStream.cpp
+C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3DStream\Source\Open3DStream\Public\Open3DStream.h
+C:/Users/Al/Documents/Unreal Projects/MyProject/Plugins/Open3DStream/Source/Open3DStream/Private/Open3DStreamFactory.cpp
+C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3DStream\Source\Open3DStream\Public\Open3DStreamFactory.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkSourceFactory.h
+E:\Unreal\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LiveLinkInterface\LiveLinkSourceFactory.generated.h
+C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3DStream\Source\Open3DStream\Public\Open3DStreamData.h
+C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3DStream\Intermediate\Build\Win64\UE4Editor\Inc\Open3DStream\Open3DStreamData.generated.h
+C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3DStream\Intermediate\Build\Win64\UE4Editor\Inc\Open3DStream\Open3DStreamFactory.generated.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\ILiveLinkClient.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkRefSkeleton.h
+E:\Unreal\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LiveLinkInterface\LiveLinkRefSkeleton.generated.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkRole.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkTypes.h
+E:\Unreal\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LiveLinkInterface\LiveLinkTypes.generated.h
+E:\Unreal\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LiveLinkInterface\LiveLinkRole.generated.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkPresetTypes.h
+E:\Unreal\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LiveLinkInterface\LiveLinkPresetTypes.generated.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\Core\Public\Misc/MessageDialog.h
+C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3DStream\Source\Open3DStream\Public\SOpen3DStreamFactory.h
+C:/Users/Al/Documents/Unreal Projects/MyProject/Plugins/Open3DStream/Source/Open3DStream/Private/Open3DStreamSource.cpp
+C:\Users\Al\Documents\Unreal Projects\MyProject\Plugins\Open3DStream\Source\Open3DStream\Public\Open3DStreamSource.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\ILiveLinkSource.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkSourceSettings.h
+E:\Unreal\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LiveLinkInterface\LiveLinkSourceSettings.generated.h
+E:\Unreal\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LiveLinkInterface\ILiveLinkSource.generated.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkRoleTrait.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkController.h
+E:\Unreal\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LiveLinkInterface\LiveLinkController.generated.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkFrameInterpolationProcessor.h
+E:\Unreal\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LiveLinkInterface\LiveLinkFrameInterpolationProcessor.generated.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkFramePreProcessor.h
+E:\Unreal\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LiveLinkInterface\LiveLinkFramePreProcessor.generated.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkFrameTranslator.h
+E:\Unreal\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LiveLinkInterface\LiveLinkFrameTranslator.generated.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkVirtualSubject.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\ILiveLinkSubject.h
+E:\Unreal\UE_4.25\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LiveLinkInterface\LiveLinkVirtualSubject.generated.h
+C:/Users/Al/Documents/Unreal Projects/MyProject/Plugins/Open3DStream/Source/Open3DStream/Private/SOpen3DStreamFactory.cpp
+E:\Unreal\UE_4.25\Engine\Source\Runtime\Slate\Public\Widgets/Input/SNumericEntryBox.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\Slate\Public\Widgets/Input/NumericTypeInterface.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\Core\Public\Math/BasicMathExpressionEvaluator.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\Core\Public\Internationalization/FastDecimalFormat.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\Slate\Public\Widgets/Input/SEditableText.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\Slate\Public\Widgets/Text/ISlateEditableTextWidget.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\Slate\Public\Widgets/Input/SSpinBox.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\SlateCore\Public\Widgets/Images/SImage.h
+E:\Unreal\UE_4.25\Engine\Source\Runtime\Slate\Public\Widgets/Colors/SColorBlock.h
