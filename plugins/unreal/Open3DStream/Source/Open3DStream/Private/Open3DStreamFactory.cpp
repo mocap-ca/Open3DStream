@@ -4,7 +4,6 @@
 #include "Misc/MessageDialog.h"
 #include "SOpen3DStreamFactory.h"
 
-
 class FOpen3DStreamSource;
 
 #define LOCTEXT_NAMESPACE "Open3DStream"
@@ -23,9 +22,7 @@ TSharedPtr<SWidget> UOpen3DStreamFactory::BuildCreationPanel(FOnLiveLinkSourceCr
 {
 	return SNew(SOpen3DStreamFactory)
 		.OnSelectedEvent(FOnOpen3DStreamSelected::CreateUObject(this, &UOpen3DStreamFactory::OnSourceEvent, InOnLiveLinkSourceCreated));
-
 }
-
 
 void UOpen3DStreamFactory::OnSourceEvent(FOpen3DStreamDataPtr SourceData, FOnLiveLinkSourceCreated InOnLiveLinkSourceCreated) const
 {
@@ -37,5 +34,18 @@ void UOpen3DStreamFactory::OnSourceEvent(FOpen3DStreamDataPtr SourceData, FOnLiv
 	InOnLiveLinkSourceCreated.ExecuteIfBound(StaticCastSharedPtr<ILiveLinkSource>(SharedPtr), MoveTemp(ConnectionString));
 }
 
+TSharedPtr<ILiveLinkSource> UOpen3DStreamFactory::CreateSource(const FString& ConnectionString) const
+{
+	int32 Port;
+	if (!FParse::Value(*ConnectionString, TEXT("Port="), Port))
+	{
+		return TSharedPtr<ILiveLinkSource>();
+	}
+
+	const double TimeOffset = 0.0;
+
+	TSharedPtr<FOpen3DStreamSource> ret = MakeShared<FOpen3DStreamSource>(Port, TimeOffset);
+	return StaticCastSharedPtr<ILiveLinkSource>(ret);
+}
 
 #undef LOCTEXT_NAMESPACE

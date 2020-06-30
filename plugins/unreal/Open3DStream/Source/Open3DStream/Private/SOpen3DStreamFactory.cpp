@@ -12,14 +12,6 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 	[
 		SNew(SVerticalBox)
 		+ SVerticalBox::Slot()
-		.FillHeight(1)
-		[
-			SNew(SBox)
-			.HeightOverride(200)
-			.WidthOverride(200)
-		]
-		+ SVerticalBox::Slot()
-		.AutoHeight()
 		.Padding(5)
 		[
 			SNew(SHorizontalBox)
@@ -38,7 +30,6 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 			]
 		]
 		+ SVerticalBox::Slot()
-		.AutoHeight()
 		.Padding(5)
 		[
 			SNew(SButton)

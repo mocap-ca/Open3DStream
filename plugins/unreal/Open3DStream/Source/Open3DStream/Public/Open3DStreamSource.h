@@ -10,12 +10,17 @@
 
 class ILiveLinkClient;
 
-// https://docs.unrealengine.com/en-US/API/Runtime/LiveLinkInterface/ILiveLinkSource/index.html
+/*
+https://docs.unrealengine.com/en-US/API/Runtime/LiveLinkInterface/ILiveLinkSource/index.html
+
+E:\Unreal\UE_4.25\Engine\Plugins\Animation\LiveLink\Source\LiveLink\Private\
+    LiveLinkMessageBusSource.h
+*/
 
 class OPEN3DSTREAM_API FOpen3DStreamSource : public ILiveLinkSource
 {
 public:
-	FOpen3DStreamSource(const int InPort, double InTimeOffset);
+	FOpen3DStreamSource(int InPort, double InTimeOffset);
 	virtual ~FOpen3DStreamSource();
 
 	// ILiveLinkSource Overrides

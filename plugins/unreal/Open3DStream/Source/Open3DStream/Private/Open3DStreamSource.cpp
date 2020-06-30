@@ -2,10 +2,10 @@
 #include "LiveLinkRoleTrait.h"
 
 
-FOpen3DStreamSource::FOpen3DStreamSource(const int InPort, double InTimeOffset)
+FOpen3DStreamSource::FOpen3DStreamSource(int InPort, double InTimeOffset)
 	: bIsInitialized(false)
-	//, Port(InPort)
-	//, TimeOffset(InTimeOffset)
+	, Port(InPort)
+	, TimeOffset(InTimeOffset)
 	, bIsValid(false)
 {
 	SourceStatus = NSLOCTEXT("Open3DStream", "ConnctionStatus", "Inactive");
