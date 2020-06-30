@@ -81,7 +81,7 @@ void Open3D_Device::AddItem(FBModel *model)
 		model->Is(FBCamera::TypeInfo) ||
 		model->Is(FBModelSkeleton::TypeInfo))
 	{
-		Items.push_back(SubjectItem(model, name));
+		Items.push_back(O3DS::SubjectItem(model, name));
 	}
 }
 
@@ -104,22 +104,17 @@ bool Open3D_Device::Start()
 	lProgress.Text	= "Opening device communications";
 	Status			= "Opening device communications";
 
-	for (auto subject : Items)
+	if (mTcpIp.CreateSocket(mNetworkSocket, kFBTCPIP_Stream))
 	{
-		FBComponent *model = subject.mModel;
-		FBString name = subject.mName;
-
-		int id1 = model->GetTypeId();
-		int id2 = model->TypeInfo;
-
-		std::vector<Transform> skel;
-
-		if (model->Is(FBModelNull::TypeInfo))
+		bool ret = mTcpIp.Connect(mNetworkSocket, mNetworkAddress, mNetworkPort);
+		if (!ret)
 		{
-			subject.Traverse();
+			mTcpIp.CloseSocket(mNetworkSocket);
+			mNetworkSocket = -1;
+			Status = "Error";
+			return false;
 		}
 	}
-
 
 	Status = "Ok";
 	return true;
@@ -134,9 +129,17 @@ bool Open3D_Device::Stop()
 	lProgress.Text	= "Stopping device communications";
 	Status			= "Stopping device communications";
 
-	Status			= "?";
+	if (mTcpIp.CloseSocket(mNetworkSocket))
+	{
+		Status = "Error";
+		return false;
+	}
 
-    return false;
+	lProgress.Caption = "";
+	lProgress.Text = "";
+	Status = "";
+
+    return true;
 }
 
 bool Open3D_Device::Done()
@@ -288,10 +291,9 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 
 			if (component)
 			{
-				SubjectItem item(component, subject);
+				O3DS::SubjectItem item(component, subject);
 				Items.push_back(item);
 			}
-
 		}
 
 		SetNetworkAddress(pFbxObject->FieldReadC(FBX_NETWORk_IP, GetNetworkAddress()));

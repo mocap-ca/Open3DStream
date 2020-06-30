@@ -1,0 +1,32 @@
+namespace MyGame.Sample;
+
+struct Translation {
+x:float;
+y:float;
+z:float;
+}
+
+struct Rotation {
+x:float;
+y:float;
+z:float;
+}
+
+table Transform {
+  translation:Translation;
+  rotation:Rotation;
+  name:string;
+}
+
+table Subject
+{
+  name:string;
+  nodes:[Transform];
+}
+
+table SubjectList
+{
+   subjects:[Subject];
+}
+
+root_type SubjectList;

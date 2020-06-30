@@ -5,41 +5,48 @@
 #include <vector>
 
 
-class Transform
+namespace O3DS
 {
-public:
-	Transform(FBModel *model)
-		: mModel(model)
-		, mName(model->Name.AsString())
-	{}
 
-	FBModel *mModel;
-	std::string mName;
+	class Transform
+	{
+	public:
+		Transform(FBModel *model)
+			: mModel(model)
+			, mName(model->Name.AsString())
+		{}
 
-	void Update();
+		FBModel *mModel;
+		std::string mName;
 
-	double tx;
-	double ty;
-	double tz;
+		void Update();
 
-	double rx;
-	double ry;
-	double rz;
-};
+		double tx;
+		double ty;
+		double tz;
 
-class SubjectItem
-{
-public:
-	SubjectItem(FBComponent *model, FBString name) : mModel(model), mName(name) {}
-	FBComponent *mModel;
-	FBString mName;
-	std::vector<Transform> mTransforms;
+		double rx;
+		double ry;
+		double rz;
+	};
 
-	void Traverse();
-	void Traverse(FBModel*);
+	class SubjectItem
+	{
+	public:
+		SubjectItem(FBComponent *model, FBString name) : mModel(model), mName(name) {}
+		FBComponent *mModel;
+		FBString mName;
+		std::vector<Transform> mTransforms;
 
-};
+		void Traverse();
+		void Traverse(FBModel*);
+	};
 
+	int Serialize(std::vector<O3DS::SubjectItem> &data, uint8_t *outbuf, int buflen);
+
+
+
+} // FBStream
 
 
 #endif

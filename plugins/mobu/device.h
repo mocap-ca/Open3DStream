@@ -5,6 +5,7 @@
 #include <vector>
 #include "model.h"
 
+
 #define OPEN3D_DEVICE__CLASSNAME	Open3D_Device
 #define OPEN3D_DEVICE__CLASSSTR		"Open3D_Device"
 
@@ -54,7 +55,10 @@ public:
 	FBDeviceSamplingMode	GetSamplingType()								{ return mSamplingType;			}
 	void					SetSamplingType( FBDeviceSamplingMode pType )	{ mSamplingType = pType;		}
 
-	std::vector<SubjectItem> Items;
+	std::vector<O3DS::SubjectItem> Items;
+
+	FBTCPIP      mTcpIp;
+	int          mNetworkSocket;
 
 private:
 	double							mSamplingRate;

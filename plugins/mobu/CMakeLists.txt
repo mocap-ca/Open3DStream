@@ -3,7 +3,10 @@ project(StreamDevice)
 
 set(SRCS plugin.cpp layout.cpp device.cpp device.h layout.h model.cpp model.h)
 
-include_directories("C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK/include")
+include_directories("C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK/include"
+				"${CMAKE_CURRENT_LIST_DIR}/../../protocol"
+				"${CMAKE_CURRENT_LIST_DIR}/../../thirdparty/flatbuffers/include"
+				)
 
 link_directories("C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK/lib/x64")
 
