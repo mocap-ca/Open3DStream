@@ -15,8 +15,8 @@ class OPEN3DSTREAM_API SOpen3DStreamFactory : public SCompoundWidget
 
 	void Construct(const FArguments& Args);
 
-	void SetPort(int InPort) { port = InPort; }
-	TOptional<int> GetPort() const { return port; }
+	void SetPort(int InPort) { mPort = InPort; }
+	TOptional<int> GetPort() const { return mPort; }
 
 	FOpen3DStreamDataPtr GetSourceData() const { return Result;  }
 
@@ -26,6 +26,6 @@ class OPEN3DSTREAM_API SOpen3DStreamFactory : public SCompoundWidget
 
 private:
 	FReply OnSource();
-	int  port;
+	int  mPort;
 
 };

@@ -8,6 +8,8 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 	//LastTickTime = 0.0;
 	OnSelectedEvent = Args._OnSelectedEvent;
 
+	mPort = 5566;
+
 	ChildSlot
 	[
 		SNew(SVerticalBox)
@@ -19,7 +21,7 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 			.FillWidth(0.5f)
 			[
 				SNew(STextBlock)
-				.Text(LOCTEXT("Open3DStreamPort", "Port"))
+				.Text(LOCTEXT("Open3DStreamPort", "Port1"))
 			]
 			+ SHorizontalBox::Slot()
 			.FillWidth(0.5f)
@@ -43,12 +45,16 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 			]
 		]
 	];
+
+
 }
 
 
 FReply SOpen3DStreamFactory::OnSource()
 {
 	TSharedPtr<FOpen3DStreamData, ESPMode::ThreadSafe> Data = MakeShared<FOpen3DStreamData, ESPMode::ThreadSafe>();
+	Data->TimeOffset = 0;
+	Data->Port = mPort;
 	OnSelectedEvent.ExecuteIfBound(Data);
 	return FReply::Handled();
 }
