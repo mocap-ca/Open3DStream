@@ -36,6 +36,8 @@ void UOpen3DStreamFactory::OnSourceEvent(FOpen3DStreamDataPtr SourceData, FOnLiv
 
 TSharedPtr<ILiveLinkSource> UOpen3DStreamFactory::CreateSource(const FString& ConnectionString) const
 {
+	// returns a working FOpen3DStreamSource object
+
 	int32 Port;
 	if (!FParse::Value(*ConnectionString, TEXT("Port="), Port))
 	{

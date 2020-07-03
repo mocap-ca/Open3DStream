@@ -5,8 +5,15 @@
 #include "ILiveLinkSource.h"
 #include "Containers/Ticker.h"
 
+#include "Runtime/Sockets/Public/Sockets.h"
+#include "Runtime/Networking/Public/Common/TcpSocketBuilder.h"
+#include "Runtime/Networking/Public/Interfaces/IPv4/IPv4Address.h"
+#include "Runtime/Networking/Public/Interfaces/IPv4/IPv4Endpoint.h"
+
+
 #include "LiveLinkRole.h"
 
+#define NET_BUFFER_SIZE (1024 * 48)
 
 class ILiveLinkClient;
 
@@ -31,9 +38,14 @@ public:
 	FText SourceMachineName;
 	FText SourceStatus;
 
+	FSocket* TcpServerSocket;
+	FSocket* TcpSource;
+
 	virtual FText GetSourceType() const override { return SourceType; };
 	virtual FText GetSourceMachineName() const override { return SourceMachineName; }
 	virtual FText GetSourceStatus() const override { return SourceStatus; }
+
+	void Listen();
 
 	ILiveLinkClient* Client;
 	FGuid            SourceGuid;
@@ -42,6 +54,11 @@ public:
 	int              Port;
 	float            TimeOffset;
 	FThreadSafeBool  bIsValid;
+
+	uint8*           buffer;
+	uint8*           buffer_ptr;
+
+	int              debugval;
 
 	FORCEINLINE void UpdateConnectionLastActive();
 	FCriticalSection ConnectionLastActiveSection;

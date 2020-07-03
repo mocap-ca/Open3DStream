@@ -167,10 +167,11 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 		if (mProtocol == Open3D_Device::kTCPClient && mNetworkSocket != -1)
 		{
 
-			int ret = O3DS::Serialize(Items, buf, 1024 * 12);
+			int32_t ret = O3DS::Serialize(Items, buf, 1024 * 12);
 			if (ret > 0)
 			{
 				written = 0;
+				mTcpIp.Write(mNetworkSocket, &ret, sizeof(ret), &written);
 				mTcpIp.Write(mNetworkSocket, buf, ret, &written);
 				if (written > 0) AckOneSampleSent();
 			}
