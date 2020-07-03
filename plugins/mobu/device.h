@@ -17,7 +17,8 @@ public:
 
 	typedef enum eProtocols {
 		kUDP = 0,
-		kTCP
+		kTCPServer,
+		kTCPClient
 	} TProtocol;
 
 

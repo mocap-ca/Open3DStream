@@ -13,8 +13,12 @@ namespace O3DS
 	public:
 		Transform(FBModel *model)
 			: mModel(model)
-			, mName(model->Name.AsString())
-		{}
+			, mName()
+		{
+			FBString n = model->Name;
+			const char *name = (const char *)n;
+			mName.assign(name);
+		}
 
 		FBModel *mModel;
 		std::string mName;

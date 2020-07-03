@@ -47,9 +47,11 @@ void O3DS::SubjectItem::Traverse(FBModel *model)
 	}
 }
 
-int Serialize(std::vector<O3DS::SubjectItem> &data, uint8_t *outbuf, int buflen)
+int O3DS::Serialize(std::vector<O3DS::SubjectItem> &data, uint8_t *outbuf, int buflen)
 {
 	flatbuffers::FlatBufferBuilder builder(4096);
+
+	std::vector<flatbuffers::Offset<MyGame::Sample::Subject>> subjects;
 
 	for (auto subject : data)
 	{
@@ -81,8 +83,13 @@ int Serialize(std::vector<O3DS::SubjectItem> &data, uint8_t *outbuf, int buflen)
 
 			auto transforms = builder.CreateVector(skeleton);
 			auto subject = CreateSubject(builder, subject_name, transforms);
+			subjects.push_back(subject);		
 		}
 	}
+
+	auto root = CreateSubjectList(builder, builder.CreateVector(subjects));
+
+	builder.Finish(root);
 
 	uint8_t *buf = builder.GetBufferPointer();
 	int size = builder.GetSize();

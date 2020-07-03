@@ -14,7 +14,7 @@
 #define FBX_SUBJECT_NAME    "SubjectName"
 #define FBX_SUBJECT_MODEL   "SubjectModel"
 #define FBX_SUBJECT_REF     "SubjectReference"
-#define FBX_NETWORk_IP      "NetworkIp"
+#define FBX_NETWORK_IP      "NetworkIp"
 #define FBX_NETWORK_PORT    "NetworkPort"
 #define FBX_NETWORK_PROTO   "NetworkProtocol"
 
@@ -32,7 +32,7 @@ bool Open3D_Device::FBCreate()
 	mNetworkAddress = "127.0.0.1";
 	mNetworkPort = 3001;
 	mStreaming = true;
-	mProtocol = kTCP;
+	mProtocol = kTCPServer;
 
 	FBTime	lPeriod;
 	lPeriod.SetSecondDouble(1.0/60.0);
@@ -97,22 +97,25 @@ bool Open3D_Device::Init()
 
 bool Open3D_Device::Start()
 {
+	// Start the device
+
 	FBProgress	lProgress;
 	lProgress.Caption	= "Starting up device";
-
-	// Step 1: Open device communications
 	lProgress.Text	= "Opening device communications";
 	Status			= "Opening device communications";
 
-	if (mTcpIp.CreateSocket(mNetworkSocket, kFBTCPIP_Stream))
+	if (mProtocol == Open3D_Device::kTCPClient)
 	{
-		bool ret = mTcpIp.Connect(mNetworkSocket, mNetworkAddress, mNetworkPort);
-		if (!ret)
+		if (mTcpIp.CreateSocket(mNetworkSocket, kFBTCPIP_Stream))
 		{
-			mTcpIp.CloseSocket(mNetworkSocket);
-			mNetworkSocket = -1;
-			Status = "Error";
-			return false;
+			bool ret = mTcpIp.Connect(mNetworkSocket, mNetworkAddress, mNetworkPort);
+			if (!ret)
+			{
+				mTcpIp.CloseSocket(mNetworkSocket);
+				mNetworkSocket = -1;
+				Status = "Error";
+				return false;
+			}
 		}
 	}
 
@@ -122,6 +125,8 @@ bool Open3D_Device::Start()
 
 bool Open3D_Device::Stop()
 {
+	// Stop the device
+
 	FBProgress	lProgress;
 	lProgress.Caption	= "Shutting down device";
 
@@ -129,17 +134,59 @@ bool Open3D_Device::Stop()
 	lProgress.Text	= "Stopping device communications";
 	Status			= "Stopping device communications";
 
-	if (mTcpIp.CloseSocket(mNetworkSocket))
+	if (mNetworkSocket > 0)
 	{
-		Status = "Error";
-		return false;
+		if (mTcpIp.CloseSocket(mNetworkSocket))
+		{
+			Status = "";
+		}
+		else
+		{
+			Status = "Error Closing";
+		}
 	}
 
 	lProgress.Caption = "";
 	lProgress.Text = "";
-	Status = "";
 
     return true;
+}
+
+void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDeviceNotifyInfo)
+{
+	uint8_t buf[1024 *12];
+	int written;
+
+	// Called per frame to send data
+	switch (pAction)
+	{
+		// Output devices
+	case kIOPlayModeWrite:
+	case kIOStopModeWrite:
+	{
+		if (mProtocol == Open3D_Device::kTCPClient && mNetworkSocket != -1)
+		{
+
+			int ret = O3DS::Serialize(Items, buf, 1024 * 12);
+			if (ret > 0)
+			{
+				written = 0;
+				mTcpIp.Write(mNetworkSocket, buf, ret, &written);
+				if (written > 0) AckOneSampleSent();
+			}
+		}
+		
+	}
+	break;
+
+	// Input devices
+	case kIOStopModeRead:
+	case kIOPlayModeRead:
+	{
+		AckOneSampleReceived();
+		break;
+	}
+	}
 }
 
 bool Open3D_Device::Done()
@@ -172,44 +219,16 @@ void Open3D_Device::SetSamplingRate(double rate)
 }
 bool Open3D_Device::AnimationNodeNotify(FBAnimationNode* pAnimationNode ,FBEvaluateInfo* pEvaluateInfo)
 {
-
     return true;
 }
 
 
 bool Open3D_Device::DeviceEvaluationNotify( kTransportMode pMode, FBEvaluateInfo* pEvaluateInfo )
 {
-
-
-	
 	return true;
 }
 
-void Open3D_Device::DeviceIONotify( kDeviceIOs  pAction,FBDeviceNotifyInfo &pDeviceNotifyInfo)
-{
-    switch (pAction)
-	{
-		// Output devices
-		case kIOPlayModeWrite:
-		case kIOStopModeWrite:
-		{
-			for (auto subject : Items)
-			{
-				const char *name = subject.mName;
-			}
-			AckOneSampleSent();
-		}
-		break;
 
-		// Input devices
-		case kIOStopModeRead:
-		case kIOPlayModeRead:
-		{
-			AckOneSampleReceived();
-		break;
-		}
-	}
-}
 
 void Open3D_Device::DeviceRecordFrame( FBDeviceNotifyInfo &pDeviceNotifyInfo )
 {
@@ -246,7 +265,7 @@ bool Open3D_Device::FbxStore(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat)
 
 		}
 
-		pFbxObject->FieldWriteC(FBX_NETWORk_IP, GetNetworkAddress());
+		pFbxObject->FieldWriteC(FBX_NETWORK_IP, GetNetworkAddress());
 		pFbxObject->FieldWriteI(FBX_NETWORK_PORT, GetNetworkPort());
 		pFbxObject->FieldWriteI(FBX_NETWORK_PROTO, (int)GetProtocol());
 
@@ -296,7 +315,7 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 			}
 		}
 
-		SetNetworkAddress(pFbxObject->FieldReadC(FBX_NETWORk_IP, GetNetworkAddress()));
+		SetNetworkAddress(pFbxObject->FieldReadC(FBX_NETWORK_IP, GetNetworkAddress()));
 		SetNetworkPort(pFbxObject->FieldReadI(FBX_NETWORK_PORT, GetNetworkPort()));
 		SetProtocol(static_cast<TProtocol>(pFbxObject->FieldReadI(FBX_NETWORK_PROTO)));
 

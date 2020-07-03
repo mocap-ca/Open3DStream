@@ -211,6 +211,7 @@ void Open3D_Device_Layout::UICreate()
 		fieldWidth, kFBAttachNone, NULL, 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
 	mLayoutRight.SetControl("EditProtocol", mListProtocol);
+	mListProtocol.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditProtocol);
 
 
 	// Right: Label SampleRate (Under Protocol)
@@ -242,11 +243,13 @@ void Open3D_Device_Layout::UIConfigure()
 	
 	mListProtocol.Items.Clear();
 	mListProtocol.Items.Add("UDP");
-	mListProtocol.Items.Add("TCP");
+	mListProtocol.Items.Add("TCP Server");
+	mListProtocol.Items.Add("TCP Client");
 
 	Open3D_Device::TProtocol protocol = mDevice->GetProtocol();
 	if (protocol == Open3D_Device::kUDP) mListProtocol.ItemIndex = 0;
-	if (protocol == Open3D_Device::kTCP) mListProtocol.ItemIndex = 1;
+	if (protocol == Open3D_Device::kTCPServer) mListProtocol.ItemIndex = 1;
+	if (protocol == Open3D_Device::kTCPClient) mListProtocol.ItemIndex = 2;
 
 	PopulateSubjectList();
 	PopulateSubjectFields();
@@ -409,7 +412,10 @@ void Open3D_Device_Layout::EventEditPort(HISender pSender, HKEvent pEvent)
 
 void Open3D_Device_Layout::EventEditProtocol(HISender pSender, HKEvent pEvent)
 {
-	//int id = mListProtocol.ItemIndex;
+	int id = mListProtocol.ItemIndex;
+	if (id == 0) mDevice->SetProtocol(Open3D_Device::TProtocol::kUDP);
+	if (id == 1) mDevice->SetProtocol(Open3D_Device::TProtocol::kTCPServer);
+	if (id == 2) mDevice->SetProtocol(Open3D_Device::TProtocol::kTCPClient);
 }
 
 void Open3D_Device_Layout::EventEditSampleRate(HISender pSender, HKEvent pEvent)
