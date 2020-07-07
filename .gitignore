@@ -51,8 +51,9 @@ SourceArt/**/*.tga
 Binaries/*
 Plugins/*/Binaries/*
 
-# Builds
+# Builds (Both cases since not all OSes are case insensitive)
 Build/*
+build/
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
 !Build/*/
