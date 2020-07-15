@@ -157,6 +157,8 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 	uint8_t buf[1024 *12];
 	int written;
 
+	uint32_t total = 0;
+
 	// Called per frame to send data
 	switch (pAction)
 	{
@@ -166,17 +168,37 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 	{
 		if (mProtocol == Open3D_Device::kTCPClient && mNetworkSocket != -1)
 		{
-
-			int32_t ret = O3DS::Serialize(Items, buf, 1024 * 12);
-			if (ret > 0)
+			int32_t header = 0x0203;
+			int32_t bucket_size = O3DS::Serialize(Items, buf, 1024 * 12, true);
+			if (bucket_size > 0)
 			{
 				written = 0;
-				mTcpIp.Write(mNetworkSocket, &ret, sizeof(ret), &written);
-				mTcpIp.Write(mNetworkSocket, buf, ret, &written);
-				if (written > 0) AckOneSampleSent();
+				mTcpIp.Write(mNetworkSocket, &header, sizeof(int32_t), &written);
+				total += written;
+
+				mTcpIp.Write(mNetworkSocket, &bucket_size, sizeof(int32_t), &written);
+				total += written;
+
+				mTcpIp.Write(mNetworkSocket, buf, bucket_size, &written);
+				total += written;
+
+				if (total > 0)
+				{
+					char msg[100];
+					sprintf(msg, "sent: %d", total);
+					Status = FBString(msg);
+					AckOneSampleSent();
+				}
+				else
+				{
+					Status = "Disconnected";
+					//mTcpIp.CloseSocket(mNetworkSocket);
+					//mNetworkSocket = -1;
+					//Online = false;	
+
+				}
 			}
 		}
-		
 	}
 	break;
 

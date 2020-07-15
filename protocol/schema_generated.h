@@ -85,7 +85,7 @@ struct Transform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_TRANSLATION = 4,
     VT_ROTATION = 6,
-    VT_NAME = 8
+    VT_PARENT = 8
   };
   const MyGame::Sample::Translation *translation() const {
     return GetStruct<const MyGame::Sample::Translation *>(VT_TRANSLATION);
@@ -93,15 +93,14 @@ struct Transform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const MyGame::Sample::Rotation *rotation() const {
     return GetStruct<const MyGame::Sample::Rotation *>(VT_ROTATION);
   }
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  int32_t parent() const {
+    return GetField<int32_t>(VT_PARENT, 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<MyGame::Sample::Translation>(verifier, VT_TRANSLATION) &&
            VerifyField<MyGame::Sample::Rotation>(verifier, VT_ROTATION) &&
-           VerifyOffset(verifier, VT_NAME) &&
-           verifier.VerifyString(name()) &&
+           VerifyField<int32_t>(verifier, VT_PARENT) &&
            verifier.EndTable();
   }
 };
@@ -116,8 +115,8 @@ struct TransformBuilder {
   void add_rotation(const MyGame::Sample::Rotation *rotation) {
     fbb_.AddStruct(Transform::VT_ROTATION, rotation);
   }
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
-    fbb_.AddOffset(Transform::VT_NAME, name);
+  void add_parent(int32_t parent) {
+    fbb_.AddElement<int32_t>(Transform::VT_PARENT, parent, 0);
   }
   explicit TransformBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -134,46 +133,40 @@ inline flatbuffers::Offset<Transform> CreateTransform(
     flatbuffers::FlatBufferBuilder &_fbb,
     const MyGame::Sample::Translation *translation = 0,
     const MyGame::Sample::Rotation *rotation = 0,
-    flatbuffers::Offset<flatbuffers::String> name = 0) {
+    int32_t parent = 0) {
   TransformBuilder builder_(_fbb);
-  builder_.add_name(name);
+  builder_.add_parent(parent);
   builder_.add_rotation(rotation);
   builder_.add_translation(translation);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Transform> CreateTransformDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    const MyGame::Sample::Translation *translation = 0,
-    const MyGame::Sample::Rotation *rotation = 0,
-    const char *name = nullptr) {
-  auto name__ = name ? _fbb.CreateString(name) : 0;
-  return MyGame::Sample::CreateTransform(
-      _fbb,
-      translation,
-      rotation,
-      name__);
-}
-
 struct Subject FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef SubjectBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_NAME = 4,
-    VT_NODES = 6
+    VT_NODES = 4,
+    VT_NAMES = 6,
+    VT_NAME = 8
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
-  }
   const flatbuffers::Vector<flatbuffers::Offset<MyGame::Sample::Transform>> *nodes() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<MyGame::Sample::Transform>> *>(VT_NODES);
   }
+  const flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>> *names() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>> *>(VT_NAMES);
+  }
+  const flatbuffers::String *name() const {
+    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyOffset(verifier, VT_NAME) &&
-           verifier.VerifyString(name()) &&
            VerifyOffset(verifier, VT_NODES) &&
            verifier.VerifyVector(nodes()) &&
            verifier.VerifyVectorOfTables(nodes()) &&
+           VerifyOffset(verifier, VT_NAMES) &&
+           verifier.VerifyVector(names()) &&
+           verifier.VerifyVectorOfStrings(names()) &&
+           VerifyOffset(verifier, VT_NAME) &&
+           verifier.VerifyString(name()) &&
            verifier.EndTable();
   }
 };
@@ -182,11 +175,14 @@ struct SubjectBuilder {
   typedef Subject Table;
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
-    fbb_.AddOffset(Subject::VT_NAME, name);
-  }
   void add_nodes(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<MyGame::Sample::Transform>>> nodes) {
     fbb_.AddOffset(Subject::VT_NODES, nodes);
+  }
+  void add_names(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>>> names) {
+    fbb_.AddOffset(Subject::VT_NAMES, names);
+  }
+  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+    fbb_.AddOffset(Subject::VT_NAME, name);
   }
   explicit SubjectBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -201,24 +197,29 @@ struct SubjectBuilder {
 
 inline flatbuffers::Offset<Subject> CreateSubject(
     flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<MyGame::Sample::Transform>>> nodes = 0) {
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<MyGame::Sample::Transform>>> nodes = 0,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<flatbuffers::String>>> names = 0,
+    flatbuffers::Offset<flatbuffers::String> name = 0) {
   SubjectBuilder builder_(_fbb);
-  builder_.add_nodes(nodes);
   builder_.add_name(name);
+  builder_.add_names(names);
+  builder_.add_nodes(nodes);
   return builder_.Finish();
 }
 
 inline flatbuffers::Offset<Subject> CreateSubjectDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
-    const char *name = nullptr,
-    const std::vector<flatbuffers::Offset<MyGame::Sample::Transform>> *nodes = nullptr) {
-  auto name__ = name ? _fbb.CreateString(name) : 0;
+    const std::vector<flatbuffers::Offset<MyGame::Sample::Transform>> *nodes = nullptr,
+    const std::vector<flatbuffers::Offset<flatbuffers::String>> *names = nullptr,
+    const char *name = nullptr) {
   auto nodes__ = nodes ? _fbb.CreateVector<flatbuffers::Offset<MyGame::Sample::Transform>>(*nodes) : 0;
+  auto names__ = names ? _fbb.CreateVector<flatbuffers::Offset<flatbuffers::String>>(*names) : 0;
+  auto name__ = name ? _fbb.CreateString(name) : 0;
   return MyGame::Sample::CreateSubject(
       _fbb,
-      name__,
-      nodes__);
+      nodes__,
+      names__,
+      name__);
 }
 
 struct SubjectList FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {

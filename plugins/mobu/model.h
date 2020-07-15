@@ -46,7 +46,7 @@ namespace O3DS
 		void Traverse(FBModel*);
 	};
 
-	int Serialize(std::vector<O3DS::SubjectItem> &data, uint8_t *outbuf, int buflen);
+	int Serialize(std::vector<O3DS::SubjectItem> &data, uint8_t *outbuf, int buflen, bool names);
 
 
 

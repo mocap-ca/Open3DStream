@@ -11,7 +11,7 @@ cd build_debug
 cmake -H.. -B. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug
 nmake
 
-cd ..\..\protocol
+cd ..\..\..\protocol
 ..\thirdparty\flatbuffers\build_release\flatc --cpp schema.fbs
 
 

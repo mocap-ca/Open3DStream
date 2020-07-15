@@ -47,7 +47,7 @@ void O3DS::SubjectItem::Traverse(FBModel *model)
 	}
 }
 
-int O3DS::Serialize(std::vector<O3DS::SubjectItem> &data, uint8_t *outbuf, int buflen)
+int O3DS::Serialize(std::vector<O3DS::SubjectItem> &data, uint8_t *outbuf, int buflen, bool add_names)
 {
 	flatbuffers::FlatBufferBuilder builder(4096);
 
@@ -71,18 +71,23 @@ int O3DS::Serialize(std::vector<O3DS::SubjectItem> &data, uint8_t *outbuf, int b
 
 			auto subject_name = builder.CreateString((const char *)subject.mName);
 
+			std::vector<flatbuffers::Offset<flatbuffers::String>> name_list;
+
 			for (auto t : subject.mTransforms)
 			{
-				auto t_name = builder.CreateString(t.mName);
+				if (add_names)
+					name_list.push_back(builder.CreateString(t.mName));
 
 				auto tr = MyGame::Sample::Translation(t.tx, t.ty, t.tz);
 				auto ro = MyGame::Sample::Rotation(t.rx, t.ry, t.rz);
+				int parent = 0;
 
-				skeleton.push_back(CreateTransform(builder, &tr, &ro, t_name));
+				skeleton.push_back(CreateTransform(builder, &tr, &ro, parent));
 			}
 
 			auto transforms = builder.CreateVector(skeleton);
-			auto subject = CreateSubject(builder, subject_name, transforms);
+			auto nn = builder.CreateVector(name_list);
+            auto subject = CreateSubject(builder, transforms, nn, subject_name);
 			subjects.push_back(subject);		
 		}
 	}

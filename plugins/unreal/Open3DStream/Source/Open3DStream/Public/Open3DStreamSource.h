@@ -69,7 +69,7 @@ public:
 		return Client != nullptr && bIsValid;
 	}
 
-	TArray<TWeakObjectPtr<ULiveLinkRole>> RoleInstances;
+	//TArray<TWeakObjectPtr<ULiveLinkRole>> RoleInstances;
 	virtual void Update() override;
 
 

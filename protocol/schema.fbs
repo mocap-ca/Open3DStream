@@ -15,18 +15,18 @@ z:float;
 table Transform {
   translation:Translation;
   rotation:Rotation;
-  name:string;
+  parent:int;
 }
 
-table Subject
-{
-  name:string;
+table Subject {
   nodes:[Transform];
+  names:[string];
+  name:string;
 }
 
-table SubjectList
-{
+table SubjectList {
    subjects:[Subject];
 }
+
 
 root_type SubjectList;
