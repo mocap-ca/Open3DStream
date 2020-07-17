@@ -15,7 +15,6 @@ using namespace MyGame::Sample;
 FOpen3DStreamSource::FOpen3DStreamSource(int InPort, double InTimeOffset)
 	: bIsInitialized(false)
 	, Port(InPort)
-	, TcpSource(nullptr)
 	, TimeOffset(InTimeOffset)
 	, bIsValid(false)
 	, debugval(0)
@@ -24,14 +23,11 @@ FOpen3DStreamSource::FOpen3DStreamSource(int InPort, double InTimeOffset)
 	SourceType = NSLOCTEXT("Open3DStream", "ConnctionType", "Open 3D Stream");
 	SourceMachineName = NSLOCTEXT("Open3DStream", "SourceMachineName", "-");
 
-	buffer = (uint8*) malloc(NET_BUFFER_SIZE);
-	buffer_ptr = buffer;
-
 }
 
 FOpen3DStreamSource::~FOpen3DStreamSource()
 {
-	free(buffer);
+	TcpThread->Stop();
 }
 
 void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourceGuid)
@@ -46,13 +42,8 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 		RoleInstances.Add(RoleClass->GetDefaultObject<ULiveLinkRole>());
 	}*/
 
-	// The message bus builder and callback was here, replaced with tcp listener for now.
-	TcpServerSocket = FTcpSocketBuilder(TEXT("Open3DStreamServer"))
-		.AsNonBlocking()
-		.AsReusable()
-		.BoundToPort(Port)
-		.Listening(1)
-		.Build();
+	this->TcpThread = new O3DS_TcpThread(Port);
+	this->TcpThread->DataDelegate.BindRaw(this, &FOpen3DStreamSource::OnTcpData);
 
 	UpdateConnectionLastActive();
 }
@@ -60,126 +51,123 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 
 void FOpen3DStreamSource::Listen()
 {
+}
 
-	debugval++;
+bool FOpen3DStreamSource::OnTcpData(FSocket *TcpSource)
+{
+	// Returns true if the is no data or the data was processed okay
+	// Returns false if the data is wrong and the connection is closed
 
-	if (TcpSource == nullptr)
+	int32 bytesread = 0;
+
+	while (1)
 	{
-		TcpSource = TcpServerSocket->Accept("Open3DStreamSource");
-	}
 
-	if (TcpSource != nullptr)
-	{
-		int32 bytesread = 0;
-		size_t data_size = buffer_ptr - buffer;
+		TcpSource->Recv(temp_buffer, 1024 * 12, bytesread, ESocketReceiveFlags::None);
 
-		TcpSource->Recv(buffer_ptr, NET_BUFFER_SIZE - data_size, bytesread, ESocketReceiveFlags::None);
-		buffer_ptr += bytesread;
-		data_size = buffer_ptr - buffer;
+		if (bytesread < 1)
+			return true;
 
-		if (data_size > 8)
+		buffer.push(temp_buffer, bytesread);
+
+		size_t blocksize = 0;
+
+		uint8 *ptr = 0;
+
+
+		while (1)
 		{
-			size_t   start_ptr  = 0;
-			int32_t  headers    = *(int32_t*)buffer;
-			int32_t  blocksize  = *(int32_t*)buffer + 4;
-			size_t   end_ptr    = blocksize;
+			blocksize = buffer.pull(&ptr);
 
-			while(data_size > end_ptr + 8)
+			if (blocksize == 0)
+				break;
+
+			if (blocksize == (size_t)-1)
 			{
-				int32_t nextblock = *(int32_t*)(buffer + end_ptr) + 8;
-				if (end_ptr + nextblock > data_size)
-					break;
+				TcpSource->Close();
+				return false;
+			}
 
-				start_ptr = end_ptr;
-				end_ptr += nextblock;
-				blocksize = nextblock;
-			}			
-			 
-			if (end_ptr < data_size)
+			auto root = GetSubjectList(ptr);
+
+			auto subjects = root->subjects();
+
+			FLiveLinkFrameDataStruct FrameDataStruct(FLiveLinkAnimationFrameData::StaticStruct());
+			FLiveLinkAnimationFrameData& FrameData = *FrameDataStruct.Cast<FLiveLinkAnimationFrameData>();
+			FrameData.WorldTime = FPlatformTime::Seconds();
+
+			auto &transforms = FrameData.Transforms;
+
+
+			for (uint32_t i = 0; i < subjects->size(); i++)
 			{
-				auto root = GetSubjectList(buffer + start_ptr + 8);
+				// FOR EACH SUBJECT 
 
-				auto subjects = root->subjects();
+				TArray<FName>      BoneNames;
+				TArray<int32>      BoneParents;
+				TArray<FTransform> BoneTransforms;
 
-				for (uint32_t i = 0; i < subjects->size(); i++)
+				auto subject = subjects->Get(i);
+				std::string subject_name = subject->name()->str();
+
+				FLiveLinkSubjectName SubjectName(subject_name.c_str());
+				const FLiveLinkSubjectKey SubjectKey(SourceGuid, SubjectName);
+
+
+				auto nodes = subject->nodes();
+				auto names = subject->names();
+
+				if (names->size() == nodes->size())
+					BoneNames.Reserve(nodes->size());
+
+				BoneParents.Reserve(nodes->size());
+				BoneTransforms.Reserve(nodes->size());
+
+				for (uint32_t n = 0; n < nodes->size(); n++)
 				{
-					// FOR EACH SUBJECT 
+					auto node = nodes->Get(n);
+					BoneParents.Emplace(node->parent());
+					auto translation = node->translation();
+					auto rotation = node->rotation();
 
-					TArray<FName>      BoneNames;
-					TArray<int32>      BoneParents;
-					TArray<FTransform> BoneTransforms;
-
-					auto subject = subjects->Get(i);
-					std::string subject_name = subject->name()->str();
-
-					FLiveLinkSubjectName SubjectName(subject_name.c_str());
-					const FLiveLinkSubjectKey SubjectKey(SourceGuid, SubjectName);
-
-
-					auto nodes = subject->nodes();
-					auto names = subject->names();
+					FTransform t = FTransform::Identity;
+					t.SetTranslation(FVector(translation->x(), translation->y(), translation->z()));
+					FQuat rot = FQuat::MakeFromEuler(FVector(rotation->x(), rotation->y(), rotation->z()));
+					t.SetRotation(rot);
 
 					if (names->size() == nodes->size())
-						BoneNames.Reserve(nodes->size());
-
-					BoneParents.Reserve(nodes->size());
-					BoneTransforms.Reserve(nodes->size());
-
-					for (uint32_t n = 0; n < nodes->size(); n++)
 					{
-						auto node        = nodes->Get(n);
-						BoneParents.Emplace(node->parent());
-						auto translation = node->translation();
-						auto rotation    = node->rotation();
-
-						FTransform t = FTransform::Identity;
-						t.SetTranslation(FVector(translation->x(), translation->y(), translation->z()));
-						FQuat rot = FQuat::MakeFromEuler(FVector(rotation->x(), rotation->y(), rotation->z()));
-						t.SetRotation(rot);
-
-						if ( names->size() == nodes->size())
-						{
-							std::string name = names->Get(n)->str();
-							BoneNames.Emplace(name.c_str());
-						}
+						std::string name = names->Get(n)->str();
+						BoneNames.Emplace(name.c_str());
 					}
 
-					if (!bIsInitialized)
-					{
-						FLiveLinkStaticDataStruct LiveLinkSkeletonStaticData;
-						LiveLinkSkeletonStaticData.InitializeWith(FLiveLinkSkeletonStaticData::StaticStruct(), nullptr);
-						FLiveLinkSkeletonStaticData* SkeletonDataPtr = LiveLinkSkeletonStaticData.Cast<FLiveLinkSkeletonStaticData>();
-
-						SkeletonDataPtr->SetBoneNames(BoneNames);
-						SkeletonDataPtr->SetBoneParents(BoneParents);
-
-						Client->RemoveSubject_AnyThread(SubjectKey);
-						Client->PushSubjectStaticData_AnyThread(SubjectKey, ULiveLinkAnimationRole::StaticClass(), MoveTemp(LiveLinkSkeletonStaticData));
-						bIsInitialized = true;
-					}
-
-					FLiveLinkFrameDataStruct FrameDataStruct(FLiveLinkAnimationFrameData::StaticStruct());
-					FLiveLinkAnimationFrameData& FrameData = *FrameDataStruct.Cast<FLiveLinkAnimationFrameData>();
-					FrameData.WorldTime = FPlatformTime::Seconds();
-
-					Client->PushSubjectFrameData_AnyThread(SubjectKey, MoveTemp(FrameDataStruct));
+					transforms.Emplace(t);
 				}
 
-				if (end_ptr == data_size)
+				if (!bIsInitialized)
 				{
-					buffer_ptr = buffer;
+					FLiveLinkStaticDataStruct LiveLinkSkeletonStaticData;
+					LiveLinkSkeletonStaticData.InitializeWith(FLiveLinkSkeletonStaticData::StaticStruct(), nullptr);
+					FLiveLinkSkeletonStaticData* SkeletonDataPtr = LiveLinkSkeletonStaticData.Cast<FLiveLinkSkeletonStaticData>();
+
+					SkeletonDataPtr->SetBoneNames(BoneNames);
+					SkeletonDataPtr->SetBoneParents(BoneParents);
+
+					Client->RemoveSubject_AnyThread(SubjectKey);
+					Client->PushSubjectStaticData_AnyThread(SubjectKey, ULiveLinkAnimationRole::StaticClass(), MoveTemp(LiveLinkSkeletonStaticData));
+					bIsInitialized = true;
 				}
-				else
-				{
-					// copy remaining data
-					size_t remaining = data_size - end_ptr;
-					memcpy(buffer, buffer + end_ptr, remaining);
-					buffer_ptr = buffer + remaining;
-				}
+
+				Client->PushSubjectFrameData_AnyThread(SubjectKey, MoveTemp(FrameDataStruct));
 			}
-		}
 
+			buffer.punt();
+
+		}
 	}
+
+	return true;
+
 }
 
 bool FOpen3DStreamSource::RequestSourceShutdown()

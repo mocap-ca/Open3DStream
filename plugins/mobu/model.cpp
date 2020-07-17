@@ -27,22 +27,25 @@ void O3DS::Transform::Update()
 
 void O3DS::SubjectItem::Traverse()
 {
+	// Clear mTransforms and recursively parse mModel for transforms 
 	mTransforms.clear();
-	Traverse(dynamic_cast<FBModel*>(mModel));
+	Traverse(dynamic_cast<FBModel*>(mModel), -1);
 }
 
-void O3DS::SubjectItem::Traverse(FBModel *model)
+void O3DS::SubjectItem::Traverse(FBModel *model, int parentId)
 {
 	if (model == nullptr) return;
 
-	mTransforms.push_back(O3DS::Transform(model));
+	mTransforms.push_back(O3DS::Transform(model, parentId));
+
+	int nextId = (int)mTransforms.size() - 1;
 
 	for (int i = 0; i < model->Children.GetCount(); i++)
 	{
 		FBModel *child = model->Children[i];
 		if (child != nullptr)
 		{
-			Traverse(child);
+			Traverse(child, nextId);
 		}
 	}
 }
@@ -78,11 +81,11 @@ int O3DS::Serialize(std::vector<O3DS::SubjectItem> &data, uint8_t *outbuf, int b
 				if (add_names)
 					name_list.push_back(builder.CreateString(t.mName));
 
+				t.Update();
+
 				auto tr = MyGame::Sample::Translation(t.tx, t.ty, t.tz);
 				auto ro = MyGame::Sample::Rotation(t.rx, t.ry, t.rz);
-				int parent = 0;
-
-				skeleton.push_back(CreateTransform(builder, &tr, &ro, parent));
+				skeleton.push_back(CreateTransform(builder, &tr, &ro, t.mParentId));
 			}
 
 			auto transforms = builder.CreateVector(skeleton);

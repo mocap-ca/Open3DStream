@@ -273,7 +273,7 @@ bool Open3D_Device::FbxStore(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat)
 		}
 		
 		pFbxObject->FieldWriteD(FBX_SAMPLERATE, GetSamplingRate());
-		pFbxObject->FieldWriteI(FBX_SUBJECT_COUNT, Items.size());
+		pFbxObject->FieldWriteI(FBX_SUBJECT_COUNT, (int)Items.size());
 
 		for (int i = 0; i < Items.size(); i++)
 		{

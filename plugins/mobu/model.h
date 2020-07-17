@@ -11,9 +11,10 @@ namespace O3DS
 	class Transform
 	{
 	public:
-		Transform(FBModel *model)
+		Transform(FBModel *model, int parentId)
 			: mModel(model)
 			, mName()
+			, mParentId(parentId)
 		{
 			FBString n = model->Name;
 			const char *name = (const char *)n;
@@ -22,6 +23,7 @@ namespace O3DS
 
 		FBModel *mModel;
 		std::string mName;
+		int mParentId;
 
 		void Update();
 
@@ -43,7 +45,7 @@ namespace O3DS
 		std::vector<Transform> mTransforms;
 
 		void Traverse();
-		void Traverse(FBModel*);
+		void Traverse(FBModel*, int parentId);
 	};
 
 	int Serialize(std::vector<O3DS::SubjectItem> &data, uint8_t *outbuf, int buflen, bool names);

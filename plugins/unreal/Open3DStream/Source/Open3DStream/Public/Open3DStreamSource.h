@@ -10,6 +10,8 @@
 #include "Runtime/Networking/Public/Interfaces/IPv4/IPv4Address.h"
 #include "Runtime/Networking/Public/Interfaces/IPv4/IPv4Endpoint.h"
 
+#include "Open3DBuffer.h"
+#include "Open3DTcpThread.h"
 
 #include "LiveLinkRole.h"
 
@@ -38,9 +40,6 @@ public:
 	FText SourceMachineName;
 	FText SourceStatus;
 
-	FSocket* TcpServerSocket;
-	FSocket* TcpSource;
-
 	virtual FText GetSourceType() const override { return SourceType; };
 	virtual FText GetSourceMachineName() const override { return SourceMachineName; }
 	virtual FText GetSourceStatus() const override { return SourceStatus; }
@@ -55,10 +54,14 @@ public:
 	float            TimeOffset;
 	FThreadSafeBool  bIsValid;
 
-	uint8*           buffer;
-	uint8*           buffer_ptr;
-
 	int              debugval;
+
+	Open3DBuffer     buffer;
+	uint8            temp_buffer[1024 * 12];
+
+	O3DS_TcpThread  *TcpThread;
+
+	bool OnTcpData(FSocket *);
 
 	FORCEINLINE void UpdateConnectionLastActive();
 	FCriticalSection ConnectionLastActiveSection;
