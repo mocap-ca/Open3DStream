@@ -18,6 +18,8 @@
 #define FBX_NETWORK_PORT    "NetworkPort"
 #define FBX_NETWORK_PROTO   "NetworkProtocol"
 
+#include <ws2tcpip.h>
+#include <sstream>
 
 FBDeviceImplementation	(	OPEN3D_DEVICE__CLASS	);
 FBRegisterDevice		(	OPEN3D_DEVICE__NAME,
@@ -112,7 +114,7 @@ bool Open3D_Device::Start()
 
 	if (mProtocol == Open3D_Device::kTCPClient)
 	{
-		if (mTcpIp.CreateSocket(mNetworkSocket, kFBTCPIP_Stream))
+		if (mTcpIp.CreateSocket(mNetworkSocket, kFBTCPIP_RAW))
 		{
 			if (!mTcpIp.Connect(mNetworkSocket, mNetworkAddress, mNetworkPort))
 			{
@@ -121,6 +123,9 @@ bool Open3D_Device::Start()
 				Status = "Connect Error";
 				return false;
 			}
+
+			Status = "TCP Started";
+			return true;
 		}
 		else
 		{
@@ -130,7 +135,20 @@ bool Open3D_Device::Start()
 		}
 	}
 
-	Status = "Started";
+	if (mProtocol == Open3D_Device::kUDP)
+	{
+		if (mTcpIp.CreateSocket(mNetworkSocket, kFBTCPIP_DGRAM))
+		{
+			Status = "UDP OK";
+			return true;
+		}
+
+		mNetworkSocket = -1;
+		Status = "UDP Error";
+		return false;
+	}
+
+	Status = "INVALID";
 	return true;
 }
 
@@ -177,12 +195,16 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 	case kIOPlayModeWrite:
 	case kIOStopModeWrite:
 	{
-		if (mProtocol == Open3D_Device::kTCPClient && mNetworkSocket != -1)
+		if (mNetworkSocket != -1)
 		{
-			int32_t header = 0x0203;
 			int32_t bucket_size = O3DS::Serialize(Items, buf, 1024 * 12, true);
-			if (bucket_size > 0)
+			if (bucket_size == 0)
+				return;
+
+			if (mProtocol == Open3D_Device::kTCPClient)
 			{
+				// Write a header first 
+				int32_t header = 0x0203;
 				written = 0;
 				if (!mTcpIp.Write(mNetworkSocket, &header, sizeof(int32_t), &written))
 				{
@@ -193,25 +215,32 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				}
 				total += written;
 
+				// Write the size of this bucket
 				if (!mTcpIp.Write(mNetworkSocket, &bucket_size, sizeof(int32_t), &written))
 				{
 					Status = "Error";
 				}
 				total += written;
 
+				// Write the bucket
 				if (!mTcpIp.Write(mNetworkSocket, buf, bucket_size, &written))
 				{
 					Status = "Error";
 				}
 				total += written;
+			}
 
-				if (total > 0)
+			if (mProtocol == Open3D_Device::kUDP)
+			{
+				struct in_addr ret;
+				if (!inet_pton(AF_INET, mNetworkAddress.operator char *(), &ret))
 				{
-					char msg[100];
-					sprintf(msg, "sent: %d", total);
-					Status = FBString(msg);
-					AckOneSampleSent();
+					Status = "UDP ERROR";
 				}
+				mTcpIp.WriteDatagram(mNetworkSocket, buf, bucket_size, &written, ret.S_un.S_addr, mNetworkPort);
+				std::ostringstream oss;
+				oss << written << " bytes";
+				Status = oss.str().c_str();
 			}
 		}
 	}

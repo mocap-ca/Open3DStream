@@ -59,6 +59,7 @@ public:
 	std::vector<O3DS::SubjectItem> Items;
 
 	FBTCPIP      mTcpIp;
+	
 	int          mNetworkSocket;
 
 private:

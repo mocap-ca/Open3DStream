@@ -9,5 +9,5 @@ double GetTime()
 	QueryPerformanceCounter(&StartTime);
 	QueryPerformanceFrequency(&Freq);
 
-	return (double)StartTime.QuadPart * 1000.0f / (double)Freq.QuadPart;
+	return (double)StartTime.QuadPart / (double)Freq.QuadPart;
 }

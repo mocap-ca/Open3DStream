@@ -12,6 +12,6 @@ link_directories("C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK/li
 
 add_library(StreamDevice SHARED ${SRCS} )
 
-target_link_libraries(StreamDevice fbsdk.lib opengl32.lib glu32.lib)
+target_link_libraries(StreamDevice fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib)
 
 install(TARGETS StreamDevice DESTINATION "C:/Program Files/Autodesk/MotionBuilder 2020/bin/x64/plugins")
