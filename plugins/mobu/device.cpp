@@ -83,6 +83,7 @@ void Open3D_Device::AddItem(FBModel *model)
 	{
 		Items.push_back(O3DS::SubjectItem(model, name));
 	}
+
 }
 
 bool Open3D_Device::Init()
@@ -104,22 +105,32 @@ bool Open3D_Device::Start()
 	lProgress.Text	= "Opening device communications";
 	Status			= "Opening device communications";
 
+	for (auto& subject : Items)
+	{
+		subject.Traverse();
+	}
+
 	if (mProtocol == Open3D_Device::kTCPClient)
 	{
 		if (mTcpIp.CreateSocket(mNetworkSocket, kFBTCPIP_Stream))
 		{
-			bool ret = mTcpIp.Connect(mNetworkSocket, mNetworkAddress, mNetworkPort);
-			if (!ret)
+			if (!mTcpIp.Connect(mNetworkSocket, mNetworkAddress, mNetworkPort))
 			{
 				mTcpIp.CloseSocket(mNetworkSocket);
 				mNetworkSocket = -1;
-				Status = "Error";
+				Status = "Connect Error";
 				return false;
 			}
 		}
+		else
+		{
+			Status = "Socket Error";
+			mNetworkSocket = -1;
+			return false;
+		}
 	}
 
-	Status = "Ok";
+	Status = "Started";
 	return true;
 }
 
@@ -173,13 +184,25 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			if (bucket_size > 0)
 			{
 				written = 0;
-				mTcpIp.Write(mNetworkSocket, &header, sizeof(int32_t), &written);
+				if (!mTcpIp.Write(mNetworkSocket, &header, sizeof(int32_t), &written))
+				{
+					Status = "Error";
+					//mTcpIp.CloseSocket(mNetworkSocket);
+					//mNetworkSocket = -1;
+					return;
+				}
 				total += written;
 
-				mTcpIp.Write(mNetworkSocket, &bucket_size, sizeof(int32_t), &written);
+				if (!mTcpIp.Write(mNetworkSocket, &bucket_size, sizeof(int32_t), &written))
+				{
+					Status = "Error";
+				}
 				total += written;
 
-				mTcpIp.Write(mNetworkSocket, buf, bucket_size, &written);
+				if (!mTcpIp.Write(mNetworkSocket, buf, bucket_size, &written))
+				{
+					Status = "Error";
+				}
 				total += written;
 
 				if (total > 0)
@@ -188,14 +211,6 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 					sprintf(msg, "sent: %d", total);
 					Status = FBString(msg);
 					AckOneSampleSent();
-				}
-				else
-				{
-					Status = "Disconnected";
-					//mTcpIp.CloseSocket(mNetworkSocket);
-					//mNetworkSocket = -1;
-					//Online = false;	
-
 				}
 			}
 		}

@@ -22,18 +22,15 @@ namespace O3DS
 		}
 
 		FBModel *mModel;
+		FBMatrix mMatrix;
+		FBMatrix mParentInverseMatrix;
+
 		std::string mName;
 		int mParentId;
 
 		void Update();
 
-		double tx;
-		double ty;
-		double tz;
 
-		double rx;
-		double ry;
-		double rz;
 	};
 
 	class SubjectItem

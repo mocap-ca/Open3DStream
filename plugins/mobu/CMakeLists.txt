@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8.11)
 project(StreamDevice)
 
-set(SRCS plugin.cpp layout.cpp device.cpp device.h layout.h model.cpp model.h)
+set(SRCS plugin.cpp layout.cpp device.cpp device.h layout.h model.cpp model.h get_time.cpp get_time.h)
 
 include_directories("C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK/include"
 				"${CMAKE_CURRENT_LIST_DIR}/../../protocol"

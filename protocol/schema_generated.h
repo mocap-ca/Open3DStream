@@ -56,17 +56,20 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) Rotation FLATBUFFERS_FINAL_CLASS {
   float x_;
   float y_;
   float z_;
+  float w_;
 
  public:
   Rotation()
       : x_(0),
         y_(0),
-        z_(0) {
+        z_(0),
+        w_(0) {
   }
-  Rotation(float _x, float _y, float _z)
+  Rotation(float _x, float _y, float _z, float _w)
       : x_(flatbuffers::EndianScalar(_x)),
         y_(flatbuffers::EndianScalar(_y)),
-        z_(flatbuffers::EndianScalar(_z)) {
+        z_(flatbuffers::EndianScalar(_z)),
+        w_(flatbuffers::EndianScalar(_w)) {
   }
   float x() const {
     return flatbuffers::EndianScalar(x_);
@@ -77,8 +80,11 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) Rotation FLATBUFFERS_FINAL_CLASS {
   float z() const {
     return flatbuffers::EndianScalar(z_);
   }
+  float w() const {
+    return flatbuffers::EndianScalar(w_);
+  }
 };
-FLATBUFFERS_STRUCT_END(Rotation, 12);
+FLATBUFFERS_STRUCT_END(Rotation, 16);
 
 struct Transform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef TransformBuilder Builder;
@@ -225,16 +231,21 @@ inline flatbuffers::Offset<Subject> CreateSubjectDirect(
 struct SubjectList FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef SubjectListBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_SUBJECTS = 4
+    VT_SUBJECTS = 4,
+    VT_TIME = 6
   };
   const flatbuffers::Vector<flatbuffers::Offset<MyGame::Sample::Subject>> *subjects() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<MyGame::Sample::Subject>> *>(VT_SUBJECTS);
+  }
+  double time() const {
+    return GetField<double>(VT_TIME, 0.0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_SUBJECTS) &&
            verifier.VerifyVector(subjects()) &&
            verifier.VerifyVectorOfTables(subjects()) &&
+           VerifyField<double>(verifier, VT_TIME) &&
            verifier.EndTable();
   }
 };
@@ -245,6 +256,9 @@ struct SubjectListBuilder {
   flatbuffers::uoffset_t start_;
   void add_subjects(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<MyGame::Sample::Subject>>> subjects) {
     fbb_.AddOffset(SubjectList::VT_SUBJECTS, subjects);
+  }
+  void add_time(double time) {
+    fbb_.AddElement<double>(SubjectList::VT_TIME, time, 0.0);
   }
   explicit SubjectListBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -259,19 +273,23 @@ struct SubjectListBuilder {
 
 inline flatbuffers::Offset<SubjectList> CreateSubjectList(
     flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<MyGame::Sample::Subject>>> subjects = 0) {
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<MyGame::Sample::Subject>>> subjects = 0,
+    double time = 0.0) {
   SubjectListBuilder builder_(_fbb);
+  builder_.add_time(time);
   builder_.add_subjects(subjects);
   return builder_.Finish();
 }
 
 inline flatbuffers::Offset<SubjectList> CreateSubjectListDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<flatbuffers::Offset<MyGame::Sample::Subject>> *subjects = nullptr) {
+    const std::vector<flatbuffers::Offset<MyGame::Sample::Subject>> *subjects = nullptr,
+    double time = 0.0) {
   auto subjects__ = subjects ? _fbb.CreateVector<flatbuffers::Offset<MyGame::Sample::Subject>>(*subjects) : 0;
   return MyGame::Sample::CreateSubjectList(
       _fbb,
-      subjects__);
+      subjects__,
+      time);
 }
 
 inline const MyGame::Sample::SubjectList *GetSubjectList(const void *buf) {
