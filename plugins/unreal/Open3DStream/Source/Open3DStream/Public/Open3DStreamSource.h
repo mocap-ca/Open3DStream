@@ -52,10 +52,7 @@ public:
 	bool             bIsInitialized;
 	int              Port;
 	float            TimeOffset;
-	double           ArrivalTimeZeroA;
-	double           ArrivalTimeZeroB;
-	double           ArrivalTimeZeroC;
-	double           ArrivalTimeZeroD;
+	double           ArrivalTimeOffset;
 
 	FThreadSafeBool  bIsValid;
 	bool             bUdp;

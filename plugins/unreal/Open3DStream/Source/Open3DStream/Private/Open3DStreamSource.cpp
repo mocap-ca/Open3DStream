@@ -18,8 +18,7 @@ FOpen3DStreamSource::FOpen3DStreamSource(int InPort, double InTimeOffset)
 	: bIsInitialized(false)
 	, Port(InPort)
 	, TimeOffset(InTimeOffset)
-	, ArrivalTimeZeroA(0.0)
-	, ArrivalTimeZeroB(0.0)
+	, ArrivalTimeOffset(0.0)
 	, bIsValid(false)
 	, bUdp(true)
 	, TcpThread(nullptr)
@@ -31,7 +30,8 @@ FOpen3DStreamSource::FOpen3DStreamSource(int InPort, double InTimeOffset)
 
 FOpen3DStreamSource::~FOpen3DStreamSource()
 {
-	TcpThread->Stop();
+	if(TcpThread)
+		TcpThread->Stop();
 }
 
 void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourceGuid)
@@ -148,12 +148,10 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 			Client->PushSubjectStaticData_AnyThread(SubjectKey, ULiveLinkAnimationRole::StaticClass(), MoveTemp(LiveLinkSkeletonStaticData));
 			bIsInitialized = true;
 
-			ArrivalTimeZeroA = FPlatformTime::Seconds();
-			ArrivalTimeZeroB = tt;
-			ArrivalTimeZeroD = ArrivalTimeZeroA - ArrivalTimeZeroB;
+			ArrivalTimeOffset = FPlatformTime::Seconds() - tt;
 		}
 
-		FrameData.WorldTime = FLiveLinkWorldTime(tt + ArrivalTimeZeroD);
+		FrameData.WorldTime = FLiveLinkWorldTime(tt + ArrivalTimeOffset);
 		Client->PushSubjectFrameData_AnyThread(SubjectKey, MoveTemp(FrameDataStruct));
 	}
 
