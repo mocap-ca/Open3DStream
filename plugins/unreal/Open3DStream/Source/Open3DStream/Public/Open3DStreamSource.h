@@ -9,6 +9,8 @@
 #include "Runtime/Networking/Public/Common/TcpSocketBuilder.h"
 #include "Runtime/Networking/Public/Interfaces/IPv4/IPv4Address.h"
 #include "Runtime/Networking/Public/Interfaces/IPv4/IPv4Endpoint.h"
+#include "Common/UdpSocketReceiver.h"
+
 
 #include "Open3DBuffer.h"
 #include "Open3DTcpThread.h"
@@ -44,24 +46,31 @@ public:
 	virtual FText GetSourceMachineName() const override { return SourceMachineName; }
 	virtual FText GetSourceStatus() const override { return SourceStatus; }
 
-	void Listen();
-
 	ILiveLinkClient* Client;
 	FGuid            SourceGuid;
 	TArray<FName>    InitializedSubjects;	
 	bool             bIsInitialized;
 	int              Port;
 	float            TimeOffset;
-	FThreadSafeBool  bIsValid;
+	double           ArrivalTimeZeroA;
+	double           ArrivalTimeZeroB;
+	double           ArrivalTimeZeroC;
+	double           ArrivalTimeZeroD;
 
-	int              debugval;
+	FThreadSafeBool  bIsValid;
+	bool             bUdp;
+
 
 	Open3DBuffer     buffer;
 	uint8            temp_buffer[1024 * 12];
 
 	O3DS_TcpThread  *TcpThread;
+	FSocket         *UdpSocket;
+	FUdpSocketReceiver* Receiver;
 
 	bool OnTcpData(FSocket *);
+	void OnUdpData(const FArrayReaderPtr&, const FIPv4Endpoint&);
+	void OnPackage(uint8 *data, size_t sz);
 
 	FORCEINLINE void UpdateConnectionLastActive();
 	FCriticalSection ConnectionLastActiveSection;

@@ -70,6 +70,13 @@ uint32 O3DS_TcpThread::Run()
 
 			if (TcpSource)
 			{
+				ESocketConnectionState state = TcpSource->GetConnectionState();
+				if (state != ESocketConnectionState::SCS_Connected)
+				{
+					TcpSource->Close();
+					TcpSource = nullptr;
+					return 0;
+				}
 
 				if (TcpSource->Wait(ESocketWaitConditions::WaitForReadOrWrite, FTimespan::FromSeconds(1)))
 				{

@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#pragma optimize( "", off )
+//#pragma optimize( "", off )
 
 class Open3DBuffer
 {
@@ -57,7 +57,7 @@ public:
 };
 
 
-#pragma optimize( "", on )
+//#pragma optimize( "", on )
 
 
 #endif
