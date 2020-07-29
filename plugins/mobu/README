@@ -3,3 +3,4 @@ To build on windows:
 mkdir build
 cd build
 cmake .. -A x64
+devenv StreamDevice.sln /build Release /project INSTALL
