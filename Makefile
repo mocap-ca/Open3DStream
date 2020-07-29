@@ -5,9 +5,6 @@
 
 all: release
 
-###################################### Windows ################################
-ifeq ($(OS),Windows_NT)
-
 build:
 	$(shell mkdir build)
 
@@ -16,6 +13,10 @@ build/debug: build
 
 build/release: build
 	$(shell mkdir build/release)
+
+
+###################################### Windows ################################
+ifeq ($(OS),Windows_NT)
 
 .PHONY: debug
 debug: build/debug
@@ -45,15 +46,15 @@ ifeq ($(UNAME_S),Linux)
 
 
 .PHONY: release
-release:
+release: build/release
 	mkdir -p build/release
-	cd build/release; cmake ../ -DCMAKE_BUILD_TYPE=Release
+	cd build/release; cmake ../../ -DCMAKE_BUILD_TYPE=Release
 	cd build/release; $(MAKE)
 
 .PHONY: debug
-debug:
+debug: build/debug
 	mkdir -p build/debug
-	cd build/debug; cmake ../ -DCMAKE_BUILD_TYPE=Debug
+	cd build/debug; cmake ../../ -DCMAKE_BUILD_TYPE=Debug
 	cd build/debug; $(MAKE)
 
 .PHONY: format
