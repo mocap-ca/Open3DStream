@@ -1,4 +1,7 @@
+if NOT EXIST thirdparty\flatbuffers\CMakeLists.txt git submodule init
+
 git submodule update
+
 cd thirdparty\flatbuffers
 if NOT EXIST build_release MKDIR build_release
 cd build_release 
