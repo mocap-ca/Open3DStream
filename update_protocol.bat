@@ -4,3 +4,5 @@ cd %~dp0protocol
 IF %ERRORLEVEL% == 0 GOTO OKAY
 pause
 :OKAY
+ECHO Update successful.  Have a nice day!
+cd %~dp0
