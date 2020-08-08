@@ -4,3 +4,6 @@
 [submodule "thirdparty/nng"]
 	path = thirdparty/nng
 	url = https://github.com/nanomsg/nng.git
+[submodule "thirdparty/cml"]
+	path = thirdparty/cml
+	url = https://github.com/demianmnave/CML.git

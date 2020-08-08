@@ -269,7 +269,7 @@ void Open3D_Device_Layout::PopulateSubjectList()
 	mSourcesList.Items.Clear();
 	for (int i = 0; i < mDevice->Items.size(); i++)
 	{
-		mSourcesList.Items.Add(mDevice->Items[i].mName);
+		mSourcesList.Items.Add(FBString(mDevice->Items[i]->mName.c_str()));
 	}
 }
 
@@ -293,7 +293,7 @@ void Open3D_Device_Layout::EventEditSubject(HISender pSender, HKEvent pEvent)
 
 	FBString newValue = mEditSubject.Text.AsString();
 
-	mDevice->Items[id].mName = newValue;
+	mDevice->Items[id]->mName = newValue.operator char *();
 	mSourcesList.Items.RemoveAt(id);
 	mSourcesList.Items.InsertAt(id, newValue);
 	mSourcesList.Selected(id, true);
@@ -325,11 +325,11 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 	{
 		if (id < mDevice->Items.size())
 		{
-			FBComponent *model = mDevice->Items[id].mModel;
-			mEditSubject.Text = mDevice->Items[id].mName;
+			FBComponent *model = mDevice->Items[id]->mModel;
+			mEditSubject.Text = mDevice->Items[id]->mName.c_str();
 			mEditSource.Text = model->LongName;
 
-			mDevice->Items[id].Traverse();
+			mDevice->Items[id]->Traverse();
 
 			std::ostringstream oss;
 
@@ -342,7 +342,7 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 			if (model->Is(FBModelSkeleton::TypeInfo))
 				oss << "Joint" << std::endl;
 
-			oss << "Items: " << mDevice->Items[id].mTransforms.size();
+			oss << "Items: " << mDevice->Items[id]->mTransforms.size();
 
 			mEditSourceInfo.Text = oss.str().c_str();
 		}

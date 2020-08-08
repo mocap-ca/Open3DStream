@@ -6,7 +6,13 @@
 
 using namespace fbxsdk;
 
+#include "schema_generated.h"
+using namespace MyGame::Sample;
+
 #include "windows.h"
+
+#include "get_time.h"
+
 
 void ListChildren(fbxsdk::FbxNode *node)
 {
@@ -124,17 +130,11 @@ int main(int argc, char *argv[])
 	printf("End:   %s\n", t2.GetTimeString());
 	printf("Rate:  %f\n", frameRate);
 
-	LARGE_INTEGER freq;
-	LARGE_INTEGER count, zero;
-	QueryPerformanceFrequency(&freq);
-	QueryPerformanceCounter(&zero);
-
-	double zerof = (double)zero.QuadPart * 1000. / freq.QuadPart;
+	double zerof = GetTime() * 1000.;
 
 	for (FbxTime t = t1.GetFramedTime(); t < t2.GetFramedTime(); t = t + tInc)
 	{
-		QueryPerformanceCounter(&count);
-		double tick = ((double)count.QuadPart * 1000. / freq.QuadPart) - zerof;
+		double tick = GetTime() * 1000. - zerof;
 		double delay = t.GetSecondDouble() * 1000 - tick;
 		printf("%f   %s   %f\n", tick, t.GetTimeString(), delay);
 

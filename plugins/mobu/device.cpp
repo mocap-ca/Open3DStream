@@ -83,7 +83,7 @@ void Open3D_Device::AddItem(FBModel *model)
 		model->Is(FBCamera::TypeInfo) ||
 		model->Is(FBModelSkeleton::TypeInfo))
 	{
-		Items.push_back(O3DS::SubjectItem(model, name));
+		Items.push_back(std::make_shared<MobuSubject>(model, name));
 	}
 
 }
@@ -109,7 +109,7 @@ bool Open3D_Device::Start()
 
 	for (auto& subject : Items)
 	{
-		subject.Traverse();
+		subject->Traverse();
 	}
 
 	if (mProtocol == Open3D_Device::kTCPClient)
@@ -197,7 +197,30 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 	{
 		if (mNetworkSocket != -1)
 		{
-			int32_t bucket_size = O3DS::Serialize(Items, buf, 1024 * 12, true);
+			std::vector <std::shared_ptr<O3DS::Subject>> copied;
+			for (auto subject : Items)
+			{
+				if (subject->mModel->Is(FBModelNull::TypeInfo))
+				{
+					// Update the transforms
+
+					for (std::shared_ptr<O3DS::Transform> transform : subject->mTransforms)
+					{
+						std::shared_ptr<MobuTransform> t = std::dynamic_pointer_cast<MobuTransform>(transform);
+						t->Update();
+						if (transform->mParentId >= 0)
+						{
+							cml::matrix44d m(subject->mTransforms[transform->mParentId]->mMatrix);
+							transform->mParentInverseMatrix = cml::inverse(m);
+						}
+					}
+				}
+
+				// This is a hack - why do I need to do this?!?
+				copied.push_back(std::dynamic_pointer_cast<O3DS::Subject>(subject));
+			}
+
+			int32_t bucket_size = O3DS::Serialize(copied, buf, 1024 * 12, true);
 			if (bucket_size == 0)
 				return;
 
@@ -322,13 +345,13 @@ bool Open3D_Device::FbxStore(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat)
 		for (int i = 0; i < Items.size(); i++)
 		{
 			sprintf_s(buf, 40, "%s%d", FBX_SUBJECT_NAME, i);
-			pFbxObject->FieldWriteC(buf, Items[i].mName);
+			pFbxObject->FieldWriteC(buf, Items[i]->mName.c_str());
 
 			sprintf_s(buf, 40, "%s%d", FBX_SUBJECT_MODEL, i);
-			pFbxObject->FieldWriteC(buf, Items[i].mModel->GetFullName());
+			pFbxObject->FieldWriteC(buf, Items[i]->mModel->GetFullName());
 
 			sprintf_s(buf, 40, "%s%d", FBX_SUBJECT_REF, i);
-			pFbxObject->FieldWriteObjectReference(buf, Items[i].mModel);
+			pFbxObject->FieldWriteObjectReference(buf, Items[i]->mModel);
 
 		}
 
@@ -377,7 +400,7 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 
 			if (component)
 			{
-				O3DS::SubjectItem item(component, subject);
+				std::shared_ptr<MobuSubject> item = std::make_shared<MobuSubject>(component, subject);
 				Items.push_back(item);
 			}
 		}

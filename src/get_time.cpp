@@ -1,4 +1,6 @@
 #include "get_time.h"
+
+#ifdef _WIN32
 #include <windows.h>
 
 double GetTime()
@@ -11,3 +13,5 @@ double GetTime()
 
 	return (double)StartTime.QuadPart / (double)Freq.QuadPart;
 }
+
+#endif

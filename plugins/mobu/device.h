@@ -3,7 +3,7 @@
 
 #include <fbsdk/fbsdk.h>
 #include <vector>
-#include "model.h"
+#include "mobuModel.h"
 
 
 #define OPEN3D_DEVICE__CLASSNAME	Open3D_Device
@@ -56,7 +56,7 @@ public:
 	FBDeviceSamplingMode	GetSamplingType()								{ return mSamplingType;			}
 	void					SetSamplingType( FBDeviceSamplingMode pType )	{ mSamplingType = pType;		}
 
-	std::vector<O3DS::SubjectItem> Items;
+	std::vector<std::shared_ptr<MobuSubject>> Items;
 
 	FBTCPIP      mTcpIp;
 	
