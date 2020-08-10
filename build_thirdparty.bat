@@ -20,11 +20,11 @@ cd %~DP0protocol
 cd %~DP0thirdparty\nng
 if NOT EXIST build MKDIR build
 cd build 
-cmake -H.. -B. -G "Visual Studio 15 2017" -A x64
-devenv ALL_BUILD.vcxproj \Build Debug
-devenv ALL_BUILD.vcxproj \Build Release
-
-
+cmake -H.. -B. -G "Visual Studio 15 2017" -A x64 -DCMAKE_INSTALL_PREFIX=%~DP0
+devenv nng.sln /Build Debug 
+devenv nng.sln /Build Debug /Project INSTALL 
+devenv nng.sln /Build Release  
+devenv nng.sln /Build Release /Project INSTALL 
 
 
 
