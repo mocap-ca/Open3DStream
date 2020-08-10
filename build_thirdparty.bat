@@ -1,26 +1,52 @@
+@ECHO OFF
+
+REM Check for visual studio
+CL.exe
+IF %ERRORLEVEL% == 0 GOTO DOBUILD
+
+SET VSPATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat
+
+IF NOT EXIST "%VSPATH%" GOTO NOPE
+
+CALL "%VSPATH%"
+CL.exe
+IF %ERRORLEVEL% == 0 GOTO DOBUILD
+
+:NOPE
+ECHO "Could not find visual studio install"
+EXIT /B
+
+:DOBUILD
+
+IF EXIST "C:\Program Files\CMake\bin\cmake.exe" SET PATH=C:\Program Files\CMake\bin;%PATH%
+
 if NOT EXIST thirdparty\flatbuffers\CMakeLists.txt git submodule init
+if NOT EXIST thirdparty\nng\CMakeLists.txt git submodule init
 
 git submodule update
 
-cd thirdparty\flatbuffers
-if NOT EXIST build_release MKDIR build_release
-cd build_release 
-cmake -H.. -B. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release
-nmake
-cd ..
 
-if NOT EXIST build_debug MKDIR build_debug
-cd build_debug 
-cmake -H.. -B. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug
-nmake
+:FLATBUFFERS
+cd thirdparty\flatbuffers
+if NOT EXIST bld MKDIR bld
+cd bld
+cmake -H.. -B. -G "Visual Studio 15 2017" -A x64 -DCMAKE_INSTALL_PREFIX=%~DP0
+devenv FlatBuffers.sln /Build Debug 
+devenv FlatBuffers.sln /Build Debug /Project INSTALL 
+devenv FlatBuffers.sln /Build Release  
+devenv FlatBuffers.sln /Build Release /Project INSTALL 
 
 cd %~DP0protocol
-..\thirdparty\flatbuffers\build_release\flatc --cpp schema.fbs
+%~DP0bin\flatc --cpp schema.fbs
+move schema_generated.h %~DP0include
+cd %~DP0
 
+:NNG
 cd %~DP0thirdparty\nng
 if NOT EXIST build MKDIR build
 cd build 
 cmake -H.. -B. -G "Visual Studio 15 2017" -A x64 -DCMAKE_INSTALL_PREFIX=%~DP0
+IF %ERRORLEVEL% NEQ  0 EXIT /B
 devenv nng.sln /Build Debug 
 devenv nng.sln /Build Debug /Project INSTALL 
 devenv nng.sln /Build Release  
