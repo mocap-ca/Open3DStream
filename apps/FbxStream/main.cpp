@@ -47,6 +47,15 @@ namespace O3DS
 			cml::matrix_rotation_euler(t->mMatrix, crot, corder);
 		}
 
+		std::string info()
+		{
+			std::string ret;
+			ret = mNode->GetName();
+			ret += " ";
+			ret += mNode->GetTypeName();
+			return ret;
+		}
+
 		FbxNode *mNode;
 	};
 
@@ -60,6 +69,7 @@ namespace O3DS
 
 	void ListChildren(fbxsdk::FbxNode *node, std::string ns, O3DS::Subject *subject, int parentId = -1)
 	{
+		// Add node and follow down the tree for nodes with the same namespace
 		std::string name(node->GetName());
 		name = name.substr(ns.size() + 1, name.size());
 
@@ -67,7 +77,12 @@ namespace O3DS
 
 		for (int i = 0; i < node->GetChildCount(); i++)
 		{
+
 			fbxsdk::FbxNode *child = node->GetChild(i);
+
+			if (strcmp(child->GetTypeName(), "Mesh") == 0)
+				continue;
+
 			if(GetNamespace(child) == ns)
 				ListChildren(child, ns, subject, subject->size() - 1);
 		}
@@ -75,6 +90,7 @@ namespace O3DS
 
 	void FindSubjects(fbxsdk::FbxNode *node, O3DS::SubjectList &subjects)
 	{
+		// Search node looking for objects that have a namespace
 		std::string ns = GetNamespace(node);
 		if (ns.size() == 0)
 		{
@@ -85,7 +101,6 @@ namespace O3DS
 		}
 		else
 		{
-			printf("Found: %s  %s\n", node->GetName(), ns.c_str());
 			auto subject = subjects.addSubject(std::string(ns));
 			ListChildren(node, ns, subject, -1);
 		}
@@ -216,13 +231,13 @@ int main(int argc, char *argv[])
 		printf("Subject: %s\n", s->mName.c_str());
 		for (auto i : s->mTransforms)
 		{
-			printf("  %s\n", i->mName.c_str());
+			printf("  %s\n", i->mVisitor->info().c_str());
 		}
 	}
 
 	// Serialize
 
-	uint8_t buffer[4096];
+	uint8_t buffer[1024 * 16];
 
 	bool first = true;
 
@@ -234,8 +249,10 @@ int main(int argc, char *argv[])
 
 		subjects.update();
 
-		O3DS::Serialize(subjects, buffer, 4096, first);
+		int ret = O3DS::Serialize(subjects, buffer, 1024 * 16, first);
 		first = false;
+
+		printf("%d bytes\n", ret);
 
 		if (delay > 0)
 			Sleep(delay);

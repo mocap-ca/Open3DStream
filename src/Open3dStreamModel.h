@@ -13,6 +13,7 @@ namespace O3DS
 	{
 	public:
 		virtual void update(Transform*) = 0;
+		virtual std::string info() = 0;
 	};
 
 	class Transform
