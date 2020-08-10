@@ -12,32 +12,96 @@ using namespace MyGame::Sample;
 #include "windows.h"
 
 #include "get_time.h"
+#include "cml/cml.h"
 
+#include "Open3dStreamModel.h"
 
-void ListChildren(fbxsdk::FbxNode *node)
+namespace O3DS
 {
-	FbxDouble3 trans = node->LclTranslation.EvaluateValue(FbxTime(0));
-	FbxDouble3 rot = node->LclRotation.EvaluateValue(FbxTime(0));
 
-	printf("% 20s  % qws    %- 8.1f %- 8.1f %- 8.1f  %- 8.1f %- 8.1f %- 8.1f\n",
-		node->GetName(), node->GetTypeName(),
-		trans[0], trans[1], trans[2], rot[0], rot[1], rot[2]);
-
-	for (int i = 0; i < node->GetChildCount(); i++)
+	class MobuUpdater : public O3DS::Updater
 	{
-		fbxsdk::FbxNode *child = node->GetChild(i);
-		ListChildren(child);
+	public:
+		MobuUpdater(FbxNode *node) : mNode(node) {};
+
+		void update(O3DS::Transform *t)
+		{
+			FbxDouble3 trans = mNode->LclTranslation.EvaluateValue(FbxTime(0));
+			FbxDouble3 rot = mNode->LclRotation.EvaluateValue(FbxTime(0));
+
+			cml::euler_order corder = cml::euler_order_xyz;
+			switch (mNode->RotationOrder)
+			{
+			case FbxEuler::eOrderXYZ: corder = cml::euler_order_xyz;
+			case FbxEuler::eOrderXZY: corder = cml::euler_order_xzy;
+			case FbxEuler::eOrderYXZ: corder = cml::euler_order_yxz;
+			case FbxEuler::eOrderYZX: corder = cml::euler_order_yzx;
+			case FbxEuler::eOrderZXY: corder = cml::euler_order_zxy;
+			case FbxEuler::eOrderZYX: corder = cml::euler_order_zyx;
+			}
+
+			cml::vector3d ctrans(trans.mData);
+			cml::vector3d crot(rot.mData);
+
+			cml::matrix_set_translation(t->mMatrix, ctrans);
+			cml::matrix_rotation_euler(t->mMatrix, crot, corder);
+		}
+
+		FbxNode *mNode;
+	};
+
+	std::string GetNamespace(fbxsdk::FbxNode *node)
+	{
+		std::string name(node->GetName());
+		size_t split = name.find(':');
+		if (split == -1) return std::string();
+		return name.substr(0, split);
 	}
 
-}
+	void ListChildren(fbxsdk::FbxNode *node, std::string ns, O3DS::Subject *subject, int parentId = -1)
+	{
+		std::string name(node->GetName());
+		name = name.substr(ns.size() + 1, name.size());
+
+		auto t = subject->addTransform(name, parentId, new MobuUpdater(node));
+
+		for (int i = 0; i < node->GetChildCount(); i++)
+		{
+			fbxsdk::FbxNode *child = node->GetChild(i);
+			if(GetNamespace(child) == ns)
+				ListChildren(child, ns, subject, subject->size() - 1);
+		}
+	}
+
+	void FindSubjects(fbxsdk::FbxNode *node, O3DS::SubjectList &subjects)
+	{
+		std::string ns = GetNamespace(node);
+		if (ns.size() == 0)
+		{
+			for (int i = 0; i < node->GetChildCount(); i++)
+			{
+				FindSubjects(node->GetChild(i), subjects);
+			}
+		}
+		else
+		{
+			printf("Found: %s  %s\n", node->GetName(), ns.c_str());
+			auto subject = subjects.addSubject(std::string(ns));
+			ListChildren(node, ns, subject, -1);
+		}
+	}
+} // O3DS
+
+
+
+
 
 int main(int argc, char *argv[])
 {
+	// Init - Create the manager
 	FbxManager* manager = FbxManager::Create();
     FbxScene* lScene = NULL;
 	
-	const char *file_path = "c:\\users\\al\\Downloads\\shadow_run_jump.fbx";
-
 	FbxIOSettings *settings = FbxIOSettings::Create(manager, IOSROOT);
 
 	settings->SetBoolProp(IMP_FBX_MATERIAL, true);
@@ -51,6 +115,9 @@ int main(int argc, char *argv[])
 	manager->SetIOSettings(settings);
 
 	FbxImporter* lImporter = FbxImporter::Create(manager, "");
+
+	// Load the fbx file
+	const char *file_path = "c:\\users\\al\\Desktop\\test.fbx";
 
 	bool lImportStatus = lImporter->Initialize(file_path, -1, manager->GetIOSettings());
 
@@ -75,6 +142,8 @@ int main(int argc, char *argv[])
 	lImporter->GetFileVersion(lFileMajor, lFileMinor, lFileRevision);
 
 	printf("Version: %d %d %d\n", lFileMajor, lFileMinor, lFileRevision);
+
+	// Get the scene time information
 
 	FbxGlobalSettings& globalSettings = lScene->GetGlobalSettings();
 
@@ -114,6 +183,14 @@ int main(int argc, char *argv[])
 		frameRate = FbxTime::GetFrameRate(timeMode);
 	}
 
+	FbxTime tInc = FbxTime();
+	tInc.SetFrame(1);
+
+	double zerof = GetTime() * 1000.;
+
+
+	// Get the anim stacks and default stack start/end
+
 	fbxsdk::FbxAnimStack *stack = lScene->GetCurrentAnimationStack();
 	printf("Stack: %s\n", stack->GetName());
 
@@ -122,27 +199,48 @@ int main(int argc, char *argv[])
 
 	FbxTime t1 = stack->LocalStart;
 	FbxTime t2 = stack->LocalStop;
-	
-	FbxTime tInc = FbxTime();
-	tInc.SetFrame(1);
 
-	printf("Start: %s\n", t1.GetTimeString());
-	printf("End:   %s\n", t2.GetTimeString());
+	printf("Start: %s\n", t1.GetTimeString().operator const char *());
+	printf("End:   %s\n", t2.GetTimeString().operator const char *());
 	printf("Rate:  %f\n", frameRate);
 
-	double zerof = GetTime() * 1000.;
+	
+	// Traverse the scene for models
+
+	O3DS::SubjectList subjects;
+
+	O3DS::FindSubjects(root, subjects);
+
+	for (auto s : subjects)
+	{
+		printf("Subject: %s\n", s->mName.c_str());
+		for (auto i : s->mTransforms)
+		{
+			printf("  %s\n", i->mName.c_str());
+		}
+	}
+
+	// Serialize
+
+	uint8_t buffer[4096];
+
+	bool first = true;
 
 	for (FbxTime t = t1.GetFramedTime(); t < t2.GetFramedTime(); t = t + tInc)
 	{
 		double tick = GetTime() * 1000. - zerof;
 		double delay = t.GetSecondDouble() * 1000 - tick;
-		printf("%f   %s   %f\n", tick, t.GetTimeString(), delay);
+		printf("%f   %s   %f\n", tick, t.GetTimeString().operator const char *(), delay);
+
+		subjects.update();
+
+		O3DS::Serialize(subjects, buffer, 4096, first);
+		first = false;
 
 		if (delay > 0)
 			Sleep(delay);
 	}
 
-	ListChildren(root);
 
 	return 0;
 

@@ -10,12 +10,18 @@ include_directories(
     "${CMAKE_CURRENT_LIST_DIR}/../../src"
 	"${CMAKE_CURRENT_LIST_DIR}/../../protocol"
 	 "${CMAKE_CURRENT_LIST_DIR}/../../thirdparty/flatbuffers/include"
+	 "${CMAKE_CURRENT_LIST_DIR}/../../thirdparty/cml"
 	)
 
 FBX_PROJECT(FbxTest .)
 
 SET(FBX_TARGET_SOURCE main.cpp
-   ${CMAKE_CURRENT_LIST_DIR}/../../src/get_time.cpp)
+   ${CMAKE_CURRENT_LIST_DIR}/../../src/get_time.h
+   ${CMAKE_CURRENT_LIST_DIR}/../../src/get_time.cpp
+   ${CMAKE_CURRENT_LIST_DIR}/../../src/Open3dStreamModel.h
+   ${CMAKE_CURRENT_LIST_DIR}/../../src/Open3dStreamModel.cpp
+   
+   )
 
 ADD_EXECUTABLE(
    ${FBX_TARGET_NAME}

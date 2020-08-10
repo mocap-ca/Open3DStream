@@ -6,7 +6,7 @@
 
 using namespace MyGame::Sample;
 
-int O3DS::Serialize(std::vector<std::shared_ptr<O3DS::Subject>> &data, uint8_t *outbuf, int buflen, bool add_names)
+int O3DS::Serialize(SubjectList &data, uint8_t *outbuf, int buflen, bool add_names)
 {
 	double timestamp = GetTime();
 
@@ -38,13 +38,11 @@ int O3DS::Serialize(std::vector<std::shared_ptr<O3DS::Subject>> &data, uint8_t *
 				transformMatrix = transform->mMatrix;
 			}
 
-
 			cml::quaternion<double> q;
 			cml::quaternion_rotation_matrix(q, transformMatrix);
 
 			cml::vector3d t;
 			t = cml::matrix_get_translation(transformMatrix);
-
 
 			auto tr = MyGame::Sample::Translation(t[0], t[1], t[2]);
 			auto ro = MyGame::Sample::Rotation(q.x(), q.y(), q.z(), q.w());
@@ -53,11 +51,9 @@ int O3DS::Serialize(std::vector<std::shared_ptr<O3DS::Subject>> &data, uint8_t *
 
 		auto transforms = builder.CreateVector(skeleton);
 		auto nn = builder.CreateVector(name_list);
-		auto subject = CreateSubject(builder, transforms, nn, subject_name);
-		subjects.push_back(subject);
+		auto s = CreateSubject(builder, transforms, nn, subject_name);
+		subjects.push_back(s);
 	}
-
-
 
 	auto root = CreateSubjectList(builder, builder.CreateVector(subjects), timestamp);
 
