@@ -36,14 +36,16 @@ client(const char *url)
 
   start = nng_clock();
 
-  if ((rv = nng_msg_alloc(&msg, 0)) != 0) {
+  if ((rv = nng_msg_alloc(&msg, 10)) != 0) {
     fatal("nng_msg_alloc", rv);
   }
 
+  nng_msg_append(msg, "test", 5);
+
   // Send a 32 bit uint round-trip to make sure the server is listening
-  if ((rv = nng_msg_append_u32(msg, 0)) != 0) {
-    fatal("nng_msg_append_u32", rv);
-  }
+  //if ((rv =	(msg, 0)) != 0) {
+  //  fatal("nng_msg_append_u32", rv);
+  //}
 
   if ((rv = nng_sendmsg(sock, msg, 0)) != 0) {
     fatal("nng_send", rv);

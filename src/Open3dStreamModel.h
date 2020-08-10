@@ -71,13 +71,29 @@ namespace O3DS
 		std::vector<Transform*> items;
 	};
 
+	class SubjectInfo
+	{
+	public:
+		virtual ~SubjectInfo() {};
+	};
+
 	class Subject
 	{
 	public:
-		Subject() {}
-		Subject(std::string name) : mName(name) {}
+		Subject(SubjectInfo *info = nullptr) : mInfo(info) {}
+
+		Subject(std::string name, SubjectInfo *info = nullptr)
+			: mName(name)
+			, mInfo(info) 
+		{}
+
+		virtual ~Subject() { if (mInfo) delete mInfo; }
+
 		std::string mName;
 		TransformList mTransforms;
+		SubjectInfo *mInfo;
+
+
 
 		Transform* addTransform(std::string &name, int parentId, Updater *updater = nullptr)
 		{
@@ -115,9 +131,9 @@ namespace O3DS
 			}
 		}
 
-		Subject* addSubject(std::string name)
+		Subject* addSubject(std::string name, SubjectInfo* info=nullptr)
 		{
-			auto s = new Subject(name);
+			auto s = new Subject(name, info);
 			items.push_back(s);
 			return s;
 		}
@@ -134,6 +150,7 @@ namespace O3DS
 		size_t size() { return items.size(); }
 		std::vector <Subject*>::iterator begin() { return items.begin(); }
 		std::vector <Subject*>::iterator end() { return items.end(); }
+		Subject* operator [] (int ref) { return items.operator[](ref); }
 	};
 
 	int Serialize(SubjectList &data, uint8_t *outbuf, int buflen, bool names);

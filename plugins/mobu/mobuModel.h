@@ -6,39 +6,35 @@
 
 #include "Open3dStreamModel.h"
 
-class MobuTransform : public O3DS::Transform
+class MobuUpdater : public O3DS::Updater
 {
 public:
-	MobuTransform(FBModel *model, int parentId)
-		: Transform(parentId)
-		, mModel(model)
-	{
-		FBString n = model->Name;
-		const char *name = (const char *)n;
-		mName.assign(name);
-	}
+	MobuUpdater(FBModel *model)
+		: mModel(model)
+	{}
 
 	FBModel *mModel;
 
 	int mParentId;
 
-	void Update();
+	void update(O3DS::Transform*);
+
+	std::string info() { return std::string(mModel->GetFullName()); }
 
 
 };
 
-class MobuSubject : public O3DS::Subject
+class MobuSubjectInfo : public O3DS::SubjectInfo
 {
 public:
-	MobuSubject(FBComponent *model, FBString name)
-		: O3DS::Subject()
-		, mModel(model)
-	{}
-	FBComponent *mModel;
+	MobuSubjectInfo(FBModel *model) :mModel(model) {}
 
-	void Traverse();
-	void Traverse(FBModel*, int parentId);
+	FBModel *mModel;
 };
+
+
+void TraverseSubject(O3DS::Subject *subject, FBModel*, int parentId = -1);
+
 
 
 

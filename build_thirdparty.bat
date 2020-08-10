@@ -30,10 +30,8 @@ git submodule update
 cd thirdparty\flatbuffers
 if NOT EXIST bld MKDIR bld
 cd bld
-cmake -H.. -B. -G "Visual Studio 15 2017" -A x64 -DCMAKE_INSTALL_PREFIX=%~DP0
-devenv FlatBuffers.sln /Build Debug 
+cmake -H.. -B. -G "Visual Studio 15 2017" -A x64 -DCMAKE_INSTALL_PREFIX=%~DP0 -DCMAKE_DEBUG_POSTFIX=d 
 devenv FlatBuffers.sln /Build Debug /Project INSTALL 
-devenv FlatBuffers.sln /Build Release  
 devenv FlatBuffers.sln /Build Release /Project INSTALL 
 
 cd %~DP0protocol
@@ -45,12 +43,11 @@ cd %~DP0
 cd %~DP0thirdparty\nng
 if NOT EXIST build MKDIR build
 cd build 
-cmake -H.. -B. -G "Visual Studio 15 2017" -A x64 -DCMAKE_INSTALL_PREFIX=%~DP0
+REM cmake -H.. -B. -G "Visual Studio 15 2017" -A x64 -DCMAKE_INSTALL_PREFIX=E:\git\github\Open3DStream -DCMAKE_DEBUG_POSTFIX=d
+cmake -H.. -B. -G "Visual Studio 15 2017" -A x64 -DCMAKE_INSTALL_PREFIX=%~DP0  -DCMAKE_DEBUG_POSTFIX=d
 IF %ERRORLEVEL% NEQ  0 EXIT /B
-devenv nng.sln /Build Debug 
 devenv nng.sln /Build Debug /Project INSTALL 
-devenv nng.sln /Build Release  
 devenv nng.sln /Build Release /Project INSTALL 
 
-
+cd %~DP0
 

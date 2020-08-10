@@ -61,7 +61,8 @@ server_cb(void *arg)
       nng_ctx_recv(work->ctx, work->aio);
       return;
     }
-    work->msg   = msg;
+    work->msg   = msg;	
+	printf("Message  %d\n", nng_msg_len(msg));
     work->state = WAIT;
     nng_sleep_aio(when, work->aio);
     break;

@@ -325,11 +325,14 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 	{
 		if (id < mDevice->Items.size())
 		{
-			FBComponent *model = mDevice->Items[id]->mModel;
+			O3DS::Subject* subject = mDevice->Items[id];
+			MobuSubjectInfo *info = dynamic_cast<MobuSubjectInfo*>(subject->mInfo);
+
+			FBComponent *model = info->mModel;
 			mEditSubject.Text = mDevice->Items[id]->mName.c_str();
 			mEditSource.Text = model->LongName;
 
-			mDevice->Items[id]->Traverse();
+			TraverseSubject(subject, info->mModel);
 
 			std::ostringstream oss;
 
@@ -390,7 +393,7 @@ void Open3D_Device_Layout::EventDel(HISender pSender, HKEvent pEvent)
 	int id = mSourcesList.ItemIndex;
 	if (id >= 0)
 	{
-		mDevice->Items.erase(mDevice->Items.begin() + id);
+		mDevice->Items.items.erase(mDevice->Items.begin() + id);
 		PopulateSubjectList();
 	}
 }

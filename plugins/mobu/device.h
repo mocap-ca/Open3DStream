@@ -56,7 +56,7 @@ public:
 	FBDeviceSamplingMode	GetSamplingType()								{ return mSamplingType;			}
 	void					SetSamplingType( FBDeviceSamplingMode pType )	{ mSamplingType = pType;		}
 
-	std::vector<std::shared_ptr<MobuSubject>> Items;
+	O3DS::SubjectList Items;
 
 	FBTCPIP      mTcpIp;
 	
