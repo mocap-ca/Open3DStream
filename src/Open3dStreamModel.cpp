@@ -2,7 +2,6 @@
 
 #include "schema_generated.h"
 #include "get_time.h"
-#include "cml/cml.h"
 
 using namespace MyGame::Sample;
 
@@ -22,31 +21,14 @@ int O3DS::Serialize(SubjectList &data, uint8_t *outbuf, int buflen, bool add_nam
 
 		std::vector<flatbuffers::Offset<flatbuffers::String>> name_list;
 
-		for (auto& transform : subject->mTransforms)
+		for (auto& t : subject->mTransforms)
 		{
 			if (add_names)
-				name_list.push_back(builder.CreateString(transform->mName));
+				name_list.push_back(builder.CreateString(t->mName));
 
-			cml::matrix44d transformMatrix;
-
-			if (transform->mParentId >= 0)
-			{
-				transformMatrix = transform->mParentInverseMatrix * transform->mMatrix;
-			}
-			else
-			{
-				transformMatrix = transform->mMatrix;
-			}
-
-			cml::quaternion<double> q;
-			cml::quaternion_rotation_matrix(q, transformMatrix);
-
-			cml::vector3d t;
-			t = cml::matrix_get_translation(transformMatrix);
-
-			auto tr = MyGame::Sample::Translation(t[0], t[1], t[2]);
-			auto ro = MyGame::Sample::Rotation(q.x(), q.y(), q.z(), q.w());
-			skeleton.push_back(CreateTransform(builder, &tr, &ro, transform->mParentId));
+			auto tr = MyGame::Sample::Translation(t->mTranslation[0], t->mTranslation[1], t->mTranslation[2]);
+			auto ro = MyGame::Sample::Rotation(t->mOrientation[0], t->mOrientation[1], t->mOrientation[2], t->mOrientation[3]);
+			skeleton.push_back(CreateTransform(builder, &tr, &ro, t->mParentId));
 		}
 
 		auto transforms = builder.CreateVector(skeleton);
@@ -70,3 +52,33 @@ int O3DS::Serialize(SubjectList &data, uint8_t *outbuf, int buflen, bool add_nam
 	return size;
 
 }
+
+
+void O3DS::Subject::update(bool useWorldMatrix)
+{
+	for (auto i : mTransforms)
+	{
+		i->update();
+	}
+
+	if (useWorldMatrix)
+	{
+		for (auto i : mTransforms)
+		{
+			O3DS::Matrix<double> transformMatrix;
+			if (i->mParentId >= 0)
+			{
+				Transform *parentTransform = mTransforms.items[i->mParentId];
+				O3DS::Matrix<double> parentInverse = parentTransform->mMatrix.Inverse();
+				transformMatrix = i->mMatrix * parentInverse ;
+			}
+			else
+			{
+				transformMatrix = i->mMatrix;
+			}
+			i->mTranslation = transformMatrix.GetTranslation();
+			i->mOrientation = transformMatrix.GetQuaternion();
+		}
+	}
+}
+

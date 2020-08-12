@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "cml/cml.h"
+#include "o3ds/math.h"
 
 namespace O3DS
 {
@@ -44,8 +44,10 @@ namespace O3DS
 
 		void update() { if(mVisitor) mVisitor->update(this); }
 
-		cml::matrix44d mMatrix;
-		cml::matrix44d mParentInverseMatrix;
+		O3DS::Matrix<double> mMatrix;
+
+		O3DS::Vector<double>  mTranslation;
+		O3DS::Vector<double>  mOrientation;
 
 		std::string mName;
 		int mParentId;
@@ -94,7 +96,6 @@ namespace O3DS
 		SubjectInfo *mInfo;
 
 
-
 		Transform* addTransform(std::string &name, int parentId, Updater *updater = nullptr)
 		{
 			auto ret = new Transform(name, parentId, updater);
@@ -107,15 +108,12 @@ namespace O3DS
 			mTransforms.items.push_back(item);
 		}
 
-		void update()
+		void update(bool useWorldMatrix);
+		
+		size_t size()
 		{
-			for (auto i : mTransforms)
-			{
-				i->update();
-			}
+			return mTransforms.items.size();
 		}
-
-		size_t size() { return mTransforms.items.size(); }
 
 	};
 
@@ -138,11 +136,11 @@ namespace O3DS
 			return s;
 		}
 
-		void update()
+		void update(bool useMatrix)
 		{
 			for (auto i : items)
 			{
-				i->update();
+				i->update(useMatrix);
 			}
 		}
 		std::vector<Subject*> items;

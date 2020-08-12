@@ -55,29 +55,25 @@ server_cb(void *arg)
       fatal("nng_ctx_recv", rv);
     }
     msg = nng_aio_get_msg(work->aio);
-    if ((rv = nng_msg_trim_u32(msg, &when)) != 0) {
-      // bad message, just ignore it.
-      nng_msg_free(msg);
-      nng_ctx_recv(work->ctx, work->aio);
-      return;
-    }
     work->msg   = msg;	
-	printf("Message  %d\n", nng_msg_len(msg));
+	printf("Message  %zu\n", nng_msg_len(msg));
     work->state = WAIT;
-    nng_sleep_aio(when, work->aio);
+    //nng_sleep_aio(when, work->aio);
     break;
   case WAIT:
     // We could add more data to the message here.
     nng_aio_set_msg(work->aio, work->msg);
     work->msg   = NULL;
     work->state = SEND;
-    nng_ctx_send(work->ctx, work->aio);
+	printf("Wait  %zu\n", nng_msg_len(work->msg));
+	nng_ctx_send(work->ctx, work->aio);
     break;
   case SEND:
     if ((rv = nng_aio_result(work->aio)) != 0) {
       nng_msg_free(work->msg);
       fatal("nng_ctx_send", rv);
     }
+	printf("Send  %zu\n", nng_msg_len(work->msg));
     work->state = RECV;
     nng_ctx_recv(work->ctx, work->aio);
     break;
