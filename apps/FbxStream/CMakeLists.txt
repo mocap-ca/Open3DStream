@@ -30,7 +30,9 @@ include_directories(
 
 #FBX_PROJECT(FbxTest .)
 
-SET(FBX_TARGET_SOURCE main.cpp sender.cpp sender.h fbxloader.cpp fbxloader.h
+SET(FBX_TARGET_SOURCE main.cpp fbxloader.cpp fbxloader.h
+   ${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/broadcaster.h
+   ${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/broadcaster.cpp
    ${CMAKE_CURRENT_LIST_DIR}/../../src/get_time.h
    ${CMAKE_CURRENT_LIST_DIR}/../../src/get_time.cpp
    ${CMAKE_CURRENT_LIST_DIR}/../../src/Open3dStreamModel.h

@@ -1,5 +1,5 @@
-#ifndef FBX_STREAM_SENDER_H
-#define FBX_STREAM_SENDER_H
+#ifndef O3DS_SENDER_H
+#define O3DS_SENDER_H
 
 
 #include <nng/nng.h>

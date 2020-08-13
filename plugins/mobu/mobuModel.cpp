@@ -30,7 +30,7 @@ void MobuUpdater::update(O3DS::Transform *transform)
 		transform->mMatrix(j, 0) =  MobuTransform(j, 0);
 		transform->mMatrix(j, 1) = -MobuTransform(j, 1);
 		transform->mMatrix(j, 2) =  MobuTransform(j, 2);
-		transform->mMatrix(1, 3) =  MobuTransform(j, 3);
+		transform->mMatrix(j, 3) =  MobuTransform(j, 3);
 	}
 
 	for (int u = 0; u < 4; u++)

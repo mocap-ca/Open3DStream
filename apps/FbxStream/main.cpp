@@ -8,7 +8,7 @@ using namespace MyGame::Sample;
 #include "fbxloader.h"
 #include "Open3dStreamModel.h"
 #include "get_time.h"
-#include "sender.h"
+#include "o3ds/broadcaster.h"
 
 int main(int argc, char *argv[])
 {
@@ -42,10 +42,11 @@ int main(int argc, char *argv[])
 	}
 
 	// Connect 
-	Sender sender;
-	if (!sender.connect("tcp://localhost:5555"))
+	O3DS::Broadcaster broadcaster;
+
+	if (!broadcaster.start("tcp://localhost:5555", 20))
 	{
-		printf("Could not connect\n");
+		printf(broadcaster.mError.c_str());
 		return 1;
 	}
 
@@ -53,10 +54,8 @@ int main(int argc, char *argv[])
 
 	uint8_t buffer[1024 * 16];
 
+redo:
 	double zerof = GetTime() * 1000.;
-
-
-
 
 	bool first = true;
 
@@ -64,7 +63,7 @@ int main(int argc, char *argv[])
 	{
 		double tick = GetTime() * 1000. - zerof;
 		double delay = t.GetSecondDouble() * 1000 - tick;
-		printf("%f   %f   %f\n", tick, t.GetSecondDouble(), delay);
+		//printf("%f   %f   %f\n", tick, t.GetSecondDouble(), delay);
 
 		if (delay < 0) continue;
 
@@ -77,11 +76,12 @@ int main(int argc, char *argv[])
 
 
 		int ret = O3DS::Serialize(subjects, buffer, 1024 * 16, first);
-		first = false;
+		//first = false;
 		
 		if (ret > 0)
 		{
-			if (!sender.send(buffer, ret))
+			broadcaster.mSocket;
+			if (!broadcaster.send(buffer, ret))
 			{
 				printf("Could not send\n");
 				break;
@@ -89,14 +89,16 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			printf("No data returned\n");
+			//printf("No data returned\n");
 		}
 
-		printf("%d bytes\n", ret);
+		//printf("%d bytes\n", ret);
 
 		if (delay > 0)
 			Sleep(delay);
 	}
+
+	goto redo;
 
 
 	return 0;
