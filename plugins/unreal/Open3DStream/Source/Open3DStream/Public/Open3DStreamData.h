@@ -14,13 +14,13 @@ public:
 	
 	FOpen3DStreamData() = default;
 	
-	FOpen3DStreamData(const int& InPort, double InTimeOffset)
-		: Port(InPort)
+	FOpen3DStreamData(const FText& InUrl, double InTimeOffset)
+		: Url(InUrl)
 		, TimeOffset(InTimeOffset)
 	{}
 	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Open3DStream")
-	int				Port;
+	FText			Url;
 	
 	UPROPERTY()
 	double			TimeOffset;

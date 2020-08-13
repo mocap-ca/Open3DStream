@@ -1,5 +1,5 @@
 #include "SOpen3DStreamFactory.h"
-#include "Widgets/Input/SNumericEntryBox.h"
+#include "Widgets/Input/SEditableTextBox.h"
 
 #define LOCTEXT_NAMESPACE "Open3DStream"
 
@@ -8,7 +8,7 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 	//LastTickTime = 0.0;
 	OnSelectedEvent = Args._OnSelectedEvent;
 
-	mPort = 5566;
+	mUrl = LOCTEXT("Open3DStreamUrlValue", "tcp://localhost:5555");
 
 	ChildSlot
 	[
@@ -21,14 +21,14 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 			.FillWidth(0.5f)
 			[
 				SNew(STextBlock)
-				.Text(LOCTEXT("Open3DStreamPort", "Port1"))
+				.Text(LOCTEXT("Open3DStreamUrl", "Url"))
 			]
 			+ SHorizontalBox::Slot()
 			.FillWidth(0.5f)
 			[	
-			SNew(SNumericEntryBox<int>)
-			.Value(this, &SOpen3DStreamFactory::GetPort)
-			.OnValueChanged(this, &SOpen3DStreamFactory::SetPort)
+			SNew(SEditableTextBox)
+			.Text(this, &SOpen3DStreamFactory::GetUrl)
+			.OnTextChanged(this, &SOpen3DStreamFactory::SetUrl)
 			]
 		]
 		+ SVerticalBox::Slot()
@@ -54,7 +54,7 @@ FReply SOpen3DStreamFactory::OnSource()
 {
 	TSharedPtr<FOpen3DStreamData, ESPMode::ThreadSafe> Data = MakeShared<FOpen3DStreamData, ESPMode::ThreadSafe>();
 	Data->TimeOffset = 0;
-	Data->Port = mPort;
+	Data->Url = mUrl;
 	OnSelectedEvent.ExecuteIfBound(Data);
 	return FReply::Handled();
 }

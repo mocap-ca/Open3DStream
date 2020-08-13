@@ -1,4 +1,5 @@
 #include "Open3DTcpThread.h"
+#include "Runtime/Networking/Public/Common/TcpSocketBuilder.h"
 
 O3DS_TcpThread::O3DS_TcpThread(int port)
 : m_Port(port)

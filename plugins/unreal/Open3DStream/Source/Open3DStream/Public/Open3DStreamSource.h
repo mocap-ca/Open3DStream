@@ -5,15 +5,10 @@
 #include "ILiveLinkSource.h"
 #include "Containers/Ticker.h"
 
-#include "Runtime/Sockets/Public/Sockets.h"
-#include "Runtime/Networking/Public/Common/TcpSocketBuilder.h"
-#include "Runtime/Networking/Public/Interfaces/IPv4/IPv4Address.h"
-#include "Runtime/Networking/Public/Interfaces/IPv4/IPv4Endpoint.h"
-#include "Common/UdpSocketReceiver.h"
+//#include "Open3dTcp.h"
+//#include "Open3DBuffer.h"
 
-
-#include "Open3DBuffer.h"
-#include "Open3DTcpThread.h"
+#include "Open3DServer.h"
 
 #include "LiveLinkRole.h"
 
@@ -31,7 +26,7 @@ E:\Unreal\UE_4.25\Engine\Plugins\Animation\LiveLink\Source\LiveLink\Private\
 class OPEN3DSTREAM_API FOpen3DStreamSource : public ILiveLinkSource
 {
 public:
-	FOpen3DStreamSource(int InPort, double InTimeOffset);
+	FOpen3DStreamSource(const FText &InUrl, double InTimeOffset);
 	virtual ~FOpen3DStreamSource();
 
 	// ILiveLinkSource Overrides
@@ -50,23 +45,29 @@ public:
 	FGuid            SourceGuid;
 	TArray<FName>    InitializedSubjects;	
 	bool             bIsInitialized;
-	int              Port;
+	FText            Url;
 	float            TimeOffset;
 	double           ArrivalTimeOffset;
 
 	FThreadSafeBool  bIsValid;
-	bool             bUdp;
 
+	O3DS_Server server;
+	
 
-	Open3DBuffer     buffer;
-	uint8            temp_buffer[1024 * 12];
+	//bool             bUdp;
 
-	O3DS_TcpThread  *TcpThread;
-	FSocket         *UdpSocket;
-	FUdpSocketReceiver* Receiver;
+	//Open3DBuffer     buffer;
 
-	bool OnTcpData(FSocket *);
-	void OnUdpData(const FArrayReaderPtr&, const FIPv4Endpoint&);
+	// Tcp
+	//Open3dTCP       Tcp;
+
+	// Udp
+	//FSocket         *UdpSocket;
+	//FUdpSocketReceiver* Receiver;
+	//void OnUdpData(const FArrayReaderPtr&, const FIPv4Endpoint&);
+
+	void OnNnpData();
+
 	void OnPackage(uint8 *data, size_t sz);
 
 	FORCEINLINE void UpdateConnectionLastActive();

@@ -14,14 +14,15 @@ using namespace MyGame::Sample;
 // E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkTypes.h
 // E:\Unreal\UE_4.25\Engine\Plugins\Runtime\AR\Apple\AppleARKit\Source\AppleARKitPoseTrackingLiveLink\Private\AppleARKitPoseTrackingLiveLinkSource.cpp
 
-FOpen3DStreamSource::FOpen3DStreamSource(int InPort, double InTimeOffset)
+FOpen3DStreamSource::FOpen3DStreamSource(const FText &InUrl, double InTimeOffset)
 	: bIsInitialized(false)
-	, Port(InPort)
+	, Url(InUrl)
 	, TimeOffset(InTimeOffset)
 	, ArrivalTimeOffset(0.0)
 	, bIsValid(false)
-	, bUdp(true)
-	, TcpThread(nullptr)
+	//, bUdp(true)
+	//, Tcp(&buffer)
+
 {
 	SourceStatus = NSLOCTEXT("Open3DStream", "ConnctionStatus", "Inactive");
 	SourceType = NSLOCTEXT("Open3DStream", "ConnctionType", "Open 3D Stream");
@@ -29,10 +30,7 @@ FOpen3DStreamSource::FOpen3DStreamSource(int InPort, double InTimeOffset)
 }
 
 FOpen3DStreamSource::~FOpen3DStreamSource()
-{
-	if(TcpThread)
-		TcpThread->Stop();
-}
+{}
 
 void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourceGuid)
 {
@@ -41,11 +39,15 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 	SourceGuid = InSourceGuid;
 	bIsValid = true;
 
+	server.DataDelegate.BindRaw(this, &FOpen3DStreamSource::OnNnpData);
+	server.Start(TCHAR_TO_ANSI(*Url.ToString()));
+
 	/*for (const TSubclassOf<ULiveLinkRole>& RoleClass : FLiveLinkRoleTrait::GetRoles())
 	{
 		RoleInstances.Add(RoleClass->GetDefaultObject<ULiveLinkRole>());
 	}*/
 
+	/*
 	if (bUdp)
 	{
 		this->UdpSocket = FUdpSocketBuilder(TEXT("Open3DStreamUDP"))
@@ -61,14 +63,13 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 	}
 	else
 	{
-		this->TcpThread = new O3DS_TcpThread(Port);
-		this->TcpThread->DataDelegate.BindRaw(this, &FOpen3DStreamSource::OnTcpData);
-	}
+		this->Tcp.Start(Port);
+	}*/
 
 	UpdateConnectionLastActive();
 }
 
-
+/*
 void FOpen3DStreamSource::OnUdpData(const FArrayReaderPtr & reader, const FIPv4Endpoint &addr)
 {
 	int64 bytes = reader->TotalSize();
@@ -76,6 +77,14 @@ void FOpen3DStreamSource::OnUdpData(const FArrayReaderPtr & reader, const FIPv4E
 
 	uint8* data = reader->GetData();
 	OnPackage(data, bytes);
+}*/
+
+void FOpen3DStreamSource::OnNnpData()
+{
+	//this->server.mutex.Lock();
+	//OnPackage((uint8*)this->server.buffer, this->server.buflen);
+	//this->server.mutex.Unlock();
+
 }
 
 void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
@@ -107,7 +116,9 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 		auto names = subject->names();
 
 		if (names->size() == nodes->size())
+		{
 			BoneNames.Reserve(nodes->size());
+		}
 
 		BoneParents.Reserve(nodes->size());
 		BoneTransforms.Reserve(nodes->size());
@@ -124,7 +135,9 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 			FTransform t = FTransform::Identity;
 			t.SetTranslation(FVector(translation->x(), translation->y(), translation->z()));
 			//FQuat rot = FQuat::MakeFromEuler(FVector(rotation->x(), rotation->y(), rotation->z()));
-			t.SetRotation(FQuat(rotation->x(), rotation->y(), rotation->z(), rotation->w()));
+			FQuat q(rotation->x(), rotation->y(), rotation->z(), rotation->w());
+			q.Normalize();
+			t.SetRotation(q);
 
 			if (names->size() == nodes->size())
 			{
@@ -135,7 +148,7 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 			transforms.Emplace(t);
 		}
 
-		if (!bIsInitialized)
+		if (!bIsInitialized && BoneNames.Num() > 0)
 		{
 			FLiveLinkStaticDataStruct LiveLinkSkeletonStaticData;
 			LiveLinkSkeletonStaticData.InitializeWith(FLiveLinkSkeletonStaticData::StaticStruct(), nullptr);
@@ -157,45 +170,6 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 
 }
 
-bool FOpen3DStreamSource::OnTcpData(FSocket *TcpSource)
-{
-	// Returns true if the is no data or the data was processed okay
-	// Returns false if the data is wrong and the connection is closed
-
-	int32 bytesread = 0;
-
-	while (1)
-	{
-		TcpSource->Recv(temp_buffer, 1024 * 12, bytesread, ESocketReceiveFlags::None);
-
-		if (bytesread < 1)
-			return true;
-
-		buffer.push(temp_buffer, bytesread);
-
-		size_t blocksize = 0;
-
-		uint8 *ptr = 0;
-
-		while (1)
-		{
-			blocksize = buffer.pull(&ptr);
-
-			if (blocksize == 0)
-				break;
-
-			if (blocksize == (size_t)-1)
-			{
-				TcpSource->Close();
-				return false;
-			}
-			
-			buffer.punt();
-		}
-	}
-	return true;
-}
-
 bool FOpen3DStreamSource::RequestSourceShutdown()
 {
 	Client = nullptr;
@@ -207,6 +181,8 @@ bool FOpen3DStreamSource::RequestSourceShutdown()
 void FOpen3DStreamSource::Update()
 {
 	// Called during the game thread, return quickly.
+	if(server.Recv())
+		OnPackage((uint8*)(server.buffer.data()), server.buffer.size());
 }
 
 FORCEINLINE void FOpen3DStreamSource::UpdateConnectionLastActive()

@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	// Connect 
 	O3DS::Broadcaster broadcaster;
 
-	if (!broadcaster.start("tcp://localhost:5555", 20))
+	if (!broadcaster.start("tcp://localhost:6666", 20))
 	{
 		printf(broadcaster.mError.c_str());
 		return 1;
