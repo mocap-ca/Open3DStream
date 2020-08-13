@@ -39,6 +39,7 @@ bool O3DS::Broadcaster::send(void *data, size_t len)
 	{
 		setError("Error sending", ret);
 	}
+
 	return true;
 }
 

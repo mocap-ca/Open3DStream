@@ -76,11 +76,12 @@ redo:
 
 
 		int ret = O3DS::Serialize(subjects, buffer, 1024 * 16, first);
-		//first = false;
+		first = false;
 		
 		if (ret > 0)
 		{
-			broadcaster.mSocket;
+
+
 			if (!broadcaster.send(buffer, ret))
 			{
 				printf("Could not send\n");
