@@ -14,4 +14,17 @@ double GetTime()
 	return (double)StartTime.QuadPart / (double)Freq.QuadPart;
 }
 
+#else
+
+#include <time.h>
+
+double GetTime()
+{
+
+	timespec time1;
+	clock_gettime(CLOCK_MONOTONIC, &time1);
+
+	return (double)time1.tv_sec + (double)time1.tv_nsec * 1e-9f;
+}
+
 #endif

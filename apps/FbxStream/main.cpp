@@ -3,7 +3,9 @@
 #include "schema_generated.h"
 using namespace MyGame::Sample;
 
-#include "windows.h"
+#include <iostream>
+#include <chrono>
+#include <thread>
 
 #include "fbxloader.h"
 #include "Open3dStreamModel.h"
@@ -13,13 +15,17 @@ using namespace MyGame::Sample;
 int main(int argc, char *argv[])
 {
 
+	if(argc != 3)
+	{
+		fprintf(stderr, "%s file.fbx url\n", argv[0]);
+		return 1;
+	}
+
 	O3DS::SubjectList subjects;
 
 	O3DS::TimeInfo time_info;
 
-	const char *file_path = "E:\\git\\github\\Open3DStream\\test_data\\beta_anim.fbx";
-
-	Load(file_path, subjects, time_info);
+	Load(argv[1], subjects, time_info);
 
 	subjects.update(true);
 
@@ -44,7 +50,7 @@ int main(int argc, char *argv[])
 	// Connect 
 	O3DS::Broadcaster broadcaster;
 
-	if (!broadcaster.start("tcp://localhost:6666", 20))
+	if (!broadcaster.start(argv[2], 20))
 	{
 		printf(broadcaster.mError.c_str());
 		return 1;
@@ -55,15 +61,15 @@ int main(int argc, char *argv[])
 	uint8_t buffer[1024 * 16];
 
 redo:
-	double zerof = GetTime() * 1000.;
+	double zerof = GetTime();
 
 	bool first = true;
 
 	for (FbxTime t = time_info.Start; t < time_info.End; t = t + time_info.Inc)
 	{
-		double tick = GetTime() * 1000. - zerof;
-		double delay = t.GetSecondDouble() * 1000 - tick;
-		//printf("%f   %f   %f\n", tick, t.GetSecondDouble(), delay);
+		double tick = GetTime() - zerof;
+		int delay = (int)((t.GetSecondDouble() - tick) * 1000.f);
+		printf("%f    %f   %f   %d\n", GetTime(), tick, t.GetSecondDouble(), delay);
 
 		if (delay < 0) continue;
 
@@ -96,7 +102,7 @@ redo:
 		//printf("%d bytes\n", ret);
 
 		if (delay > 0)
-			Sleep(delay);
+			std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 	}
 
 	goto redo;

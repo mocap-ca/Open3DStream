@@ -3,6 +3,7 @@
 
 #include "Open3dStreamModel.h"
 #include <fbxsdk.h>
+#include <string>
 
 namespace O3DS
 {

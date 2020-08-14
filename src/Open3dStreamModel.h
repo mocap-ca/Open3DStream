@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "o3ds/math.h"
+#include <string>
 
 namespace O3DS
 {

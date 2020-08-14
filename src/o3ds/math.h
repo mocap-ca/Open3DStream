@@ -23,6 +23,8 @@ SOFTWARE.
 #ifndef O3DS_MATRIX_H
 #define O3DS_MATRIX_H
 
+#include <math.h>
+
 namespace O3DS
 {
 
