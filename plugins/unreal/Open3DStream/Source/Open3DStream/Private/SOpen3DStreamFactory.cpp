@@ -8,7 +8,7 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 	//LastTickTime = 0.0;
 	OnSelectedEvent = Args._OnSelectedEvent;
 
-	mUrl = LOCTEXT("Open3DStreamUrlValue", "tcp://localhost:5555");
+	mUrl = LOCTEXT("Open3DStreamUrlValue", "tcp://3.131.65.210:6000");
 
 	ChildSlot
 	[
