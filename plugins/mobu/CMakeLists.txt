@@ -7,8 +7,8 @@ include_directories("C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK
 
 link_directories("C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK/lib/x64")
 
-add_library(O3DSDevice SHARED ${SRCS} )
+add_library(O3DSMobuDevice SHARED ${SRCS} )
 
-target_link_libraries(O3DSDevice fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib open3dstreamstatic ${libs})
+target_link_libraries(O3DSMobuDevice  fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib open3dstreamstatic ${libs})
 
-install(TARGETS O3DSDevice DESTINATION "C:/Program Files/Autodesk/MotionBuilder 2020/bin/x64/plugins")
+install(TARGETS O3DSMobuDevice DESTINATION "C:/Program Files/Autodesk/MotionBuilder 2020/bin/x64/plugins")

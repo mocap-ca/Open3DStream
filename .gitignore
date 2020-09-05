@@ -1,4 +1,5 @@
-plugins/mobu/build`
+include
+lib
 
 # Visual Studio 2015 user specific files
 .vs/

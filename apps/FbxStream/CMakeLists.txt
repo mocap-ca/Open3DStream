@@ -14,9 +14,11 @@ endif()
 if(WIN32)
 	link_directories(${CMAKE_CURRENT_LIST_DIR}/../../lib)
 	set(fbxroot "C:/Program Files/Autodesk/FBX/FBX SDK/2020.0.1") 
-	#include("${fbxroot}/samples/CMakeSettings.txt")
-	set(fbxinclude "${fbxroot}/include")
+	include_directories("${fbxroot}/include")
 	add_definitions(-DNNG_STATIC_LIB )
+
+	# This will only work with newer versions of visual studio (untested)
+	# https://cmake.org/cmake/help/git-stage/prop_tgt/VS_DEBUGGER_COMMAND_ARGUMENTS.html
 	set(VS_DEBUGGER_COMMAND_ARGUMENTS ${CMAKE_CURRENT_LIST_DIR}../../test_data/beta_fight.fbx tcp://127.0.0.1:7000)
 
 	# As we are adding full paths to the debug/release fbx libs, we need to set the CMP0003 policy
@@ -31,28 +33,9 @@ if(WIN32)
 	set(MSVC_VERSION "1911")
 endif()
 
-include_directories(
-        ${fbxinclude}
-	"${CMAKE_CURRENT_LIST_DIR}/../../src"
-	"${CMAKE_CURRENT_LIST_DIR}/../../include"
-	${CMAKE_CURRENT_LIST_DIR}/../../protocol
-	)
+add_executable(FbxStream main.cpp fbxloader.cpp fbxloader.h)
 
-
-#FBX_PROJECT(FbxTest .)
-
-add_executable(
-	FbxStream
-   main.cpp fbxloader.cpp fbxloader.h
-   ${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/broadcaster.h
-   ${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/broadcaster.cpp
-   ${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/getTime.h
-   ${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/getTime.cpp
-   ${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/model.h
-   ${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/model.cpp   
-)
-
-target_link_libraries(FbxStream PRIVATE ${libs} )
+target_link_libraries(FbxStream PRIVATE ${libs} open3dstreamstatic)
 
 add_custom_command(TARGET FbxStream POST_BUILD       
     COMMAND ${CMAKE_COMMAND} -E copy_if_different  
