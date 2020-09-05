@@ -22,20 +22,8 @@ add_custom_command(
 )
 
 add_custom_target(protocol DEPENDS ${schema_out})
-          
+        
+add_subdirectory(apps/FbxStream)
 add_subdirectory(src)     
 add_subdirectory(plugins/mobu)
 
-# add_dependencies(open3dstream protocol)
-									  								  
-#add_executable(fbx_streamer {CMAKE_CURRENT_LIST_DIR}/apps/FbxStream/main.cpp
-#	{CMAKE_CURRENT_LIST_DIR}/apps/FbxStream/fbxloader.cpp)
-
-
-#target_link_libraries(fbx_streamer PRIVATE ${libs}
-#	debug ${CMAKE_CURRENT_SOURCE_DIR}/../fbxsdk/lib/gcc4/x64/debug/fbxsdk.a
-#	optimized ${CMAKE_CURRENT_SOURCE_DIR}/../fbxsdk/lib/gcc4/x64/release/fbxsdk.a)
-
-#target_link_libraries(o3ds_pingServer PRIVATE ${libs})
-										   
-#target_link_libraries(o3ds_ping PRIVATE ${libs})
