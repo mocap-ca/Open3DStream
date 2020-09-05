@@ -20,9 +20,6 @@ FOpen3DStreamSource::FOpen3DStreamSource(const FText &InUrl, double InTimeOffset
 	, TimeOffset(InTimeOffset)
 	, ArrivalTimeOffset(0.0)
 	, bIsValid(false)
-	//, bUdp(true)
-	//, Tcp(&buffer)
-
 {
 	SourceStatus = NSLOCTEXT("Open3DStream", "ConnctionStatus", "Inactive");
 	SourceType = NSLOCTEXT("Open3DStream", "ConnctionType", "Open 3D Stream");
@@ -42,42 +39,8 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 	server.DataDelegate.BindRaw(this, &FOpen3DStreamSource::OnNnpData);
 	server.Start(TCHAR_TO_ANSI(*Url.ToString()));
 
-	/*for (const TSubclassOf<ULiveLinkRole>& RoleClass : FLiveLinkRoleTrait::GetRoles())
-	{
-		RoleInstances.Add(RoleClass->GetDefaultObject<ULiveLinkRole>());
-	}*/
-
-	/*
-	if (bUdp)
-	{
-		this->UdpSocket = FUdpSocketBuilder(TEXT("Open3DStreamUDP"))
-			.AsNonBlocking()
-			.AsReusable()
-			.BoundToAddress(FIPv4Address::Any)
-			.BoundToPort(Port)
-			.Build();
-
-		Receiver = new FUdpSocketReceiver(this->UdpSocket, FTimespan::FromMilliseconds(100), TEXT("Open3DStreamUDPListener"));
-		Receiver->OnDataReceived().BindRaw(this, &FOpen3DStreamSource::OnUdpData);
-		Receiver->Start();
-	}
-	else
-	{
-		this->Tcp.Start(Port);
-	}*/
-
 	UpdateConnectionLastActive();
 }
-
-/*
-void FOpen3DStreamSource::OnUdpData(const FArrayReaderPtr & reader, const FIPv4Endpoint &addr)
-{
-	int64 bytes = reader->TotalSize();
-	if (bytes < 1) return;
-
-	uint8* data = reader->GetData();
-	OnPackage(data, bytes);
-}*/
 
 void FOpen3DStreamSource::OnNnpData()
 {

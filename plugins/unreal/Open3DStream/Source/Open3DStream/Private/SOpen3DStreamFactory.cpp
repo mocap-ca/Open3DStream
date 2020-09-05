@@ -8,7 +8,8 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 	//LastTickTime = 0.0;
 	OnSelectedEvent = Args._OnSelectedEvent;
 
-	mUrl = LOCTEXT("Open3DStreamUrlValue", "tcp://3.131.65.210:6000");
+	//mUrl = LOCTEXT("Open3DStreamUrlValue", "tcp://3.131.65.210:6000");
+	mUrl = LOCTEXT("Open3DStreamUrlValue", "tcp://127.0.0.1:6000");
 
 	ChildSlot
 	[
@@ -18,13 +19,14 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 		[
 			SNew(SHorizontalBox)
 			+ SHorizontalBox::Slot()
-			.FillWidth(0.5f)
+			.FillWidth(0.3f)
 			[
 				SNew(STextBlock)
 				.Text(LOCTEXT("Open3DStreamUrl", "Url"))
+				.MinDesiredWidth(170)
 			]
 			+ SHorizontalBox::Slot()
-			.FillWidth(0.5f)
+			.FillWidth(0.7f)
 			[	
 			SNew(SEditableTextBox)
 			.Text(this, &SOpen3DStreamFactory::GetUrl)
@@ -39,7 +41,7 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 			.Content()
 			[
 				SNew(STextBlock)
-				.MinDesiredWidth(150)
+				.MinDesiredWidth(100)
 				.Justification(ETextJustify::Center)
 				.Text(LOCTEXT("OkayButton", "Okay"))
 			]

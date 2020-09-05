@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
+using System.IO;
 
 public class Open3DStream : ModuleRules
 {
@@ -8,30 +9,20 @@ public class Open3DStream : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
-		PublicIncludePaths.AddRange(
-			new string[] {
-				// ... add public include paths required here ...
-			}
-			);
-				
+		PublicIncludePaths.AddRange( new string[] {} );
 		
-		PrivateIncludePaths.AddRange(
-			new string[] {
-				// ... add other private include paths required here ...
-			}
-			);
-			
+		string LibDir = Path.GetFullPath(Path.Combine(ModuleDirectory, "../../lib/"));
+	
+		PrivateIncludePaths.AddRange( new string[] 
+        { LibDir + "include" } );
 		
-		PublicDependencyModuleNames.AddRange(
-			new string[]
-			{
-				"Core",
-				// ... add other public dependencies that you statically link with here ...
-			}
-			);
-			
-		
-		PrivateDependencyModuleNames.AddRange(
+		PublicDependencyModuleNames.AddRange( new string[] { "Core" } );
+
+        PublicAdditionalLibraries.Add(LibDir + "nng.lib");
+
+        PublicDefinitions.Add("NNG_STATIC_LIB");
+
+        PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
 				"CoreUObject",
@@ -41,17 +32,13 @@ public class Open3DStream : ModuleRules
                 "LiveLinkInterface",
                 "Networking",
                 "Sockets",
-                "InputCore"
+                "InputCore",
+                "Networking",
+                "Sockets",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
-		
-		
-		DynamicallyLoadedModuleNames.AddRange(
-			new string[]
-			{
-				// ... add any modules that your module loads dynamically here ...
-			}
-			);
+				
+		DynamicallyLoadedModuleNames.AddRange( new string[] {} );
 	}
 }

@@ -5,9 +5,6 @@
 #include "ILiveLinkSource.h"
 #include "Containers/Ticker.h"
 
-//#include "Open3dTcp.h"
-//#include "Open3DBuffer.h"
-
 #include "Open3DServer.h"
 
 #include "LiveLinkRole.h"
@@ -52,19 +49,6 @@ public:
 	FThreadSafeBool  bIsValid;
 
 	O3DS_Server server;
-	
-
-	//bool             bUdp;
-
-	//Open3DBuffer     buffer;
-
-	// Tcp
-	//Open3dTCP       Tcp;
-
-	// Udp
-	//FSocket         *UdpSocket;
-	//FUdpSocketReceiver* Receiver;
-	//void OnUdpData(const FArrayReaderPtr&, const FIPv4Endpoint&);
 
 	void OnNnpData();
 
@@ -79,7 +63,6 @@ public:
 		return Client != nullptr && bIsValid;
 	}
 
-	//TArray<TWeakObjectPtr<ULiveLinkRole>> RoleInstances;
 	virtual void Update() override;
 
 
