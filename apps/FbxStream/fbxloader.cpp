@@ -152,10 +152,6 @@ namespace O3DS
 		}
 	}
 
-
-
-
-
 	int Load(const char *file_path, O3DS::SubjectList& subjects, TimeInfo &time_info)
 	{
 		// Init - Create the manager

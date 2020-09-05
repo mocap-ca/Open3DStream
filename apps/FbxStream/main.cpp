@@ -8,8 +8,8 @@ using namespace MyGame::Sample;
 #include <thread>
 
 #include "fbxloader.h"
-#include "Open3dStreamModel.h"
-#include "get_time.h"
+#include "o3ds/model.h"
+#include "o3ds/getTime.h"
 #include "o3ds/broadcaster.h"
 
 int main(int argc, char *argv[])

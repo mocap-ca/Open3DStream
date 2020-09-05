@@ -1,4 +1,4 @@
-#include "get_time.h"
+#include "getTime.h"
 
 #ifdef _WIN32
 #include <windows.h>

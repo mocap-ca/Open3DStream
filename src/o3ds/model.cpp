@@ -1,7 +1,7 @@
-#include "Open3dStreamModel.h"
+#include "model.h"
 
 #include "schema_generated.h"
-#include "get_time.h"
+#include "getTime.h"
 
 using namespace MyGame::Sample;
 
@@ -26,8 +26,13 @@ int O3DS::Serialize(SubjectList &data, uint8_t *outbuf, int buflen, bool add_nam
 			if (add_names)
 				name_list.push_back(builder.CreateString(t->mName));
 
-			auto tr = MyGame::Sample::Translation(t->mTranslation[0], t->mTranslation[1], t->mTranslation[2]);
-			auto ro = MyGame::Sample::Rotation(t->mOrientation[0], t->mOrientation[1], t->mOrientation[2], t->mOrientation[3]);
+			auto tr = MyGame::Sample::Translation((float)t->mTranslation[0], 
+				(float)t->mTranslation[1], 
+				(float)t->mTranslation[2]);
+			auto ro = MyGame::Sample::Rotation((float)t->mOrientation[0], 
+				(float)t->mOrientation[1], 
+				(float)t->mOrientation[2], 
+				(float)t->mOrientation[3]);
 			skeleton.push_back(CreateTransform(builder, &tr, &ro, t->mParentId));
 		}
 
@@ -56,21 +61,28 @@ int O3DS::Serialize(SubjectList &data, uint8_t *outbuf, int buflen, bool add_nam
 
 void O3DS::Subject::update(bool useWorldMatrix)
 {
-	for (auto i : mTransforms)
+	for (auto transform : mTransforms)
 	{
-		i->update();
+		transform->update();
 	}
+
 
 	if (useWorldMatrix)
 	{
+		for (auto transform : mTransforms)
+		{
+			if (transform->mParentId >= 0)
+			{
+				transform->mParentInverseMatrix = mTransforms.items[transform->mParentId]->mMatrix.Inverse();
+			}
+		}
+
 		for (auto i : mTransforms)
 		{
 			O3DS::Matrix<double> transformMatrix;
 			if (i->mParentId >= 0)
 			{
-				Transform *parentTransform = mTransforms.items[i->mParentId];
-				O3DS::Matrix<double> parentInverse = parentTransform->mMatrix.Inverse();
-				transformMatrix = i->mMatrix * parentInverse ;
+				transformMatrix = i->mMatrix * i->mParentInverseMatrix;
 			}
 			else
 			{

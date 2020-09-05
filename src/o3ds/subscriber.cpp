@@ -1,41 +1,46 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string>
 #include <time.h>
 
-#include "Client.h"
+#include "subscriber.h"
 
-O3DS::Suscriber::Suscriber()
+O3DS::Subscriber::Subscriber()
 {}
 
-bool O3DS::Suscriber::connect(const char *url)
+bool O3DS::Subscriber::connect(const char *url)
 {
 	int ret;
 
-	if ((ret = nng_req0_open(&mSocket)) != 0)
+	ret = nng_req0_open(&mSocket);
+	if (ret != 0)
 	{
 		mError = std::string("nng_req0_open: %s\n") + nng_strerror(ret);
 		return false;
 	}
 
-	if ((ret = nng_dial(mSocket, url, NULL, 0)) != 0)
+	ret = nng_dial(mSocket, url, NULL, 0);
+	if (ret != 0)
 	{
 		mError = std::string("nng_dial: %s\n") + nng_strerror(ret);
 		return false;
 	}
 
-	if ((ret = nng_aio_alloc(&aio, O3DS::Suscriber::Callback, this) != 0)
+	ret = nng_aio_alloc(&aio, O3DS::Subscriber::Callback, this);
+	if(ret != 0)
 	{
 		mError = std::string("nng_aio_alloc: %s\n") + nng_strerror(ret);
 		return false;
 	}
 
-	if ((ret = nng_ctx_open(&ctx, mSocket) != 0)
+	ret = nng_ctx_open(&ctx, mSocket);
+	if (ret != 0)
 	{
 		mError = std::string("nng_ctx_open: %s\n") + nng_strerror(ret);
 		return false;
 	}
+	return true;
 }
 
 void O3DS::Subscriber::Callback_()
@@ -54,14 +59,14 @@ void O3DS::Subscriber::Callback_()
 
 	void *data = nng_msg_body(msg);
 
-	in_data(const char *data, size_t len);
+	in_data((const char*)data, len);
 
 	nng_msg_free(msg);
 
 	nng_ctx_recv(ctx, aio);
 }
 
-bool Subscriber::send(void *data, size_t len)
+bool O3DS::Subscriber::send(void *data, size_t len)
 {
 	nng_msg *msg = nullptr;
 	int ret;

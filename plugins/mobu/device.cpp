@@ -1,4 +1,7 @@
 #include "device.h"
+#include "o3ds/math.h"
+#include "o3ds/broadcaster.h"
+
 
 #define OPEN3D_DEVICE__CLASS	OPEN3D_DEVICE__CLASSNAME
 #define OPEN3D_DEVICE__NAME	OPEN3D_DEVICE__CLASSSTR
@@ -149,6 +152,21 @@ bool Open3D_Device::Start()
 		return false;
 	}
 
+	if (mProtocol == Open3D_Device::kNNGBroadcast)
+	{
+		if (mBroadcaster.start(mNetworkAddress, 20))
+		{
+			Status = "Broadcast OK";
+			return true;
+		}
+		else
+		{
+			Status = mBroadcaster.mError.c_str();
+			return false;
+		}
+
+	}
+
 	Status = "INVALID";
 	return true;
 }
@@ -198,20 +216,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 	{
 		if (mNetworkSocket != -1)
 		{
-			for (auto subject : Items)
-			{
-				// Update the transforms
-
-				for (O3DS::Transform* transform : subject->mTransforms)
-				{
-					transform->update();
-					if (transform->mParentId >= 0)
-					{
-						cml::matrix44d m(subject->mTransforms.items[transform->mParentId]->mMatrix);
-						transform->mParentInverseMatrix = cml::inverse(m);
-					}
-				}
-			}
+			Items.update(true);
 
 			int32_t bucket_size = O3DS::Serialize(Items, buf, 1024 * 12, true);
 			if (bucket_size == 0)
@@ -257,6 +262,11 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				std::ostringstream oss;
 				oss << written << " bytes";
 				Status = oss.str().c_str();
+			}
+
+			if (mProtocol == Open3D_Device::kNNGBroadcast)
+			{
+				mBroadcaster.send(buf, bucket_size);
 			}
 		}
 	}

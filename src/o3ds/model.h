@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "o3ds/math.h"
+#include "math.h"
 #include <string>
 
 namespace O3DS
@@ -46,6 +46,7 @@ namespace O3DS
 		void update() { if(mVisitor) mVisitor->update(this); }
 
 		O3DS::Matrix<double> mMatrix;
+		O3DS::Matrix<double> mParentInverseMatrix;
 
 		O3DS::Vector<double>  mTranslation;
 		O3DS::Vector<double>  mOrientation;
@@ -68,6 +69,7 @@ namespace O3DS
 		}
 
 		size_t size() { return items.size(); }
+		void clear() { items.clear();  }
 		std::vector <Transform*>::iterator begin() { return items.begin(); }
 		std::vector <Transform*>::iterator end() { return items.end(); }
 
@@ -110,6 +112,11 @@ namespace O3DS
 		}
 
 		void update(bool useWorldMatrix);
+
+		void clear()
+		{
+			mTransforms.clear();
+		}
 		
 		size_t size()
 		{

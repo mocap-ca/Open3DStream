@@ -1,7 +1,7 @@
 #ifndef FBXLOADER_H
 #define FBXLOADER_H
 
-#include "Open3dStreamModel.h"
+#include "o3ds/model.h"
 #include <fbxsdk.h>
 #include <string>
 

@@ -1,24 +1,14 @@
-	cmake_minimum_required (VERSION 2.8.11)
-project(StreamDevice)
+cmake_minimum_required (VERSION 2.8.11)
+project(MobuStreamDevice)
 
+set(SRCS plugin.cpp layout.cpp device.cpp device.h layout.h mobuModel.cpp mobuModel.cpp)
 
-set(SRCS plugin.cpp layout.cpp device.cpp device.h layout.h mobuModel.cpp mobuModel.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/../../src/Open3DStreamModel.cpp
-	${CMAKE_CURRENT_LIST_DIR}/../../src/Open3DStreamModel.h
-	${CMAKE_CURRENT_LIST_DIR}/../../src/get_time.cpp
-	${CMAKE_CURRENT_LIST_DIR}/../../src/get_time.h
-)
-
-include_directories("C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK/include"
-				"${CMAKE_CURRENT_LIST_DIR}/../../include"
-				"${CMAKE_CURRENT_LIST_DIR}/../../src"
-				"${CMAKE_CURRENT_LIST_DIR}/../../thirdparty/cml"
-				)
+include_directories("C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK/include")
 
 link_directories("C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK/lib/x64")
 
-add_library(StreamDevice SHARED ${SRCS} )
+add_library(O3DSDevice SHARED ${SRCS} )
 
-target_link_libraries(StreamDevice fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib)
+target_link_libraries(O3DSDevice fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib open3dstreamstatic ${libs})
 
-install(TARGETS StreamDevice DESTINATION "C:/Program Files/Autodesk/MotionBuilder 2020/bin/x64/plugins")
+install(TARGETS O3DSDevice DESTINATION "C:/Program Files/Autodesk/MotionBuilder 2020/bin/x64/plugins")

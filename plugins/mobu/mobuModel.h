@@ -4,7 +4,7 @@
 #include <fbsdk/fbsdk.h>
 #include <vector>
 
-#include "Open3dStreamModel.h"
+#include "o3ds/model.h"
 
 class MobuUpdater : public O3DS::Updater
 {

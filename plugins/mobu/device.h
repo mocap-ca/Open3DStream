@@ -4,6 +4,7 @@
 #include <fbsdk/fbsdk.h>
 #include <vector>
 #include "mobuModel.h"
+#include "o3ds/broadcaster.h"
 
 
 #define OPEN3D_DEVICE__CLASSNAME	Open3D_Device
@@ -18,7 +19,8 @@ public:
 	typedef enum eProtocols {
 		kUDP = 0,
 		kTCPServer,
-		kTCPClient
+		kTCPClient,
+		kNNGBroadcast
 	} TProtocol;
 
 
@@ -59,6 +61,9 @@ public:
 	O3DS::SubjectList Items;
 
 	FBTCPIP      mTcpIp;
+
+	O3DS::Broadcaster mBroadcaster;
+
 	
 	int          mNetworkSocket;
 

@@ -8,17 +8,18 @@
 namespace O3DS
 {
 	// The client pulls data down from a listen server
-	class Suscriber
+	class Subscriber
 	{
 	public:
-		Suscriber();
-		~Suscriber() { nng_close(mSocket); }
+		Subscriber();
+		~Subscriber() { nng_close(mSocket); }
 		bool connect(const char*url);
 
-		static void Callback(void *ref) { (Suscriber*)ref->Callback(); }
+		static void Callback(void *ref) { ((Subscriber*)ref)->Callback_(); }
 		void Callback_();
 
-		virtual in_data(const char *msg, size_t len) = 0; 
+		virtual void in_data(const char *msg, size_t len) = 0; 
+		bool send(void *data, size_t len);
 
 		nng_socket mSocket;
 		nng_aio *aio;

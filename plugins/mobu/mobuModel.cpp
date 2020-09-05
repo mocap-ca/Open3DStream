@@ -8,6 +8,7 @@
 
 void MobuUpdater::update(O3DS::Transform *transform)
 {
+	// Udpates mMatrix only
 	FBMatrix MobuTransform;
 	mModel->GetMatrix(MobuTransform, kModelTransformation, true, nullptr);
 
@@ -15,8 +16,6 @@ void MobuUpdater::update(O3DS::Transform *transform)
 	FBRVector RotOffset(90, 0, 0);
 	FBRotationToMatrix(MatOffset, RotOffset);
 	FBMatrixMult(MobuTransform, MatOffset, MobuTransform);
-
-	double ret[16];
 
 	transform->mMatrix(1,0) = -MobuTransform(1, 0);
 	transform->mMatrix(1,1) =  MobuTransform(1, 1);
@@ -33,20 +32,22 @@ void MobuUpdater::update(O3DS::Transform *transform)
 		transform->mMatrix(j, 3) =  MobuTransform(j, 3);
 	}
 
-	for (int u = 0; u < 4; u++)
-		for (int v = 0; v < 4; v++)
-			transform->mMatrix(u, v) = ret[u + v * 4];
-
 }
 
 void TraverseSubject(O3DS::Subject *subject, FBModel *model, int parentId)
 {
 	if (model == nullptr) return;
 
+	if (parentId == -1)
+	{
+		// Clear the subject list when starting
+		subject->clear();
+	}
+
 	std::string name = model->Name.operator const char *();
 	subject->addTransform(name, parentId, new MobuUpdater(model));
 
-	int nextId = subject->size() - 1;
+	int nextId = (int)subject->size() - 1;
 
 	for (int i = 0; i < model->Children.GetCount(); i++)
 	{
