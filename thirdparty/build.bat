@@ -1,6 +1,6 @@
 @ECHO OFF
 
-CALL bin\build_env.bat
+CALL ..\bin\build_env.bat
 
 if NOT EXIST flatbuffers\CMakeLists.txt git submodule init
 if NOT EXIST nng\CMakeLists.txt git submodule init
