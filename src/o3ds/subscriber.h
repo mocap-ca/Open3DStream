@@ -1,36 +1,27 @@
-#ifndef O3DS_CLIENT_H
-#define O3DS_CLIENT_H
+#pragma once
 
 #include <nng/nng.h>
-#include <nng/protocol/reqrep0/req.h>
-#include <nng/supplemental/util/platform.h>
+#include <nng/protocol/pubsub0/pub.h>
+#include <nng/protocol/pubsub0/sub.h>
 
+#include <vector>
 namespace O3DS
 {
-	// The client pulls data down from a listen server
-	class Subscriber
-	{
-	public:
-		Subscriber();
-		~Subscriber() { nng_close(mSocket); }
-		bool connect(const char*url);
 
-		static void Callback(void *ref) { ((Subscriber*)ref)->Callback_(); }
-		void Callback_();
+class Subscriber
+{
+public:
+	Subscriber();
 
-		virtual void in_data(const char *msg, size_t len) = 0; 
-		bool send(void *data, size_t len);
+	bool Start(const char *url);
+	bool Recv(char *data, size_t &len);
 
-		nng_socket mSocket;
-		nng_aio *aio;
-		nng_ctx  ctx;
+	nng_socket mSocket;
 
-		std::string mError;
+	nng_aio *aio;
+	nng_ctx  ctx;
 
-	};
+};
 
+} // namespace
 
-}
-
-
-#endif

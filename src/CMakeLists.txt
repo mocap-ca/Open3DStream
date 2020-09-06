@@ -8,6 +8,7 @@ project(Open3DStreamLib)
 set(SOURCES 
 	o3ds/getTime.cpp
 	o3ds/subscriber.cpp
+	o3ds/async_subscriber.cpp
 	o3ds/broadcaster.cpp
 	o3ds/model.cpp
 	)
@@ -24,3 +25,5 @@ set(libs wsock32 ws2_32 debug flatbuffersd optimized flatbuffers debug nngd opti
 add_library(open3dstreamstatic STATIC ${SOURCES})
 target_link_libraries(open3dstreamstatic PRIVATE ${libs})        
 add_dependencies(open3dstreamstatic protocol)
+
+install(TARGETS open3dstreamstatic DESTINATION ${CMAKE_CURRENT_LIST_DIR}/../lib)

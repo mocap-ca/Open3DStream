@@ -1,94 +1,46 @@
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string>
-#include <time.h>
-
 #include "subscriber.h"
 
-O3DS::Subscriber::Subscriber()
+
+namespace O3DS
+{
+
+Subscriber::Subscriber()
 {}
 
-bool O3DS::Subscriber::connect(const char *url)
+
+bool Subscriber::Start(const char *url)
 {
 	int ret;
 
-	ret = nng_req0_open(&mSocket);
-	if (ret != 0)
-	{
-		mError = std::string("nng_req0_open: %s\n") + nng_strerror(ret);
-		return false;
-	}
+	ret = nng_sub0_open(&mSocket);
+	if (ret != 0) { return false; }
 
 	ret = nng_dial(mSocket, url, NULL, 0);
-	if (ret != 0)
-	{
-		mError = std::string("nng_dial: %s\n") + nng_strerror(ret);
-		return false;
-	}
+	if (ret != 0) { return false; }
 
-	ret = nng_aio_alloc(&aio, O3DS::Subscriber::Callback, this);
-	if(ret != 0)
-	{
-		mError = std::string("nng_aio_alloc: %s\n") + nng_strerror(ret);
-		return false;
-	}
+	ret = nng_setopt(mSocket, NNG_OPT_SUB_SUBSCRIBE, "", 0);
+	if (ret != 0) { return false; }
 
-	ret = nng_ctx_open(&ctx, mSocket);
-	if (ret != 0)
-	{
-		mError = std::string("nng_ctx_open: %s\n") + nng_strerror(ret);
-		return false;
-	}
 	return true;
 }
 
-void O3DS::Subscriber::Callback_()
+bool Subscriber::Recv(char *data, size_t &len)
 {
 	nng_msg *msg;
-
 	int ret;
-
-	ret = nng_aio_result(aio);
-	if (ret != 0) return;
-
-	msg = nng_aio_get_msg(aio);
-
-	size_t len = nng_msg_len(msg);
-	if (len == 0) return;
-
-	void *data = nng_msg_body(msg);
-
-	in_data((const char*)data, len);
-
-	nng_msg_free(msg);
-
-	nng_ctx_recv(ctx, aio);
-}
-
-bool O3DS::Subscriber::send(void *data, size_t len)
-{
-	nng_msg *msg = nullptr;
-	int ret;
-
-	if ((ret = nng_msg_alloc(&msg, 0)) != 0)
-	{
-		fprintf(stderr, "nng_msg_alloc: %s\n", nng_strerror(ret));
+	if ((ret = nng_recvmsg(mSocket, &msg, 0)) != 0) {
 		return false;
 	}
 
-	if ((ret = nng_msg_append(msg, data, len)) != 0)
-	{
-		fprintf(stderr, "nng_msg_append: %s\n", nng_strerror(ret));
+	size_t datalen = nng_msg_len(msg);
+	if (datalen > len)
 		return false;
-	}
-
-	if ((ret = nng_sendmsg(mSocket, msg, 0)) != 0) {
-		fprintf(stderr, "nng_sendmsg: %s\n", nng_strerror(ret));
-		return false;
-	}
+	len = datalen;
+	memcpy(data, nng_msg_body(msg), len);
 
 	nng_msg_free(msg);
 	return true;
 }
 
+
+}
