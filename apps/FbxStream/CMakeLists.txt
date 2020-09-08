@@ -37,7 +37,9 @@ add_executable(FbxStream main.cpp fbxloader.cpp fbxloader.h)
 
 target_link_libraries(FbxStream PRIVATE ${libs} open3dstreamstatic)
 
+if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
 add_custom_command(TARGET FbxStream POST_BUILD       
     COMMAND ${CMAKE_COMMAND} -E copy_if_different  
         ${fbxroot}/lib/vs2017/x64/$<CONFIGURATION>/libfbxsdk.dll     
         $<TARGET_FILE_DIR:FbxStream>)   
+endif()

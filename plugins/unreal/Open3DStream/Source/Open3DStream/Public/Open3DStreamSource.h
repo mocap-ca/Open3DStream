@@ -48,7 +48,7 @@ public:
 
 	FThreadSafeBool  bIsValid;
 
-	O3DS_Server server;
+	USubscriber server;
 
 	void OnNnpData();
 

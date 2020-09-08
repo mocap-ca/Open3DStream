@@ -1,27 +1,24 @@
 #include "Open3DServer.h"
 
 
-O3DS_Server::O3DS_Server()
+USubscriber::USubscriber()
 {}
 
-
-bool O3DS_Server::Start(const char *url)
+void USubscriber::in_data(const char *msg, size_t len)
 {
-	int ret;
+	mutex.Lock();
+	buffer.resize(len);
+	buffer.assign(msg, msg + len);
+	mutex.Unlock();
 
-	ret = nng_sub0_open(&mSocket);
-	if (ret != 0) { return false; }
-
-	ret = nng_dial(mSocket, url, NULL, 0);
-	if (ret != 0) { return false; }
-
-	ret = nng_setopt(mSocket, NNG_OPT_SUB_SUBSCRIBE, "", 0);
-	if (ret != 0) { return false; }
-
-	return true;
+	DataDelegate.ExecuteIfBound();
 }
 
-bool O3DS_Server::Recv()
+void USubscriber::in_pipe()
+{}
+
+/*
+bool USubscriber::Recv()
 {
 	nng_msg *msg;
 	int ret;
@@ -38,3 +35,5 @@ bool O3DS_Server::Recv()
 	nng_msg_free(msg);
 	return true;
 }
+
+*/

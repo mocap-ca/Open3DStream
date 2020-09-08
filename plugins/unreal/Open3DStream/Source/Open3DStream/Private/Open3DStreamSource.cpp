@@ -37,16 +37,16 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 	bIsValid = true;
 
 	server.DataDelegate.BindRaw(this, &FOpen3DStreamSource::OnNnpData);
-	server.Start(TCHAR_TO_ANSI(*Url.ToString()));
+	server.connect(TCHAR_TO_ANSI(*Url.ToString()));
 
 	UpdateConnectionLastActive();
 }
 
 void FOpen3DStreamSource::OnNnpData()
 {
-	//this->server.mutex.Lock();
-	//OnPackage((uint8*)this->server.buffer, this->server.buflen);
-	//this->server.mutex.Unlock();
+	this->server.mutex.Lock();
+	OnPackage((uint8*)&this->server.buffer[0], this->server.buffer.size());
+	this->server.mutex.Unlock();
 
 }
 
@@ -144,8 +144,8 @@ bool FOpen3DStreamSource::RequestSourceShutdown()
 void FOpen3DStreamSource::Update()
 {
 	// Called during the game thread, return quickly.
-	if(server.Recv())
-		OnPackage((uint8*)(server.buffer.data()), server.buffer.size());
+	//if(server.Recv())
+	//	OnPackage((uint8*)(server.buffer.data()), server.buffer.size());
 }
 
 FORCEINLINE void FOpen3DStreamSource::UpdateConnectionLastActive()

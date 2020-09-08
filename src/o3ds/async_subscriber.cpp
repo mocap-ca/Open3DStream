@@ -8,7 +8,6 @@
 namespace O3DS
 {
 
-
 AsyncSubscriber::AsyncSubscriber()
 {}
 
@@ -18,36 +17,44 @@ bool AsyncSubscriber::connect(const char *url)
 
 	ret = nng_sub0_open(&mSocket);
 	if (ret != 0)
-	{
+	{	
 		mError = std::string("nng_req0_open: %s\n") + nng_strerror(ret);
-		return false;
-	}
-
-	ret = nng_dial(mSocket, url, NULL, 0);
-	if (ret != 0)
-	{
-		mError = std::string("nng_dial: %s\n") + nng_strerror(ret);
 		return false;
 	}
 
 	ret = nng_setopt(mSocket, NNG_OPT_SUB_SUBSCRIBE, "", 0);
 	if (ret != 0) { return false; }
 
-	ret = nng_aio_alloc(&aio, AsyncSubscriber::Callback, this);
-	if (ret != 0)
-	{
-		mError = std::string("nng_aio_alloc: %s\n") + nng_strerror(ret);
-		return false;
-	}
+	ret = nng_dialer_create(&mDialer, mSocket, url);
+	if (ret != 0) { return false;  }
 
-	ret = nng_ctx_open(&ctx, mSocket);
-	if (ret != 0)
-	{
-		mError = std::string("nng_ctx_open: %s\n") + nng_strerror(ret);
-		return false;
-	}
+
+	ret = nng_pipe_notify(mSocket, nng_pipe_ev::NNG_PIPE_EV_ADD_POST, 
+		AsyncSubscriber::PipeEvent, this);
+	if (ret != 0) { return false; }
+
+	ret = nng_dialer_start(mDialer, NNG_FLAG_NONBLOCK);
+	if (ret != 0) { return false; }
+
 	return true;
 }
+
+void AsyncSubscriber::PipeEvent_(nng_pipe pipe, nng_pipe_ev pipe_ev)
+{
+	if (pipe_ev == nng_pipe_ev::NNG_PIPE_EV_ADD_POST)
+	{
+		nng_socket s= nng_pipe_socket(pipe);
+
+		nng_aio_alloc(&aio, AsyncSubscriber::Callback, this);
+
+		nng_recv_aio(s, aio);
+		in_pipe();
+	}
+
+	if (pipe_ev == nng_pipe_ev::NNG_PIPE_EV_REM_POST)
+		return; // TODO
+}
+
 
 void AsyncSubscriber::Callback_()
 {
@@ -69,7 +76,8 @@ void AsyncSubscriber::Callback_()
 
 	nng_msg_free(msg);
 
-	nng_ctx_recv(ctx, aio);
+	nng_recv_aio(mSocket, aio);
+
 }
 
 }
