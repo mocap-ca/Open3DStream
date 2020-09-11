@@ -214,10 +214,29 @@ void Open3D_Device_Layout::UICreate()
 	mListProtocol.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditProtocol);
 
 
-	// Right: Label SampleRate (Under Protocol)
-	mLayoutRight.AddRegion("LabelSampleRate", "LabelSampleRate",
+	// Right: Label Key (Under Protocol)
+	mLayoutRight.AddRegion("LabelKey", "LabelKey",
 		lS, kFBAttachLeft, "", 1.00,
 		lS, kFBAttachBottom, "LabelProtocol", 1.00,
+		labelWidth, kFBAttachNone, NULL, 1.00,
+		lH, kFBAttachNone, NULL, 1.00);
+	mLayoutRight.SetControl("LabelKey", mLabelKey);
+	mLabelKey.Caption = "Key:";
+
+	// Right: Edit Key (Under Protocol)
+	mLayoutRight.AddRegion("EditKey", "EditKey",
+		lS, kFBAttachRight, "LabelKey", 1.00,
+		lS, kFBAttachBottom, "EditProtocol", 1.00,
+		fieldWidth, kFBAttachNone, NULL, 1.00,
+		lH, kFBAttachNone, NULL, 1.00);
+	mLayoutRight.SetControl("EditKey", mEditKey);
+	mEditKey.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditKey);
+
+
+	// Right: Label SampleRate (Under Key)
+	mLayoutRight.AddRegion("LabelSampleRate", "LabelSampleRate",
+		lS, kFBAttachLeft, "", 1.00,
+		lS, kFBAttachBottom, "LabelKey", 1.00,
 		labelWidth, kFBAttachNone, NULL, 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
 	mLayoutRight.SetControl("LabelSampleRate", mLabelSamplingRate);
@@ -226,11 +245,12 @@ void Open3D_Device_Layout::UICreate()
 	// Right: Edit Samplerate (Under Protocol)
 	mLayoutRight.AddRegion("EditSampleRate", "EditSampleRate",
 		lS, kFBAttachRight, "LabelSampleRate", 1.00,
-		lS, kFBAttachBottom, "EditProtocol", 1.00,
+		lS, kFBAttachBottom, "EditKey", 1.00,
 		fieldWidth, kFBAttachNone, NULL, 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
 	mLayoutRight.SetControl("EditSampleRate", mEditSamplingRate);
 	mEditSamplingRate.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditSampleRate);
+
 
 	SetBorder("LeftLayout", kFBEmbossBorder, false, true, 2, 1, 90.0, 0);
 	SetBorder("RightLayout", kFBEmbossBorder, false, true, 2, 1, 90.0, 0);
@@ -245,23 +265,27 @@ void Open3D_Device_Layout::UIConfigure()
 	mListProtocol.Items.Add("UDP");
 	mListProtocol.Items.Add("TCP Server");
 	mListProtocol.Items.Add("TCP Client");
-	mListProtocol.Items.Add("NNG-Broadcast");
+	mListProtocol.Items.Add("NNG-Server");
+	mListProtocol.Items.Add("NNG-Client");
 
 	Open3D_Device::TProtocol protocol = mDevice->GetProtocol();
 	if (protocol == Open3D_Device::kUDP) mListProtocol.ItemIndex = 0;
 	if (protocol == Open3D_Device::kTCPServer) mListProtocol.ItemIndex = 1;
 	if (protocol == Open3D_Device::kTCPClient) mListProtocol.ItemIndex = 2;
-	if (protocol == Open3D_Device::kNNGBroadcast) mListProtocol.ItemIndex = 3;
+	if (protocol == Open3D_Device::kNNGServer) mListProtocol.ItemIndex = 3;
+	if (protocol == Open3D_Device::kNNGClient) mListProtocol.ItemIndex = 4;
 
 	PopulateSubjectList();
 	PopulateSubjectFields();
 
 	mEditSamplingRate.Value = mDevice->GetSamplingRate();
 	mEditDestIp.Text = mDevice->GetNetworkAddress();
+	mEditKey.Text = mDevice->GetKey();
 
 	char buffer[40];
 	sprintf_s(buffer, 40, "%d", mDevice->GetNetworkPort());
 	mEditDestPort.Text = buffer;
+	mEditDestPort.Enabled = false; // enabed by the combo changing
 
 }
 
@@ -417,14 +441,30 @@ void Open3D_Device_Layout::EventEditPort(HISender pSender, HKEvent pEvent)
 
 void Open3D_Device_Layout::EventEditProtocol(HISender pSender, HKEvent pEvent)
 {
+	mEditDestPort.Enabled = true;
 	int id = mListProtocol.ItemIndex;
 	if (id == 0) mDevice->SetProtocol(Open3D_Device::TProtocol::kUDP);
 	if (id == 1) mDevice->SetProtocol(Open3D_Device::TProtocol::kTCPServer);
 	if (id == 2) mDevice->SetProtocol(Open3D_Device::TProtocol::kTCPClient);
-	if (id == 3) mDevice->SetProtocol(Open3D_Device::TProtocol::kNNGBroadcast);
+	if (id == 3)
+	{
+		mEditDestPort.Enabled = false;
+		mDevice->SetProtocol(Open3D_Device::TProtocol::kNNGServer);
+	}
+	if (id == 4)
+	{
+		mEditDestPort.Enabled = false;
+		mDevice->SetProtocol(Open3D_Device::TProtocol::kNNGClient);
+	}
 }
 
 void Open3D_Device_Layout::EventEditSampleRate(HISender pSender, HKEvent pEvent)
 {
 	mDevice->SetSamplingRate(mEditSamplingRate.Value);
 }
+
+void Open3D_Device_Layout::EventEditKey(HISender pSender, HKEvent pEvent)
+{
+	mDevice->SetKey(mEditKey.Text);
+}
+

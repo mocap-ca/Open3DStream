@@ -28,6 +28,7 @@ table Subject {
 table SubjectList {
    subjects:[Subject];
    time:double;
+   key:string;
 }
 
 

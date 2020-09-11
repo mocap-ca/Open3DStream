@@ -29,6 +29,7 @@ public:
 	void	EventEditPort(HISender pSender, HKEvent pEvent);
 	void	EventEditProtocol(HISender pSender, HKEvent pEvent);
 	void	EventEditSampleRate(HISender pSender, HKEvent pEvent);
+	void	EventEditKey(HISender pSender, HKEvent pEvent);
 
 private:
 	FBLayout      mLayoutLeft;
@@ -49,6 +50,8 @@ private:
 	FBEdit        mEditDestPort;
 	FBLabel       mLabelProtocol;
 	FBList        mListProtocol;
+	FBLabel       mLabelKey;
+	FBEdit        mEditKey;
 	FBLabel		  mLabelSamplingRate;
 	FBEditNumber  mEditSamplingRate;
 

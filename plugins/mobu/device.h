@@ -4,7 +4,7 @@
 #include <fbsdk/fbsdk.h>
 #include <vector>
 #include "mobuModel.h"
-#include "o3ds/broadcaster.h"
+#include "o3ds/base_server.h"
 
 
 #define OPEN3D_DEVICE__CLASSNAME	Open3D_Device
@@ -20,7 +20,9 @@ public:
 		kUDP = 0,
 		kTCPServer,
 		kTCPClient,
-		kNNGBroadcast
+		kNNGClient,
+		kNNGServer,
+		kNNGPublish
 	} TProtocol;
 
 
@@ -55,14 +57,21 @@ public:
 	double		GetSamplingRate();
 	void		SetSamplingRate(double rate);
 
+	const char* GetKey()                                { return mKey; }
+	void        SetKey(const char *value)               { mKey = value; }
+
 	FBDeviceSamplingMode	GetSamplingType()								{ return mSamplingType;			}
 	void					SetSamplingType( FBDeviceSamplingMode pType )	{ mSamplingType = pType;		}
+
+
+	void InData(void *, size_t);
 
 	O3DS::SubjectList Items;
 
 	FBTCPIP      mTcpIp;
 
-	O3DS::Broadcaster mBroadcaster;
+	O3DS::BaseServer*  mServer;
+
 
 	
 	int          mNetworkSocket;
@@ -74,6 +83,7 @@ private:
 
 	TProtocol       mProtocol;
 	FBString		mNetworkAddress;
+	FBString        mKey;
 	int				mNetworkPort;
 	bool			mStreaming;
 

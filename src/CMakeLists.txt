@@ -7,10 +7,20 @@ project(Open3DStreamLib)
             
 set(SOURCES 
 	o3ds/getTime.cpp
-	o3ds/subscriber.cpp
-	o3ds/async_subscriber.cpp
-	o3ds/broadcaster.cpp
+	o3ds/getTime.h
 	o3ds/model.cpp
+	o3ds/model.h
+    o3ds/base_server.h
+	o3ds/subscriber.cpp
+	o3ds/subscriber.h
+	o3ds/async_subscriber.cpp
+	o3ds/async_subscriber.h
+	o3ds/pair.cpp
+	o3ds/pair.h
+	o3ds/async_pair.cpp
+	o3ds/async_pair.h
+	o3ds/publisher.h
+	o3ds/publisher.cpp
 	)
 
 set(libs wsock32 ws2_32 debug flatbuffersd optimized flatbuffers debug nngd optimized nng)

@@ -1,7 +1,7 @@
 #include "device.h"
 #include "o3ds/math.h"
-#include "o3ds/broadcaster.h"
-
+#include "o3ds/publisher.h"
+#include "o3ds/async_pair.h"
 
 #define OPEN3D_DEVICE__CLASS	OPEN3D_DEVICE__CLASSNAME
 #define OPEN3D_DEVICE__NAME	OPEN3D_DEVICE__CLASSSTR
@@ -20,6 +20,7 @@
 #define FBX_NETWORK_IP      "NetworkIp"
 #define FBX_NETWORK_PORT    "NetworkPort"
 #define FBX_NETWORK_PROTO   "NetworkProtocol"
+#define FBX_KEY             "Key"
 
 #include <ws2tcpip.h>
 #include <sstream>
@@ -32,12 +33,19 @@ FBRegisterDevice		(	OPEN3D_DEVICE__NAME,
 							FB_DEFAULT_SDK_ICON		);	// Icon filename (default=Open Reality icon)
 
 
+void dataFn(void *ctx, void *data, size_t len)
+{
+	if (ctx) static_cast<Open3D_Device*>(ctx)->InData(data, len);
+}
+
 bool Open3D_Device::FBCreate()
 {
-	mNetworkAddress = "127.0.0.1";
+	//mNetworkAddress = "tcp://3.131.65.210:6001";
+	mNetworkAddress = "tcp://127.0.0.1:6001";
 	mNetworkPort = 3001;
 	mStreaming = true;
-	mProtocol = kTCPServer;
+	mProtocol = kNNGServer;
+	mKey = nullptr;
 
 	FBTime	lPeriod;
 	lPeriod.SetSecondDouble(1.0/60.0);
@@ -152,23 +160,45 @@ bool Open3D_Device::Start()
 		return false;
 	}
 
-	if (mProtocol == Open3D_Device::kNNGBroadcast)
+	if (mProtocol == Open3D_Device::kNNGServer)
 	{
-		if (mBroadcaster.start(mNetworkAddress, 20))
+		mServer = new O3DS::AsyncPair();
+		mServer->setFunc(this, dataFn);
+		if (mServer->listen(mNetworkAddress))
 		{
-			Status = "Broadcast OK";
+			Status = "NNG Server OK";
 			return true;
 		}
 		else
 		{
-			Status = mBroadcaster.mError.c_str();
+			Status = mServer->getError().c_str();
 			return false;
 		}
+	}
 
+	if (mProtocol == Open3D_Device::kNNGClient)
+	{
+		mServer = new O3DS::AsyncPair();
+		mServer->setFunc(this, dataFn);
+		if (mServer->connect(mNetworkAddress))
+		{
+			Status = "NNG Client OK";
+			return true;
+		}
+		else
+		{
+			Status = mServer->getError().c_str();
+			return false;
+		}
 	}
 
 	Status = "INVALID";
 	return true;
+}
+
+void Open3D_Device::InData(void *data, size_t len)
+{
+
 }
 
 bool Open3D_Device::Stop()
@@ -218,7 +248,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 		{
 			Items.update(true);
 
-			int32_t bucket_size = O3DS::Serialize(Items, buf, 1024 * 12, true);
+			int32_t bucket_size = O3DS::Serialize(mKey, Items, buf, 1024 * 12, true);
 			if (bucket_size == 0)
 				return;
 
@@ -264,9 +294,10 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				Status = oss.str().c_str();
 			}
 
-			if (mProtocol == Open3D_Device::kNNGBroadcast)
+			if (mProtocol == Open3D_Device::kNNGClient ||
+				mProtocol == Open3D_Device::kNNGServer)
 			{
-				mBroadcaster.send(buf, bucket_size);
+				mServer->write((const char*)buf, bucket_size);
 			}
 		}
 	}
@@ -310,6 +341,8 @@ void Open3D_Device::SetSamplingRate(double rate)
 		SamplingPeriod = t;
 	}
 }
+
+
 bool Open3D_Device::AnimationNodeNotify(FBAnimationNode* pAnimationNode ,FBEvaluateInfo* pEvaluateInfo)
 {
     return true;
@@ -364,6 +397,7 @@ bool Open3D_Device::FbxStore(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat)
 		pFbxObject->FieldWriteC(FBX_NETWORK_IP, GetNetworkAddress());
 		pFbxObject->FieldWriteI(FBX_NETWORK_PORT, GetNetworkPort());
 		pFbxObject->FieldWriteI(FBX_NETWORK_PROTO, (int)GetProtocol());
+		pFbxObject->FieldWriteC(FBX_KEY, GetKey());
 
 	}
 	return true;
@@ -384,7 +418,6 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 		// Get communications settings
 		if (pFbxObject->FieldReadBegin(FBX_COMMPARAM_TAG))
 		{
-
 			pFbxObject->FieldReadEnd();
 		}
 		SetSamplingRate(pFbxObject->FieldReadD(FBX_SAMPLERATE, GetSamplingRate()));
@@ -415,8 +448,7 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 		SetNetworkAddress(pFbxObject->FieldReadC(FBX_NETWORK_IP, GetNetworkAddress()));
 		SetNetworkPort(pFbxObject->FieldReadI(FBX_NETWORK_PORT, GetNetworkPort()));
 		SetProtocol(static_cast<TProtocol>(pFbxObject->FieldReadI(FBX_NETWORK_PROTO)));
-
-
+		SetKey(pFbxObject->FieldReadC(FBX_KEY, GetKey()));
 	}
 
 	return true;

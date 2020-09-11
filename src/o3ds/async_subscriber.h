@@ -1,15 +1,16 @@
-#ifndef O3DS_CLIENT_H
-#define O3DS_CLIENT_H
+#ifndef O3DS_ASYNC_SUBSCRIBER_H
+#define O3DS_ASYNC_SUBSCRIBER_H
 
 #include <nng/nng.h>
 #include <nng/protocol/pubsub0/sub.h>
 #include <nng/supplemental/util/platform.h>
+#include "base_server.h"
 #include <string>
 
 namespace O3DS
 {
 	// The client pulls data down from a listen server
-	class AsyncSubscriber
+	class AsyncSubscriber : public BaseServer
 	{
 	public:
 		AsyncSubscriber();
@@ -25,8 +26,6 @@ namespace O3DS
 		void PipeEvent_(nng_pipe pipe, nng_pipe_ev pipe_ev);
 
 		virtual void in_pipe() = 0;
-
-		virtual void in_data(const char *msg, size_t len) = 0; 
 
 		nng_socket mSocket;
 		nng_dialer mDialer;

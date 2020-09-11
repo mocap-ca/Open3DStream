@@ -28,7 +28,6 @@ bool AsyncSubscriber::connect(const char *url)
 	ret = nng_dialer_create(&mDialer, mSocket, url);
 	if (ret != 0) { return false;  }
 
-
 	ret = nng_pipe_notify(mSocket, nng_pipe_ev::NNG_PIPE_EV_ADD_POST, 
 		AsyncSubscriber::PipeEvent, this);
 	if (ret != 0) { return false; }
@@ -72,7 +71,7 @@ void AsyncSubscriber::Callback_()
 
 	void *data = nng_msg_body(msg);
 
-	in_data((const char*)data, len);
+	if (fnRef) fnRef(fnContext, data, len);
 
 	nng_msg_free(msg);
 

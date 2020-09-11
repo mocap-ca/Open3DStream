@@ -5,11 +5,18 @@
 
 using namespace MyGame::Sample;
 
-int O3DS::Serialize(SubjectList &data, uint8_t *outbuf, int buflen, bool add_names)
+int O3DS::Serialize(const char *key, SubjectList &data, uint8_t *outbuf, int buflen, bool add_names)
 {
 	double timestamp = GetTime();
 
 	flatbuffers::FlatBufferBuilder builder(4096);
+
+	flatbuffers::Offset<flatbuffers::String> key_name = 0;
+
+	if (key)
+	{
+		key_name = builder.CreateString(key);
+	}
 
 	std::vector<flatbuffers::Offset<MyGame::Sample::Subject>> subjects;
 
@@ -42,7 +49,7 @@ int O3DS::Serialize(SubjectList &data, uint8_t *outbuf, int buflen, bool add_nam
 		subjects.push_back(s);
 	}
 
-	auto root = CreateSubjectList(builder, builder.CreateVector(subjects), timestamp);
+	auto root = CreateSubjectList(builder, builder.CreateVector(subjects), timestamp, key_name);
 
 	builder.Finish(root);
 
@@ -58,6 +65,23 @@ int O3DS::Serialize(SubjectList &data, uint8_t *outbuf, int buflen, bool add_nam
 
 }
 
+void O3DS::Parse(std::string& key, SubjectList &subjects, const char *data, size_t len)
+{
+	auto root = GetSubjectList(data);
+
+	double tt = root->time();
+
+	auto subjects_data = root->subjects();
+
+	for (uint32_t i = 0; i < subjects_data->size(); i++)
+	{
+	}
+	auto key_name = root->key();
+	if (key_name) key.assign(key_name->str());
+
+
+
+}
 
 void O3DS::Subject::update(bool useWorldMatrix)
 {

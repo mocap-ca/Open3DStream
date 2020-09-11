@@ -10,7 +10,7 @@ using namespace MyGame::Sample;
 #include "fbxloader.h"
 #include "o3ds/model.h"
 #include "o3ds/getTime.h"
-#include "o3ds/broadcaster.h"
+#include "o3ds/publisher.h"
 
 int main(int argc, char *argv[])
 {
@@ -48,11 +48,11 @@ int main(int argc, char *argv[])
 	}
 
 	// Connect 
-	O3DS::Broadcaster broadcaster;
+	O3DS::Publisher publisher;
 
-	if (!broadcaster.start(argv[2], 20))
+	if (!publisher.start(argv[2], 20))
 	{
-		printf(broadcaster.mError.c_str());
+		printf(publisher.mError.c_str());
 		return 1;
 	}
 
@@ -81,14 +81,14 @@ redo:
 		subjects.update(true);
 
 
-		int ret = O3DS::Serialize(subjects, buffer, 1024 * 16, first);
+		int ret = O3DS::Serialize(0, subjects, buffer, 1024 * 16, first);
 		first = false;
 		
 		if (ret > 0)
 		{
 
 
-			if (!broadcaster.send(buffer, ret))
+			if (!publisher.send(buffer, ret))
 			{
 				printf("Could not send\n");
 				break;

@@ -159,7 +159,9 @@ namespace O3DS
 		Subject* operator [] (int ref) { return items.operator[](ref); }
 	};
 
-	int Serialize(SubjectList &data, uint8_t *outbuf, int buflen, bool names);
+	int Serialize(const char *key, SubjectList &data, uint8_t *outbuf, int buflen, bool names);
+
+	void Parse(std::string &key, SubjectList &subjects, const char *data, size_t len);
 	
 
 
