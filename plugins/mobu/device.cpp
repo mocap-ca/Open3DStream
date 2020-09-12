@@ -119,6 +119,12 @@ bool Open3D_Device::Start()
 	lProgress.Text	= "Opening device communications";
 	Status			= "Opening device communications";
 
+	if (mServer)
+	{
+		delete mServer;
+		mServer = nullptr;
+	}
+
 	for (auto& subject : Items)
 	{
 		MobuSubjectInfo *info = dynamic_cast<MobuSubjectInfo*>(subject->mInfo);

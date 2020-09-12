@@ -2,19 +2,25 @@
 
 #include "CoreMinimal.h"
 
-#include "o3ds/async_subscriber.h"
+#include "o3ds/base_server.h"
 
 DECLARE_DELEGATE(FOnNngData);
 
 #include <vector>
 
-class USubscriber : public O3DS::AsyncSubscriber
+void InDataFunc(void *ptr, void *msg, size_t len);
+
+class UServer
 {
 public:
-	USubscriber();
+	UServer();
 
-	void in_data(const char *msg, size_t len) override;
-	void in_pipe() override;
+	bool start(const char *url, const char *protocol);
+	bool write(const char *data, size_t len);
+
+	void inData(const char *msg, size_t len);
+
+	O3DS::BaseServer *mServer;
 
 	FOnNngData DataDelegate;
 

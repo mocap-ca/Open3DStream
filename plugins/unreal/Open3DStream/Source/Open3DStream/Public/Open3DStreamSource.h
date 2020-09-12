@@ -23,11 +23,13 @@ E:\Unreal\UE_4.25\Engine\Plugins\Animation\LiveLink\Source\LiveLink\Private\
 class OPEN3DSTREAM_API FOpen3DStreamSource : public ILiveLinkSource
 {
 public:
-	FOpen3DStreamSource(const FText &InUrl, double InTimeOffset);
+	FOpen3DStreamSource(const FText &InUrl, const FText &Key, const FText &Protocol, double InTimeOffset);
 	virtual ~FOpen3DStreamSource();
 
 	// ILiveLinkSource Overrides
-	virtual void ReceiveClient(ILiveLinkClient* InClient, FGuid InSourceGuid) override;
+	virtual void ReceiveClient(ILiveLinkClient* InClient, 
+		FGuid InSourceGuid) override;
+
 	virtual bool RequestSourceShutdown() override;
 
 	FText SourceType;
@@ -43,12 +45,14 @@ public:
 	TArray<FName>    InitializedSubjects;	
 	bool             bIsInitialized;
 	FText            Url;
+	FText            Key;
+	FText            Protocol;
 	float            TimeOffset;
 	double           ArrivalTimeOffset;
 
 	FThreadSafeBool  bIsValid;
 
-	USubscriber server;
+	UServer server;
 
 	void OnNnpData();
 

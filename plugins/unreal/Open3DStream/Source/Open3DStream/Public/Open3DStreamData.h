@@ -24,6 +24,12 @@ public:
 	
 	UPROPERTY()
 	double			TimeOffset;
+
+	UPROPERTY()
+	FText           Key;
+
+	UPROPERTY()
+	FText           Protocol;
 };
 
 typedef TSharedPtr<FOpen3DStreamData, ESPMode::ThreadSafe> FOpen3DStreamDataPtr;
