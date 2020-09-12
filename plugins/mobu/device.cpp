@@ -46,6 +46,7 @@ bool Open3D_Device::FBCreate()
 	mStreaming = true;
 	mProtocol = kNNGServer;
 	mKey = nullptr;
+	mServer = nullptr;
 
 	FBTime	lPeriod;
 	lPeriod.SetSecondDouble(1.0/60.0);
@@ -223,6 +224,12 @@ bool Open3D_Device::Stop()
 			Status = "Error Closing";
 		}
 	}
+
+	if (mServer) 
+	{
+		delete mServer;
+		mServer = nullptr;
+     }
 
 	lProgress.Caption = "";
 	lProgress.Text = "";

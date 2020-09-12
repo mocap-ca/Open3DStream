@@ -25,6 +25,10 @@ namespace O3DS
 		}
 		void PipeEvent_(nng_pipe pipe, nng_pipe_ev pipe_ev);
 
+		bool listen(const char* url) { return false; }
+
+		bool write(const char* data, size_t ptr);
+
 		virtual void in_pipe() = 0;
 
 		nng_socket mSocket;
