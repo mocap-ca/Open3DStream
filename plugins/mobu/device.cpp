@@ -167,34 +167,42 @@ bool Open3D_Device::Start()
 		return false;
 	}
 
-	if (mProtocol == Open3D_Device::kNNGServer)
+	if (mProtocol == Open3D_Device::kNNGServer || mProtocol == Open3D_Device::kNNGClient)
 	{
-		mServer = new O3DS::AsyncPair();
-		mServer->setFunc(this, dataFn);
-		if (mServer->listen(mNetworkAddress))
+		if (mProtocol == Open3D_Device::kNNGServer)
+		{
+			mServer = new O3DS::AsyncPairServer();
+		}
+
+		if (mProtocol == Open3D_Device::kNNGClient)
+		{
+			mServer = new O3DS::AsyncPairClient();
+		}
+
+		if (mServer->start(mNetworkAddress))
 		{
 			Status = "NNG Server OK";
 			return true;
 		}
 		else
 		{
-			Status = mServer->getError().c_str();
+			Status = mServer->err().c_str();
 			return false;
 		}
 	}
 
 	if (mProtocol == Open3D_Device::kNNGClient)
 	{
-		mServer = new O3DS::AsyncPair();
+		mServer = new O3DS::AsyncPairClient();
 		mServer->setFunc(this, dataFn);
-		if (mServer->connect(mNetworkAddress))
+		if (mServer->start(mNetworkAddress))
 		{
 			Status = "NNG Client OK";
 			return true;
 		}
 		else
 		{
-			Status = mServer->getError().c_str();
+			Status = mServer->err().c_str();
 			return false;
 		}
 	}

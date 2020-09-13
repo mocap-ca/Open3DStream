@@ -2,23 +2,24 @@
 
 #include <nng/nng.h>
 #include <nng/protocol/pair1/pair.h>
+#include "base_server.h"
 
-#include <vector>
+#include <string>
+
 namespace O3DS
 {
-
-	class Pair
+	class ClientPair : public BlockingConnector
 	{
+		// Pair connector (blocking)
 	public:
-		Pair();
-
-		bool Start(const char *url);
-		bool Recv(char *data, size_t &len);
-		bool Send(const char *data, size_t len);
-
-		nng_socket mSocket;
-
-		nng_aio *aio;
-
+		bool start(const char *url);
 	};
+
+	class ServerPair : public BlockingConnector
+	{
+		// Pair connector (blocking)
+	public:
+		bool start(const char *url);
+	};
+
 }

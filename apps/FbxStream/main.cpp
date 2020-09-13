@@ -10,16 +10,40 @@ using namespace MyGame::Sample;
 #include "fbxloader.h"
 #include "o3ds/model.h"
 #include "o3ds/getTime.h"
-#include "o3ds/publisher.h"
+
+//#include "o3ds/publisher.h"
+#include "o3ds/pair.h"
+
+// C:\cpp\git\github\Open3DStream\test_data\beta_fight.fbx tcp://127.0.0.1:6001  
 
 int main(int argc, char *argv[])
 {
 
-	if(argc != 3)
+	if(argc != 4)
 	{
-		fprintf(stderr, "%s file.fbx url\n", argv[0]);
+		fprintf(stderr, "%s file.fbx protocol url\n", argv[0]);
+		fprintf(stderr, "Protocols: client server\n");
 		return 1;
 	}
+
+	O3DS::BlockingConnector* connector = nullptr;
+
+	if (strcmp(argv[2], "client") == 0)
+	{
+		connector = new O3DS::ClientPair();
+	}
+
+	if (strcmp(argv[2], "server") == 0)
+	{
+		connector = new O3DS::ServerPair();;
+	}
+
+	if (!connector)
+	{
+		fprintf(stderr, "Invalid Protocol: %s\n", argv[2]);
+		return 2;
+	}
+
 
 	O3DS::SubjectList subjects;
 
@@ -48,11 +72,11 @@ int main(int argc, char *argv[])
 	}
 
 	// Connect 
-	O3DS::Publisher publisher;
+	//O3DS::Publisher publisher;
 
-	if (!publisher.start(argv[2], 20))
+	if (!connector->start(argv[3]))
 	{
-		printf(publisher.mError.c_str());
+		printf(connector->err().c_str());
 		return 1;
 	}
 
@@ -80,15 +104,12 @@ redo:
 
 		subjects.update(true);
 
-
 		int ret = O3DS::Serialize(0, subjects, buffer, 1024 * 16, first);
 		first = false;
 		
 		if (ret > 0)
 		{
-
-
-			if (!publisher.send(buffer, ret))
+			if (!connector->write((const char*)buffer, ret))
 			{
 				printf("Could not send\n");
 				break;

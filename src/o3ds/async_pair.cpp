@@ -2,17 +2,14 @@
 
 namespace O3DS
 {
-	AsyncPair::AsyncPair()
-	{}
-
-	bool AsyncPair::connect(const char *url)
+	bool AsyncPairClient::start(const char *url)
 	{
 		int ret;
 
 		ret = nng_pair1_open(&mSocket);
 		if (ret != 0) { return false; }
 
-		ret = nng_aio_alloc(&aio, AsyncPair::Callback, this);
+		ret = nng_aio_alloc(&aio, AsyncPairClient::Callback, this);
 		if (ret != 0) { return false; }
 
 		ret = nng_dial(mSocket, url, 0, 0);
@@ -23,7 +20,7 @@ namespace O3DS
 		return true;
 	}
 
-	bool AsyncPair::listen(const char *url)
+	bool AsyncPairServer::start(const char *url)
 	{
 		int ret;
 
@@ -60,16 +57,6 @@ namespace O3DS
 		nng_recv_aio(mSocket, aio);
 	}
 
-	bool AsyncPair::write(const char *data, size_t len)
-	{
-		int ret;
-
-		ret = nng_send(mSocket, (void*)data, len, NNG_FLAG_NONBLOCK);
-
-		if (ret != 0) return false;
-
-		return true;
-	}
 
 }
 

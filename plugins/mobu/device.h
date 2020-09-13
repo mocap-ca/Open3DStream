@@ -65,10 +65,10 @@ public:
 
 	void InData(void *, size_t);
 
-	O3DS::SubjectList  Items;
-	FBTCPIP            mTcpIp;
-	O3DS::BaseServer*  mServer;
-	int                mNetworkSocket;
+	O3DS::SubjectList       Items;
+	FBTCPIP                 mTcpIp;
+	O3DS::AsyncConnector*   mServer;
+	int                     mNetworkSocket;
 
 private:
 	double                mSamplingRate;

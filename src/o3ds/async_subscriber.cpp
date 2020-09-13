@@ -11,7 +11,7 @@ namespace O3DS
 AsyncSubscriber::AsyncSubscriber()
 {}
 
-bool AsyncSubscriber::connect(const char *url)
+bool AsyncSubscriber::start(const char *url)
 {
 	int ret;
 
@@ -47,7 +47,7 @@ void AsyncSubscriber::PipeEvent_(nng_pipe pipe, nng_pipe_ev pipe_ev)
 		nng_aio_alloc(&aio, AsyncSubscriber::Callback, this);
 
 		nng_recv_aio(s, aio);
-		in_pipe();
+		//in_pipe();
 	}
 
 	if (pipe_ev == nng_pipe_ev::NNG_PIPE_EV_REM_POST)
