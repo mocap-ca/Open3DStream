@@ -16,11 +16,12 @@ public:
 	UServer();
 
 	bool start(const char *url, const char *protocol);
+	void stop();
 	bool write(const char *data, size_t len);
 
 	void inData(const char *msg, size_t len);
 
-	O3DS::BaseServer *mServer;
+	O3DS::AsyncConnector *mServer;
 
 	FOnNngData DataDelegate;
 

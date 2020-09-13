@@ -10,8 +10,9 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 	//LastTickTime = 0.0;
 	OnSelectedEvent = Args._OnSelectedEvent;
 
-	Options.Add(MakeShareable(new FString("Pair-Client")));
-	Options.Add(MakeShareable(new FString("Pair-Server")));
+	Options.Add(MakeShareable(new FString("Subscribe")));
+	Options.Add(MakeShareable(new FString("Client")));
+	Options.Add(MakeShareable(new FString("Server")));
 	CurrentProtocol = Options[0];
 
 

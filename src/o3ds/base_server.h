@@ -14,6 +14,9 @@ namespace O3DS
 	public:
 
 		virtual bool start(const char* url) = 0;
+		virtual bool write(const char *data, size_t len) = 0;
+		virtual size_t read(char *data, size_t len) = 0;
+
 
 		const std::string& getError()
 		{
@@ -79,7 +82,7 @@ namespace O3DS
 
 		virtual bool start(const char* url) = 0;  // Starts the server - servers will listen, clients will dial
 
-		bool AsyncConnector::write(const char *data, size_t len)
+		bool write(const char *data, size_t len)
 		{
 			int ret;
 			ret = nng_send(mSocket, (void*)data, len, NNG_FLAG_NONBLOCK);
@@ -91,6 +94,23 @@ namespace O3DS
 			return true;
 		}
 
+		virtual size_t read(char *data, size_t len)  // Read bytes - len is the size of data
+		{
+			size_t sz = len;
+			int ret = nng_recv(mSocket, data, &sz, NNG_FLAG_NONBLOCK);
+			if (ret == NNG_EAGAIN)
+			{
+				return 0;
+			}
+			if (ret != 0) 
+			{
+				setError("Error reading", ret);
+				return 0;
+			}
+
+			return sz;
+		}
+
 		void setFunc(void* ctx, inDataFunc f)  // User implemented callback to receive data (optional)
 		{ 
 			fnContext = ctx;
@@ -100,6 +120,10 @@ namespace O3DS
 	protected:
 		void *     fnContext;  // The context provided for the user recieve callback
 		inDataFunc fnRef;      // The user receive callback
+
+		nng_dialer mDialer;
+		nng_aio *aio;
+
 	};
 }
 

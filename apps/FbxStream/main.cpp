@@ -11,8 +11,10 @@ using namespace MyGame::Sample;
 #include "o3ds/model.h"
 #include "o3ds/getTime.h"
 
-//#include "o3ds/publisher.h"
+#include "o3ds/publisher.h"
 #include "o3ds/pair.h"
+//#include "o3ds/request.h"
+//#include "o3ds/pipeline.h"
 
 // C:\cpp\git\github\Open3DStream\test_data\beta_fight.fbx tcp://127.0.0.1:6001  
 
@@ -28,14 +30,20 @@ int main(int argc, char *argv[])
 
 	O3DS::BlockingConnector* connector = nullptr;
 
+	if (strcmp(argv[2], "pub") == 0)
+	{
+		printf("Publishing on: %s\n", argv[3]);
+		connector = new O3DS::Publisher();
+	}
 	if (strcmp(argv[2], "client") == 0)
 	{
+		printf("Publishing on: %s\n", argv[3]);
 		connector = new O3DS::ClientPair();
 	}
-
 	if (strcmp(argv[2], "server") == 0)
 	{
-		connector = new O3DS::ServerPair();;
+		printf("Publishing on: %s\n", argv[3]);
+		connector = new O3DS::ServerPair();
 	}
 
 	if (!connector)
@@ -111,7 +119,7 @@ redo:
 		{
 			if (!connector->write((const char*)buffer, ret))
 			{
-				printf("Could not send\n");
+				printf("Could not send: %s\n", connector->err().c_str());
 				break;
 			}
 		}

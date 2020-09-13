@@ -136,6 +136,7 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 
 bool FOpen3DStreamSource::RequestSourceShutdown()
 {
+	this->server.stop();
 	Client = nullptr;
 	SourceGuid.Invalidate();
 	return true;

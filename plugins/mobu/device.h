@@ -67,7 +67,7 @@ public:
 
 	O3DS::SubjectList       Items;
 	FBTCPIP                 mTcpIp;
-	O3DS::AsyncConnector*   mServer;
+	O3DS::Connector*        mServer;
 	int                     mNetworkSocket;
 
 private:

@@ -1,33 +1,36 @@
-#include "pair.h"
+#include "pipeline.h"
+
+#include <nng/protocol/pipeline0/pull.h>
+#include <nng/protocol/pipeline0/push.h>
 
 namespace O3DS
 {
-	bool ClientPair::start(const char* url)
+	bool Pull::start(const char* url)
 	{
 		int ret;
 
-		ret = nng_pair1_open(&mSocket);
+		ret = nng_push0_open(&mSocket);
 		if (ret != 0)
-		{ 
+		{
 			setError("Could not create pair socket for dial", ret);
-			return false; 
+			return false;
 		}
 
 		ret = nng_dial(mSocket, url, NULL, 0);
-		if (ret != 0) 
-		{ 
+		if (ret != 0)
+		{
 			setError("Could not dial using pair", ret);
-			return false; 
+			return false;
 		}
 
 		return true;
 	}
 
-	bool ServerPair::start(const char *url)
+	bool Push::start(const char *url)
 	{
 		int ret;
 
-		ret = nng_pair1_open(&mSocket);
+		ret = nng_pull0_open(&mSocket);
 		if (ret != 0)
 		{
 			setError("Could not create pair socket for listen", ret);
@@ -35,7 +38,7 @@ namespace O3DS
 		}
 
 		ret = nng_listen(mSocket, url, NULL, 0);
-		if(ret != 0)
+		if (ret != 0)
 		{
 			setError("Could not listen on pair connection", ret);
 			return false;

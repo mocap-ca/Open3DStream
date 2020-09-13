@@ -1,5 +1,6 @@
 #include "Open3DServer.h"
 #include "o3ds/async_pair.h"
+#include "o3ds/async_subscriber.h"
 
 void InDataFunc(void *ptr, void *data, size_t msg)
 {
@@ -18,22 +19,33 @@ bool UServer::start(const char *url, const char *protocol)
 		mServer = nullptr;
 			
 	}
-	if (strcmp(protocol, "Pair-Client") == 0)
+	if (strcmp(protocol, "Subscribe") == 0)
 	{
-		mServer = new O3DS::AsyncPair();
-		mServer->setFunc(this, InDataFunc);
-		mServer->connect(url);
-		return true;
+		mServer = new O3DS::AsyncSubscriber();
 	}
-	if (strcmp(protocol, "Pair-Server") == 0)
+	if (strcmp(protocol, "Client") == 0)
 	{
-		mServer = new O3DS::AsyncPair();
-		mServer->setFunc(this, InDataFunc);
-		mServer->listen(url);
-		return true;
+		mServer = new O3DS::AsyncPairClient();
+	}
+	if (strcmp(protocol, "Server") == 0)
+	{
+		mServer = new O3DS::AsyncPairServer();
 	}
 
+	if (!mServer)
+		return false;
+
+	mServer->setFunc(this, InDataFunc);
+	mServer->start(url);
+
 	return false;
+}
+
+void UServer::stop()
+{
+	if (!mServer) return;
+	delete mServer;
+	mServer = nullptr;
 }
 
 bool UServer::write(const char *msg, size_t len)

@@ -167,37 +167,17 @@ bool Open3D_Device::Start()
 		return false;
 	}
 
-	if (mProtocol == Open3D_Device::kNNGServer || mProtocol == Open3D_Device::kNNGClient)
+	if (mProtocol == Open3D_Device::kNNGServer ||
+		mProtocol == Open3D_Device::kNNGClient || 
+		mProtocol == Open3D_Device::kNNGPublish)
 	{
-		if (mProtocol == Open3D_Device::kNNGServer)
-		{
-			mServer = new O3DS::AsyncPairServer();
-		}
-
-		if (mProtocol == Open3D_Device::kNNGClient)
-		{
-			mServer = new O3DS::AsyncPairClient();
-		}
+		if (mProtocol == Open3D_Device::kNNGServer)  mServer = new O3DS::AsyncPairServer();
+		if (mProtocol == Open3D_Device::kNNGClient)	 mServer = new O3DS::AsyncPairClient();
+		if (mProtocol == Open3D_Device::kNNGPublish) mServer = new O3DS::Publisher();
 
 		if (mServer->start(mNetworkAddress))
 		{
-			Status = "NNG Server OK";
-			return true;
-		}
-		else
-		{
-			Status = mServer->err().c_str();
-			return false;
-		}
-	}
-
-	if (mProtocol == Open3D_Device::kNNGClient)
-	{
-		mServer = new O3DS::AsyncPairClient();
-		mServer->setFunc(this, dataFn);
-		if (mServer->start(mNetworkAddress))
-		{
-			Status = "NNG Client OK";
+			Status = "Running";
 			return true;
 		}
 		else
@@ -316,7 +296,8 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			}
 
 			if (mProtocol == Open3D_Device::kNNGClient ||
-				mProtocol == Open3D_Device::kNNGServer)
+				mProtocol == Open3D_Device::kNNGServer ||
+				mProtocol == Open3D_Device::kNNGPublish)
 			{
 				mServer->write((const char*)buf, bucket_size);
 			}

@@ -31,9 +31,6 @@ namespace O3DS
 
 		//virtual void in_pipe() = 0;
 
-		nng_dialer mDialer;
-		nng_aio *aio;
-
 		std::string mError;
 
 	};

@@ -1,39 +1,62 @@
 #include <stdio.h>
 //#include "o3ds/async_subscriber.h"
+//#include "o3ds/async_request.h"
+//#include "o3ds/async_pipeline.h"
 #include "o3ds/async_subscriber.h"
 #include <nng/nng.h>
 #include <chrono>
 #include <thread>
+
 #include "o3ds/model.h"
-
-
-void InData(void *ref, void* msg, size_t len)
-{
-	std::string key;
-	O3DS::SubjectList subjects;
-	O3DS::Parse(key, subjects, (const char*)msg, len);
-	printf("%s  ", key.c_str());
-	printf("%zd\n", len);
-}
+#include "o3ds/subscriber.h"
 
 
 int main(int argc, char *argv[])
 {
-	
-	O3DS::AsyncSubscriber sub;
-	sub.setFunc(nullptr, InData);
+	if (argc != 3)
+	{
+		fprintf(stderr, "%s protocol url\n", argv[0]);
+		fprintf(stderr, "Protocols: client server\n");
+		return 1;
+	}
 
-	//const char *url = "tcp://3.131.65.210:6000";
-	const char *url = "tcp://127.0.0.1:6001";
+	O3DS::BlockingConnector* connector = nullptr;
 
-	printf("Connecting to: %s\n", url);
-	sub.start(url);
+	if (strcmp(argv[1], "sub") == 0)
+	{
+		printf("Connecting to: %s\n", argv[2]);
+		connector = new O3DS::Subscriber();
+	}
+
+	if (!connector)
+	{
+		fprintf(stderr, "Invalid Protocol: %s\n", argv[1]);
+		return 2;
+	}
+
+	if (!connector->start(argv[2]))
+	{
+		fprintf(stderr, "Could not start server: %s\n", connector->err().c_str());
+		return 3;
+	}
 
 	using namespace std::chrono_literals;
 
+	char buf[1024 * 12];
+
 	while (1)
 	{
-		std::this_thread::sleep_for(2s);
-		printf(".");
+		size_t ret = connector->read(buf, 1024 * 12);
+		if (ret == 0)
+		{
+			printf(".");
+			continue;
+		}
+
+		std::string key;
+		O3DS::SubjectList subjects;
+		O3DS::Parse(key, subjects, (const char*)buf, ret);
+		printf("%s  ", key.c_str());
+		printf("%zd\n", ret);
 	}
 }

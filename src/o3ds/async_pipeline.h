@@ -1,5 +1,5 @@
-#ifndef O3DS_ASYNC_PAIR
-#define O3DS_ASYNC_PAIR
+#ifndef O3DS_ASYNC_PIPELINE
+#define O3DS_ASYNC_PIPELINE
 
 #include <nng/nng.h>
 #include <nng/protocol/pair1/pair.h>
@@ -8,20 +8,20 @@
 
 namespace O3DS
 {
-	class AsyncPair : public AsyncConnector
+	class AsyncPipeline : public AsyncConnector
 	{
 	public:
-		static void Callback(void *ref) { ((AsyncPair*)ref)->Callback_(); }
+		static void Callback(void *ref) { ((AsyncPipeline*)ref)->Callback_(); }
 		void Callback_();
 	};
 
-	class AsyncPairClient : public AsyncPair
+	class AsyncPull : public AsyncPipeline
 	{
 	public:
 		bool start(const char* url) override;
 	};
 
-	class AsyncPairServer : public AsyncPair
+	class AsyncPush : public AsyncPipeline
 	{
 	public:
 		bool start(const char* url) override;
