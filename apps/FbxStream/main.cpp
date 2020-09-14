@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 	if(argc != 4)
 	{
 		fprintf(stderr, "%s file.fbx protocol url\n", argv[0]);
-		fprintf(stderr, "Protocols: client server\n");
+		fprintf(stderr, "Protocols: pub client server\n");
 		return 1;
 	}
 
@@ -117,7 +117,7 @@ redo:
 		
 		if (ret > 0)
 		{
-			if (!connector->write((const char*)buffer, ret))
+			if (!connector->writeMsg((const char*)buffer, ret))
 			{
 				printf("Could not send: %s\n", connector->err().c_str());
 				break;

@@ -3,13 +3,22 @@
 //#include "o3ds/async_request.h"
 //#include "o3ds/async_pipeline.h"
 #include "o3ds/async_subscriber.h"
+#include "o3ds/async_pair.h"
 #include <nng/nng.h>
 #include <chrono>
 #include <thread>
 
 #include "o3ds/model.h"
-#include "o3ds/subscriber.h"
+#include "o3ds/async_subscriber.h"
 
+void ReadFunc(void *ptr, void *buf, size_t len)
+{
+	std::string key;
+	O3DS::SubjectList subjects;
+	O3DS::Parse(key, subjects, (const char*)buf, len);
+	printf("%s  ", key.c_str());
+	printf("%zd\n", len);
+}
 
 int main(int argc, char *argv[])
 {
@@ -20,12 +29,24 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	O3DS::BlockingConnector* connector = nullptr;
+	O3DS::AsyncConnector* connector = nullptr;
 
 	if (strcmp(argv[1], "sub") == 0)
 	{
 		printf("Connecting to: %s\n", argv[2]);
-		connector = new O3DS::Subscriber();
+		connector = new O3DS::AsyncSubscriber();
+	}
+
+	if (strcmp(argv[1], "client") == 0)
+	{
+		printf("Connecting to: %s\n", argv[2]);
+		connector = new O3DS::AsyncPairClient();
+	}
+
+	if (strcmp(argv[1], "server") == 0)
+	{
+		printf("Connecting to: %s\n", argv[2]);
+		connector = new O3DS::AsyncPairServer();
 	}
 
 	if (!connector)
@@ -33,6 +54,8 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Invalid Protocol: %s\n", argv[1]);
 		return 2;
 	}
+
+	connector->setFunc(nullptr, &ReadFunc);
 
 	if (!connector->start(argv[2]))
 	{
@@ -46,17 +69,8 @@ int main(int argc, char *argv[])
 
 	while (1)
 	{
-		size_t ret = connector->read(buf, 1024 * 12);
-		if (ret == 0)
-		{
-			printf(".");
-			continue;
-		}
-
-		std::string key;
-		O3DS::SubjectList subjects;
-		O3DS::Parse(key, subjects, (const char*)buf, ret);
-		printf("%s  ", key.c_str());
-		printf("%zd\n", ret);
+		nng_msleep(1000);
+		printf(".");
+		continue;
 	}
 }

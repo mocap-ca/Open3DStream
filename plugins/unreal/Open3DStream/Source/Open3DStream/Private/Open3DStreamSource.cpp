@@ -55,6 +55,8 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 {
 	auto root = GetSubjectList(data);
 	auto subjects = root->subjects();
+	if (subjects == nullptr)
+		return;
 
 	FLiveLinkFrameDataStruct FrameDataStruct(FLiveLinkAnimationFrameData::StaticStruct());
 	FLiveLinkAnimationFrameData& FrameData = *FrameDataStruct.Cast<FLiveLinkAnimationFrameData>();

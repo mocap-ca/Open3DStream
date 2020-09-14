@@ -29,24 +29,33 @@ bool AsyncSubscriber::start(const char *url)
 	if (ret != 0) { return false;  }
 
 	ret = nng_pipe_notify(mSocket, nng_pipe_ev::NNG_PIPE_EV_ADD_POST, 
-		AsyncSubscriber::PipeEvent, this);
+		AsyncSubscriber::pipeEvent, this);
 	if (ret != 0) { return false; }
 
+	// Async dial - pipe will be created on connection
 	ret = nng_dialer_start(mDialer, NNG_FLAG_NONBLOCK);
 	if (ret != 0) { return false; }
 
 	return true;
 }
 
-void AsyncSubscriber::PipeEvent_(nng_pipe pipe, nng_pipe_ev pipe_ev)
+void AsyncSubscriber::pipeEvent_(nng_pipe pipe, nng_pipe_ev pipe_ev)
 {
+	int ret;
 	if (pipe_ev == nng_pipe_ev::NNG_PIPE_EV_ADD_POST)
 	{
 		nng_socket s= nng_pipe_socket(pipe);
 
-		nng_aio_alloc(&aio, AsyncSubscriber::Callback, this);
+		ret = nng_aio_alloc(&aio, AsyncSubscriber::callback, this);
+		if (ret != 0) return;
 
-		nng_recv_aio(s, aio);
+		nng_recv_aio(mSocket, aio);
+
+		//ret = nng_ctx_open(&ctx, mSocket);
+		//if (ret != 0) return;
+
+		//nng_ctx_recv(ctx, aio);
+
 		//in_pipe();
 	}
 
@@ -54,29 +63,5 @@ void AsyncSubscriber::PipeEvent_(nng_pipe pipe, nng_pipe_ev pipe_ev)
 		return; // TODO
 }
 
-
-void AsyncSubscriber::Callback_()
-{
-	nng_msg *msg;
-
-	int ret;
-
-	ret = nng_aio_result(aio);
-	if (ret != 0) return;
-
-	msg = nng_aio_get_msg(aio);
-
-	size_t len = nng_msg_len(msg);
-	if (len == 0) return;
-
-	void *data = nng_msg_body(msg);
-
-	if (fnRef) fnRef(fnContext, data, len);
-
-	nng_msg_free(msg);
-
-	nng_recv_aio(mSocket, aio);
-
-}
 
 }

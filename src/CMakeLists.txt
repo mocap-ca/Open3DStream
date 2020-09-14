@@ -11,6 +11,7 @@ set(SOURCES
 	o3ds/model.cpp	
 	o3ds/model.h
     o3ds/base_server.h
+	o3ds/base_server.cpp
 	o3ds/subscriber.cpp
 	o3ds/subscriber.h
 	o3ds/async_subscriber.cpp

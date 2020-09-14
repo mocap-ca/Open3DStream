@@ -17,13 +17,19 @@ namespace O3DS
 		virtual ~AsyncSubscriber() { nng_close(mSocket); }
 		bool start(const char*url);
 
-		static void Callback(void *ref) { ((AsyncSubscriber*)ref)->Callback_(); }
-		void Callback_();
-		static void PipeEvent(nng_pipe pipe, nng_pipe_ev pipe_ev, void* ref)
+		void callback_()
 		{
-			((AsyncSubscriber*)ref)->PipeEvent_(pipe, pipe_ev);
+			AsyncConnector::asyncReadMsg();
 		}
-		void PipeEvent_(nng_pipe pipe, nng_pipe_ev pipe_ev);
+		static void callback(void *ref)
+		{
+			((AsyncSubscriber*)ref)->callback_();
+		}
+		static void pipeEvent(nng_pipe pipe, nng_pipe_ev pipe_ev, void* ref)
+		{
+			((AsyncSubscriber*)ref)->pipeEvent_(pipe, pipe_ev);
+		}
+		void pipeEvent_(nng_pipe pipe, nng_pipe_ev pipe_ev);
 
 		bool listen(const char* url) { return false; }
 

@@ -15,21 +15,13 @@ namespace O3DS
 
 		virtual bool start(const char* url) = 0;
 		virtual bool write(const char *data, size_t len) = 0;
+		virtual bool writeMsg(const char *data, size_t len) = 0;
 		virtual size_t read(char *data, size_t len) = 0;
+		virtual size_t readMsg(char *data, size_t len) = 0;
 
+		const std::string& getError();
 
-		const std::string& getError()
-		{
-			return mError;
-		}
-
-		void setError(const char *msg, int ret)
-		{
-			mError = msg;
-			mError += ": ";
-			mError += nng_strerror(ret);
-		}
-
+		void setError(const char *msg, int ret);
 		std::string err() { return mError;  }
 
 	protected:
@@ -41,31 +33,10 @@ namespace O3DS
 	{
 	public:
 		// Base class for blocking connectors
-		virtual bool write(const char *data, size_t len)
-		{
-			int ret;
-			ret = nng_send(mSocket, (void*)data, len, 0);
-			if (ret != 0)
-			{
-				setError("Sending data", ret);
-				return false;
-			}
-
-			return true;
-
-		}
-		virtual size_t read(char *data, size_t len)  // Read bytes - len is the size of data
-		{
-			size_t sz = len;
-			int ret = nng_recv(mSocket, data, &sz, 0);
-			if (ret != 0) {
-				setError("Error reading", ret);
-				return false;
-			}
-
-			return sz;
-		}
-
+		virtual bool write(const char *data, size_t len);
+		virtual size_t read(char *data, size_t len);  // Read bytes - len is the size of data
+		virtual bool writeMsg(const char *data, size_t len);
+		virtual size_t readMsg(char *data, size_t len);  // Read bytes - len is the size of data
 	};
 
 
@@ -78,44 +49,27 @@ namespace O3DS
 	public:
 		AsyncConnector()
 			: fnContext(nullptr)
-			, fnRef(nullptr) {};
+			, fnRef(nullptr)
+		{
+			nng_ctx_open(&ctx, mSocket);
+		};
+
+		~AsyncConnector()
+		{
+			if (aio) nng_aio_stop(aio);
+		}
 
 		virtual bool start(const char* url) = 0;  // Starts the server - servers will listen, clients will dial
 
-		bool write(const char *data, size_t len)
-		{
-			int ret;
-			ret = nng_send(mSocket, (void*)data, len, NNG_FLAG_NONBLOCK);
-			if (ret != 0) 
-			{
-				setError("Sending data", ret);
-				return false;
-			}
-			return true;
-		}
+		bool write(const char *data, size_t len);
+		size_t read(char *data, size_t len); // Read bytes - len is the size of data
+		bool writeMsg(const char *data, size_t len);
+		size_t readMsg(char *data, size_t len); // Read bytes - len is the size of data
 
-		virtual size_t read(char *data, size_t len)  // Read bytes - len is the size of data
-		{
-			size_t sz = len;
-			int ret = nng_recv(mSocket, data, &sz, NNG_FLAG_NONBLOCK);
-			if (ret == NNG_EAGAIN)
-			{
-				return 0;
-			}
-			if (ret != 0) 
-			{
-				setError("Error reading", ret);
-				return 0;
-			}
+		void setFunc(void* ctx, inDataFunc f); // User implemented callback to receive data (optional)
 
-			return sz;
-		}
+		void asyncReadMsg();
 
-		void setFunc(void* ctx, inDataFunc f)  // User implemented callback to receive data (optional)
-		{ 
-			fnContext = ctx;
-			fnRef = f;
-		}
 
 	protected:
 		void *     fnContext;  // The context provided for the user recieve callback
@@ -123,6 +77,7 @@ namespace O3DS
 
 		nng_dialer mDialer;
 		nng_aio *aio;
+		nng_ctx  ctx;
 
 	};
 }
