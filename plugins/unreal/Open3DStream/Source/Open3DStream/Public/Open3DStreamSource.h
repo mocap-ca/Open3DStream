@@ -53,6 +53,8 @@ public:
 	FThreadSafeBool  bIsValid;
 
 	UServer server;
+	std::vector<char> buffer;
+
 
 	void OnNnpData();
 

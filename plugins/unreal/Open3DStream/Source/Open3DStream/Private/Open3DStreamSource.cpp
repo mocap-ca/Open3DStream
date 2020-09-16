@@ -46,8 +46,12 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 void FOpen3DStreamSource::OnNnpData()
 {
 	this->server.mutex.Lock();
-	OnPackage((uint8*)&this->server.buffer[0], this->server.buffer.size());
+	this->buffer.reserve(this->server.buffer.size());
+	this->buffer = this->server.buffer;
+
 	this->server.mutex.Unlock();
+
+	OnPackage((uint8*)&this->buffer[0], this->buffer.size());
 
 }
 
