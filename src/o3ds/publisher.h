@@ -1,5 +1,5 @@
-#ifndef O3DS_ASYNC_PUBLISHER_H
-#define O3DS_ASYNC_PUBLISHER_H
+#ifndef O3DS_PUBLISHER_H
+#define O3DS_PUBLISHER_H
 
 #include <nng/nng.h>
 #include <nng/protocol/pubsub0/pub.h>
@@ -12,8 +12,6 @@ namespace O3DS
 	class Publisher : public BlockingConnector
 	{
 	public:
-		Publisher();
-		~Publisher() { nng_close(mSocket); }
 		bool start(const char*url);
 
 	};

@@ -91,7 +91,9 @@ namespace O3DS
 		int ret;
 		nng_msg *msg;
 		
-		ret = nng_msg_alloc(&msg, len);
+		ret = nng_msg_alloc(&msg, 0);
+		NERR("Message alloc");
+
 		ret =nng_msg_append(msg, data, len);
 		NERR("Creating message")
 

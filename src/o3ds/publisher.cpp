@@ -7,9 +7,6 @@
 #include "publisher.h"
 
 
-O3DS::Publisher::Publisher()
-{}
-
 bool O3DS::Publisher::start(const char *url)
 {
 	int ret;

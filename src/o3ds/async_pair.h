@@ -11,7 +11,14 @@ namespace O3DS
 	class AsyncPair : public AsyncConnector
 	{
 	public:
-		static void Callback(void *ref) { ((AsyncPair*)ref)->Callback_(); }
+		void callback_()
+		{
+			AsyncConnector::asyncReadMsg();
+		}
+		static void callback(void *ref)
+		{
+			((AsyncPair*)ref)->callback_();
+		}
 		void Callback_();
 	};
 

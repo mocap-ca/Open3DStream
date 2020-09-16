@@ -9,7 +9,6 @@
 #include <thread>
 
 #include "o3ds/model.h"
-#include "o3ds/async_subscriber.h"
 
 void ReadFunc(void *ptr, void *buf, size_t len)
 {
@@ -64,8 +63,6 @@ int main(int argc, char *argv[])
 	}
 
 	using namespace std::chrono_literals;
-
-	char buf[1024 * 12];
 
 	while (1)
 	{

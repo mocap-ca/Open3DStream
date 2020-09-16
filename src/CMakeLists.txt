@@ -16,6 +16,8 @@ set(SOURCES
 	o3ds/subscriber.h
 	o3ds/async_subscriber.cpp
 	o3ds/async_subscriber.h
+	o3ds/async_publisher.cpp
+	o3ds/async_publisher.h
 	o3ds/pair.cpp
 	o3ds/pair.h
 	o3ds/async_pair.cpp

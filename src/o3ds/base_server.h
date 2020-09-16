@@ -9,7 +9,10 @@ namespace O3DS
 	class Connector
 	{
 	public:
-		virtual ~Connector() { nng_close(mSocket); }
+		virtual ~Connector()
+		{
+			nng_close(mSocket);
+		}
 		// Base class for all servers.  Has  a nng_socket and error handling.
 	public:
 
@@ -48,15 +51,19 @@ namespace O3DS
 		// If the messages needs to be recieved, pass a callback to setFunc - this is optional
 	public:
 		AsyncConnector()
-			: fnContext(nullptr)
+			: Connector()
+			, fnContext(nullptr)
 			, fnRef(nullptr)
+			, aio(nullptr)
 		{
-			nng_ctx_open(&ctx, mSocket);
+			//nng_ctx_open(&ctx, mSocket);
 		};
 
-		~AsyncConnector()
+		virtual ~AsyncConnector()
 		{
-			if (aio) nng_aio_stop(aio);
+			//nng_dialer_close(mDialer);
+			//if (aio)	nng_aio_free(aio);
+			
 		}
 
 		virtual bool start(const char* url) = 0;  // Starts the server - servers will listen, clients will dial
@@ -77,7 +84,7 @@ namespace O3DS
 
 		nng_dialer mDialer;
 		nng_aio *aio;
-		nng_ctx  ctx;
+		//nng_ctx  ctx;
 
 	};
 }

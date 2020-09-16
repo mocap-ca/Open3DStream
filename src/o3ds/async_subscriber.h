@@ -13,8 +13,7 @@ namespace O3DS
 	class AsyncSubscriber : public AsyncConnector
 	{
 	public:
-		AsyncSubscriber();
-		virtual ~AsyncSubscriber() { nng_close(mSocket); }
+
 		bool start(const char*url);
 
 		void callback_()
@@ -36,8 +35,6 @@ namespace O3DS
 		bool write(const char* data, size_t ptr) { return false; }
 
 		//virtual void in_pipe() = 0;
-
-		std::string mError;
 
 	};
 

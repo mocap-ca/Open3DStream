@@ -11,8 +11,10 @@ using namespace MyGame::Sample;
 #include "o3ds/model.h"
 #include "o3ds/getTime.h"
 
-#include "o3ds/publisher.h"
+#include "o3ds/async_publisher.h"
+#include "o3ds/async_pair.h"
 #include "o3ds/pair.h"
+#include "o3ds/publisher.h"
 //#include "o3ds/request.h"
 //#include "o3ds/pipeline.h"
 
@@ -28,21 +30,21 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	O3DS::BlockingConnector* connector = nullptr;
+	O3DS::Connector* connector = nullptr;
 
 	if (strcmp(argv[2], "pub") == 0)
 	{
 		printf("Publishing on: %s\n", argv[3]);
-		connector = new O3DS::Publisher();
+		connector = new O3DS::AsyncPublisher();
 	}
 	if (strcmp(argv[2], "client") == 0)
 	{
-		printf("Publishing on: %s\n", argv[3]);
+		printf("Conecting to on: %s\n", argv[3]);
 		connector = new O3DS::ClientPair();
 	}
 	if (strcmp(argv[2], "server") == 0)
 	{
-		printf("Publishing on: %s\n", argv[3]);
+		printf("Listening on: %s\n", argv[3]);
 		connector = new O3DS::ServerPair();
 	}
 
@@ -97,13 +99,25 @@ redo:
 
 	bool first = true;
 
+	int skips = 0;
+
 	for (FbxTime t = time_info.Start; t < time_info.End; t = t + time_info.Inc)
 	{
 		double tick = GetTime() - zerof;
 		int delay = (int)((t.GetSecondDouble() - tick) * 1000.f);
-		printf("%f    %f   %f   %d\n", GetTime(), tick, t.GetSecondDouble(), delay);
 
-		if (delay < 0) continue;
+		if (delay < 0)
+		{
+			skips++;
+			continue;
+		}
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+
+
+		printf("%f    %f   %f   %d    %d\n", GetTime(), tick, t.GetSecondDouble(), delay, skips);
+
+		skips = 0;
 
 		for (auto i : refs)
 		{
@@ -112,7 +126,7 @@ redo:
 
 		subjects.update(true);
 
-		int ret = O3DS::Serialize(0, subjects, buffer, 1024 * 16, first);
+		int ret = O3DS::Serialize(0, subjects, buffer, 1024 * 16, true);
 		first = false;
 		
 		if (ret > 0)
@@ -130,8 +144,6 @@ redo:
 
 		//printf("%d bytes\n", ret);
 
-		if (delay > 0)
-			std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 	}
 
 	goto redo;
