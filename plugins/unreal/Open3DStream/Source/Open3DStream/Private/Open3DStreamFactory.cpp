@@ -26,9 +26,14 @@ TSharedPtr<SWidget> UOpen3DStreamFactory::BuildCreationPanel(FOnLiveLinkSourceCr
 
 void UOpen3DStreamFactory::OnSourceEvent(FOpen3DStreamDataPtr SourceData, FOnLiveLinkSourceCreated InOnLiveLinkSourceCreated) const
 {
+	// This is called by the UI
 	if (!SourceData.IsValid()) return;
 
-	TSharedPtr<FOpen3DStreamSource> SharedPtr = MakeShared<FOpen3DStreamSource>(SourceData->Url, SourceData->TimeOffset);
+	TSharedPtr<FOpen3DStreamSource> SharedPtr =
+		MakeShared<FOpen3DStreamSource>(SourceData->Url, 
+			                            SourceData->Key,
+			                            SourceData->Protocol,
+			                            SourceData->TimeOffset);
 	
 	FString ConnectionString;
 	InOnLiveLinkSourceCreated.ExecuteIfBound(StaticCastSharedPtr<ILiveLinkSource>(SharedPtr), MoveTemp(ConnectionString));
@@ -40,14 +45,23 @@ TSharedPtr<ILiveLinkSource> UOpen3DStreamFactory::CreateSource(const FString& Co
 	// This isn't used by the livelink gui, maybe it's for blueprint use?
 
 	FText Url;
+	FText Key;
+	FText Protocol;
+
 	if (!FParse::Value(*ConnectionString, TEXT("Url="), Url))
 	{
 		return TSharedPtr<ILiveLinkSource>();
 	}
 
+	FParse::Value(*ConnectionString, TEXT("Key="), Key);
+	FParse::Value(*ConnectionString, TEXT("Protocol="), Protocol);
+
 	const double TimeOffset = 0.0;
 
-	TSharedPtr<FOpen3DStreamSource> ret = MakeShared<FOpen3DStreamSource>(Url, TimeOffset);
+	TSharedPtr<FOpen3DStreamSource> ret = MakeShared<FOpen3DStreamSource>(Url, 
+		Key,
+		Protocol,
+		TimeOffset);
 	return StaticCastSharedPtr<ILiveLinkSource>(ret);
 }
 

@@ -1,14 +1,22 @@
 cmake_minimum_required (VERSION 2.8.11)
 project(MobuStreamDevice)
 
-set(SRCS plugin.cpp layout.cpp device.cpp device.h layout.h mobuModel.cpp mobuModel.cpp server.h server.cpp)
+set(SRCS plugin.cpp layout.cpp device.cpp device.h layout.h mobuModel.cpp mobuModel.cpp)
 
-include_directories("C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK/include")
+if(EXISTS  "C:/Program Files/Autodesk/MotionBuilder 2019/")
+add_library(O3DSMobu2019Device  SHARED ${SRCS} )
+target_link_libraries(O3DSMobu2019Device  fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib open3dstreamstatic ${libs})
+target_include_directories(O3DSMobu2019Device PUBLIC "C:/Program Files/Autodesk/MotionBuilder 2019/OpenRealitySDK/include")
+target_link_directories(O3DSMobu2019Device PUBLIC "C:/Program Files/Autodesk/MotionBuilder 2019/OpenRealitySDK/lib/x64")
+install(TARGETS O3DSMobu2019Device DESTINATION "C:/Program Files/Autodesk/MotionBuilder 2019/bin/x64/plugins")
+endif()
 
-link_directories("C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK/lib/x64")
+if(EXISTS  "C:/Program Files/Autodesk/MotionBuilder 2020/")
+add_library(O3DSMobu2020Device  SHARED ${SRCS} )
+target_link_libraries(O3DSMobu2020Device  fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib open3dstreamstatic ${libs})
+target_include_directories(O3DSMobu2020Device PUBLIC "C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK/include")
+target_link_directories(O3DSMobu2020Device PUBLIC  "C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK/lib/x64")
+install(TARGETS O3DSMobu2020Device DESTINATION "C:/Program Files/Autodesk/MotionBuilder 2020/bin/x64/plugins")
+endif()
 
-add_library(O3DSMobuDevice SHARED ${SRCS} )
 
-target_link_libraries(O3DSMobuDevice  fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib open3dstreamstatic ${libs})
-
-install(TARGETS O3DSMobuDevice DESTINATION "C:/Program Files/Autodesk/MotionBuilder 2020/bin/x64/plugins")

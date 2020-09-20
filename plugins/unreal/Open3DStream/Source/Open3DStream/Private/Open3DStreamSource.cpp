@@ -14,9 +14,11 @@ using namespace MyGame::Sample;
 // E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkTypes.h
 // E:\Unreal\UE_4.25\Engine\Plugins\Runtime\AR\Apple\AppleARKit\Source\AppleARKitPoseTrackingLiveLink\Private\AppleARKitPoseTrackingLiveLinkSource.cpp
 
-FOpen3DStreamSource::FOpen3DStreamSource(const FText &InUrl, double InTimeOffset)
+FOpen3DStreamSource::FOpen3DStreamSource(const FText &InUrl, const FText &InKey, const FText &InProtocol, double InTimeOffset)
 	: bIsInitialized(false)
 	, Url(InUrl)
+	, Key(InKey)
+	, Protocol(InProtocol)
 	, TimeOffset(InTimeOffset)
 	, ArrivalTimeOffset(0.0)
 	, bIsValid(false)
@@ -37,16 +39,19 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 	bIsValid = true;
 
 	server.DataDelegate.BindRaw(this, &FOpen3DStreamSource::OnNnpData);
-	server.connect(TCHAR_TO_ANSI(*Url.ToString()));
-
+	server.start(TCHAR_TO_ANSI(*Url.ToString()), TCHAR_TO_ANSI(*Protocol.ToString()));
 	UpdateConnectionLastActive();
 }
 
 void FOpen3DStreamSource::OnNnpData()
 {
 	this->server.mutex.Lock();
-	OnPackage((uint8*)&this->server.buffer[0], this->server.buffer.size());
+	this->buffer.reserve(this->server.buffer.size());
+	this->buffer = this->server.buffer;
+
 	this->server.mutex.Unlock();
+
+	OnPackage((uint8*)&this->buffer[0], this->buffer.size());
 
 }
 
@@ -54,6 +59,8 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 {
 	auto root = GetSubjectList(data);
 	auto subjects = root->subjects();
+	if (subjects == nullptr)
+		return;
 
 	FLiveLinkFrameDataStruct FrameDataStruct(FLiveLinkAnimationFrameData::StaticStruct());
 	FLiveLinkAnimationFrameData& FrameData = *FrameDataStruct.Cast<FLiveLinkAnimationFrameData>();
@@ -135,6 +142,7 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 
 bool FOpen3DStreamSource::RequestSourceShutdown()
 {
+	this->server.stop();
 	Client = nullptr;
 	SourceGuid.Invalidate();
 	return true;

@@ -10,16 +10,50 @@ using namespace MyGame::Sample;
 #include "fbxloader.h"
 #include "o3ds/model.h"
 #include "o3ds/getTime.h"
+
+#include "o3ds/async_publisher.h"
+#include "o3ds/async_pair.h"
+#include "o3ds/pair.h"
 #include "o3ds/publisher.h"
+//#include "o3ds/request.h"
+//#include "o3ds/pipeline.h"
+
+// C:\cpp\git\github\Open3DStream\test_data\beta_fight.fbx tcp://127.0.0.1:6001  
 
 int main(int argc, char *argv[])
 {
 
-	if(argc != 3)
+	if(argc != 4)
 	{
-		fprintf(stderr, "%s file.fbx url\n", argv[0]);
+		fprintf(stderr, "%s file.fbx protocol url\n", argv[0]);
+		fprintf(stderr, "Protocols: pub client server\n");
 		return 1;
 	}
+
+	O3DS::Connector* connector = nullptr;
+
+	if (strcmp(argv[2], "pub") == 0)
+	{
+		printf("Publishing on: %s\n", argv[3]);
+		connector = new O3DS::AsyncPublisher();
+	}
+	if (strcmp(argv[2], "client") == 0)
+	{
+		printf("Conecting to on: %s\n", argv[3]);
+		connector = new O3DS::ClientPair();
+	}
+	if (strcmp(argv[2], "server") == 0)
+	{
+		printf("Listening on: %s\n", argv[3]);
+		connector = new O3DS::ServerPair();
+	}
+
+	if (!connector)
+	{
+		fprintf(stderr, "Invalid Protocol: %s\n", argv[2]);
+		return 2;
+	}
+
 
 	O3DS::SubjectList subjects;
 
@@ -48,11 +82,11 @@ int main(int argc, char *argv[])
 	}
 
 	// Connect 
-	O3DS::Publisher publisher;
+	//O3DS::Publisher publisher;
 
-	if (!publisher.start(argv[2], 20))
+	if (!connector->start(argv[3]))
 	{
-		printf(publisher.mError.c_str());
+		printf(connector->err().c_str());
 		return 1;
 	}
 
@@ -65,13 +99,25 @@ redo:
 
 	bool first = true;
 
+	int skips = 0;
+
 	for (FbxTime t = time_info.Start; t < time_info.End; t = t + time_info.Inc)
 	{
 		double tick = GetTime() - zerof;
 		int delay = (int)((t.GetSecondDouble() - tick) * 1000.f);
-		printf("%f    %f   %f   %d\n", GetTime(), tick, t.GetSecondDouble(), delay);
 
-		if (delay < 0) continue;
+		if (delay < 0)
+		{
+			skips++;
+			continue;
+		}
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+
+
+		printf("%f    %f   %f   %d    %d\n", GetTime(), tick, t.GetSecondDouble(), delay, skips);
+
+		skips = 0;
 
 		for (auto i : refs)
 		{
@@ -80,17 +126,14 @@ redo:
 
 		subjects.update(true);
 
-
-		int ret = O3DS::Serialize(0, subjects, buffer, 1024 * 16, first);
+		int ret = O3DS::Serialize(0, subjects, buffer, 1024 * 16, true);
 		first = false;
 		
 		if (ret > 0)
 		{
-
-
-			if (!publisher.send(buffer, ret))
+			if (!connector->writeMsg((const char*)buffer, ret))
 			{
-				printf("Could not send\n");
+				printf("Could not send: %s\n", connector->err().c_str());
 				break;
 			}
 		}
@@ -101,8 +144,6 @@ redo:
 
 		//printf("%d bytes\n", ret);
 
-		if (delay > 0)
-			std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 	}
 
 	goto redo;

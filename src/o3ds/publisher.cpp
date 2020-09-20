@@ -7,10 +7,7 @@
 #include "publisher.h"
 
 
-O3DS::Publisher::Publisher()
-{}
-
-bool O3DS::Publisher::start(const char *url, int workers)
+bool O3DS::Publisher::start(const char *url)
 {
 	int ret;
 
@@ -22,24 +19,6 @@ bool O3DS::Publisher::start(const char *url, int workers)
 		setError("Could not listen", ret);
 		return false;
 	}
-	return true;
-}
-
-void O3DS::Publisher::setError(const char *msg, int ret)
-{
-	mError = msg;
-	mError += ": ";
-	mError += nng_strerror(ret);
-}
-
-bool O3DS::Publisher::send(void *data, size_t len)
-{
-	int ret;
-	if ((ret = nng_send(mSocket, data, len, 0)) != 0)
-	{
-		setError("Error sending", ret);
-	}
-
 	return true;
 }
 

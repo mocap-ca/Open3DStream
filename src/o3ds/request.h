@@ -1,23 +1,22 @@
 #pragma once
 
 #include <nng/nng.h>
-#include <nng/protocol/pair1/pair.h>
 #include "base_server.h"
 
 #include <string>
 
 namespace O3DS
 {
-	class ClientPair : public BlockingConnector
+	class Request : public BlockingConnector
 	{
-		// Pair connector (blocking)
+		// Request connector (blocking)
 	public:
 		bool start(const char *url);
 	};
 
-	class ServerPair : public BlockingConnector
+	class Reply : public BlockingConnector
 	{
-		// Pair connector (blocking)
+		// Reply connector (blocking)
 	public:
 		bool start(const char *url);
 	};

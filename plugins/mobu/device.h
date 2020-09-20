@@ -63,23 +63,17 @@ public:
 	FBDeviceSamplingMode	GetSamplingType()								{ return mSamplingType;			}
 	void					SetSamplingType( FBDeviceSamplingMode pType )	{ mSamplingType = pType;		}
 
-
 	void InData(void *, size_t);
 
-	O3DS::SubjectList Items;
-
-	FBTCPIP      mTcpIp;
-
-	O3DS::BaseServer*  mServer;
-
-
-	
-	int          mNetworkSocket;
+	O3DS::SubjectList       Items;
+	FBTCPIP                 mTcpIp;
+	O3DS::Connector*        mServer;
+	int                     mNetworkSocket;
 
 private:
-	double							mSamplingRate;
-	FBDeviceSamplingMode			mSamplingType;
-	FBPlayerControl					mPlayerControl;
+	double                mSamplingRate;
+	FBDeviceSamplingMode  mSamplingType;
+	FBPlayerControl       mPlayerControl;
 
 	TProtocol       mProtocol;
 	FBString		mNetworkAddress;

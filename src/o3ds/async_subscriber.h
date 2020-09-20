@@ -10,28 +10,31 @@
 namespace O3DS
 {
 	// The client pulls data down from a listen server
-	class AsyncSubscriber : public BaseServer
+	class AsyncSubscriber : public AsyncConnector
 	{
 	public:
-		AsyncSubscriber();
-		virtual ~AsyncSubscriber() { nng_close(mSocket); }
-		bool connect(const char*url);
 
-		static void Callback(void *ref) { ((AsyncSubscriber*)ref)->Callback_(); }
-		void Callback_();
-		static void PipeEvent(nng_pipe pipe, nng_pipe_ev pipe_ev, void* ref)
+		bool start(const char*url);
+
+		void callback_()
 		{
-			((AsyncSubscriber*)ref)->PipeEvent_(pipe, pipe_ev);
+			AsyncConnector::asyncReadMsg();
 		}
-		void PipeEvent_(nng_pipe pipe, nng_pipe_ev pipe_ev);
+		static void callback(void *ref)
+		{
+			((AsyncSubscriber*)ref)->callback_();
+		}
+		static void pipeEvent(nng_pipe pipe, nng_pipe_ev pipe_ev, void* ref)
+		{
+			((AsyncSubscriber*)ref)->pipeEvent_(pipe, pipe_ev);
+		}
+		void pipeEvent_(nng_pipe pipe, nng_pipe_ev pipe_ev);
 
-		virtual void in_pipe() = 0;
+		bool listen(const char* url) { return false; }
 
-		nng_socket mSocket;
-		nng_dialer mDialer;
-		nng_aio *aio;
+		bool write(const char* data, size_t ptr) { return false; }
 
-		std::string mError;
+		//virtual void in_pipe() = 0;
 
 	};
 

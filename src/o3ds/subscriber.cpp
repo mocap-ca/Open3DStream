@@ -4,11 +4,7 @@
 namespace O3DS
 {
 
-Subscriber::Subscriber()
-{}
-
-
-bool Subscriber::Start(const char *url)
+bool Subscriber::start(const char *url)
 {
 	int ret;
 
@@ -23,24 +19,5 @@ bool Subscriber::Start(const char *url)
 
 	return true;
 }
-
-bool Subscriber::Recv(char *data, size_t &len)
-{
-	nng_msg *msg;
-	int ret;
-	if ((ret = nng_recvmsg(mSocket, &msg, 0)) != 0) {
-		return false;
-	}
-
-	size_t datalen = nng_msg_len(msg);
-	if (datalen > len)
-		return false;
-	len = datalen;
-	memcpy(data, nng_msg_body(msg), len);
-
-	nng_msg_free(msg);
-	return true;
-}
-
 
 }

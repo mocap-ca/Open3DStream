@@ -8,23 +8,30 @@
 
 namespace O3DS
 {
-	class AsyncPair : public BaseServer
+	class AsyncPair : public AsyncConnector
 	{
 	public:
-		AsyncPair();
-		virtual ~AsyncPair() { nng_close(mSocket); }
-
-		bool connect(const char* url) override;
-		bool listen(const char *url) override;
-		bool write(const char *data, size_t ptr) override;
-
-		static void Callback(void *ref) { ((AsyncPair*)ref)->Callback_(); }
+		void callback_()
+		{
+			AsyncConnector::asyncReadMsg();
+		}
+		static void callback(void *ref)
+		{
+			((AsyncPair*)ref)->callback_();
+		}
 		void Callback_();
+	};
 
-		nng_socket mSocket;
-		nng_dialer mDialer;
-		nng_aio *aio;
+	class AsyncPairClient : public AsyncPair
+	{
+	public:
+		bool start(const char* url) override;
+	};
 
+	class AsyncPairServer : public AsyncPair
+	{
+	public:
+		bool start(const char* url) override;
 	};
 }
 

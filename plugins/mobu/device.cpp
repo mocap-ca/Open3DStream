@@ -46,6 +46,7 @@ bool Open3D_Device::FBCreate()
 	mStreaming = true;
 	mProtocol = kNNGServer;
 	mKey = nullptr;
+	mServer = nullptr;
 
 	FBTime	lPeriod;
 	lPeriod.SetSecondDouble(1.0/60.0);
@@ -118,6 +119,12 @@ bool Open3D_Device::Start()
 	lProgress.Text	= "Opening device communications";
 	Status			= "Opening device communications";
 
+	if (mServer)
+	{
+		delete mServer;
+		mServer = nullptr;
+	}
+
 	for (auto& subject : Items)
 	{
 		MobuSubjectInfo *info = dynamic_cast<MobuSubjectInfo*>(subject->mInfo);
@@ -160,34 +167,22 @@ bool Open3D_Device::Start()
 		return false;
 	}
 
-	if (mProtocol == Open3D_Device::kNNGServer)
+	if (mProtocol == Open3D_Device::kNNGServer ||
+		mProtocol == Open3D_Device::kNNGClient || 
+		mProtocol == Open3D_Device::kNNGPublish)
 	{
-		mServer = new O3DS::AsyncPair();
-		mServer->setFunc(this, dataFn);
-		if (mServer->listen(mNetworkAddress))
-		{
-			Status = "NNG Server OK";
-			return true;
-		}
-		else
-		{
-			Status = mServer->getError().c_str();
-			return false;
-		}
-	}
+		if (mProtocol == Open3D_Device::kNNGServer)  mServer = new O3DS::AsyncPairServer();
+		if (mProtocol == Open3D_Device::kNNGClient)	 mServer = new O3DS::AsyncPairClient();
+		if (mProtocol == Open3D_Device::kNNGPublish) mServer = new O3DS::Publisher();
 
-	if (mProtocol == Open3D_Device::kNNGClient)
-	{
-		mServer = new O3DS::AsyncPair();
-		mServer->setFunc(this, dataFn);
-		if (mServer->connect(mNetworkAddress))
+		if (mServer->start(mNetworkAddress))
 		{
-			Status = "NNG Client OK";
+			Status = "Running";
 			return true;
 		}
 		else
 		{
-			Status = mServer->getError().c_str();
+			Status = mServer->err().c_str();
 			return false;
 		}
 	}
@@ -223,6 +218,12 @@ bool Open3D_Device::Stop()
 			Status = "Error Closing";
 		}
 	}
+
+	if (mServer) 
+	{
+		delete mServer;
+		mServer = nullptr;
+     }
 
 	lProgress.Caption = "";
 	lProgress.Text = "";
@@ -295,7 +296,8 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			}
 
 			if (mProtocol == Open3D_Device::kNNGClient ||
-				mProtocol == Open3D_Device::kNNGServer)
+				mProtocol == Open3D_Device::kNNGServer ||
+				mProtocol == Open3D_Device::kNNGPublish)
 			{
 				mServer->write((const char*)buf, bucket_size);
 			}
