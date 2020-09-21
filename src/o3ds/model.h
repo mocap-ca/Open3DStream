@@ -74,6 +74,17 @@ namespace O3DS
 		std::vector <Transform*>::iterator end() { return items.end(); }
 
 		std::vector<Transform*> items;
+
+		Transform* find(const std::string &name)
+		{
+			for (auto i = 0; i < items.size(); i++)
+			{
+				if (items[i]->mName == name)
+					return items[i];
+				return nullptr;
+			}
+
+		}
 	};
 
 	class SubjectInfo
@@ -142,6 +153,16 @@ namespace O3DS
 			auto s = new Subject(name, info);
 			items.push_back(s);
 			return s;
+		}
+
+		Subject* findSubject(const std::string &name)
+		{
+			for (auto i : items)
+			{
+				if (i->mName == name)
+					return i;
+			}
+			return nullptr;
 		}
 
 		void update(bool useMatrix)

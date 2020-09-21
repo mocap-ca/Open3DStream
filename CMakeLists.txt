@@ -27,4 +27,5 @@ add_subdirectory(apps/FbxStream)
 add_subdirectory(apps/SubscribeTest)
 add_subdirectory(src)     
 add_subdirectory(plugins/mobu)
+add_subdirectory(plugins/maya)
 

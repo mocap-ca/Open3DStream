@@ -65,7 +65,7 @@ int O3DS::Serialize(const char *key, SubjectList &data, uint8_t *outbuf, int buf
 
 }
 
-void O3DS::Parse(std::string& key, SubjectList &subjects, const char *data, size_t len)
+void O3DS::Parse(std::string& key, SubjectList &outSubjects, const char *data, size_t len)
 {
 	auto root = GetSubjectList(data);
 
@@ -75,6 +75,47 @@ void O3DS::Parse(std::string& key, SubjectList &subjects, const char *data, size
 
 	for (uint32_t i = 0; i < subjects_data->size(); i++)
 	{
+		// For each subject
+		auto inSubject = subjects_data->Get(i);
+		std::string name = inSubject->name()->str();
+
+		Subject *outSubject = outSubjects.findSubject(name);
+		if (outSubject == nullptr)
+		{
+			outSubject = outSubjects.addSubject(name);
+		}
+
+		auto inNodes = inSubject->nodes();
+		auto inNames = inSubject->names();
+
+		if (inNodes->size() == inNames->size())
+		{
+			outSubject->clear();
+
+			for (int n = 0; n < inNodes->size(); n++)
+			{
+				auto inNode = inNodes->Get(n);
+				std::string inName = inSubject->names()->Get(n)->str();
+				outSubject->addTransform(inName, inNode->parent());
+			}
+		}
+
+		for (int n = 0; n < inNodes->size() && n < outSubject->mTransforms.size(); n++)
+		{
+			Transform *outTransform = outSubject->mTransforms.items[n];
+			auto inNode = inNodes->Get(n);
+			auto inTranslation = inNode->translation();
+			auto inRotation = inNode->rotation();
+
+			outTransform->mTranslation.v[0] = inTranslation->x();
+			outTransform->mTranslation.v[1] = inTranslation->y();
+			outTransform->mTranslation.v[2] = inTranslation->z();
+			outTransform->mOrientation.v[0] = inRotation->x();
+			outTransform->mOrientation.v[1] = inRotation->y();
+			outTransform->mOrientation.v[2] = inRotation->z();
+			outTransform->mOrientation.v[3] = inRotation->w();
+		}
+
 	}
 	auto key_name = root->key();
 	if (key_name) key.assign(key_name->str());

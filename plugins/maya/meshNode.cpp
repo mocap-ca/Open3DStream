@@ -1,5 +1,5 @@
 #include "meshNode.h"
-#include "mesh.h"
+//#include "mesh.h"
 
 #include <maya/MGlobal.h>
 #include <maya/MString.h>

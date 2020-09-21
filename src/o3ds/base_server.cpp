@@ -66,11 +66,19 @@ namespace O3DS
 		size_t msglen = nng_msg_len(msg);
 		if (msglen > len)
 		{
+			nng_msg_free(msg);
 			mError = "Message too large";
 			return false;
 		}
 
-		memcpy(data, nng_msg_body(msg), len);
+		void *msgBody = nng_msg_body(msg);
+		if (!msgBody)
+		{
+			mError = "Invalid Message";
+			return false;
+		}
+
+		memcpy(data, msgBody, len);
 
 		nng_msg_free(msg);
 

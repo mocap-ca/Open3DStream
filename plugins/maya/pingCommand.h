@@ -21,16 +21,13 @@ public:
 
     static void* creator() { return new PingCommand; }
 
-    static const char * portArg;
-    static const char * portArgLong;
-    static const char * ipArg;
-    static const char * ipArgLong;
+    static const char * urlArg;
+    static const char * urlArgLong;
     static const char * msgArg;
     static const char * msgArgLong;
 
 private :
-    int port;
-    MString ip;	
+    MString url;
     MString msg;
 };
 

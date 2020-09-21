@@ -4,15 +4,15 @@
 #include <maya/MPxThreadedDeviceNode.h>
 #include <maya/MStatus.h>
 #include <maya/MStringArray.h>
-#include "udpSocket.h"
+#include "o3ds/base_server.h"
+#include "o3ds/model.h"
+
 
 #ifdef _WIN32
 #include <Windows.h>
 #endif
 
-#define MODE_UDP    0
-#define MODE_PIPE   1
-#define MODE_MOTIVE 2
+#define MODE_SUBSCRIBE  0
 
 class ThreadedDevice : public MPxThreadedDeviceNode
 {
@@ -31,37 +31,29 @@ public:
 
 	static void*  creator() { return new ThreadedDevice(); }
 
-    //size_t              parse(const char *buffer, std::vector<Item> &items );
-    void sendData(const char*message, size_t msglen=0, const char* data=NULL, size_t datalen = 0);
+    void passMessage(const char*message, size_t msglen=0, unsigned char mode=0);
 
-	virtual bool connect(); 
-    virtual bool isConnected();
-	virtual bool disconnect();
-	virtual size_t receiveData(char *, size_t);
+	//virtual size_t receiveData(char *, size_t);
 
-
-	static MObject      fileName;
-	static MObject      save;
     static MObject      mocap;
 	static MObject      scale;
     static MObject      outputName;
     static MObject      outputTranslate;
     static MObject      outputRotate;
-    static MObject      info;
-	static MObject      port;
+    static MObject      url;
+	static MObject      info;
 	static MObject      mode;
+	static MObject      subject;
 
 	static MTypeId id;
 
-    MStringArray names;
+	O3DS::BlockingConnector *mConnector;
+	O3DS::SubjectList mSubjectList;
 
-	UdpServer socket;
-
-	MString mFileName;
-	volatile bool    mSave;
-	FILE *fp;
-	int       iPort;
-	int       mMode;
+    MStringArray  mNames;
+	MString       mUrl;
+	MString       mSubject;
+	int           mMode;
 
 #ifdef _WIN32
 	HANDLE hPipe;
