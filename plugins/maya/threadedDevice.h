@@ -55,6 +55,9 @@ public:
 	MString       mSubject;
 	int           mMode;
 
+	std::vector<std::string> mNameMap;
+
+
 #ifdef _WIN32
 	HANDLE hPipe;
 #endif

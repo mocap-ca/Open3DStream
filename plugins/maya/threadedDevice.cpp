@@ -29,15 +29,45 @@
 
 /*
 Usage:
+
 import maya.cmds as m
-m.loadPlugin('O3DSMaya2020Deviced.mll')
+m.loadPlugin("O3DSMaya2020Deviced.mll")
 x = m.createNode('peelRealtimeMocap')
 loc = m.spaceLocator()
 m.connectAttr( x + ".mocap[0].outputTranslate", loc[0] + ".t")
 m.connectAttr( x + ".mocap[0].outputRotate", loc[0] + ".r")
-m.setAttr( x + ".url", "tcp://127.0.0.1:6001")
+m.setAttr( x + ".url", "tcp://127.0.0.1:6001", typ="string")
+m.setAttr( x + ".subject", "beta", typ="string")
 
 m.setAttr( x+ ".live", 1)
+
+m.getAttr(x + ".mocap[0].outputTranslate")
+
+
+m.file("C:/cpp/git/github/Open3DStream/test_data/beta_anim.fbx", i=True)
+import maya.cmds as m
+m.loadPlugin("O3DSMaya2020Deviced.mll")
+x = m.createNode('peelRealtimeMocap')
+loc = m.spaceLocator()
+m.connectAttr( x + ".mocap[0].outputTranslate", loc[0] + ".t")
+m.connectAttr( x + ".mocap[0].outputRotate", loc[0] + ".r")
+m.setAttr( x + ".url", "tcp://127.0.0.1:6001", typ="string")
+m.setAttr( x + ".subject", "beta", typ="string")
+
+m.setAttr( x+ ".live", 1)
+
+m.getAttr(x + ".mocap[0].outputTranslate")
+
+m.file("C:/cpp/git/github/Open3DStream/test_data/beta_anim.fbx", i=True)
+
+for i in range(m.getAttr(x + ".mocap", size=True)):
+	node = "%s.mocap[%d]" % (x, i)
+	name = m.getAttr(node + ".name" )
+	if m.objExists("beta:" + name):
+		m.connectAttr("%s.ot" % node , "beta:%s.t" % name)
+		m.connectAttr("%s.orot" % node , "beta:%s.r" % name)
+
+
 */
 
 
@@ -358,27 +388,6 @@ MStatus ThreadedDevice::compute( const MPlug &plug, MDataBlock& block)
 			unsigned int id = 0;
 
 			int last = 0;
-			typedef std::map< std::string, int> TNameMap;
-			std::queue<int> availIds;
-			TNameMap nameMap;
-
-			// Check all the current names
-			for (id = 0; id < outHandle.elementCount(); id++)
-			{
-				// Get segment name
-				status = nPlug.selectAncestorLogicalIndex(id, mocap);
-				MCHECKERROR(status, "Selecting name attribute");
-
-				// Add to map
-				MString name;
-				status = nPlug.getValue(name);
-				MCHECKERROR(status, "Geting name attribute");
-				if (name.length() > 0)
-				{
-					availIds.push(id);
-				}
-			}
-
 
 			id = 0;
 
@@ -387,32 +396,20 @@ MStatus ThreadedDevice::compute( const MPlug &plug, MDataBlock& block)
 				arrayIndex = -1;
 
 				O3DS::Transform *transform = *i;
+				std::string nodeName = (*i)->mName;
 
 				// Find the channel with a name that matches
-				TNameMap::iterator channelId = nameMap.find((*i)->mName);
-				if (channelId != nameMap.end())
+				std::vector<std::string>::iterator channelId = std::find(mNameMap.begin(), mNameMap.end(), nodeName);
+				if (channelId != mNameMap.end())
 				{
-					arrayIndex = channelId->second;
+					arrayIndex = std::distance(mNameMap.begin(), channelId);
 				}
 				else
 				{
-					// No channel found - find an empty channel
-					if (availIds.size() > 0)
-					{
-						arrayIndex = availIds.front();
-						availIds.pop();
-					}
-					else
-					{
-						// Create a new row
-						arrayIndex = outHandle.elementCount();
-
-						MDataHandle nHandle = nPlug.constructHandle(block);
-						MCHECKERROR(status, "adding name element");
-						nHandle.set(MString((*i)->mName.c_str()));
-						nPlug.setValue(nHandle);
-						nPlug.destructHandle(nHandle);
-					}
+					arrayIndex = mNameMap.size();
+					mNameMap.push_back(nodeName);
+					status = nPlug.selectAncestorLogicalIndex(arrayIndex, mocap);
+					nPlug.setValue(nodeName.c_str());
 				}
 
 				// Translation Handle
