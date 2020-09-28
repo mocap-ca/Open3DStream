@@ -104,7 +104,7 @@ namespace O3DS
 		name = name.substr(ns.size() + 1, name.size());
 
 		auto t = subject->addTransform(name, parentId, new MobuUpdater(node));
-		int this_pid = subject->size() - 1;
+		int this_pid = (int)subject->size() - 1;
 
 		for (int i = 0; i < node->GetChildCount(); i++)
 		{

@@ -8,6 +8,8 @@
 
 namespace O3DS
 {
+	/*! \class AsyncPair async_pair.h o3ds/async_pair.h */
+	//! Wrapper for nng pair pattern with asynchronous calls
 	class AsyncPair : public AsyncConnector
 	{
 	public:
@@ -22,12 +24,16 @@ namespace O3DS
 		void Callback_();
 	};
 
+	/*! \class AsyncPairClient async_pair.h o3ds/async_pair.h */
+	//! Calls nng_dial to connect
 	class AsyncPairClient : public AsyncPair
 	{
 	public:
 		bool start(const char* url) override;
 	};
 
+	/*! \class AsyncPairServer async_pair.h o3ds/async_pair.h */
+	//! Calls nng_listen to wait for a connection
 	class AsyncPairServer : public AsyncPair
 	{
 	public:

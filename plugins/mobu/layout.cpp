@@ -421,7 +421,7 @@ void Open3D_Device_Layout::EventDel(HISender pSender, HKEvent pEvent)
 	int id = mSourcesList.ItemIndex;
 	if (id >= 0)
 	{
-		mDevice->Items.items.erase(mDevice->Items.begin() + id);
+		mDevice->Items.mItems.erase(mDevice->Items.begin() + id);
 		PopulateSubjectList();
 	}
 }

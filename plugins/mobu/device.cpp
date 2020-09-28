@@ -249,7 +249,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 		{
 			Items.update(true);
 
-			int32_t bucket_size = O3DS::Serialize(mKey, Items, buf, 1024 * 12, true);
+			int32_t bucket_size = O3DS::Serialize(Items, buf, 1024 * 12, true);
 			if (bucket_size == 0)
 				return;
 

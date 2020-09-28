@@ -360,7 +360,7 @@ MStatus ThreadedDevice::compute( const MPlug &plug, MDataBlock& block)
         MDataHandle infoHandle = block.outputValue( info, &status );
 		if (status)
 		{
-			infoHandle.set(MString(message, *msglen));
+			infoHandle.set(MString(message, (int)*msglen));
 		}
 		else
 		{
@@ -373,8 +373,7 @@ MStatus ThreadedDevice::compute( const MPlug &plug, MDataBlock& block)
         // Output
         MArrayDataHandle outHandle = block.outputArrayValue( mocap, &status );
         MCHECKERROR( status, "mocap out handle");
-		std::string key;
-		O3DS::Parse(key, mSubjectList, message, *msglen);
+		O3DS::Parse(mSubjectList, message, *msglen);
 
 		O3DS::Subject *subject = mSubjectList.findSubject(mSubject.asChar());
 		if (subject != nullptr)
@@ -402,11 +401,11 @@ MStatus ThreadedDevice::compute( const MPlug &plug, MDataBlock& block)
 				std::vector<std::string>::iterator channelId = std::find(mNameMap.begin(), mNameMap.end(), nodeName);
 				if (channelId != mNameMap.end())
 				{
-					arrayIndex = std::distance(mNameMap.begin(), channelId);
+					arrayIndex = (int)std::distance(mNameMap.begin(), channelId);
 				}
 				else
 				{
-					arrayIndex = mNameMap.size();
+					arrayIndex = (int)mNameMap.size();
 					mNameMap.push_back(nodeName);
 					status = nPlug.selectAncestorLogicalIndex(arrayIndex, mocap);
 					nPlug.setValue(nodeName.c_str());

@@ -1,15 +1,43 @@
+/*
+Open 3D Stream
+
+Copyright 2020 Alastair Macleod
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 #ifndef OPEN3D_STREAM_MODEL_H
 #define OPEN3D_STREAM_MODEL_H
 
 #include <vector>
+#include <string>
 
 #include "math.h"
-#include <string>
+#include "context.h"
 
 namespace O3DS
 {
+
 	class Transform;
 
+	/*! \class Updater model.h o3ds/model.h */
+	//! Abstract visitor class to update a transform.
 	class Updater
 	{
 	public:
@@ -17,6 +45,8 @@ namespace O3DS
 		virtual std::string info() = 0;
 	};
 
+	/*! \class Transform model.h o3ds/model.h */
+	//! Defines a single transform with name and parent id reference
 	class Transform
 	{
 	public:
@@ -58,41 +88,49 @@ namespace O3DS
 
 	};
 
+	/*! \class TransformList model.h o3ds/model.h */
+	//! A list (std::vector) of Transform objects
 	class TransformList
 	{
 	public:
 
 		virtual ~TransformList()
 		{
-			for (auto i : items)
+			for (auto i : mItems)
 				delete i;
 		}
 
-		size_t size() { return items.size(); }
-		void clear() { items.clear();  }
-		std::vector <Transform*>::iterator begin() { return items.begin(); }
-		std::vector <Transform*>::iterator end() { return items.end(); }
+		size_t size() { return mItems.size(); }
+		void clear() { mItems.clear();  }
+		std::vector <Transform*>::iterator begin() { return mItems.begin(); }
+		std::vector <Transform*>::iterator end() { return mItems.end(); }
 
-		std::vector<Transform*> items;
+		std::vector<Transform*> mItems;
 
 		Transform* find(const std::string &name)
 		{
-			for (auto i = 0; i < items.size(); i++)
+			for (auto i = 0; i < mItems.size(); i++)
 			{
-				if (items[i]->mName == name)
-					return items[i];
+				if (mItems[i]->mName == name)
+					return mItems[i];
 				return nullptr;
 			}
 
 		}
 	};
 
+	/*! \class SubjectInfo model.h o3ds/model.h
+	 *  This data may be used by the update visitor and is optional. */
+	//! Wrapper to hold implementation specific data for a subject. 
 	class SubjectInfo
 	{
 	public:
 		virtual ~SubjectInfo() {};
 	};
 
+	/*! \class Subject model.h o3ds/model.h
+	 *  The subject can also have a SubjectInfo reference for implementation specific data */
+	//! A collection of transforms, with a name
 	class Subject
 	{
 	public:
@@ -109,17 +147,16 @@ namespace O3DS
 		TransformList mTransforms;
 		SubjectInfo *mInfo;
 
-
 		Transform* addTransform(std::string &name, int parentId, Updater *updater = nullptr)
 		{
 			auto ret = new Transform(name, parentId, updater);
-			mTransforms.items.push_back(ret);
+			mTransforms.mItems.push_back(ret);
 			return ret;
 		}
 
 		void addTransform(Transform* item)
 		{
-			mTransforms.items.push_back(item);
+			mTransforms.mItems.push_back(item);
 		}
 
 		void update(bool useWorldMatrix);
@@ -131,18 +168,26 @@ namespace O3DS
 		
 		size_t size()
 		{
-			return mTransforms.items.size();
+			return mTransforms.mItems.size();
 		}
 
 	};
 
+	/*! \class SubjectList model.h o3ds/model.h */
+	//!  A collection of subjects.
 	class SubjectList
 	{
 	public:
 
+		SubjectList()
+		{}
+
+		SubjectList(const SubjectList &other)
+		{}
+
 		virtual ~SubjectList()
 		{
-			for (auto i : items)
+			for (auto i : mItems)
 			{
 				delete i;
 			}
@@ -151,13 +196,13 @@ namespace O3DS
 		Subject* addSubject(std::string name, SubjectInfo* info=nullptr)
 		{
 			auto s = new Subject(name, info);
-			items.push_back(s);
+			mItems.push_back(s);
 			return s;
 		}
 
 		Subject* findSubject(const std::string &name)
 		{
-			for (auto i : items)
+			for (auto i : mItems)
 			{
 				if (i->mName == name)
 					return i;
@@ -167,22 +212,26 @@ namespace O3DS
 
 		void update(bool useMatrix)
 		{
-			for (auto i : items)
+			for (auto i : mItems)
 			{
 				i->update(useMatrix);
 			}
 		}
-		std::vector<Subject*> items;
+		std::vector<Subject*> mItems;
 
-		size_t size() { return items.size(); }
-		std::vector <Subject*>::iterator begin() { return items.begin(); }
-		std::vector <Subject*>::iterator end() { return items.end(); }
-		Subject* operator [] (int ref) { return items.operator[](ref); }
+		Context mContext;
+
+		size_t size() { return mItems.size(); }
+		std::vector <Subject*>::iterator begin() { return mItems.begin(); }
+		std::vector <Subject*>::iterator end() { return mItems.end(); }
+		Subject* operator [] (int ref) { return mItems.operator[](ref); }
 	};
 
-	int Serialize(const char *key, SubjectList &data, uint8_t *outbuf, int buflen, bool names);
+	//! Encode all of the items in the subject list as binary data
+	int Serialize(SubjectList &data, uint8_t *outbuf, int buflen, bool names);
 
-	void Parse(std::string &key, SubjectList &subjects, const char *data, size_t len);
+	//! Populate the subject list with the binary data provided (created by Serialize)
+	void Parse(SubjectList &subjects, const char *data, size_t len);
 	
 
 

@@ -32,6 +32,9 @@ set(SOURCES
 	o3ds/pipeline.cpp
 	o3ds/async_pipeline.h
 	o3ds/async_pipeline.cpp
+    o3ds/context.h
+	o3ds/context.cpp
+	o3ds/math.h
 	)
 
 set(libs wsock32 ws2_32 debug flatbuffersd optimized flatbuffers debug nngd optimized nng)

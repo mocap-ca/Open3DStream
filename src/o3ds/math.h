@@ -1,4 +1,6 @@
 /*
+Open 3D Stream
+
 Copyright 2020 Alastair Macleod
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -28,16 +30,18 @@ SOFTWARE.
 namespace O3DS
 {
 
+	/*! \class Vector math.h o3ds\math.h */
+	//! A templated type 3D vector 
 	template<typename T>
 	class Vector
 	{
 	public:
 		T v[4];
-
 		T& operator[](int n) { return v[n]; }
-		
 	};
 
+	/*! class Matrix math.h o3ds\math.h */
+	//! A templated 4x4 matrix for transform operations
 	template<typename T>
 	class Matrix
 	{

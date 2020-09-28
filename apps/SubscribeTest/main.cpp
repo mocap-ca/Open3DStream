@@ -12,10 +12,8 @@
 
 void ReadFunc(void *ptr, void *buf, size_t len)
 {
-	std::string key;
 	O3DS::SubjectList subjects;
-	O3DS::Parse(key, subjects, (const char*)buf, len);
-	printf("%s  ", key.c_str());
+	O3DS::Parse(subjects, (const char*)buf, len);
 	printf("%zd\n", len);
 }
 

@@ -12,6 +12,15 @@ void MobuUpdater::update(O3DS::Transform *transform)
 	FBMatrix MobuTransform;
 	mModel->GetMatrix(MobuTransform, kModelTransformation, true, nullptr);
 
+	for (int u = 0; u < 4; u++)
+	{
+		for (int v = 0; v < 4; v++)
+		{
+			transform->mMatrix(u, v) = MobuTransform(u, v);
+		}
+	}
+
+	/*
 	FBMatrix MatOffset;
 	FBRVector RotOffset(90, 0, 0);
 	FBRotationToMatrix(MatOffset, RotOffset);
@@ -31,6 +40,7 @@ void MobuUpdater::update(O3DS::Transform *transform)
 		transform->mMatrix(j, 2) =  MobuTransform(j, 2);
 		transform->mMatrix(j, 3) =  MobuTransform(j, 3);
 	}
+	*/
 
 }
 

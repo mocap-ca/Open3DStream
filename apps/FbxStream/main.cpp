@@ -126,7 +126,7 @@ redo:
 
 		subjects.update(true);
 
-		int ret = O3DS::Serialize(0, subjects, buffer, 1024 * 16, true);
+		int ret = O3DS::Serialize(subjects, buffer, 1024 * 16, true);
 		first = false;
 		
 		if (ret > 0)

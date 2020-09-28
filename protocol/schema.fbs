@@ -1,5 +1,8 @@
 namespace MyGame.Sample;
 
+enum Direction : byte { None = 0, Left, Right, Forward, Back, Up, Down }
+
+
 struct Translation {
 x:float;
 y:float;
@@ -25,10 +28,13 @@ table Subject {
   name:string;
 }
 
+
 table SubjectList {
    subjects:[Subject];
    time:double;
-   key:string;
+   xAxis:Direction;
+   yAxis:Direction;
+   zAxis:Direction;
 }
 
 

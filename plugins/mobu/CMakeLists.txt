@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8.11)
 project(MobuStreamDevice)
 
-set(SRCS plugin.cpp layout.cpp device.cpp device.h layout.h mobuModel.cpp mobuModel.cpp)
+set(SRCS plugin.cpp layout.cpp device.cpp device.h layout.h mobuModel.h mobuModel.cpp)
 
 if(EXISTS  "C:/Program Files/Autodesk/MotionBuilder 2019/")
 add_library(O3DSMobu2019Device  SHARED ${SRCS} )
