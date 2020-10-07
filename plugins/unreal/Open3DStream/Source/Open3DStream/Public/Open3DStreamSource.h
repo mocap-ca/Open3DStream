@@ -6,6 +6,7 @@
 #include "Containers/Ticker.h"
 
 #include "Open3DServer.h"
+#include "o3ds/model.h"
 
 #include "LiveLinkRole.h"
 
@@ -54,6 +55,8 @@ public:
 
 	UServer server;
 	std::vector<char> buffer;
+
+	O3DS::SubjectList mSubjects;
 
 
 	void OnNnpData();

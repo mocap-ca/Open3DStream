@@ -35,6 +35,7 @@ set(SOURCES
     o3ds/context.h
 	o3ds/context.cpp
 	o3ds/math.h
+	o3ds/transform_component.h
 	)
 
 set(libs wsock32 ws2_32 debug flatbuffersd optimized flatbuffers debug nngd optimized nng)

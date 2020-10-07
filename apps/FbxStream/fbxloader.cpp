@@ -10,32 +10,171 @@ using namespace fbxsdk;
 
 namespace O3DS
 {
+namespace Fb
+{
 
 	// Fbx -> O3DS assignment
-	void Assign(O3DS::Matrix<double> &dst, FbxAMatrix &src)
+
+	void operator >>(const FbxVector4& src, O3DS::Vector4d& dst)
+	{
+		dst.v[0] = src[0];
+		dst.v[1] = src[1];
+		dst.v[2] = src[2];
+		dst.v[3] = src[3];
+	}
+
+	void operator >>(const FbxVector4& src, O3DS::Vector3d& dst)
+	{
+		dst.v[0] = src[0];
+		dst.v[1] = src[1];
+		dst.v[2] = src[2];
+	}
+
+	void operator >>(FbxDouble3& src, O3DS::Vector3d& dst)
+	{
+		dst.v[0] = src[0];
+		dst.v[1] = src[1];
+		dst.v[2] = src[2];
+	}
+
+	void operator >>(FbxAMatrix &src, O3DS::Matrix<double>& dst)
 	{
 		for (int u = 0; u < 4; u++)
 			for (int v = 0; v < 4; v++)
 				dst.m[u][v] = src[u][v];
 	}
 
-	MobuUpdater::MobuUpdater(FbxNode *node)
-		: mNode(node)
-	{};
-
-	void MobuUpdater::update(O3DS::Transform *t)
+	O3DS::Matrixd rotationMatrix(fbxsdk::FbxEuler::EOrder order, FbxDouble3 rot)
 	{
+		double pi = 3.14159265358979323846;
+		auto rx = O3DS::Matrixd::RotateX(rot[0] * pi / 180);
+		auto ry = O3DS::Matrixd::RotateY(rot[1] * pi / 180);
+		auto rz = O3DS::Matrixd::RotateZ(rot[2] * pi / 180);
+
+		switch (order)
+		{
+		case FbxEuler::eOrderXYZ:  return  rx * ry * rz;
+		case FbxEuler::eOrderXZY:  return  rx * rz * ry;
+		case FbxEuler::eOrderYXZ:  return  ry * rx * rz;
+		case FbxEuler::eOrderYZX:  return  ry * rz * rx;
+		case FbxEuler::eOrderZXY:  return  rz * rx * ry;
+		case FbxEuler::eOrderZYX:  return  rz * ry * rx;
+		}
+
+		return O3DS::Matrixd();
+	}
+
+
+	void FbTransform::update()
+	{
+		// Translation
+		mNode->EvaluateLocalTranslation(mTime) >> this->translation.value;
+
+		// Rotation
+		//if(this->mName == "beta:Hips")
+		//	printf("% .4f  % .4f   %.4f\n", rotation[0], rotation[1], rotation[2]);
+
+		fbxsdk::FbxEuler::EOrder rotationOrder = mNode->RotationOrder;
+		O3DS::Matrixd matRotation = rotationMatrix(rotationOrder, mNode->EvaluateLocalRotation(mTime));
+		this->rotation.value = matRotation.GetQuaternion();
+
+		// Scale
+		mNode->EvaluateLocalScaling() >> this->scale.value;
+	}
+
+	FbTransform::FbTransform(fbxsdk::FbxNode *node, int parentId)
+		: mNode(node)
+		, O3DS::Transform(parentId)
+	{
+
 		// Update the transform with the data in the FbxNode (mNode)
-		O3DS::Matrix<double> oMatrix;
-		O3DS::Matrix<double> oMatrixOffset = O3DS::Matrix<double>::RotateX(1.5708);
 
-		Assign(oMatrix, mNode->EvaluateGlobalTransform(mTime));
+		FbxTransform tform = mNode->GetTransform();
 
-		O3DS::Vector<double> tt = oMatrix.GetTranslation();
-		O3DS::Vector<double> rr = oMatrix.GetQuaternion();
+		this->mName = mNode->GetName();
 
+		// http://help.autodesk.com/view/FBX/2020/ENU/?guid=FBX_Developer_Help_nodes_and_scene_graph_fbx_nodes_transformation_data_html
+		// http://help.autodesk.com/view/FBX/2020/ENU/?guid=FBX_Developer_Help_nodes_and_scene_graph_fbx_nodes_computing_transformation_matrix_html
+
+		enum FbxTransform::EInheritType inheritType = tform.GetInheritType();
+
+		/*
+		= ParentWorldTransform * T * [Roff * Rp * Rpre] * 
+					R * [ Rpost-1 * Rp-1 * Soff * Sp ] * 
+					S * [ Sp - 1 ]
+		*/
+
+		O3DS::Vector3d translation, rotation, scale,
+			rotationOffset, rotationPivot, scaleOffset,
+			scalePivot, preRotation, postRotation;
+
+		fbxsdk::FbxEuler::EOrder rotationOrder = mNode->RotationOrder;
+		(FbxDouble3)mNode->LclRotation    >> rotation;
+		(FbxDouble3)mNode->RotationPivot  >> rotationPivot;
+		(FbxDouble3)mNode->ScalingOffset  >> scaleOffset;
+		(FbxDouble3)mNode->ScalingPivot   >> scalePivot;
+		(FbxDouble3)mNode->RotationOffset >> rotationOffset;
+		(FbxDouble3)mNode->PreRotation    >> preRotation;
+
+		// Translation
+		(FbxDouble3)(mNode->LclTranslation) >> this->translation.value;
+		this->transformOrder.push_back(O3DS::ComponentType::TTranslation);
+
+		// [Roff * Rp * Rpre]
+		O3DS::Matrixd matRotOffset = O3DS::Matrixd::TranslateXYZ(rotationOffset);
+		O3DS::Matrixd matRotPivot  = O3DS::Matrixd::TranslateXYZ(rotationPivot);
+		O3DS::Matrixd matRotPre    = rotationMatrix(rotationOrder, mNode->PreRotation);
+		O3DS::Matrixd m1 = matRotOffset * matRotPivot * matRotPre;
+
+		//O3DS::Matrixd m1 = matRotPre * matRotPivot * matRotOffset;
+		//O3DS::Matrixd m1 =  matRotPivot * matRotOffset * matRotPre;
+		this->matrices.push_back(O3DS::TransformMatrix(m1));
+		this->transformOrder.push_back(O3DS::ComponentType::TMatrix);
+
+		// Rotation
+		O3DS::Matrixd matRotation = rotationMatrix(rotationOrder, mNode->LclRotation);
+		this->rotation.value = matRotation.GetQuaternion();
+		this->transformOrder.push_back(O3DS::ComponentType::TRotation);
+
+		//  [ Rpost-1 * Rp-1 * Soff * Sp ]
+		O3DS::Matrixd matRotPost     = rotationMatrix(rotationOrder, mNode->PostRotation);
+		O3DS::Matrixd matRotPivotInv = matRotPost.Inverse();
+		O3DS::Matrixd matScaleOffset = O3DS::Matrixd::TranslateXYZ(scaleOffset);
+		O3DS::Matrixd matScalePivot  = O3DS::Matrixd::TranslateXYZ(scalePivot);
+		//O3DS::Matrixd m2 = matRotPost * matRotPivotInv * matScaleOffset * matScalePivot;
+		O3DS::Matrixd m2 = matScalePivot * matScaleOffset * matRotPivotInv * matRotPost;
+
+		this->matrices.push_back(O3DS::TransformMatrix(m2));
+		this->transformOrder.push_back(O3DS::ComponentType::TMatrix);
+
+		// Scale
+		(FbxDouble3)mNode->LclScaling >> this->scale.value;
+		this->transformOrder.push_back(O3DS::ComponentType::TScale);
+
+		// [ Sp - 1 ]
+		O3DS::Matrixd scalePivotInv = matScalePivot.Inverse();
+		this->matrices.push_back(O3DS::TransformMatrix(scalePivotInv));
+		this->transformOrder.push_back(O3DS::ComponentType::TMatrix);
+
+		//O3DS::Matrix<double> oMatrix;
+		//O3DS::Matrix<double> oMatrixOffset = O3DS::Matrix<double>::RotateX(1.5708);
+
+		// Assign(oMatrix, mNode->EvaluateGlobalTransform(mTime));
+
+		//O3DS::Vector<double> tt = oMatrix.GetTranslation();
+		//O3DS::Vector<double> rr = oMatrix.GetQuaternion();
+
+		/*
+		for (int u = 0; u < 4; u++)
+		{
+			for(int v=0; v < 4; v++)
+			{ 
+				t->mMatrix(u, v) = oMatrix(u, v);
+			}
+		}*/
+		
+		/*
 		oMatrix = oMatrix * oMatrixOffset;
-			
 		t->mMatrix(1, 0) = -oMatrix(1, 0);
 		t->mMatrix(1, 1) =  oMatrix(1, 1);
 		t->mMatrix(1, 2) = -oMatrix(1, 2);
@@ -51,8 +190,9 @@ namespace O3DS
 			t->mMatrix(j, 3) =  oMatrix(j, 3);
 		}
 
-		tt = oMatrix.GetTranslation();
-		rr = oMatrix.GetQuaternion();
+		*/
+		//tt = oMatrix.GetTranslation();
+		//rr = oMatrix.GetQuaternion();
 
 		// const char *name = mNode->GetName();
 
@@ -80,7 +220,7 @@ namespace O3DS
 		*/
 	}
 
-	std::string MobuUpdater::info()
+	std::string FbTransform::info()
 	{
 		std::string ret;
 		ret = mNode->GetName();
@@ -103,12 +243,11 @@ namespace O3DS
 		std::string name(node->GetName());
 		name = name.substr(ns.size() + 1, name.size());
 
-		auto t = subject->addTransform(name, parentId, new MobuUpdater(node));
+		subject->mTransforms.mItems.push_back(new FbTransform(node, parentId));
 		int this_pid = (int)subject->size() - 1;
 
 		for (int i = 0; i < node->GetChildCount(); i++)
 		{
-
 			fbxsdk::FbxNode *child = node->GetChild(i);
 
 			if (strcmp(child->GetTypeName(), "Mesh") == 0)
@@ -146,8 +285,8 @@ namespace O3DS
 		{
 			for (auto transform : subject->mTransforms)
 			{
-				MobuUpdater *updater = (MobuUpdater*)transform->mVisitor;
-				updater->mTime = time;
+				FbTransform *t = (FbTransform*)transform;
+				t->mTime = time;
 			}
 		}
 	}
@@ -262,12 +401,12 @@ namespace O3DS
 
 		// Traverse the scene for models
 
-		O3DS::FindSubjects(root, subjects);
+		FindSubjects(root, subjects);
 
 		return 0;
-
-
 	}
+
+	} // Fbx
 
 } // O3DS
 

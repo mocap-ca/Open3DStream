@@ -3,29 +3,32 @@
 
 #include "o3ds/model.h"
 #include <fbxsdk.h>
+//#include <fbxnode.h>
 #include <string>
 
 namespace O3DS
 {
-
-	struct TimeInfo
+	namespace Fb
 	{
-		FbxTime Start;
-		FbxTime End;
-		FbxTime Inc;
-	};
+		struct TimeInfo
+		{
+			FbxTime Start;
+			FbxTime End;
+			FbxTime Inc;
+		};
 
-	class MobuUpdater : public O3DS::Updater
-	{
-	public:
-		MobuUpdater(FbxNode *node);
-		void update(O3DS::Transform *t);
-		std::string info();
-		FbxNode *mNode;
-		FbxTime mTime;
-	};
+		class FbTransform : public O3DS::Transform
+		{
+		public:
+			FbTransform(fbxsdk::FbxNode *node, int parentId);
+			void update() override;
+			std::string info();
+			fbxsdk::FbxNode *mNode;
+			fbxsdk::FbxTime mTime;
+		};
 
-	int Load(const char *path, O3DS::SubjectList& subjects, TimeInfo &time_info);
+		int Load(const char *path, O3DS::SubjectList& subjects, TimeInfo &time_info);
 
-}
+	} // Fbx
+} // O3DS
 #endif

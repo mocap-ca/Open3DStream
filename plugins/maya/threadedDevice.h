@@ -39,6 +39,7 @@ public:
 	static MObject      scale;
     static MObject      outputName;
     static MObject      outputTranslate;
+	static MObject      preRotation;
     static MObject      outputRotate;
     static MObject      url;
 	static MObject      info;

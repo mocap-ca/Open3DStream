@@ -1,42 +1,43 @@
-#ifndef OPEN3D_DEVICE_MODEL_H
-#define OPEN3D_DEVICE_MODEL_H
+#ifndef OPEN3D_DEVICE_MOBU_MODEL_H
+#define OPEN3D_DEVICE_MOBU_MODEL_H
 
-#include <fbsdk/fbsdk.h>
 #include <vector>
+#include <string>
 
 #include "o3ds/model.h"
 
-class MobuUpdater : public O3DS::Updater
+#include <fbsdk/fbsdk.h>
+
+namespace O3DS
 {
-public:
-	MobuUpdater(FBModel *model)
-		: mModel(model)
-	{}
+	namespace Mobu
+	{
 
-	FBModel *mModel;
+		class MobuTransform : public O3DS::Transform
+		{
+		public:
+			MobuTransform(FBModel *model, int parentId)
+				: O3DS::Transform(parentId)
+				, mModel(model)
+			{
 
-	int mParentId;
+			}
 
-	void update(O3DS::Transform*);
+			FBModel *mModel;
 
-	std::string info() { return std::string(mModel->GetFullName()); }
+			void update();
 
-
-};
-
-class MobuSubjectInfo : public O3DS::SubjectInfo
-{
-public:
-	MobuSubjectInfo(FBModel *model) :mModel(model) {}
-
-	FBModel *mModel;
-};
+			std::string info() { return std::string(mModel->GetFullName()); }
 
 
-void TraverseSubject(O3DS::Subject *subject, FBModel*, int parentId = -1);
+		};
 
 
+		void TraverseSubject(O3DS::Subject *subject, FBModel*, int parentId = -1);
 
+
+	}
+}
 
 
 

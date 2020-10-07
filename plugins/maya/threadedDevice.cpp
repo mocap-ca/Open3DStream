@@ -87,6 +87,7 @@ MObject ThreadedDevice::mocap;
 MObject ThreadedDevice::scale;
 MObject ThreadedDevice::outputName;
 MObject ThreadedDevice::outputTranslate;
+MObject ThreadedDevice::preRotation;
 MObject ThreadedDevice::outputRotate;
 
 MObject ThreadedDevice::info;
@@ -276,6 +277,13 @@ MStatus ThreadedDevice::initialize()
         status = addAttribute(outputTranslate);
 		MCHECKERROR(status, "adding output translate");
 
+		// Rotate 
+		preRotation = numAttr.create("preRotation", "prerot", MFnNumericData::k3Double, 0.0, &status);
+		MCHECKERROR(status, "creating pre rotate");
+		numAttr.setWritable(true);
+		status = addAttribute(preRotation);
+		MCHECKERROR(status, "adding output rotate");
+
         // Rotate 
         outputRotate  = numAttr.create("outputRotate", "orot", MFnNumericData::k3Double, 0.0, &status);
 		MCHECKERROR(status, "creating output rotate");
@@ -288,8 +296,9 @@ MStatus ThreadedDevice::initialize()
         cAttr.setArray(true);
         status = addAttribute(mocap);
         status = cAttr.addChild(outputName);
-        status = cAttr.addChild( outputTranslate );
-        status = cAttr.addChild( outputRotate );
+        status = cAttr.addChild(outputTranslate);
+		status = cAttr.addChild(preRotation);
+        status = cAttr.addChild(outputRotate);
         
         attributeAffects(live, mocap);
         attributeAffects(frameRate, mocap);
@@ -301,12 +310,9 @@ MStatus ThreadedDevice::initialize()
         return MS::kSuccess;
 }
 
-
-
 MStatus ThreadedDevice::compute( const MPlug &plug, MDataBlock& block)
 {
     MStatus status;
-
 	MObject thisNode = thisMObject();
 
 #ifdef _DEBUG
@@ -373,7 +379,7 @@ MStatus ThreadedDevice::compute( const MPlug &plug, MDataBlock& block)
         // Output
         MArrayDataHandle outHandle = block.outputArrayValue( mocap, &status );
         MCHECKERROR( status, "mocap out handle");
-		O3DS::Parse(mSubjectList, message, *msglen);
+		mSubjectList.Parse(message, *msglen);
 
 		O3DS::Subject *subject = mSubjectList.findSubject(mSubject.asChar());
 		if (subject != nullptr)
@@ -429,11 +435,15 @@ MStatus ThreadedDevice::compute( const MPlug &plug, MDataBlock& block)
 
 				double3& orot = rHandle.asDouble3();
 
-				otrans[0] = transform->mTranslation.v[0] * scaleValue;
-				otrans[1] = transform->mTranslation.v[1] * scaleValue;
-				otrans[2] = transform->mTranslation.v[2] * scaleValue;
+				// Translation
+				auto tr = transform->translation;
+				otrans[0] = tr.value.v[0] * scaleValue;
+				otrans[1] = tr.value.v[1] * scaleValue;
+				otrans[2] = tr.value.v[2] * scaleValue;
 
-				MQuaternion q(transform->mOrientation.v[0], transform->mOrientation.v[1], transform->mOrientation.v[2], transform->mOrientation.v[3]);
+				// Rotation
+				auto ro = transform->rotation;
+				MQuaternion q(ro.value.v[0], ro.value.v[1], ro.value.v[2], ro.value.v[3]);
 				MEulerRotation e = q.asEulerRotation();
 
 				orot[0] = e.x * 57.295779513;
@@ -449,7 +459,6 @@ MStatus ThreadedDevice::compute( const MPlug &plug, MDataBlock& block)
 				// Name
 				status = nPlug.selectAncestorLogicalIndex(arrayIndex, mocap);
 				MCHECKERROR(status, "Selecting name attribute");
-
 			}
 		}
     }

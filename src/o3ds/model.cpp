@@ -23,159 +23,544 @@ SOFTWARE.
 */
 
 #include "model.h"
-#include "schema_generated.h"
 #include "getTime.h"
 
-using namespace MyGame::Sample;
+using namespace O3DS::Data;
 
-MyGame::Sample::Direction dir(enum O3DS::Direction d)
+void operator >>(const O3DS::TransformTranslation& src, O3DS::Data::Translation &dst)
 {
-	switch (d)
-	{
-	case O3DS::Up: return MyGame::Sample::Direction_Up;
-	case O3DS::Down: return MyGame::Sample::Direction_Down;
-	case O3DS::Left: return MyGame::Sample::Direction_Left;
-	case O3DS::Right: return MyGame::Sample::Direction_Right;
-	case O3DS::Forward: return MyGame::Sample::Direction_Forward;
-	case O3DS::Back: return MyGame::Sample::Direction_Back;
-	}
-	return MyGame::Sample::Direction_None;
+	dst = O3DS::Data::Translation(
+		(float)src.value.v[0],
+		(float)src.value.v[1],
+		(float)src.value.v[2]);
 }
 
-enum O3DS::Direction dir(MyGame::Sample::Direction d)
+void operator >>(const O3DS::Data::Translation& src, O3DS::TransformTranslation &dst)
+{
+	dst = O3DS::TransformTranslation(src.x(), src.y(), src.z());
+}
+
+void operator >>(const O3DS::Data::TranslationUpdate& src, O3DS::TransformTranslation &dst)
+{
+	dst = O3DS::TransformTranslation(src.x(), src.y(), src.z());
+}
+
+void operator >>(const O3DS::TransformRotation& src, O3DS::Data::Rotation &dst)
+{
+	dst = O3DS::Data::Rotation(
+		(float)src.value.v[0],
+		(float)src.value.v[1],
+		(float)src.value.v[2],
+		(float)src.value.v[3]);
+}
+
+void operator >>(const O3DS::Data::Rotation& src, O3DS::TransformRotation &dst)
+{
+	dst = O3DS::TransformRotation(src.x(), src.y(), src.z(), src.w());
+}
+
+void operator >>(const O3DS::Data::RotationUpdate& src, O3DS::TransformRotation &dst)
+{
+	dst = O3DS::TransformRotation(src.x(), src.y(), src.z(), src.w());
+}
+
+
+void operator >>(const O3DS::TransformScale& src, O3DS::Data::Scale &dst)
+{
+	dst = O3DS::Data::Scale(
+		(float)src.value.v[0],
+		(float)src.value.v[1],
+		(float)src.value.v[2]);
+}
+
+void operator >>(const O3DS::Data::Scale& src, O3DS::TransformScale &dst)
+{
+	dst = O3DS::TransformScale(src.x(), src.y(), src.z());
+}
+
+void operator >>(const O3DS::Data::ScaleUpdate& src, O3DS::TransformScale &dst)
+{
+	dst = O3DS::TransformScale(src.x(), src.y(), src.z());
+}
+
+void operator >>(const O3DS::TransformMatrix& src, O3DS::Data::Matrix &dst)
+{
+	dst = O3DS::Data::Matrix(
+		(float)src.value.m[0][0],
+		(float)src.value.m[0][1],
+		(float)src.value.m[0][2],
+		(float)src.value.m[0][3],
+		(float)src.value.m[1][0],
+		(float)src.value.m[1][1],
+		(float)src.value.m[1][2],
+		(float)src.value.m[1][3],
+		(float)src.value.m[2][0],
+		(float)src.value.m[2][1],
+		(float)src.value.m[2][2],
+		(float)src.value.m[2][3],
+		(float)src.value.m[3][0],
+		(float)src.value.m[3][1],
+		(float)src.value.m[3][2],
+		(float)src.value.m[3][3]);
+}
+
+void operator >>(const O3DS::Data::Matrix& src, O3DS::TransformMatrix &dst)
+{
+	dst.value.m[0][0] = src.m00();
+	dst.value.m[0][1] = src.m01();
+	dst.value.m[0][2] = src.m02();
+	dst.value.m[0][3] = src.m03();
+	dst.value.m[1][0] = src.m10();
+	dst.value.m[1][1] = src.m11();
+	dst.value.m[1][2] = src.m12();
+	dst.value.m[1][3] = src.m13();
+	dst.value.m[2][0] = src.m20();
+	dst.value.m[2][1] = src.m21();
+	dst.value.m[2][2] = src.m22();
+	dst.value.m[2][3] = src.m23();
+	dst.value.m[3][0] = src.m30();
+	dst.value.m[3][1] = src.m31();
+	dst.value.m[3][2] = src.m32();
+	dst.value.m[3][3] = src.m33();
+}
+
+O3DS::Data::Direction dir(enum O3DS::Direction d)
 {
 	switch (d)
 	{
-	case MyGame::Sample::Direction_Up: return O3DS::Up;
-	case MyGame::Sample::Direction_Down: return O3DS::Down;
-	case MyGame::Sample::Direction_Left: return O3DS::Left;
-	case MyGame::Sample::Direction_Right: return O3DS::Right;
-	case MyGame::Sample::Direction_Forward: return O3DS::Forward;
-	case MyGame::Sample::Direction_Back: return O3DS::Back;
+	case O3DS::Up: return O3DS::Data::Direction_Up;
+	case O3DS::Down: return O3DS::Data::Direction_Down;
+	case O3DS::Left: return O3DS::Data::Direction_Left;
+	case O3DS::Right: return O3DS::Data::Direction_Right;
+	case O3DS::Forward: return O3DS::Data::Direction_Forward;
+	case O3DS::Back: return O3DS::Data::Direction_Back;
+	}
+	return O3DS::Data::Direction_None;
+}
+
+enum O3DS::Direction dir(O3DS::Data::Direction d)
+{
+	switch (d)
+	{
+	case O3DS::Data::Direction_Up: return O3DS::Up;
+	case O3DS::Data::Direction_Down: return O3DS::Down;
+	case O3DS::Data::Direction_Left: return O3DS::Left;
+	case O3DS::Data::Direction_Right: return O3DS::Right;
+	case O3DS::Data::Direction_Forward: return O3DS::Forward;
+	case O3DS::Data::Direction_Back: return O3DS::Back;
 	}
 	return O3DS::None;
 }
 
-int O3DS::Serialize(SubjectList &data, uint8_t *outbuf, int buflen, bool add_names)
+namespace O3DS
 {
-	double timestamp = GetTime();
 
-	flatbuffers::FlatBufferBuilder builder(4096);
+	Transform::Transform(std::string& name, int parentId, void *ref)
+		: mName(name)
+		, mParentId(parentId)
+		, mReference(ref)
+	{}
 
-	std::vector<flatbuffers::Offset<MyGame::Sample::Subject>> subjects;
+	Transform::Transform(int parentId)
+		: mName()
+		, mParentId(parentId)
+		, mReference(nullptr)
+	{}
 
-	for (auto& subject : data)
+	Transform::Transform()
+		: mName()
+		, mParentId(-1)
+		, mReference(nullptr)
+	{}
+
+	Transform::~Transform()
 	{
-		auto subject_name = builder.CreateString(subject->mName);
-		std::vector<flatbuffers::Offset<MyGame::Sample::Transform>> skeleton;
-		std::vector<flatbuffers::Offset<flatbuffers::String>> name_list;
+	};
 
-		for (auto& t : subject->mTransforms)
+	void Subject::CalcMatrices()
+	{
+		for (auto transform : this->mTransforms)
 		{
-			if (add_names)
-				name_list.push_back(builder.CreateString(t->mName));
+			transform->bWorldMatrix = false;
+			auto &m = transform->mMatrix;
+			m = Matrixd();
 
-			auto tr = MyGame::Sample::Translation((float)t->mTranslation[0], 
-				(float)t->mTranslation[1], 
-				(float)t->mTranslation[2]);
+			int matrixId = 0;
 
-			auto ro = MyGame::Sample::Rotation((float)t->mOrientation[0], 
-				(float)t->mOrientation[1], 
-				(float)t->mOrientation[2], 
-				(float)t->mOrientation[3]);
+			for (auto op : transform->transformOrder)
+			{
+				if (op == O3DS::TTranslation)
+				{
+					m = Matrixd::TranslateXYZ(transform->translation.value) * m;
+				}
+				if (op == O3DS::TRotation)
+				{
+					m = transform->rotation.asMatrix() * m;
+				}
+				if (op == O3DS::TScale)
+				{
+					m = m.Scale(transform->scale.value) * m;
+				}
+				if (op == O3DS::TMatrix)
+				{
+					m = transform->matrices[matrixId++].value * m;
+				}
+			}
 
-			skeleton.push_back(CreateTransform(builder, &tr, &ro, t->mParentId));
 		}
 
-		auto transforms = builder.CreateVector(skeleton);
-		auto nn = builder.CreateVector(name_list);
-		auto s = CreateSubject(builder, transforms, nn, subject_name);
-		subjects.push_back(s);
+
+		// Calculate world matrix
+		bool done = false;
+		while (!done)
+		{
+			done = true;
+			for (auto& transform : this->mTransforms)
+			{
+				if (transform->bWorldMatrix) continue;
+				if (transform->mParentId == -1)
+				{
+					// No Parent - matrix is world matrix
+					transform->mWorldMatrix = transform->mMatrix;
+					transform->bWorldMatrix = true;
+					continue;
+				}
+
+				if (transform->mParentId < 0 || transform->mParentId > this->mTransforms.size())
+				{
+					// TODO: Error handling
+					done = true;
+					break;
+				}
+
+				auto& parentTransform = this->mTransforms.mItems[transform->mParentId];
+				if (!parentTransform->bWorldMatrix)
+				{
+					// Parent has not been calculated yet
+					done = false;
+					continue;
+				}
+
+				transform->mWorldMatrix = transform->mMatrix * parentTransform->mWorldMatrix;
+				transform->bWorldMatrix = true;
+			}
+		}
 	}
 
-	auto root = CreateSubjectList(builder, builder.CreateVector(subjects), timestamp,
-		dir(data.mContext.mX), dir(data.mContext.mY), dir(data.mContext.mZ));
 
-	builder.Finish(root);
-
-	uint8_t *buf = builder.GetBufferPointer();
-	int size = builder.GetSize();
-
-	if (size > buflen)
-		return 0;
-
-	memcpy(outbuf, buf, size);
-
-	return size;
-}
-
-void O3DS::Parse(SubjectList &outSubjects, const char *data, size_t len)
-{
-	auto root = GetSubjectList(data);
-
-	double tt = root->time();
-
-	auto subjects_data = root->subjects();
-
-	outSubjects.mContext.mX = dir(root->xAxis());
-	outSubjects.mContext.mY = dir(root->yAxis());
-	outSubjects.mContext.mZ = dir(root->zAxis());
-
-	for (uint32_t i = 0; i < subjects_data->size(); i++)
+	int SubjectList::Serialize(uint8_t *outbuf, int buflen)
 	{
-		// For each subject
-		auto inSubject = subjects_data->Get(i);
-		std::string name = inSubject->name()->str();
+		O3DS::Data::Translation translation;
+		O3DS::Data::Rotation rotation;
+		O3DS::Data::Scale scale;
 
-		// Check to see if this subject already exists
-		Subject *outSubject = outSubjects.findSubject(name);
-		if (outSubject == nullptr)
+		double timestamp = GetTime();
+
+		flatbuffers::FlatBufferBuilder builder(buflen);
+
+		std::vector<flatbuffers::Offset<O3DS::Data::Subject>> subjects;
+
+
+		for (auto& subject : this->mItems)
 		{
-			outSubject = outSubjects.addSubject(name);
+			auto oSubjectName = builder.CreateString(subject->mName);
+			std::vector<flatbuffers::Offset<O3DS::Data::Transform>> ovSkeleton;
+
+			for (auto& t : subject->mTransforms)
+			{
+				int matrixId = 0;
+
+				std::vector<O3DS::Data::Matrix> matrices;
+				std::vector<int8_t> components;
+
+				t->translation >> translation;
+				t->rotation >> rotation;
+				t->scale >> scale;
+
+				for (auto component : t->transformOrder)
+				{
+					if (component == O3DS::TTranslation)
+						components.push_back(O3DS::Data::Component::Component_Translation);
+
+					if (component == O3DS::TRotation)
+						components.push_back(O3DS::Data::Component::Component_Rotation);
+
+					if (component == O3DS::TScale)
+						components.push_back(O3DS::Data::Component::Component_Scale);
+
+					if (component == O3DS::TMatrix)
+					{
+						components.push_back(O3DS::Data::Component::Component_Matrix);
+						O3DS::Data::Matrix matrix;
+						t->matrices[matrixId++] >> matrix;
+						matrices.push_back(matrix);
+					}
+				}
+
+				auto oTransformName = builder.CreateString(t->mName);
+
+				//flatbuffers::Offset<flatbuffers::Vector<const O3DS::Data::Matrix *>> oatrices;
+				auto ovMatrices = builder.CreateVectorOfStructs(matrices);
+
+				auto ovComponents = builder.CreateVector(components);
+
+				ovSkeleton.push_back(CreateTransform(builder,
+					t->mParentId, oTransformName,
+					&translation, &rotation, &scale,
+					ovMatrices, ovComponents));
+			}
+
+			auto transforms = builder.CreateVector(ovSkeleton);
+			auto s = CreateSubject(builder, transforms, oSubjectName,
+				dir(subject->mContext.mX),
+				dir(subject->mContext.mY),
+				dir(subject->mContext.mZ));
+
+			subjects.push_back(s);
 		}
 
-		// Get the nodes and names from the wire
-		auto inNodes = inSubject->nodes();
-		auto inNames = inSubject->names();
+		auto ovSubjects = builder.CreateVector(subjects);
 
+		auto root = CreateSubjectList(builder, ovSubjects, 0, timestamp);
 
-		if (inNodes->size() == inNames->size())
+		builder.Finish(root);
+
+		uint8_t *buf = builder.GetBufferPointer();
+		int size = builder.GetSize();
+
+		if (size > buflen)
+			return 0;
+
+		memcpy(outbuf, buf, size);
+
+		return size;
+	}
+
+	int SubjectList::SerializeUpdate(uint8_t *outbuf, int buflen)
+	{
+		double timestamp = GetTime();
+
+		flatbuffers::FlatBufferBuilder builder(buflen);
+
+		std::vector<flatbuffers::Offset<O3DS::Data::SubjectUpdate>> outSubjectUpdates;
+
+		for (auto& subject : this->mItems)
 		{
-			outSubject->clear();
+			auto oSubjectName = builder.CreateString(subject->mName);
 
-			for (int n = 0; n < (int)inNodes->size(); n++)
+			std::vector<O3DS::Data::TranslationUpdate> translations;
+			std::vector<O3DS::Data::RotationUpdate> rotations;
+			std::vector<O3DS::Data::ScaleUpdate> scales;
+
+			int transformId = 0;
+
+			for (auto& t : subject->mTransforms)
 			{
-				auto inNode = inNodes->Get(n);
-				std::string inName = inSubject->names()->Get(n)->str();
-				outSubject->addTransform(inName, inNode->parent());
+				//if (t->translation.delta() > 0.001)
+				//{
+					translations.push_back(O3DS::Data::TranslationUpdate(
+						(float)t->translation.value.v[0],
+						(float)t->translation.value.v[1],
+						(float)t->translation.value.v[2], transformId));
+					t->translation.sent();
+				//}
+
+				//if (t->rotation.delta() > 0.001)
+				//{
+					rotations.push_back(O3DS::Data::RotationUpdate(
+						(float)t->rotation.value.v[0],
+						(float)t->rotation.value.v[1],
+						(float)t->rotation.value.v[2],
+						(float)t->rotation.value.v[3], transformId));
+					t->rotation.sent();
+				//}
+
+				if (t->scale.delta() > 0.001)
+				{
+					scales.push_back(O3DS::Data::ScaleUpdate(
+						(float)t->scale.value.v[0],
+						(float)t->scale.value.v[1],
+						(float)t->scale.value.v[2], transformId));
+					t->scale.sent();
+				}
+
+				transformId++;
+			}
+
+			auto tr = builder.CreateVectorOfStructs(translations);
+			auto ro = builder.CreateVectorOfStructs(rotations);
+			auto sc = builder.CreateVectorOfStructs(scales);
+			auto subjectUpdate = CreateSubjectUpdate(builder, oSubjectName, tr, ro, sc);
+			outSubjectUpdates.push_back(subjectUpdate);
+		}
+
+		auto ovSubjectUpdates = builder.CreateVector(outSubjectUpdates);
+
+		auto root = CreateSubjectList(builder, 0, ovSubjectUpdates, timestamp);
+
+		builder.Finish(root);
+
+		uint8_t *buf = builder.GetBufferPointer();
+		int size = builder.GetSize();
+
+		if (size > buflen)
+			return 0;
+
+		memcpy(outbuf, buf, size);
+
+		return size;
+	}
+
+	void SubjectList::Parse(const char *data, size_t len, TransformBuilder *builder)
+	{
+		auto root = GetSubjectList(data);
+
+		this->mTime = root->time();
+
+		auto subjects_data = root->subjects();
+		auto updates_data = root->updates();
+
+		auto ovSubjects = root->subjects();
+
+		if (subjects_data)
+		{
+			for (uint32_t i = 0; i < subjects_data->size(); i++)
+			{
+				// For each subject
+				this->ParseSubject(subjects_data->Get(i), builder);
 			}
 		}
 
-		for (int n = 0; n < (int)inNodes->size() && n < outSubject->mTransforms.size(); n++)
+		if (updates_data)
 		{
-			Transform *outTransform = outSubject->mTransforms.mItems[n];
-			auto inNode = inNodes->Get(n);
+			for (uint32_t i = 0; i < updates_data->size(); i++)
+			{
+				// For each update
+				this->ParseUpdate(updates_data->Get(i), builder);
+			}
+		}
+
+		for (auto subject : this->mItems)
+			subject->CalcMatrices();
+	}
+
+	void SubjectList::ParseSubject(const O3DS::Data::Subject *inSubject, TransformBuilder *builder)
+	{
+		std::string name = inSubject->name()->str();
+
+		// Check to see if this subject already exists
+		Subject *outSubject = this->findSubject(name);
+		if (outSubject == nullptr)
+		{
+			// Add it
+			outSubject = this->addSubject(name);
+		}
+
+		outSubject->mContext.mX = dir(inSubject->x_axis());
+		outSubject->mContext.mY = dir(inSubject->y_axis());
+		outSubject->mContext.mZ = dir(inSubject->z_axis());
+
+		// Get the nodes (transforms) for this subject
+		auto ovNodes = inSubject->nodes();
+
+		// Clear the subject and add the transfoms
+		outSubject->clear();
+		for (int n = 0; n < (int)ovNodes->size(); n++)
+		{
+			auto inNode = ovNodes->Get(n);
+			auto inName = inNode->name();
 			auto inTranslation = inNode->translation();
 			auto inRotation = inNode->rotation();
+			auto inScale = inNode->scale();
+			auto inMatrix = inNode->matrix();
+			auto inComponents = inNode->components();
 
-			outTransform->mTranslation.v[0] = inTranslation->x();
-			outTransform->mTranslation.v[1] = inTranslation->y();
-			outTransform->mTranslation.v[2] = inTranslation->z();
-			outTransform->mOrientation.v[0] = inRotation->x();
-			outTransform->mOrientation.v[1] = inRotation->y();
-			outTransform->mOrientation.v[2] = inRotation->z();
-			outTransform->mOrientation.v[3] = inRotation->w();
+			auto inMatrixIter = inMatrix->begin();
+
+			Transform *outTransform = outSubject->addTransform(inName->str(), inNode->parent());
+
+			// Add the components to the transform stack in the order they are defined.
+			for (int8_t componentId : *inComponents)
+			{
+				if (componentId == O3DS::Data::Component::Component_Translation)
+				{
+					*inTranslation >> outTransform->translation;
+					outTransform->transformOrder.push_back(O3DS::TTranslation);
+				}
+				if (componentId == O3DS::Data::Component::Component_Rotation)
+				{
+					*inRotation >> outTransform->rotation;
+					outTransform->transformOrder.push_back(O3DS::TRotation);
+				}
+				if (componentId == O3DS::Data::Component::Component_Scale)
+				{
+					*inScale >> outTransform->scale;
+					outTransform->transformOrder.push_back(O3DS::TScale);
+				}
+				if (componentId == O3DS::Data::Component::Component_Matrix)
+				{
+					auto transformMatrix = O3DS::TransformMatrix();
+					**inMatrixIter++ >> transformMatrix;
+					outTransform->matrices.push_back(transformMatrix);
+					outTransform->transformOrder.push_back(O3DS::TMatrix);
+				}
+			}
 		}
 	}
-}
 
+	void SubjectList::ParseUpdate(
+		const O3DS::Data::SubjectUpdate *inUpdate,
+		TransformBuilder *builder)
+	{
+		std::string name = inUpdate->name()->str();
+		int id;
+
+		// Find the subject to update, by name
+		O3DS::Subject *outSubject = this->findSubject(name);
+		if (!outSubject)
+			return;
+
+		// Update TRS
+
+		for (auto inTranslation : *inUpdate->translations())
+		{
+			id = inTranslation->i();
+			if (id < outSubject->mTransforms.size())
+				*inTranslation >> outSubject->mTransforms[id]->translation;
+			else
+				break;
+		}
+
+		for (auto inRotation : *inUpdate->rotation())
+		{
+			id = inRotation->i();
+			if (id < outSubject->mTransforms.size())
+				*inRotation >> outSubject->mTransforms[id]->rotation;
+			else
+				break;
+		}
+
+		for (auto inScale : *inUpdate->scale())
+		{
+			id = inScale->i();
+			if (id < outSubject->mTransforms.size())
+				*inScale >> outSubject->mTransforms[id]->scale;
+			else
+				break;
+		}
+	}
+
+
+
+} // namespace O3DS
+
+/*
 void O3DS::Subject::update(bool useWorldMatrix)
 {
 	for (auto transform : mTransforms)
 	{
 		transform->update();
 	}
-
 
 	if (useWorldMatrix)
 	{
@@ -202,5 +587,5 @@ void O3DS::Subject::update(bool useWorldMatrix)
 			i->mOrientation = transformMatrix.GetQuaternion();
 		}
 	}
-}
+}*/
 

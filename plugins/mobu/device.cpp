@@ -95,7 +95,7 @@ void Open3D_Device::AddItem(FBModel *model)
 		model->Is(FBCamera::TypeInfo) ||
 		model->Is(FBModelSkeleton::TypeInfo))
 	{
-		Items.addSubject(name.operator char *(), new MobuSubjectInfo(model));
+		Items.addSubject(name.operator char *(), (void*)model);
 	}
 
 }
@@ -116,8 +116,8 @@ bool Open3D_Device::Start()
 
 	FBProgress	lProgress;
 	lProgress.Caption	= "Starting up device";
-	lProgress.Text	= "Opening device communications";
-	Status			= "Opening device communications";
+	lProgress.Text	    = "Opening device communications";
+	Status			    = "Opening device communications";
 
 	if (mServer)
 	{
@@ -125,10 +125,10 @@ bool Open3D_Device::Start()
 		mServer = nullptr;
 	}
 
-	for (auto& subject : Items)
+	for (O3DS::Subject* subject : Items)
 	{
-		MobuSubjectInfo *info = dynamic_cast<MobuSubjectInfo*>(subject->mInfo);
-		TraverseSubject(subject, info->mModel);
+		FBModel *model = static_cast<FBModel*>(subject->mReference);
+		O3DS::Mobu::TraverseSubject(subject, model);
 	}
 
 	if (mProtocol == Open3D_Device::kTCPClient)
@@ -247,9 +247,9 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 	{
 		if (mNetworkSocket != -1)
 		{
-			Items.update(true);
+			//Items.update(true);
 
-			int32_t bucket_size = O3DS::Serialize(Items, buf, 1024 * 12, true);
+			int32_t bucket_size = Items.Serialize(buf, 1024 * 12);
 			if (bucket_size == 0)
 				return;
 
@@ -383,16 +383,16 @@ bool Open3D_Device::FbxStore(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat)
 		for (int i = 0; i < Items.size(); i++)
 		{
 			O3DS::Subject* subject = Items[i];
-			MobuSubjectInfo *info = dynamic_cast<MobuSubjectInfo*>(subject->mInfo);
+			FBModel *model = static_cast<FBModel*>(subject->mReference);
 
 			sprintf_s(buf, 40, "%s%d", FBX_SUBJECT_NAME, i);
 			pFbxObject->FieldWriteC(buf, subject->mName.c_str());
 
 			sprintf_s(buf, 40, "%s%d", FBX_SUBJECT_MODEL, i);
-			pFbxObject->FieldWriteC(buf, info->mModel->GetFullName());
+			pFbxObject->FieldWriteC(buf, model->GetFullName());
 
 			sprintf_s(buf, 40, "%s%d", FBX_SUBJECT_REF, i);
-			pFbxObject->FieldWriteObjectReference(buf, info->mModel);
+			pFbxObject->FieldWriteObjectReference(buf, model);
 
 		}
 
@@ -442,8 +442,8 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 			if (component)
 			{
 				FBModel *model = dynamic_cast<FBModel*>(component);
-				auto s = Items.addSubject(subjectName.operator char *(), new MobuSubjectInfo(model));
-				TraverseSubject(s, model);
+				auto s = Items.addSubject(subjectName.operator char *(), (void*)model);
+				O3DS::Mobu::TraverseSubject(s, model);
 			}
 		}
 

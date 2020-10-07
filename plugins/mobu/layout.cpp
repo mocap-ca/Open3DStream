@@ -354,13 +354,12 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 		if (id < mDevice->Items.size())
 		{
 			O3DS::Subject* subject = mDevice->Items[id];
-			MobuSubjectInfo *info = dynamic_cast<MobuSubjectInfo*>(subject->mInfo);
+			FBModel *model = static_cast<FBModel*>(subject->mReference);
 
-			FBComponent *model = info->mModel;
 			mEditSubject.Text = mDevice->Items[id]->mName.c_str();
 			mEditSource.Text = model->LongName;
 
-			TraverseSubject(subject, info->mModel);
+			O3DS::Mobu::TraverseSubject(subject, model);
 
 			std::ostringstream oss;
 

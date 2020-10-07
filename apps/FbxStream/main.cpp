@@ -1,7 +1,7 @@
 
 
 #include "schema_generated.h"
-using namespace MyGame::Sample;
+using namespace O3DS::Data;
 
 #include <iostream>
 #include <chrono>
@@ -22,7 +22,6 @@ using namespace MyGame::Sample;
 
 int main(int argc, char *argv[])
 {
-
 	if(argc != 4)
 	{
 		fprintf(stderr, "%s file.fbx protocol url\n", argv[0]);
@@ -54,35 +53,22 @@ int main(int argc, char *argv[])
 		return 2;
 	}
 
-
 	O3DS::SubjectList subjects;
 
-	O3DS::TimeInfo time_info;
+	O3DS::Fb::TimeInfo time_info;
 
 	Load(argv[1], subjects, time_info);
-
-	subjects.update(true);
-
-	std::vector<O3DS::MobuUpdater*> refs;
-	for (auto s : subjects)
-	{
-		for (auto t : s->mTransforms)
-		{
-			refs.push_back((O3DS::MobuUpdater*)t->mVisitor);
-		}
-	}
 
 	for (auto s : subjects)
 	{
 		printf("Subject: %s\n", s->mName.c_str());
 		for (auto i : s->mTransforms)
 		{
-			printf("  %s\n", i->mVisitor->info().c_str());
+			printf("  %s\n", i->info().c_str());
 		}
 	}
 
 	// Connect 
-	//O3DS::Publisher publisher;
 
 	if (!connector->start(argv[3]))
 	{
@@ -103,8 +89,11 @@ redo:
 
 	for (FbxTime t = time_info.Start; t < time_info.End; t = t + time_info.Inc)
 	{
+	
+		// Sync time
 		double tick = GetTime() - zerof;
-		int delay = (int)((t.GetSecondDouble() - tick) * 1000.f);
+		double fdelay = (t.GetSecondDouble() - tick ) * 1000.;
+		int delay = (int)(fdelay);
 
 		if (delay < 0)
 		{
@@ -112,37 +101,48 @@ redo:
 			continue;
 		}
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+		if(!skips)
+			std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 
-
-		printf("%f    %f   %f   %d    %d\n", GetTime(), tick, t.GetSecondDouble(), delay, skips);
-
-		skips = 0;
-
-		for (auto i : refs)
+		// Update subjects
+		for (auto s : subjects)
 		{
-			i->mTime = t;
+			for (auto transform : s->mTransforms)
+			{
+				dynamic_cast<O3DS::Fb::FbTransform*>(transform)->mTime = t;
+				transform->update();
+			}
 		}
 
-		subjects.update(true);
+		// Serialize
 
-		int ret = O3DS::Serialize(subjects, buffer, 1024 * 16, true);
-		first = false;
+		int ret = 0;
+		if (first)
+		{
+			ret = subjects.Serialize(buffer, 1024 * 16);
+			first = false;
+		}
+		else
+		{
+			ret = subjects.SerializeUpdate(buffer, 1024 * 16);
+		}
 		
+		// Send
+
 		if (ret > 0)
 		{
 			if (!connector->writeMsg((const char*)buffer, ret))
 			{
 				printf("Could not send: %s\n", connector->err().c_str());
-				break;
 			}
 		}
-		else
-		{
-			//printf("No data returned\n");
-		}
 
-		//printf("%d bytes\n", ret);
+		// O3DS::SubjectList s;
+		// s.Parse((const char*)buffer, ret);
+
+		printf("%f    %f   %f   %f    %d  %d\n", GetTime(), tick, t.GetSecondDouble(), fdelay, skips, ret);
+
+		skips = 0;
 
 	}
 

@@ -14,8 +14,8 @@ IF NOT EXIST "%DST%"\lib\include\o3ds MKDIR "%DST%"\lib\include\o3ds
 IF NOT EXIST "%DST%"\lib\include\nng MKDIR "%DST%"\lib\include\nng
 IF NOT EXIST "%DST%"\lib\include\nng MKDIR "%DST%"\lib\include\flatbuffers
 
-COPY "%~DP0..\..\..\lib\*.lib"  "%DST%"\lib
-COPY "%~DP0..\..\..\lib\*.sbr"  "%DST%"\lib
+COPY "%~DP0..\..\..\build\src\RelWithDebInfo\*.lib"  "%DST%"\lib
+COPY "%~DP0..\..\..\build\src\RelWithDebInfo\*.bsc"  "%DST%"\lib
 
 COPY "%~DP0..\..\..\src\o3ds\*.h" "%DST%\lib\include\o3ds\"
 XCOPY /S /I /Y "%~DP0..\..\..\include\nng" "%DST%\lib\include\nng\"

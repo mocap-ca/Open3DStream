@@ -30,80 +30,87 @@ SOFTWARE.
 
 #include "math.h"
 #include "context.h"
+#include "transform_component.h"
+#include "schema_generated.h"
+
 
 namespace O3DS
 {
 
-	class Transform;
-
-	/*! \class Updater model.h o3ds/model.h */
-	//! Abstract visitor class to update a transform.
-	class Updater
-	{
-	public:
-		virtual void update(Transform*) = 0;
-		virtual std::string info() = 0;
-	};
 
 	/*! \class Transform model.h o3ds/model.h */
 	//! Defines a single transform with name and parent id reference
 	class Transform
 	{
 	public:
-		Transform(std::string& name, int parentId, Updater *updater = nullptr)
-			: mName(name)
-			, mParentId(parentId)
-			, mVisitor(updater)
-		{}
+		Transform(std::string& name, int parentId, void *ref = nullptr);
 
-		Transform(int parentId)
-			: mName()
-			, mParentId(parentId)
-			, mVisitor(nullptr)
-		{}
+		Transform(int parentId);
 
-		Transform()
-			: mName()
-			, mParentId(-1)
-			, mVisitor(nullptr)
-		{}
+		Transform();
 
-		virtual ~Transform()
-		{
-			if (mVisitor) delete mVisitor;
-		};
+		virtual ~Transform();
 
-		void update() { if(mVisitor) mVisitor->update(this); }
+		virtual void update() {}
+		virtual std::string info() { return std::string(); }
 
-		O3DS::Matrix<double> mMatrix;
-		O3DS::Matrix<double> mParentInverseMatrix;
+		TransformTranslation translation;
+		TransformRotation    rotation;
+		TransformScale       scale;
 
-		O3DS::Vector<double>  mTranslation;
-		O3DS::Vector<double>  mOrientation;
+		Matrixd       mMatrix;
+		Matrixd       mWorldMatrix;
+		bool          bWorldMatrix;
+
+		std::vector<TransformMatrix> matrices;
+		std::vector<enum ComponentType> transformOrder;
 
 		std::string mName;
 		int mParentId;
 
-		Updater *mVisitor;
+		void *mReference;
 
 	};
+
+	class TransformBuilder
+	{
+	public:
+		virtual Transform* build(std::string name, int parentId) = 0;
+	};
+
 
 	/*! \class TransformList model.h o3ds/model.h */
 	//! A list (std::vector) of Transform objects
 	class TransformList
 	{
-	public:
+	private:
+		TransformList(const TransformList &other)
+		{}
 
+	public:
+		TransformList() {}
+
+		//! deletes the transform objects in the list
 		virtual ~TransformList()
 		{
 			for (auto i : mItems)
 				delete i;
 		}
 
+		//! Returns the number of transforms
 		size_t size() { return mItems.size(); }
-		void clear() { mItems.clear();  }
+
+		//! Delete the transform objects and clear the least.
+		void clear()
+		{
+			for (auto i : mItems)
+				delete i;
+			mItems.clear();
+		}
+
 		std::vector <Transform*>::iterator begin() { return mItems.begin(); }
-		std::vector <Transform*>::iterator end() { return mItems.end(); }
+		std::vector <Transform*>::iterator end()   { return mItems.end(); }
+		Transform *operator[](size_t id)           { return mItems[id]; }
 
 		std::vector<Transform*> mItems;
 
@@ -115,18 +122,9 @@ namespace O3DS
 					return mItems[i];
 				return nullptr;
 			}
-
 		}
 	};
 
-	/*! \class SubjectInfo model.h o3ds/model.h
-	 *  This data may be used by the update visitor and is optional. */
-	//! Wrapper to hold implementation specific data for a subject. 
-	class SubjectInfo
-	{
-	public:
-		virtual ~SubjectInfo() {};
-	};
 
 	/*! \class Subject model.h o3ds/model.h
 	 *  The subject can also have a SubjectInfo reference for implementation specific data */
@@ -134,22 +132,23 @@ namespace O3DS
 	class Subject
 	{
 	public:
-		Subject(SubjectInfo *info = nullptr) : mInfo(info) {}
+		Subject(void *info = nullptr) : mReference(info) {}
 
-		Subject(std::string name, SubjectInfo *info = nullptr)
+		Subject(std::string name, void *info = nullptr)
 			: mName(name)
-			, mInfo(info) 
+			, mReference(info) 
 		{}
 
-		virtual ~Subject() { if (mInfo) delete mInfo; }
-
-		std::string mName;
+		std::string   mName;
 		TransformList mTransforms;
-		SubjectInfo *mInfo;
+		void*         mReference;
+		Context       mContext;
 
-		Transform* addTransform(std::string &name, int parentId, Updater *updater = nullptr)
+		Transform* addTransform(std::string &name, int parentId, TransformBuilder *builder = nullptr)
 		{
-			auto ret = new Transform(name, parentId, updater);
+			Transform *ret;
+			if (builder) ret = builder->build(name, parentId);
+			else         ret = new Transform(name, parentId);
 			mTransforms.mItems.push_back(ret);
 			return ret;
 		}
@@ -158,8 +157,6 @@ namespace O3DS
 		{
 			mTransforms.mItems.push_back(item);
 		}
-
-		void update(bool useWorldMatrix);
 
 		void clear()
 		{
@@ -170,6 +167,9 @@ namespace O3DS
 		{
 			return mTransforms.mItems.size();
 		}
+
+		void CalcMatrices();
+
 
 	};
 
@@ -193,9 +193,9 @@ namespace O3DS
 			}
 		}
 
-		Subject* addSubject(std::string name, SubjectInfo* info=nullptr)
+		Subject* addSubject(std::string name, void* ref=nullptr)
 		{
-			auto s = new Subject(name, info);
+			auto s = new Subject(name, ref);
 			mItems.push_back(s);
 			return s;
 		}
@@ -210,32 +210,33 @@ namespace O3DS
 			return nullptr;
 		}
 
-		void update(bool useMatrix)
-		{
-			for (auto i : mItems)
-			{
-				i->update(useMatrix);
-			}
-		}
 		std::vector<Subject*> mItems;
-
-		Context mContext;
 
 		size_t size() { return mItems.size(); }
 		std::vector <Subject*>::iterator begin() { return mItems.begin(); }
 		std::vector <Subject*>::iterator end() { return mItems.end(); }
 		Subject* operator [] (int ref) { return mItems.operator[](ref); }
+
+		double mTime;
+
+
+		//! Encode all of the items in the subject list as binary data
+		int Serialize(uint8_t *outbuf, int buflen);
+
+		int SerializeUpdate(uint8_t *outbuf, int buflen);
+
+		//! Populate or update the subject list with the binary data provided (created by Serialize)
+		void Parse(const char *data, size_t len, TransformBuilder* = nullptr);
+
+		void ParseSubject(const O3DS::Data::Subject*, TransformBuilder* = nullptr);
+
+		void ParseUpdate(const O3DS::Data::SubjectUpdate*, TransformBuilder* = nullptr);
+
+
 	};
 
-	//! Encode all of the items in the subject list as binary data
-	int Serialize(SubjectList &data, uint8_t *outbuf, int buflen, bool names);
 
-	//! Populate the subject list with the binary data provided (created by Serialize)
-	void Parse(SubjectList &subjects, const char *data, size_t len);
-	
-
-
-} // FBStream
+} // O3DS
 
 
 #endif
