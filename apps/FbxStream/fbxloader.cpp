@@ -46,10 +46,9 @@ namespace Fb
 
 	O3DS::Matrixd rotationMatrix(fbxsdk::FbxEuler::EOrder order, FbxDouble3 rot)
 	{
-		double pi = 3.14159265358979323846;
-		auto rx = O3DS::Matrixd::RotateX(rot[0] * pi / 180);
-		auto ry = O3DS::Matrixd::RotateY(rot[1] * pi / 180);
-		auto rz = O3DS::Matrixd::RotateZ(rot[2] * pi / 180);
+		auto rx = O3DS::Matrixd::RotateX(O3DS::rad(rot[0]));
+		auto ry = O3DS::Matrixd::RotateY(O3DS::rad(rot[1]));
+		auto rz = O3DS::Matrixd::RotateZ(O3DS::rad(rot[2]));
 
 		switch (order)
 		{

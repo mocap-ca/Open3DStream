@@ -30,6 +30,8 @@ SOFTWARE.
 namespace O3DS
 {
 
+	double rad(double deg);
+
 	/*! \class Vector4 math.h o3ds\math.h */
 	//! A templated type 3D vector4 
 	template<typename T>

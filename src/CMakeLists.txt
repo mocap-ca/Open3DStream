@@ -35,6 +35,7 @@ set(SOURCES
     o3ds/context.h
 	o3ds/context.cpp
 	o3ds/math.h
+	o3ds/math.cpp
 	o3ds/transform_component.h
 	)
 

@@ -10,47 +10,73 @@ namespace O3DS
 {
 	namespace Mobu
 	{
+		void operator >> (const FBVector3d& src, O3DS::Vector3d& dst)
+		{
+			dst.v[0] = src.mValue[0];
+			dst.v[1] = src.mValue[1];
+			dst.v[2] = src.mValue[2];
+		}
+
+		void setRotation(const FBVector3d& src, const FBModelRotationOrder& order, O3DS::Matrixd& dst)
+		{
+			O3DS::Matrixd x = O3DS::Matrixd::RotateX(O3DS::rad(src.mValue[0]));
+			O3DS::Matrixd y = O3DS::Matrixd::RotateY(O3DS::rad(src.mValue[1]));
+			O3DS::Matrixd z = O3DS::Matrixd::RotateZ(O3DS::rad(src.mValue[2]));
+
+			O3DS::Matrixd m;
+
+			if (order == FBModelRotationOrder::kFBEulerXYZ) dst = x * y * z;
+			if (order == FBModelRotationOrder::kFBEulerXZY) dst = x * z * y;
+			if (order == FBModelRotationOrder::kFBEulerYZX) dst = y * x * z;
+			if (order == FBModelRotationOrder::kFBEulerYXZ) dst = y * z * x;
+			if (order == FBModelRotationOrder::kFBEulerZXY) dst = z * x * y;
+			if (order == FBModelRotationOrder::kFBEulerZYX) dst = y * y * x;
+		}
+
+		void setRotation(const FBVector3d& src, const FBModelRotationOrder &order, O3DS::Vector4d& dst)
+		{
+			O3DS::Matrixd m;
+			setRotation(src, order, m);
+			dst = m.GetQuaternion();
+		}
+
+		MobuTransform::MobuTransform(FBModel *model, int parentId)
+			: O3DS::Transform(std::string(model->Name.AsString()), parentId)
+			, mModel(model)
+		{
+			FBModelRotationOrder rotOrder = mModel->RotationOrder;
+			(FBVector3d)(mModel->Translation) >> this->translation.value;
+			setRotation(mModel->Rotation, rotOrder, this->rotation.value);
+			(FBVector3d)(mModel->Scaling) >> this->scale.value;
+
+			O3DS::Matrixd pre;
+			O3DS::Matrixd post;
+
+			setRotation(mModel->PreRotation, rotOrder, pre);
+			setRotation(mModel->PostRotation, rotOrder, post);
+
+			this->matrices.push_back(pre);
+			this->matrices.push_back(post);
+
+			this->transformOrder.push_back(O3DS::ComponentType::TTranslation);
+			this->transformOrder.push_back(O3DS::ComponentType::TMatrix);
+			this->transformOrder.push_back(O3DS::ComponentType::TRotation);
+			this->transformOrder.push_back(O3DS::ComponentType::TMatrix);
+			this->transformOrder.push_back(O3DS::ComponentType::TScale);
+
+		}
 
 		void MobuTransform::update()
 		{
-			// Udpates mMatrix only
-			FBMatrix MobuTransform;
-			mModel->GetMatrix(MobuTransform, kModelTransformation, true, nullptr);
-
-			for (int u = 0; u < 4; u++)
-			{
-				for (int v = 0; v < 4; v++)
-				{
-					this->mMatrix(u, v) = MobuTransform(u, v);
-				}
-			}
-
-			/*
-			FBMatrix MatOffset;
-			FBRVector RotOffset(90, 0, 0);
-			FBRotationToMatrix(MatOffset, RotOffset);
-			FBMatrixMult(MobuTransform, MatOffset, MobuTransform);
-
-			transform->mMatrix(1,0) = -MobuTransform(1, 0);
-			transform->mMatrix(1,1) =  MobuTransform(1, 1);
-			transform->mMatrix(1,2) = -MobuTransform(1, 2);
-			transform->mMatrix(1,3) = -MobuTransform(1, 3);
-
-			for (int j = 0; j < 4; ++j)
-			{
-				if (j == 1)
-					continue;
-				transform->mMatrix(j, 0) =  MobuTransform(j, 0);
-				transform->mMatrix(j, 1) = -MobuTransform(j, 1);
-				transform->mMatrix(j, 2) =  MobuTransform(j, 2);
-				transform->mMatrix(j, 3) =  MobuTransform(j, 3);
-			}
-			*/
-
+			FBModelRotationOrder rotOrder = mModel->RotationOrder;
+			(FBVector3d)(mModel->Translation) >> this->translation.value;
+			setRotation(mModel->Rotation, rotOrder, this->rotation.value);
+			(FBVector3d)(mModel->Scaling) >> this->scale.value;
 		}
 
 		void TraverseSubject(O3DS::Subject *subject, FBModel *model, int parentId)
 		{
+			// Called when mobu starts
 			if (model == nullptr) return;
 
 			if (parentId == -1)
@@ -59,8 +85,7 @@ namespace O3DS
 				subject->clear();
 			}
 
-			std::string name = model->Name.operator const char *();
-			subject->addTransform(name, parentId);
+			subject->addTransform(new MobuTransform(model, parentId));
 
 			int nextId = (int)subject->size() - 1;
 

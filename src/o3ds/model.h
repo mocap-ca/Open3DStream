@@ -108,6 +108,12 @@ namespace O3DS
 			mItems.clear();
 		}
 
+		void update()
+		{
+			for (auto i : mItems)
+				i->update();
+		}
+
 		std::vector <Transform*>::iterator begin() { return mItems.begin(); }
 		std::vector <Transform*>::iterator end()   { return mItems.end(); }
 		Transform *operator[](size_t id)           { return mItems[id]; }
@@ -162,6 +168,11 @@ namespace O3DS
 		{
 			mTransforms.clear();
 		}
+
+		void update()
+		{
+			mTransforms.update();
+		}
 		
 		size_t size()
 		{
@@ -169,7 +180,6 @@ namespace O3DS
 		}
 
 		void CalcMatrices();
-
 
 	};
 
@@ -208,6 +218,14 @@ namespace O3DS
 					return i;
 			}
 			return nullptr;
+		}
+
+		void update()
+		{
+			for (auto i : mItems)
+			{
+				i->update();
+			}
 		}
 
 		std::vector<Subject*> mItems;
