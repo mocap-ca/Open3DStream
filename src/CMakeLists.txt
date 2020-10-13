@@ -10,7 +10,7 @@ set(SOURCES
 	o3ds/getTime.h
 	o3ds/model.cpp	
 	o3ds/model.h
-    o3ds/base_server.h
+	o3ds/base_server.h
 	o3ds/base_server.cpp
 	o3ds/subscriber.cpp
 	o3ds/subscriber.h
@@ -32,14 +32,17 @@ set(SOURCES
 	o3ds/pipeline.cpp
 	o3ds/async_pipeline.h
 	o3ds/async_pipeline.cpp
-    o3ds/context.h
+	o3ds/context.h
 	o3ds/context.cpp
 	o3ds/math.h
 	o3ds/math.cpp
 	o3ds/transform_component.h
 	)
 
-set(libs wsock32 ws2_32 debug flatbuffersd optimized flatbuffers debug nngd optimized nng)
+set(libs debug flatbuffersd optimized flatbuffers debug nngd optimized nng)
+if(WIN32)
+set(libs wsock32 ws2_32 ${libs})
+endif()
 
 # Shared library
 # add_library(open3dstream SHARED ${SOURCES})

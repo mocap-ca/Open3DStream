@@ -477,7 +477,8 @@ namespace O3DS
 
 			auto inMatrixIter = inMatrix->begin();
 
-			Transform *outTransform = outSubject->addTransform(inName->str(), inNode->parent());
+			std::string name = inName->str();
+			Transform *outTransform = outSubject->addTransform(name, inNode->parent());
 
 			// Add the components to the transform stack in the order they are defined.
 			for (int8_t componentId : *inComponents)

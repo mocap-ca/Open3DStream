@@ -1,6 +1,7 @@
 #include "base_server.h"
 
 #include <string>
+#include <string.h>
 #include "nng/nng.h"
 
 #define NERR(msg) if(ret != 0) { setError(msg, ret); return false;  }

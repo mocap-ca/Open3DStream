@@ -140,7 +140,7 @@ redo:
 		// O3DS::SubjectList s;
 		// s.Parse((const char*)buffer, ret);
 
-		printf("%f    %f   %f   %f    %d  %d\n", GetTime(), tick, t.GetSecondDouble(), fdelay, skips, ret);
+		// printf("%f    %f   %f   %f    %d  %d\n", GetTime(), tick, t.GetSecondDouble(), fdelay, skips, ret);
 
 		skips = 0;
 

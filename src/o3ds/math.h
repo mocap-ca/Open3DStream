@@ -137,7 +137,7 @@ namespace O3DS
 
 		const Vector4<T> GetTranslation()
 		{
-			Vector<T> v;
+			Vector4<T> v;
 			v.v[0] = m[3][0];
 			v.v[1] = m[3][1];
 			v.v[2] = m[3][2];
@@ -343,20 +343,21 @@ namespace O3DS
 			return ret;
 		}
 
+#if 0
 		void pr(const char *lbl)
 		{
-			printf("==== %s ====\n", lbl);
+			printf("==== %s ====\n", this->lbl);
 			for (int u = 0; u < 4; u++)
 			{
 				for (int v = 0; v < 4; v++)
 				{
-					printf("% .04f  ", m[u][v]);
+					printf("%f  ", this->m[u][v]);
 				}
 				printf("\n");
 			}
 
 		}
-
+#endif
 
 		T m[4][4];
 	}; // Matrix
