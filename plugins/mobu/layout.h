@@ -54,6 +54,7 @@ private:
 	FBEdit        mEditKey;
 	FBLabel		  mLabelSamplingRate;
 	FBEditNumber  mEditSamplingRate;
+	FBEdit        mPluginVersion;
 
 	FBSystem    mSystem;
 	Open3D_Device*	mDevice;

@@ -153,6 +153,15 @@ void Open3D_Device_Layout::UICreate()
 	mLayoutLeft.SetControl("EditSourceInfo", mEditSourceInfo);
 	mEditSourceInfo.ReadOnly = true;
 
+	// Version info - under Source Info
+	mLayoutLeft.AddRegion("VersionInfo", "VersionInfo",
+		lS, kFBAttachRight, "SourcesList", 1.00,
+		lS, kFBAttachBottom, "EditSourceInfo", 1.00,
+		155, kFBAttachNone, NULL, 1.00,
+		lH, kFBAttachBottom, NULL, 1.00);
+	mLayoutLeft.SetControl("VersionInfo", mPluginVersion);
+	mPluginVersion.ReadOnly = true;
+
 
 	/* RIGHT */
 
@@ -288,6 +297,9 @@ void Open3D_Device_Layout::UIConfigure()
 	sprintf_s(buffer, 40, "%d", mDevice->GetNetworkPort());
 	mEditDestPort.Text = buffer;
 	mEditDestPort.Enabled = false; // enabed by the combo changing
+
+	mPluginVersion.Text = FBString("Version: ") + FBString(O3DS_MOBU_PLUIN_VER);
+
 
 }
 
