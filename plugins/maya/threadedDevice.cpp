@@ -31,7 +31,7 @@
 Usage:
 
 import maya.cmds as m
-m.loadPlugin("O3DSMaya2020Deviced.mll")
+m.loadPlugin("C:/cpp/git/github/Open3DStream/build/plugins/maya/Debug/O3DSMaya2020Deviced.mll")
 x = m.createNode('peelRealtimeMocap')
 loc = m.spaceLocator()
 m.connectAttr( x + ".mocap[0].outputTranslate", loc[0] + ".t")
@@ -382,6 +382,9 @@ MStatus ThreadedDevice::compute( const MPlug &plug, MDataBlock& block)
 		mSubjectList.Parse(message, *msglen);
 
 		O3DS::Subject *subject = mSubjectList.findSubject(mSubject.asChar());
+
+		subject->update();
+
 		if (subject != nullptr)
 		{
 
@@ -436,14 +439,16 @@ MStatus ThreadedDevice::compute( const MPlug &plug, MDataBlock& block)
 				double3& orot = rHandle.asDouble3();
 
 				// Translation
-				auto tr = transform->translation;
-				otrans[0] = tr.value.v[0] * scaleValue;
-				otrans[1] = tr.value.v[1] * scaleValue;
-				otrans[2] = tr.value.v[2] * scaleValue;
+				//auto tr = transform->mMatrix.GetTranslation();
+				auto tr = transform->translation.value;
+				otrans[0] = tr.v[0] * scaleValue;
+				otrans[1] = tr.v[1] * scaleValue;
+				otrans[2] = tr.v[2] * scaleValue;
 
 				// Rotation
-				auto ro = transform->rotation;
-				MQuaternion q(ro.value.v[0], ro.value.v[1], ro.value.v[2], ro.value.v[3]);
+				auto ro = transform->rotation.value;
+				//auto ro = transform->mMatrix.GetQuaternion();
+				MQuaternion q(ro.v[0], ro.v[1], ro.v[2], ro.v[3]);
 				MEulerRotation e = q.asEulerRotation();
 
 				orot[0] = e.x * 57.295779513;

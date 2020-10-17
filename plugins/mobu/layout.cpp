@@ -144,23 +144,28 @@ void Open3D_Device_Layout::UICreate()
 	mLayoutLeft.SetControl("EditSubject", mEditSubject);
 	mEditSubject.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditSubject);
 
-	// Source info - Under EditSubject
+
+	// Version info - at bottom
+	mLayoutLeft.AddRegion("VersionInfo", "VersionInfo",
+		lS, kFBAttachRight, "SourcesList", 1.00,
+		-lH,  kFBAttachBottom, NULL, 1.00,
+		155, kFBAttachNone, NULL, 1.00,
+		0,   kFBAttachBottom, "", 1.00);
+	mLayoutLeft.SetControl("VersionInfo", mLabelPluginVersion);
+	//mPluginVersion.ReadOnly = true;
+	mLabelPluginVersion.Caption = "---";
+
+
+	// Source info - Between EditSubject and VersionInfo
 	mLayoutLeft.AddRegion("EditSourceInfo", "EditSourceInfo",
 		lS, kFBAttachRight,  "SourcesList", 1.00,
 		lS, kFBAttachBottom, "EditSubject", 1.00,
 		155, kFBAttachNone,  NULL, 1.00,
-		lH, kFBAttachBottom, NULL, 1.00);
-	mLayoutLeft.SetControl("EditSourceInfo", mEditSourceInfo);
-	mEditSourceInfo.ReadOnly = true;
+		lS,   kFBAttachTop, "VersionInfo", 1.00);
+	mLayoutLeft.SetControl("EditSourceInfo", mMemoSourceInfo);
+	mMemoSourceInfo.ReadOnly = true;
+	mMemoSourceInfo.Text = "---";
 
-	// Version info - under Source Info
-	mLayoutLeft.AddRegion("VersionInfo", "VersionInfo",
-		lS, kFBAttachRight, "SourcesList", 1.00,
-		lS, kFBAttachBottom, "EditSourceInfo", 1.00,
-		155, kFBAttachNone, NULL, 1.00,
-		lH, kFBAttachBottom, NULL, 1.00);
-	mLayoutLeft.SetControl("VersionInfo", mPluginVersion);
-	mPluginVersion.ReadOnly = true;
 
 
 	/* RIGHT */
@@ -298,7 +303,7 @@ void Open3D_Device_Layout::UIConfigure()
 	mEditDestPort.Text = buffer;
 	mEditDestPort.Enabled = false; // enabed by the combo changing
 
-	mPluginVersion.Text = FBString("Version: ") + FBString(O3DS_MOBU_PLUIN_VER);
+	mLabelPluginVersion.Caption = FBString("Version: ") + FBString(O3DS_MOBU_PLUIN_VER);
 
 
 }
@@ -386,7 +391,7 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 
 			oss << "Items: " << mDevice->Items[id]->mTransforms.size();
 
-			mEditSourceInfo.Text = oss.str().c_str();
+			mMemoSourceInfo.Text = oss.str().c_str();
 		}
 	}
 }
