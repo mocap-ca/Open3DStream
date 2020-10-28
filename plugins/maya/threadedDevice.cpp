@@ -31,21 +31,6 @@
 Usage:
 
 import maya.cmds as m
-m.loadPlugin("C:/cpp/git/github/Open3DStream/build/plugins/maya/Debug/O3DSMaya2020Deviced.mll")
-x = m.createNode('peelRealtimeMocap')
-loc = m.spaceLocator()
-m.connectAttr( x + ".mocap[0].outputTranslate", loc[0] + ".t")
-m.connectAttr( x + ".mocap[0].outputRotate", loc[0] + ".r")
-m.setAttr( x + ".url", "tcp://127.0.0.1:6001", typ="string")
-m.setAttr( x + ".subject", "beta", typ="string")
-
-m.setAttr( x+ ".live", 1)
-
-m.getAttr(x + ".mocap[0].outputTranslate")
-
-
-m.file("C:/cpp/git/github/Open3DStream/test_data/beta_anim.fbx", i=True)
-import maya.cmds as m
 m.loadPlugin("O3DSMaya2020Deviced.mll")
 x = m.createNode('peelRealtimeMocap')
 loc = m.spaceLocator()
@@ -58,7 +43,30 @@ m.setAttr( x+ ".live", 1)
 
 m.getAttr(x + ".mocap[0].outputTranslate")
 
-m.file("C:/cpp/git/github/Open3DStream/test_data/beta_anim.fbx", i=True)
+
+loadme = None
+for f in [ "C:/cpp/git/github/Open3DStream/test_data/beta_anim.fbx",
+		   "e:/git/github/Open3DStream/test_data/beta_anim.fbx"] :
+	if os.path.isfile(f):
+		loadme = f
+		break
+
+
+if not loadme:
+    raise RuntimeError("Could not find the test file to load")
+
+m.file(loadme, i=True)
+
+x = m.createNode('peelRealtimeMocap')
+loc = m.spaceLocator()
+m.connectAttr( x + ".mocap[0].outputTranslate", loc[0] + ".t")
+m.connectAttr( x + ".mocap[0].outputRotate", loc[0] + ".r")
+m.setAttr( x + ".url", "tcp://127.0.0.1:6001", typ="string")
+m.setAttr( x + ".subject", "beta", typ="string")
+
+m.setAttr( x+ ".live", 1)
+
+m.getAttr(x + ".mocap[0].outputTranslate")
 
 for i in range(m.getAttr(x + ".mocap", size=True)):
 	node = "%s.mocap[%d]" % (x, i)
