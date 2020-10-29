@@ -3,7 +3,7 @@ REM Set the build environment (Visual Studio 2017 and cmake)
 
 IF "%OPEN3DSBLD%" == "" GOTO DOBLD
 ECHO Environment already set
-EXIT /Build
+EXIT /B 0
 
 :DOBLD
 
@@ -22,7 +22,7 @@ IF EXIST "%VSPATH%" GOTO VSOK
 
 
 ECHO "Could not find visual studio install"
-EXIT /B
+EXIT /B 1
 
 :VSOK
 CALL "%VSPATH%"
@@ -30,7 +30,7 @@ CL.exe >NUL 2>NUL
 IF %ERRORLEVEL% == 0 GOTO CLOK
 
 ECHO "Could not find cl.exe"
-EXIT /B
+EXIT /B 1
 
 :CLOK
 
