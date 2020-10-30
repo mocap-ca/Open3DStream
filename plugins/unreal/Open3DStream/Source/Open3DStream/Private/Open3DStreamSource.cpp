@@ -112,7 +112,7 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 
 		TArray<FName>      BoneNames;
 		TArray<int32>      BoneParents;
-		TArray<FTransform> BoneTransforms;
+		//TArray<FTransform> BoneTransforms;
 
 		FLiveLinkSubjectName SubjectName(subject->mName.c_str());
 		const FLiveLinkSubjectKey SubjectKey(SourceGuid, SubjectName);
@@ -122,9 +122,9 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 
 		BoneNames.Reserve(transformCount);
 		BoneParents.Reserve(transformCount);
-		BoneTransforms.Reserve(transformCount);
+		//BoneTransforms.Reserve(transformCount);
 
-		for (auto transform : transforms)
+		for (auto& transform : transforms)
 		{
 
 
@@ -163,9 +163,8 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 			if (pos != std::string::npos)
 				name = name.erase(0, pos+1);
 
-			BoneParents.Emplace(transform->mParentId);
-			BoneTransforms.Emplace(fTransform);
 			BoneNames.Emplace(name.c_str());
+			BoneParents.Emplace(transform->mParentId);
 			FrameData.Transforms.Add(fTransform);
 		}
 

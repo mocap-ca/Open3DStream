@@ -179,7 +179,7 @@ namespace O3DS
 
 	void Subject::CalcMatrices()
 	{
-		for (auto transform : this->mTransforms)
+		for (auto& transform : this->mTransforms)
 		{
 			transform->bWorldMatrix = false;
 			auto &m = transform->mMatrix;
