@@ -1,4 +1,5 @@
-SET DST=E:\UnrealProjects\MyProject2\plugins\Open3DStream
+REM SET DST=E:\UnrealProjects\MyProject2\plugins\Open3DStream
+SET DST=C:\Users\Al\Downloads\Open3dStream1\Plugins\Open3DStream
 
 IF EXIST "%DST%" GOTO DSTOK
 

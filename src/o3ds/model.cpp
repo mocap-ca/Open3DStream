@@ -248,13 +248,13 @@ namespace O3DS
 	}
 
 
-	int SubjectList::Serialize(uint8_t *outbuf, int buflen)
+	int SubjectList::Serialize(uint8_t *outbuf, int buflen, double timestamp)
 	{
 		O3DS::Data::Translation translation;
 		O3DS::Data::Rotation rotation;
 		O3DS::Data::Scale scale;
 
-		double timestamp = GetTime();
+		if(timestamp == 0.0) timestamp = GetTime();
 
 		flatbuffers::FlatBufferBuilder builder(buflen);
 

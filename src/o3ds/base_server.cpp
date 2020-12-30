@@ -59,7 +59,7 @@ namespace O3DS
 	{
 		int ret;
 
-		nng_msg *msg;
+		nng_msg *msg = nullptr;
 
 		ret = nng_recvmsg(mSocket, &msg, 0);
 		NERR("Receiving message");
@@ -79,7 +79,7 @@ namespace O3DS
 			return false;
 		}
 
-		memcpy(data, msgBody, len);
+		memcpy(data, msgBody, msglen);
 
 		nng_msg_free(msg);
 

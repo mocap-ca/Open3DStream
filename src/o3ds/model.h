@@ -239,7 +239,7 @@ namespace O3DS
 
 
 		//! Encode all of the items in the subject list as binary data
-		int Serialize(uint8_t *outbuf, int buflen);
+		int Serialize(uint8_t *outbuf, int buflen, double timestamp=0.0);
 
 		int SerializeUpdate(uint8_t *outbuf, int buflen);
 
