@@ -231,9 +231,11 @@ bool Open3D_Device::Stop()
     return true;
 }
 
+#define BUFSZ 1024*60
+
 void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDeviceNotifyInfo)
 {
-	uint8_t buf[1024 *12];
+	uint8_t buf[BUFSZ];
 	int written;
 
 	uint32_t total = 0;
@@ -250,9 +252,12 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			Items.update();
 
 			FBTime MobuTime = FBSystem().LocalTime;
-			int32_t bucket_size = Items.Serialize(buf, 1024 * 12, MobuTime.GetSecondDouble());
+			int32_t bucket_size = Items.Serialize(buf, BUFSZ, MobuTime.GetSecondDouble());
 			if (bucket_size == 0)
+			{
+				Status = "Buffer Overflow Error";
 				return;
+			}
 
 			if (mProtocol == Open3D_Device::kTCPClient)
 			{

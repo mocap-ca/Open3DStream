@@ -184,7 +184,13 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 			ArrivalTimeOffset = FPlatformTime::Seconds() - mSubjects.mTime;
 		}
 
+		// FQualifiedFrameTime QualifiedFrameTime = MobuUtilities::GetSceneTimecode(GetTimecodeMode());
+
 		FrameData.WorldTime = FLiveLinkWorldTime(mSubjects.mTime + ArrivalTimeOffset);
+		FFrameRate FrameRate(60, 1);
+		FFrameTime FrameTime = FFrameTime(FrameRate.AsFrameTime(mSubjects.mTime + ArrivalTimeOffset));
+
+		FrameData.MetaData.SceneTime = FQualifiedFrameTime(FrameTime, FrameRate);
 		Client->PushSubjectFrameData_AnyThread(SubjectKey, MoveTemp(FrameDataStruct));
 	}
 }
