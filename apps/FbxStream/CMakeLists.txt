@@ -25,10 +25,6 @@ if(WIN32)
 	set(fbxroot "C:/Program Files/Autodesk/FBX/FBX SDK/2020.0.1") 
 	add_definitions(-DNNG_STATIC_LIB )
 
-	# This will only work with newer versions of visual studio (untested)
-	# https://cmake.org/cmake/help/git-stage/prop_tgt/VS_DEBUGGER_COMMAND_ARGUMENTS.html
-	set(VS_DEBUGGER_COMMAND_ARGUMENTS ${CMAKE_CURRENT_LIST_DIR}../../test_data/beta_fight.fbx tcp://127.0.0.1:7000)
-
 	# As we are adding full paths to the debug/release fbx libs, we need to set the CMP0003 policy
 	if(COMMAND cmake_policy)
 		cmake_policy(SET CMP0003 NEW)
@@ -47,12 +43,15 @@ add_executable(FbxStream main.cpp fbxloader.cpp fbxloader.h)
 target_link_libraries(FbxStream PRIVATE ${libs} open3dstreamstatic)
 
 if(WIN32)
-if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
 add_custom_command(TARGET FbxStream POST_BUILD       
     COMMAND ${CMAKE_COMMAND} -E copy_if_different  
         ${fbxroot}/lib/vs2017/x64/$<CONFIGURATION>/libfbxsdk.dll     
         $<TARGET_FILE_DIR:FbxStream>)   
-endif()
+
+# https://cmake.org/cmake/help/git-stage/prop_tgt/VS_DEBUGGER_COMMAND_ARGUMENTS.html
+# https://stackoverflow.com/questions/52649753/how-to-send-visual-studio-configuration-options-from-cmake
+set_target_properties(FbxStream PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "${CMAKE_CURRENT_LIST_DIR}/../../test_data/beta_fight.fbx pub tcp://127.0.0.1:7000")
+
 endif()
 
 # install(TARGETS FbxStream DESTINATION ${CMAKE_CURRENT_LIST_DIR}/../../bin)
