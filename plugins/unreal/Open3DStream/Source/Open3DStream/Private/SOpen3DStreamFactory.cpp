@@ -101,6 +101,12 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
    		    + SHorizontalBox::Slot()
 			.FillWidth(0.3f)
 		]
+		+ SVerticalBox::Slot()
+			.Padding(5)
+			[
+				SNew(STextBlock).Text(LOCTEXT("Open3DStreamVersion", "V0.4"))
+			]
+
 	];
 }
 
