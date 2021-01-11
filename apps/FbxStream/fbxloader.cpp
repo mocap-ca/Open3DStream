@@ -78,7 +78,7 @@ namespace Fb
 		this->rotation.value = matRotation.GetQuaternion();
 
 		// Scale
-		mNode->EvaluateLocalScaling() >> this->scale.value;
+		// mNode->EvaluateLocalScaling() >> this->scale.value;
 	}
 
 	FbTransform::FbTransform(fbxsdk::FbxNode *node, int parentId)

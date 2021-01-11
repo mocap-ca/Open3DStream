@@ -260,7 +260,6 @@ namespace O3DS
 
 		std::vector<flatbuffers::Offset<O3DS::Data::Subject>> subjects;
 
-
 		for (auto& subject : this->mItems)
 		{
 			auto oSubjectName = builder.CreateString(subject->mName);
@@ -336,9 +335,12 @@ namespace O3DS
 		return size;
 	}
 
-	int SubjectList::SerializeUpdate(uint8_t *outbuf, int buflen)
+	int SubjectList::SerializeUpdate(uint8_t *outbuf, int buflen, double timestamp)
 	{
-		double timestamp = GetTime();
+		if (timestamp == 0.0)
+		{
+			timestamp = GetTime();
+		}
 
 		flatbuffers::FlatBufferBuilder builder(buflen);
 

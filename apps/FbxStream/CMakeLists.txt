@@ -43,14 +43,16 @@ add_executable(FbxStream main.cpp fbxloader.cpp fbxloader.h)
 target_link_libraries(FbxStream PRIVATE ${libs} open3dstreamstatic)
 
 if(WIN32)
+
+
 add_custom_command(TARGET FbxStream POST_BUILD       
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different  
-        ${fbxroot}/lib/vs2017/x64/$<CONFIGURATION>/libfbxsdk.dll     
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different   
+        ${fbxroot}/lib/vs2017/x64/$<$<CONFIG:RelWithDebInfo>:Release>$<$<NOT:$<CONFIG:RelWithDebInfo>>:$<CONFIG>>/libfbxsdk.dll     
         $<TARGET_FILE_DIR:FbxStream>)   
 
 # https://cmake.org/cmake/help/git-stage/prop_tgt/VS_DEBUGGER_COMMAND_ARGUMENTS.html
 # https://stackoverflow.com/questions/52649753/how-to-send-visual-studio-configuration-options-from-cmake
-set_target_properties(FbxStream PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "${CMAKE_CURRENT_LIST_DIR}/../../test_data/beta_fight.fbx pub tcp://127.0.0.1:7000")
+set_target_properties(FbxStream PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "${CMAKE_CURRENT_LIST_DIR}/../../test_data/beta_fight.fbx pub tcp://127.0.0.1:6001")
 
 endif()
 

@@ -87,8 +87,14 @@ redo:
 
 	int skips = 0;
 
-	for (FbxTime t = time_info.Start; t < time_info.End; t = t + time_info.Inc)
+	printf("**************   Loop\n");
+
+	int frame = 0;
+
+	for (FbxTime t = time_info.Start; t < time_info.End; t += time_info.Inc, frame++)
 	{
+
+		printf("T: %f\n", t.GetSecondDouble());
 	
 		// Sync time
 		double tick = GetTime() - zerof;
@@ -98,11 +104,18 @@ redo:
 		if (delay < 0)
 		{
 			skips++;
-			continue;
+			printf("Delay %f\n", fdelay);
+		}
+		else
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+
+			// Introduce random delays to simulate packet buffering
+			if (rand() < RAND_MAX / 10)
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
 		}
 
-		if(!skips)
-			std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 
 		// Update subjects
 		for (auto s : subjects)
@@ -116,15 +129,17 @@ redo:
 
 		// Serialize
 
+		// printf("time: %f  %f   %f\n", zerof, t.GetSecondDouble(), zerof + t.GetSecondDouble());
+
 		int ret = 0;
-		if (first)
+		if (frame % 100 == 0)
 		{
-			ret = subjects.Serialize(buffer, 1024 * 16);
+			ret = subjects.Serialize(buffer, 1024 * 16, zerof + t.GetSecondDouble());
 			first = false;
 		}
 		else
 		{
-			ret = subjects.SerializeUpdate(buffer, 1024 * 16);
+			ret = subjects.SerializeUpdate(buffer, 1024 * 16, zerof + t.GetSecondDouble());
 		}
 		
 		// Send
