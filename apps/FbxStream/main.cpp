@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 
 	// Serialize
 
-	uint8_t buffer[1024 * 16];
+	std::vector<char> buffer;
 
 redo:
 	double zerof = GetTime();
@@ -134,19 +134,19 @@ redo:
 		int ret = 0;
 		if (frame % 100 == 0)
 		{
-			ret = subjects.Serialize(buffer, 1024 * 16, zerof + t.GetSecondDouble());
+			ret = subjects.Serialize(buffer, zerof + t.GetSecondDouble());
 			first = false;
 		}
 		else
 		{
-			ret = subjects.SerializeUpdate(buffer, 1024 * 16, zerof + t.GetSecondDouble());
+			ret = subjects.SerializeUpdate(buffer, zerof + t.GetSecondDouble());
 		}
 		
 		// Send
 
 		if (ret > 0)
 		{
-			if (!connector->writeMsg((const char*)buffer, ret))
+			if (!connector->writeMsg((const char*)&buffer[0], ret))
 			{
 				printf("Could not send: %s\n", connector->err().c_str());
 			}

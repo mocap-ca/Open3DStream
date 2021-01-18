@@ -290,7 +290,7 @@ void Open3D_Device_Layout::UIConfigure()
 	if (protocol == Open3D_Device::kNNGServer) mListProtocol.ItemIndex = 3;
 	if (protocol == Open3D_Device::kNNGClient) mListProtocol.ItemIndex = 4;
 	if (protocol == Open3D_Device::kNNGPublish) mListProtocol.ItemIndex = 5;
-
+	 
 	PopulateSubjectList();
 	PopulateSubjectFields();
 
