@@ -17,22 +17,40 @@ using namespace O3DS::Data;
 // E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkTypes.h
 // E:\Unreal\UE_4.25\Engine\Plugins\Runtime\AR\Apple\AppleARKit\Source\AppleARKitPoseTrackingLiveLink\Private\AppleARKitPoseTrackingLiveLinkSource.cpp
 
-FOpen3DStreamSource::FOpen3DStreamSource(const FText &InUrl, const FText &InKey, const FText &InProtocol, double InTimeOffset)
-	: bIsInitialized(false)
-	, Url(InUrl)
-	, Key(InKey)
-	, Protocol(InProtocol)
-	, TimeOffset(InTimeOffset)
+
+FOpen3DStreamSource::FOpen3DStreamSource()
+:FOpen3DStreamSource(GetDefault<UOpen3DStreamSettingsObject>()->Settings)
+{
+}
+
+FOpen3DStreamSource::FOpen3DStreamSource(const FOpen3DStreamSettings& Settings)
+	: SourceType(NSLOCTEXT("Open3DStream", "ConnctionType", "Open 3D Stream"))
+	, SourceMachineName(NSLOCTEXT("Open3DStream", "SourceMachineName", "-"))
+	, SourceStatus(NSLOCTEXT("Open3DStream", "ConnctionStatus", "Inactive"))
+	, Settings(nullptr)
+	, Client(nullptr)
+	, bIsInitialized(false)
 	, ArrivalTimeOffset(0.0)
 	, bIsValid(false)
 {
-	SourceStatus = NSLOCTEXT("Open3DStream", "ConnctionStatus", "Inactive");
-	SourceType = NSLOCTEXT("Open3DStream", "ConnctionType", "Open 3D Stream");
-	SourceMachineName = NSLOCTEXT("Open3DStream", "SourceMachineName", "-");
+	Url        = Settings.Url;
+	Protocol   = Settings.Protocol;
+	Key        = Settings.Key;
+	TimeOffset = Settings.TimeOffset;
 }
 
 FOpen3DStreamSource::~FOpen3DStreamSource()
 {}
+
+void FOpen3DStreamSource::InitializeSettings(ULiveLinkSourceSettings* InSettings)
+{
+}
+
+TSubclassOf < ULiveLinkSourceSettings > FOpen3DStreamSource::GetSettingsClass() const
+{
+	return UOpen3DStreamSourceSettings::StaticClass();
+}
+
 
 void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourceGuid)
 {
@@ -186,9 +204,9 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 
 		// FQualifiedFrameTime QualifiedFrameTime = MobuUtilities::GetSceneTimecode(GetTimecodeMode());
 
-		FrameData.WorldTime = FLiveLinkWorldTime(mSubjects.mTime + ArrivalTimeOffset);
+		FrameData.WorldTime = FPlatformTime::Seconds();
 		FFrameRate FrameRate(60, 1);
-		FFrameTime FrameTime = FFrameTime(FrameRate.AsFrameTime(mSubjects.mTime + ArrivalTimeOffset));
+		FFrameTime FrameTime = FFrameTime(FrameRate.AsFrameTime(mSubjects.mTime));
 
 		FrameData.MetaData.SceneTime = FQualifiedFrameTime(FrameTime, FrameRate);
 		Client->PushSubjectFrameData_AnyThread(SubjectKey, MoveTemp(FrameDataStruct));

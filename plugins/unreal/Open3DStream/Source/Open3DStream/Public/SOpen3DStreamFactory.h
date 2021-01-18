@@ -2,11 +2,11 @@
 #include "Engine/Engine.h"
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/Input/SComboBox.h"
-#include "Open3DStreamData.h"
+#include "Open3DStreamSourceSettings.h"
 
 // E:\Unreal\UE_4.25\Engine\Plugins\Animation\LiveLink\Source\LiveLink\Private\SLiveLinkMessageBusSourceFactory.h
 
-DECLARE_DELEGATE_OneParam(FOnOpen3DStreamSelected, FOpen3DStreamDataPtr);
+DECLARE_DELEGATE_OneParam(FOnOpen3DStreamSelected, FOpen3DStreamSettingsPtr);
 
 class OPEN3DSTREAM_API SOpen3DStreamFactory : public SCompoundWidget
 {
@@ -22,9 +22,9 @@ class OPEN3DSTREAM_API SOpen3DStreamFactory : public SCompoundWidget
 	void SetKey(const FText &InKey) { mKey = InKey; }
 	FText GetKey() const { return mKey; }
 
-	FOpen3DStreamDataPtr GetSourceData() const { return Result;  }
+	FOpen3DStreamSettings GetSourceData() const { return Result;  }
 
-	FOpen3DStreamDataPtr Result;
+	FOpen3DStreamSettings Result;
 
 	FOnOpen3DStreamSelected OnSelectedEvent;
 
@@ -33,7 +33,6 @@ class OPEN3DSTREAM_API SOpen3DStreamFactory : public SCompoundWidget
 	TSharedRef<SWidget> MakeWidgetForOption(FComboItemType InOption);
 	void OnProtocolChanged(FComboItemType NewValue, ESelectInfo::Type);
 	FText GetCurrentProtocol() const;
-
 
 private:
 	FReply OnSource();

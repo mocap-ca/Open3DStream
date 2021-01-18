@@ -5,6 +5,7 @@
 #include "ILiveLinkSource.h"
 #include "Containers/Ticker.h"
 
+#include "Open3DStreamSourceSettings.h"
 #include "Open3DServer.h"
 #include "o3ds/model.h"
 
@@ -21,15 +22,15 @@ E:\Unreal\UE_4.25\Engine\Plugins\Animation\LiveLink\Source\LiveLink\Private\
     LiveLinkMessageBusSource.h
 */
 
-class OPEN3DSTREAM_API FOpen3DStreamSource : public ILiveLinkSource
+class OPEN3DSTREAM_API FOpen3DStreamSource : public ILiveLinkSource, public TSharedFromThis<FOpen3DStreamSource>
 {
 public:
-	FOpen3DStreamSource(const FText &InUrl, const FText &Key, const FText &Protocol, double InTimeOffset);
+	FOpen3DStreamSource();
+	FOpen3DStreamSource(const FOpen3DStreamSettings& Settings);
 	virtual ~FOpen3DStreamSource();
 
 	// ILiveLinkSource Overrides
-	virtual void ReceiveClient(ILiveLinkClient* InClient, 
-		FGuid InSourceGuid) override;
+	virtual void ReceiveClient(ILiveLinkClient* InClient, FGuid InSourceGuid) override;
 
 	virtual bool RequestSourceShutdown() override;
 
@@ -40,6 +41,12 @@ public:
 	virtual FText GetSourceType() const override { return SourceType; };
 	virtual FText GetSourceMachineName() const override { return SourceMachineName; }
 	virtual FText GetSourceStatus() const override { return SourceStatus; }
+
+	// Settings
+	virtual void InitializeSettings(ULiveLinkSourceSettings* Settings);
+	virtual TSubclassOf < ULiveLinkSourceSettings > GetSettingsClass() const;
+	
+	ULiveLinkSourceSettings* Settings;
 
 	ILiveLinkClient* Client;
 	FGuid            SourceGuid;

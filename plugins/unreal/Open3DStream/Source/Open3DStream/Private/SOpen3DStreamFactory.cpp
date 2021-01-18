@@ -3,8 +3,6 @@
 
 #define LOCTEXT_NAMESPACE "Open3DStream"
 
-
-
 void SOpen3DStreamFactory::Construct(const FArguments& Args)
 {
 	//LastTickTime = 0.0;
@@ -112,11 +110,11 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 
 FReply SOpen3DStreamFactory::OnSource()
 {
-	TSharedPtr<FOpen3DStreamData, ESPMode::ThreadSafe> Data = MakeShared<FOpen3DStreamData, ESPMode::ThreadSafe>();
-	Data->TimeOffset = 0;
-	Data->Url = mUrl;
-	Data->Protocol = GetCurrentProtocol();
-	OnSelectedEvent.ExecuteIfBound(Data);
+	TSharedPtr<FOpen3DStreamSettings, ESPMode::ThreadSafe> Settings = MakeShared<FOpen3DStreamSettings, ESPMode::ThreadSafe>();
+	Settings->TimeOffset = 0;
+	Settings->Url = mUrl;
+	Settings->Protocol = GetCurrentProtocol();
+	OnSelectedEvent.ExecuteIfBound(Settings);
 	return FReply::Handled();
 }
 
