@@ -102,7 +102,7 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 		+ SVerticalBox::Slot()
 			.Padding(5)
 			[
-				SNew(STextBlock).Text(LOCTEXT("Open3DStreamVersion", "V0.5"))
+				SNew(STextBlock).Text(LOCTEXT("Open3DStreamVersion", "V0.6"))
 			]
 
 	];
