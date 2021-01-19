@@ -50,13 +50,13 @@ public:
 
 	ILiveLinkClient* Client;
 	FGuid            SourceGuid;
-	TArray<FName>    InitializedSubjects;	
-	bool             bIsInitialized;
+	TArray<FName>    InitializedSubjects;
 	FText            Url;
 	FText            Key;
 	FText            Protocol;
 	float            TimeOffset;
 	double           ArrivalTimeOffset;
+	int              Frame;
 
 	FThreadSafeBool  bIsValid;
 

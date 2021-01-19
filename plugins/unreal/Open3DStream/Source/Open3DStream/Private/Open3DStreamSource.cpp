@@ -29,8 +29,8 @@ FOpen3DStreamSource::FOpen3DStreamSource(const FOpen3DStreamSettings& Settings)
 	, SourceStatus(NSLOCTEXT("Open3DStream", "ConnctionStatus", "Inactive"))
 	, Settings(nullptr)
 	, Client(nullptr)
-	, bIsInitialized(false)
 	, ArrivalTimeOffset(0.0)
+	, Frame(0)
 	, bIsValid(false)
 {
 	Url        = Settings.Url;
@@ -121,15 +121,29 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 	//O3DS::Unreal::UnBuilder builder;
 	mSubjects.Parse((const char*)data, sz, 0);// &builder);
 
-	FLiveLinkFrameDataStruct FrameDataStruct(FLiveLinkAnimationFrameData::StaticStruct());
-	FLiveLinkAnimationFrameData& FrameData = *FrameDataStruct.Cast<FLiveLinkAnimationFrameData>();
+
+	TArray<FName>      BoneNames;
+	TArray<int32>      BoneParents;
+
 
 	for (O3DS::Subject* subject : mSubjects)
 	{
-		// FOR EACH SUBJECT 
 
-		TArray<FName>      BoneNames;
-		TArray<int32>      BoneParents;
+		FLiveLinkFrameDataStruct FrameDataStruct(FLiveLinkAnimationFrameData::StaticStruct());
+		FLiveLinkAnimationFrameData& FrameData = *FrameDataStruct.Cast<FLiveLinkAnimationFrameData>();
+
+		//ArrivalTimeOffset = FPlatformTime::Seconds() - mSubjects.mTime;
+		FrameData.WorldTime = FPlatformTime::Seconds();
+		FFrameRate FrameRate(60, 1);
+		FFrameTime FrameTime = FFrameTime(FrameRate.AsFrameTime(mSubjects.mTime));
+		FrameData.FrameId = Frame++;
+		FrameData.MetaData.SceneTime = FQualifiedFrameTime(FrameTime, FrameRate);
+		// FQualifiedFrameTime QualifiedFrameTime = MobuUtilities::GetSceneTimecode(GetTimecodeMode());
+
+		// FOR EACH SUBJECT 
+		BoneNames.Empty();
+		BoneParents.Empty();
+
 		//TArray<FTransform> BoneTransforms;
 
 		FLiveLinkSubjectName SubjectName(subject->mName.c_str());
@@ -144,8 +158,6 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 
 		for (auto& transform : transforms)
 		{
-
-
 			//FVector tr = ftrans.GetTranslation();
 			//FQuat = ro = ftrans.GetRotation();
 			
@@ -163,7 +175,7 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 
 			FTransform fTransform;
 			FMatrix fMatrix, fParentWorldMatrix;
-				transform->mWorldMatrix >> fMatrix;
+			transform->mWorldMatrix >> fMatrix;
 
 			if (transform->mParentId != -1)
 			{
@@ -186,8 +198,14 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 			FrameData.Transforms.Add(fTransform);
 		}
 
-		if (!bIsInitialized && BoneNames.Num() > 0)
+		// Cjeck if skeleton has not been initialized yet
+		if (InitializedSubjects.Find(SubjectName) == INDEX_NONE)
 		{
+			// Do we have a full packet or just an update)
+			if (BoneNames.Num() == 0)
+				continue;
+			
+			// We have a complete packet of data 
 			FLiveLinkStaticDataStruct LiveLinkSkeletonStaticData;
 			LiveLinkSkeletonStaticData.InitializeWith(FLiveLinkSkeletonStaticData::StaticStruct(), nullptr);
 			FLiveLinkSkeletonStaticData* SkeletonDataPtr = LiveLinkSkeletonStaticData.Cast<FLiveLinkSkeletonStaticData>();
@@ -197,20 +215,16 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 
 			Client->RemoveSubject_AnyThread(SubjectKey);
 			Client->PushSubjectStaticData_AnyThread(SubjectKey, ULiveLinkAnimationRole::StaticClass(), MoveTemp(LiveLinkSkeletonStaticData));
-			bIsInitialized = true;
 
-			ArrivalTimeOffset = FPlatformTime::Seconds() - mSubjects.mTime;
+			InitializedSubjects.Add(SubjectName);
 		}
 
-		// FQualifiedFrameTime QualifiedFrameTime = MobuUtilities::GetSceneTimecode(GetTimecodeMode());
-
-		FrameData.WorldTime = FPlatformTime::Seconds();
-		FFrameRate FrameRate(60, 1);
-		FFrameTime FrameTime = FFrameTime(FrameRate.AsFrameTime(mSubjects.mTime));
-
-		FrameData.MetaData.SceneTime = FQualifiedFrameTime(FrameTime, FrameRate);
 		Client->PushSubjectFrameData_AnyThread(SubjectKey, MoveTemp(FrameDataStruct));
+
 	}
+
+	
+\
 }
 
 bool FOpen3DStreamSource::RequestSourceShutdown()
