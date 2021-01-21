@@ -1,6 +1,8 @@
 #include "SOpen3DStreamFactory.h"
 #include "Widgets/Input/SEditableTextBox.h"
 
+#include "o3ds/o3ds.h"  // for version
+
 #define LOCTEXT_NAMESPACE "Open3DStream"
 
 void SOpen3DStreamFactory::Construct(const FArguments& Args)
@@ -12,6 +14,8 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 	Options.Add(MakeShareable(new FString("Client")));
 	Options.Add(MakeShareable(new FString("Server")));
 	CurrentProtocol = Options[0];
+
+	const char* version = O3DS::getVersion();
 
 
 	//mUrl = LOCTEXT("Open3DStreamUrlValue", "tcp://3.131.65.210:6001");
@@ -102,7 +106,7 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 		+ SVerticalBox::Slot()
 			.Padding(5)
 			[
-				SNew(STextBlock).Text(LOCTEXT("Open3DStreamVersion", "V0.6"))
+				SNew(STextBlock).Text(LOCTEXT("Open3DStreamVersion", O3DS_VERSION))
 			]
 
 	];

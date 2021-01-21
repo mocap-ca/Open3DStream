@@ -3,8 +3,8 @@
 
 
 #define O3DS_VERSION_MAJOR 0
-#define O3DS_VERSION_MINOR 6
-#define O3DS_VERSION       "0.6"
+#define O3DS_VERSION_MINOR 7
+#define O3DS_VERSION       "0.7"
 
 namespace O3DS
 {

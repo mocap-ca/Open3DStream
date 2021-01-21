@@ -307,6 +307,9 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			{
 				if(mServer)
 					mServer->writeMsg((const char*)&buf[0], bucket_size);
+				std::ostringstream oss;
+				oss << bucket_size << " bytes";
+				Status = oss.str().c_str();
 			}
 		}
 	}
