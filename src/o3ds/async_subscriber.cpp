@@ -33,6 +33,11 @@ bool AsyncSubscriber::start(const char *url)
 	ret = nng_dialer_start(mDialer, NNG_FLAG_NONBLOCK);
 	if (ret != 0) { setError("Connecting to publisher", ret); return false; }
 
+	ret = nng_aio_alloc(&aio, AsyncSubscriber::callback, this);
+	if (ret != 0) return false;
+
+	nng_recv_aio(mSocket, aio);
+
 	return true;
 }
 
@@ -42,11 +47,6 @@ void AsyncSubscriber::pipeEvent_(nng_pipe pipe, nng_pipe_ev pipe_ev)
 	if (pipe_ev == nng_pipe_ev::NNG_PIPE_EV_ADD_POST)
 	{
 		nng_socket s= nng_pipe_socket(pipe);
-
-		ret = nng_aio_alloc(&aio, AsyncSubscriber::callback, this);
-		if (ret != 0) return;
-
-		nng_recv_aio(mSocket, aio);
 
 		//ret = nng_ctx_open(&ctx, mSocket);
 		//if (ret != 0) return;

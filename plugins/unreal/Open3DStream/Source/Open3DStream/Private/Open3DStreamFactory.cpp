@@ -2,6 +2,7 @@
 
 #include "ILiveLinkClient.h"
 #include "Misc/MessageDialog.h"
+#include "Open3DStreamSourceSettings.h"
 #include "SOpen3DStreamFactory.h"
 
 class FOpen3DStreamSource;
@@ -24,45 +25,35 @@ TSharedPtr<SWidget> UOpen3DStreamFactory::BuildCreationPanel(FOnLiveLinkSourceCr
 		.OnSelectedEvent(FOnOpen3DStreamSelected::CreateUObject(this, &UOpen3DStreamFactory::OnSourceEvent, InOnLiveLinkSourceCreated));
 }
 
-void UOpen3DStreamFactory::OnSourceEvent(FOpen3DStreamDataPtr SourceData, FOnLiveLinkSourceCreated InOnLiveLinkSourceCreated) const
+void UOpen3DStreamFactory::OnSourceEvent(FOpen3DStreamSettingsPtr SourceData, FOnLiveLinkSourceCreated InOnLiveLinkSourceCreated) const
 {
-	// This is called by the UI
-	if (!SourceData.IsValid()) return;
+	// This is called by the UI - SOpen3DStreamFactory::OnSource()
 
-	TSharedPtr<FOpen3DStreamSource> SharedPtr =
-		MakeShared<FOpen3DStreamSource>(SourceData->Url, 
-			                            SourceData->Key,
-			                            SourceData->Protocol,
-			                            SourceData->TimeOffset);
-	
 	FString ConnectionString;
+	//FOpen3DStreamSettings::StaticStruct()->ExportText(ConnectionString, &GetDefault<UOpen3DStreamSettingsObject>()->Settings, nullptr, nullptr, PPF_None, nullptr);
+	FOpen3DStreamSettings::StaticStruct()->ExportText(ConnectionString, &(*SourceData), nullptr, nullptr, PPF_None, nullptr);
+	GetMutableDefault<UOpen3DStreamSettingsObject>()->SaveConfig();
+
+	TSharedPtr<FOpen3DStreamSource> SharedPtr = MakeShared<FOpen3DStreamSource>(*SourceData);
 	InOnLiveLinkSourceCreated.ExecuteIfBound(StaticCastSharedPtr<ILiveLinkSource>(SharedPtr), MoveTemp(ConnectionString));
 }
+
 
 TSharedPtr<ILiveLinkSource> UOpen3DStreamFactory::CreateSource(const FString& ConnectionString) const
 {
 	// returns a working FOpen3DStreamSource object
 	// This isn't used by the livelink gui, maybe it's for blueprint use?
 
-	FText Url;
-	FText Key;
-	FText Protocol;
-
-	if (!FParse::Value(*ConnectionString, TEXT("Url="), Url))
+	FOpen3DStreamSettings Setting;
+	if (!ConnectionString.IsEmpty())
 	{
-		return TSharedPtr<ILiveLinkSource>();
+		FOpen3DStreamSettings::StaticStruct()->ImportText(*ConnectionString, &Setting, nullptr, PPF_None, GLog, TEXT("UOpen3DStreamSourceFactory"));
 	}
 
-	FParse::Value(*ConnectionString, TEXT("Key="), Key);
-	FParse::Value(*ConnectionString, TEXT("Protocol="), Protocol);
+	TSharedPtr<FOpen3DStreamSource> SharedPtr = MakeShared<FOpen3DStreamSource>(Setting);
 
-	const double TimeOffset = 0.0;
+	return StaticCastSharedPtr<ILiveLinkSource>(SharedPtr);
 
-	TSharedPtr<FOpen3DStreamSource> ret = MakeShared<FOpen3DStreamSource>(Url, 
-		Key,
-		Protocol,
-		TimeOffset);
-	return StaticCastSharedPtr<ILiveLinkSource>(ret);
 }
 
 #undef LOCTEXT_NAMESPACE

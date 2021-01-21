@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 
 	// Serialize
 
-	uint8_t buffer[BUFSZ];
+	std::vector<char> buffer;
 
 redo:
 	double zerof = GetTime();
@@ -91,9 +91,14 @@ redo:
 
 	int skips = 0;
 
-	for (FbxTime t = time_info.Start; t < time_info.End; t = t + time_info.Inc, n++)
+	printf("**************   Loop\n");
+
+	int frame = 0;
+
+	for (FbxTime t = time_info.Start; t < time_info.End; t += time_info.Inc, frame++)
 	{
 
+		printf("T: %f\n", t.GetSecondDouble());
 	
 		// Sync time
 		double tick = GetTime() - zerof;
@@ -103,11 +108,18 @@ redo:
 		if (delay < 0)
 		{
 			skips++;
-			continue;
+			printf("Delay %f\n", fdelay);
+		}
+		else
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+
+			// Introduce random delays to simulate packet buffering
+			if (rand() < RAND_MAX / 10)
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
 		}
 
-		if(!skips)
-			std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 
 		// Update subjects
 		for (auto s : subjects)
@@ -121,22 +133,24 @@ redo:
 
 		// Serialize
 
+		// printf("time: %f  %f   %f\n", zerof, t.GetSecondDouble(), zerof + t.GetSecondDouble());
+
 		int ret = 0;
-		if (first ||  n % 300 == 0)
+		if (frame % 100 == 0)
 		{
-			ret = subjects.Serialize(buffer, BUFSZ);
+			ret = subjects.Serialize(buffer, zerof + t.GetSecondDouble());
 			first = false;
 		}
 		else
 		{
-			ret = subjects.SerializeUpdate(buffer, BUFSZ);
+			ret = subjects.SerializeUpdate(buffer, zerof + t.GetSecondDouble());
 		}
 		
 		// Send
 
 		if (ret > 0)
 		{
-			if (!connector->writeMsg((const char*)buffer, ret))
+			if (!connector->writeMsg((const char*)&buffer[0], ret))
 			{
 				printf("Could not send: %s\n", connector->err().c_str());
 			}

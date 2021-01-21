@@ -231,9 +231,11 @@ bool Open3D_Device::Stop()
     return true;
 }
 
+#define BUFSZ 1024*60
+
 void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDeviceNotifyInfo)
 {
-	uint8_t buf[1024 *12];
+	std::vector<char> buf;
 	int written;
 
 	uint32_t total = 0;
@@ -250,9 +252,12 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			Items.update();
 
 			FBTime MobuTime = FBSystem().LocalTime;
-			int32_t bucket_size = Items.Serialize(buf, 1024 * 12, MobuTime.GetSecondDouble());
+			int32_t bucket_size = Items.Serialize(buf, MobuTime.GetSecondDouble());
 			if (bucket_size == 0)
+			{
+				Status = "Buffer Error";
 				return;
+			}
 
 			if (mProtocol == Open3D_Device::kTCPClient)
 			{
@@ -276,7 +281,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				total += written;
 
 				// Write the bucket
-				if (!mTcpIp.Write(mNetworkSocket, buf, bucket_size, &written))
+				if (!mTcpIp.Write(mNetworkSocket, &buf[0], bucket_size, &written))
 				{
 					Status = "Error";
 				}
@@ -290,7 +295,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				{
 					Status = "UDP ERROR";
 				}
-				mTcpIp.WriteDatagram(mNetworkSocket, buf, bucket_size, &written, ret.S_un.S_addr, mNetworkPort);
+				mTcpIp.WriteDatagram(mNetworkSocket, &buf[0], bucket_size, &written, ret.S_un.S_addr, mNetworkPort);
 				std::ostringstream oss;
 				oss << written << " bytes";
 				Status = oss.str().c_str();
@@ -300,7 +305,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				mProtocol == Open3D_Device::kNNGServer ||
 				mProtocol == Open3D_Device::kNNGPublish)
 			{
-				mServer->writeMsg((const char*)buf, bucket_size);
+				mServer->writeMsg((const char*)&buf[0], bucket_size);
 			}
 		}
 	}

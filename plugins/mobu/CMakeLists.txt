@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8.11)
 project(MobuStreamDevice)
 
-add_definitions( -DO3DS_MOBU_PLUIN_VER="0.2")
+add_definitions( -DO3DS_MOBU_PLUIN_VER="0.6")
 
 set(SRCS plugin.cpp layout.cpp device.cpp device.h layout.h mobuModel.h mobuModel.cpp)
 

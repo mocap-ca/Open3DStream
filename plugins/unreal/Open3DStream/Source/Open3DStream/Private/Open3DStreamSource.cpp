@@ -17,22 +17,40 @@ using namespace O3DS::Data;
 // E:\Unreal\UE_4.25\Engine\Source\Runtime\LiveLinkInterface\Public\LiveLinkTypes.h
 // E:\Unreal\UE_4.25\Engine\Plugins\Runtime\AR\Apple\AppleARKit\Source\AppleARKitPoseTrackingLiveLink\Private\AppleARKitPoseTrackingLiveLinkSource.cpp
 
-FOpen3DStreamSource::FOpen3DStreamSource(const FText &InUrl, const FText &InKey, const FText &InProtocol, double InTimeOffset)
-	: bIsInitialized(false)
-	, Url(InUrl)
-	, Key(InKey)
-	, Protocol(InProtocol)
-	, TimeOffset(InTimeOffset)
+
+FOpen3DStreamSource::FOpen3DStreamSource()
+:FOpen3DStreamSource(GetDefault<UOpen3DStreamSettingsObject>()->Settings)
+{
+}
+
+FOpen3DStreamSource::FOpen3DStreamSource(const FOpen3DStreamSettings& Settings)
+	: SourceType(NSLOCTEXT("Open3DStream", "ConnctionType", "Open 3D Stream"))
+	, SourceMachineName(NSLOCTEXT("Open3DStream", "SourceMachineName", "-"))
+	, SourceStatus(NSLOCTEXT("Open3DStream", "ConnctionStatus", "Inactive"))
+	, Settings(nullptr)
+	, Client(nullptr)
 	, ArrivalTimeOffset(0.0)
+	, Frame(0)
 	, bIsValid(false)
 {
-	SourceStatus = NSLOCTEXT("Open3DStream", "ConnctionStatus", "Inactive");
-	SourceType = NSLOCTEXT("Open3DStream", "ConnctionType", "Open 3D Stream");
-	SourceMachineName = NSLOCTEXT("Open3DStream", "SourceMachineName", "-");
+	Url        = Settings.Url;
+	Protocol   = Settings.Protocol;
+	Key        = Settings.Key;
+	TimeOffset = Settings.TimeOffset;
 }
 
 FOpen3DStreamSource::~FOpen3DStreamSource()
 {}
+
+void FOpen3DStreamSource::InitializeSettings(ULiveLinkSourceSettings* InSettings)
+{
+}
+
+TSubclassOf < ULiveLinkSourceSettings > FOpen3DStreamSource::GetSettingsClass() const
+{
+	return UOpen3DStreamSourceSettings::StaticClass();
+}
+
 
 void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourceGuid)
 {
@@ -103,15 +121,29 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 	//O3DS::Unreal::UnBuilder builder;
 	mSubjects.Parse((const char*)data, sz, 0);// &builder);
 
-	FLiveLinkFrameDataStruct FrameDataStruct(FLiveLinkAnimationFrameData::StaticStruct());
-	FLiveLinkAnimationFrameData& FrameData = *FrameDataStruct.Cast<FLiveLinkAnimationFrameData>();
+
+	TArray<FName>      BoneNames;
+	TArray<int32>      BoneParents;
+
 
 	for (O3DS::Subject* subject : mSubjects)
 	{
-		// FOR EACH SUBJECT 
 
-		TArray<FName>      BoneNames;
-		TArray<int32>      BoneParents;
+		FLiveLinkFrameDataStruct FrameDataStruct(FLiveLinkAnimationFrameData::StaticStruct());
+		FLiveLinkAnimationFrameData& FrameData = *FrameDataStruct.Cast<FLiveLinkAnimationFrameData>();
+
+		//ArrivalTimeOffset = FPlatformTime::Seconds() - mSubjects.mTime;
+		FrameData.WorldTime = FPlatformTime::Seconds();
+		FFrameRate FrameRate(60, 1);
+		FFrameTime FrameTime = FFrameTime(FrameRate.AsFrameTime(mSubjects.mTime));
+		FrameData.FrameId = Frame++;
+		FrameData.MetaData.SceneTime = FQualifiedFrameTime(FrameTime, FrameRate);
+		// FQualifiedFrameTime QualifiedFrameTime = MobuUtilities::GetSceneTimecode(GetTimecodeMode());
+
+		// FOR EACH SUBJECT 
+		BoneNames.Empty();
+		BoneParents.Empty();
+
 		//TArray<FTransform> BoneTransforms;
 
 		FLiveLinkSubjectName SubjectName(subject->mName.c_str());
@@ -126,8 +158,6 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 
 		for (auto& transform : transforms)
 		{
-
-
 			//FVector tr = ftrans.GetTranslation();
 			//FQuat = ro = ftrans.GetRotation();
 			
@@ -145,7 +175,7 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 
 			FTransform fTransform;
 			FMatrix fMatrix, fParentWorldMatrix;
-				transform->mWorldMatrix >> fMatrix;
+			transform->mWorldMatrix >> fMatrix;
 
 			if (transform->mParentId != -1)
 			{
@@ -168,8 +198,14 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 			FrameData.Transforms.Add(fTransform);
 		}
 
-		if (!bIsInitialized && BoneNames.Num() > 0)
+		// Cjeck if skeleton has not been initialized yet
+		if (InitializedSubjects.Find(SubjectName) == INDEX_NONE)
 		{
+			// Do we have a full packet or just an update)
+			if (BoneNames.Num() == 0)
+				continue;
+			
+			// We have a complete packet of data 
 			FLiveLinkStaticDataStruct LiveLinkSkeletonStaticData;
 			LiveLinkSkeletonStaticData.InitializeWith(FLiveLinkSkeletonStaticData::StaticStruct(), nullptr);
 			FLiveLinkSkeletonStaticData* SkeletonDataPtr = LiveLinkSkeletonStaticData.Cast<FLiveLinkSkeletonStaticData>();
@@ -179,14 +215,16 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 
 			Client->RemoveSubject_AnyThread(SubjectKey);
 			Client->PushSubjectStaticData_AnyThread(SubjectKey, ULiveLinkAnimationRole::StaticClass(), MoveTemp(LiveLinkSkeletonStaticData));
-			bIsInitialized = true;
 
-			ArrivalTimeOffset = FPlatformTime::Seconds() - mSubjects.mTime;
+			InitializedSubjects.Add(SubjectName);
 		}
 
-		FrameData.WorldTime = FLiveLinkWorldTime(mSubjects.mTime + ArrivalTimeOffset);
 		Client->PushSubjectFrameData_AnyThread(SubjectKey, MoveTemp(FrameDataStruct));
+
 	}
+
+	
+\
 }
 
 bool FOpen3DStreamSource::RequestSourceShutdown()

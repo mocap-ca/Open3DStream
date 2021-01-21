@@ -24,6 +24,8 @@ SOFTWARE.
 
 #include "model.h"
 #include "getTime.h"
+#include <algorithm>
+#include <iterator>
 
 using namespace O3DS::Data;
 
@@ -248,18 +250,18 @@ namespace O3DS
 	}
 
 
-	int SubjectList::Serialize(uint8_t *outbuf, int buflen, double timestamp)
+	int SubjectList::Serialize(std::vector<char> &outbuf, double timestamp)
 	{
 		O3DS::Data::Translation translation;
 		O3DS::Data::Rotation rotation;
 		O3DS::Data::Scale scale;
+		
 
 		if(timestamp == 0.0) timestamp = GetTime();
 
-		flatbuffers::FlatBufferBuilder builder(buflen);
+		flatbuffers::FlatBufferBuilder builder;
 
 		std::vector<flatbuffers::Offset<O3DS::Data::Subject>> subjects;
-
 
 		for (auto& subject : this->mItems)
 		{
@@ -328,19 +330,20 @@ namespace O3DS
 		uint8_t *buf = builder.GetBufferPointer();
 		int size = builder.GetSize();
 
-		if (size > buflen)
-			return 0;
-
-		memcpy(outbuf, buf, size);
+		outbuf.resize(0);
+		std::copy(buf, buf + size, back_inserter(outbuf));
 
 		return size;
 	}
 
-	int SubjectList::SerializeUpdate(uint8_t *outbuf, int buflen)
+	int SubjectList::SerializeUpdate(std::vector<char> &outbuf, double timestamp)
 	{
-		double timestamp = GetTime();
+		if (timestamp == 0.0)
+		{
+			timestamp = GetTime();
+		}
 
-		flatbuffers::FlatBufferBuilder builder(buflen);
+		flatbuffers::FlatBufferBuilder builder;
 
 		std::vector<flatbuffers::Offset<O3DS::Data::SubjectUpdate>> outSubjectUpdates;
 
@@ -403,10 +406,8 @@ namespace O3DS
 		uint8_t *buf = builder.GetBufferPointer();
 		int size = builder.GetSize();
 
-		if (size > buflen)
-			return 0;
-
-		memcpy(outbuf, buf, size);
+		outbuf.resize(0);
+		std::copy(buf, buf + size, back_inserter(outbuf));
 
 		return size;
 	}
