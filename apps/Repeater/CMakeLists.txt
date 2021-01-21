@@ -8,13 +8,9 @@ set(CMAKE_DEBUG_POSTFIX d)
 set(libs debug flatbuffersd optimized flatbuffers debug nngd optimized nng)
 
 if (UNIX)
-	if(CMAKE_BUILD_TYPE MATCHES Release)
-	link_directories(${fbxroot}/lib/gcc4/x64/release/)
-	endif()
-	if(CMAKE_BUILD_TYPE MATCHES Debug)
-	link_directories(${fbxroot}/lib/gcc4/x64/debug/)
-	endif()
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -ldl")
 endif()
+
 
 if(WIN32)
 	link_directories(${CMAKE_CURRENT_LIST_DIR}/../../lib)

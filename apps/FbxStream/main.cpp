@@ -17,6 +17,9 @@ using namespace O3DS::Data;
 #include "o3ds/publisher.h"
 //#include "o3ds/request.h"
 //#include "o3ds/pipeline.h"
+//
+
+#define BUFSZ 1024 * 80
 
 // C:\cpp\git\github\Open3DStream\test_data\beta_fight.fbx tcp://127.0.0.1:6001  
 
@@ -84,6 +87,7 @@ redo:
 	double zerof = GetTime();
 
 	bool first = true;
+	int n = 0;
 
 	int skips = 0;
 
