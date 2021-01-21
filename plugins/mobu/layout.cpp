@@ -1,6 +1,7 @@
 #include "device.h"
 #include "layout.h"
 
+#include "o3ds/o3ds.h" // for version#
 #include <sstream>
 
 #define OPEN3D_DEVICE__LAYOUT	Open3D_Device_Layout
@@ -303,7 +304,7 @@ void Open3D_Device_Layout::UIConfigure()
 	mEditDestPort.Text = buffer;
 	mEditDestPort.Enabled = false; // enabed by the combo changing
 
-	mLabelPluginVersion.Caption = FBString("Version: ") + FBString(O3DS_MOBU_PLUIN_VER);
+	mLabelPluginVersion.Caption = FBString("Version: ") + FBString(O3DS::getVersion());
 
 
 }

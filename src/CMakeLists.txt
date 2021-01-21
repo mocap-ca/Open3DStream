@@ -37,6 +37,7 @@ set(SOURCES
 	o3ds/math.h
 	o3ds/math.cpp
 	o3ds/transform_component.h
+	o3ds/o3ds.h
 	)
 
 set(libs debug flatbuffersd optimized flatbuffers debug nngd optimized nng)

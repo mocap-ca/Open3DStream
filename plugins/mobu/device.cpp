@@ -305,7 +305,8 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				mProtocol == Open3D_Device::kNNGServer ||
 				mProtocol == Open3D_Device::kNNGPublish)
 			{
-				mServer->writeMsg((const char*)&buf[0], bucket_size);
+				if(mServer)
+					mServer->writeMsg((const char*)&buf[0], bucket_size);
 			}
 		}
 	}
