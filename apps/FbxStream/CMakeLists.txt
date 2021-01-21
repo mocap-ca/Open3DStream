@@ -6,6 +6,7 @@ project(FbxStream)
 set(libs debug flatbuffersd optimized flatbuffers debug nngd optimized nng)
 
 if (UNIX)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -ldl")
 	set(fbxroot /home/ec2-user/fbxsdk)
 	set(libs ${libs} fbxsdk)
 	if(CMAKE_BUILD_TYPE MATCHES Release)
@@ -21,7 +22,6 @@ if (UNIX)
 endif()
 
 if(WIN32)
-	link_directories(${CMAKE_CURRENT_LIST_DIR}/../../lib)
 	set(fbxroot "C:/Program Files/Autodesk/FBX/FBX SDK/2020.0.1") 
 	add_definitions(-DNNG_STATIC_LIB )
 
@@ -41,10 +41,14 @@ if(WIN32)
 	set(MSVC_VERSION "1911")
 endif()
 
-include_directories("${fbxroot}/include")
+link_directories(${CMAKE_CURRENT_LIST_DIR}/../../lib ${CMAKE_CURRENT_LIST_DIR}/../../lib64)
+
+include_directories("${fbxroot}/include" ${CMAKE_CURRENT_LIST_DIR}/../../include 
+	${CMAKE_CURRENT_LIST_DIR}/../../src )
+
 add_executable(FbxStream main.cpp fbxloader.cpp fbxloader.h)
 
-target_link_libraries(FbxStream PRIVATE ${libs} open3dstreamstatic)
+target_link_libraries(FbxStream PRIVATE ${libs} open3dstreamstatic nng)
 
 if(WIN32)
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG")

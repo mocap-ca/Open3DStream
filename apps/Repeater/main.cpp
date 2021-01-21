@@ -32,24 +32,24 @@ int main(int argc, char *argv[])
     printf("Listening on %s\n", argv[1]);
     if (!listen.start(argv[1]))
     {
-        printf("Could not start listener\n");
+        printf("Could not start listener on %s\n", argv[1]);
         return 3;
     }
     
 
-    char* data = (char*)malloc(1024 * 12);
+    char* data = (char*)malloc(1024 * 80);
 
     size_t sz;
     
 
     while (1)
     {
-        sz = listen.readMsg(data, 1024 * 12);
+        sz = listen.readMsg(data, 1024 * 80);
         if (sz > 0)
         {
             publish.writeMsg(data, sz);
             
-            //printf("%d\n", sz);
+            printf("%d\n", sz);
         }
     }
 

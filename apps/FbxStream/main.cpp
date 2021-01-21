@@ -17,6 +17,9 @@ using namespace O3DS::Data;
 #include "o3ds/publisher.h"
 //#include "o3ds/request.h"
 //#include "o3ds/pipeline.h"
+//
+
+#define BUFSZ 1024 * 80
 
 // C:\cpp\git\github\Open3DStream\test_data\beta_fight.fbx tcp://127.0.0.1:6001  
 
@@ -78,17 +81,19 @@ int main(int argc, char *argv[])
 
 	// Serialize
 
-	uint8_t buffer[1024 * 16];
+	uint8_t buffer[BUFSZ];
 
 redo:
 	double zerof = GetTime();
 
 	bool first = true;
+	int n = 0;
 
 	int skips = 0;
 
-	for (FbxTime t = time_info.Start; t < time_info.End; t = t + time_info.Inc)
+	for (FbxTime t = time_info.Start; t < time_info.End; t = t + time_info.Inc, n++)
 	{
+
 	
 		// Sync time
 		double tick = GetTime() - zerof;
@@ -117,14 +122,14 @@ redo:
 		// Serialize
 
 		int ret = 0;
-		if (first)
+		if (first ||  n % 300 == 0)
 		{
-			ret = subjects.Serialize(buffer, 1024 * 16);
+			ret = subjects.Serialize(buffer, BUFSZ);
 			first = false;
 		}
 		else
 		{
-			ret = subjects.SerializeUpdate(buffer, 1024 * 16);
+			ret = subjects.SerializeUpdate(buffer, BUFSZ);
 		}
 		
 		// Send
