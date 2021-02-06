@@ -25,6 +25,32 @@
 #include <ws2tcpip.h>
 #include <sstream>
 
+#ifdef _WIN32
+#pragma warning( disable : 4996 ) 
+int inet_pton_alt(int af, const char *src, void *dst)
+{
+  struct sockaddr_storage ss;
+  int size = sizeof(ss);
+  char src_copy[INET6_ADDRSTRLEN+1];
+
+  ZeroMemory(&ss, sizeof(ss));
+  strncpy (src_copy, src, INET6_ADDRSTRLEN+1);
+  src_copy[INET6_ADDRSTRLEN] = 0;
+
+  if (WSAStringToAddress(src_copy, af, NULL, (struct sockaddr *)&ss, &size) == 0) {
+    switch(af) {
+      case AF_INET: 
+	      *(struct in_addr *)dst = ((struct sockaddr_in *)&ss)->sin_addr;
+          return 1;
+      case AF_INET6:
+          *(struct in6_addr *)dst = ((struct sockaddr_in6 *)&ss)->sin6_addr;
+          return 1;
+    }
+  }
+  return 0;
+}
+#endif
+
 FBDeviceImplementation	(	OPEN3D_DEVICE__CLASS	);
 FBRegisterDevice		(	OPEN3D_DEVICE__NAME,
 							OPEN3D_DEVICE__CLASS,
@@ -291,7 +317,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			if (mProtocol == Open3D_Device::kUDP)
 			{
 				struct in_addr ret;
-				if (!inet_pton(AF_INET, mNetworkAddress.operator char *(), &ret))
+				if (!inet_pton_alt(AF_INET, mNetworkAddress.operator char *(), &ret))		
 				{
 					Status = "UDP ERROR";
 				}
@@ -432,8 +458,13 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 		{
 			pFbxObject->FieldReadEnd();
 		}
+#if K_KERNEL_VERSION == 14000
+		SetSamplingRate(pFbxObject->FieldReadD(FBX_SAMPLERATE));
+		int n = pFbxObject->FieldReadI(FBX_SUBJECT_COUNT);
+#else
 		SetSamplingRate(pFbxObject->FieldReadD(FBX_SAMPLERATE, GetSamplingRate()));
 		int n = pFbxObject->FieldReadI(FBX_SUBJECT_COUNT);
+#endif
 
 		for (int i = 0; i < n; i++)
 		{
@@ -457,10 +488,17 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 			}
 		}
 
+#if K_KERNEL_VERSION == 14000
+		SetNetworkAddress(pFbxObject->FieldReadC(FBX_NETWORK_IP));
+		SetNetworkPort(pFbxObject->FieldReadI(FBX_NETWORK_PORT));
+		SetProtocol(static_cast<TProtocol>(pFbxObject->FieldReadI(FBX_NETWORK_PROTO)));
+		SetKey(pFbxObject->FieldReadC(FBX_KEY));
+#else
 		SetNetworkAddress(pFbxObject->FieldReadC(FBX_NETWORK_IP, GetNetworkAddress()));
 		SetNetworkPort(pFbxObject->FieldReadI(FBX_NETWORK_PORT, GetNetworkPort()));
 		SetProtocol(static_cast<TProtocol>(pFbxObject->FieldReadI(FBX_NETWORK_PROTO)));
 		SetKey(pFbxObject->FieldReadC(FBX_KEY, GetKey()));
+#endif		SetKey(pFbxObject->FieldReadC(FBX_KEY, GetKey()));
 	}
 
 	return true;

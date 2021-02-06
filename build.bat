@@ -1,4 +1,4 @@
-@ECHO OFF
+@ECHO On
 
 CALL bin\build_env.bat
 if %errorlevel% neq 0 exit /b %errorlevel%

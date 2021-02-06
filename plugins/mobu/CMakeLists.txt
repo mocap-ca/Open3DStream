@@ -3,6 +3,14 @@ project(MobuStreamDevice)
 
 set(SRCS plugin.cpp layout.cpp device.cpp device.h layout.h mobuModel.h mobuModel.cpp)
 
+if(EXISTS  "E:/api/mobu/2014/OpenRealitySDK")
+add_library(O3DSMobu2014Device  SHARED ${SRCS} )
+target_link_libraries(O3DSMobu2014Device  fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib open3dstreamstatic ${libs})
+target_include_directories(O3DSMobu2014Device PUBLIC "E:/api/mobu/2014/OpenRealitySDK/include")
+target_link_directories(O3DSMobu2014Device PUBLIC "E:/api/mobu/2014/OpenRealitySDK/lib/x64")
+endif()
+
+
 if(EXISTS  "C:/Program Files/Autodesk/MotionBuilder 2019/")
 add_library(O3DSMobu2019Device  SHARED ${SRCS} )
 target_link_libraries(O3DSMobu2019Device  fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib open3dstreamstatic ${libs})
