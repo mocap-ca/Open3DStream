@@ -4,6 +4,8 @@
 #include <string>
 #include "nng/nng.h"
 
+#define NNG_ERROR(msg) if(ret != 0) { setError(msg, ret); return false;  }
+
 namespace O3DS
 {
 	//! Abstract base class for all connector
@@ -14,25 +16,31 @@ namespace O3DS
 	class Connector
 	{
 	public:
+		enum eState { NOTSTARTED, STARTED, READING, ERROR, CLOSED };
+
+		Connector() : mState(NOTSTARTED) {};
+
 		virtual ~Connector()
 		{
 			nng_close(mSocket);
 		}
 		// Base class for all servers.  Has  a nng_socket and error handling.
-	public:
-
 		virtual bool start(const char* url) = 0;                 //! Starts the connector, often using nng_dial or nng_listen
 		virtual bool write(const char *data, size_t len) = 0;    //!< Write bytes - len is the size of teh data to write
 		virtual bool writeMsg(const char *data, size_t len) = 0; //!< Read bytes - len is the size of buffer, returns the number of bytes read
 		virtual size_t read(char *data, size_t len) = 0;         //!< Writes an nng message.  Len is the size of the data to write
 		virtual size_t readMsg(char *data, size_t len) = 0;      //!< Read bytes - len is the size of buffer, returns the number of bytes read
 
+		enum eState getState() { return mState;  }
+
 		const std::string& getError();
 
 		void setError(const char *msg, int ret);
+		void setError(const char* msg);
 		std::string err() { return mError;  }
 
 	protected:
+		enum eState mState;
 		std::string mError;
 		nng_socket mSocket;
 	};
@@ -77,7 +85,7 @@ namespace O3DS
 		bool         writeMsg(const char *data, size_t len);  //!< Writes an nng message
 		size_t       readMsg(char *data, size_t len);         //!< Reads an nng message - len is the size of data
 		void         setFunc(void* ctx, inDataFunc f);        //!< User implemented callback to receive data (optional)
-		void         asyncReadMsg();
+		bool         asyncReadMsg();  //!< handles a nng_recv_aio call.  Calls nng_recv_aio again if message was okay and returns true
 
 	protected:
 		void *     fnContext;  //!< The context provided for the user recieve callback

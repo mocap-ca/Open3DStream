@@ -8,16 +8,15 @@ namespace O3DS
 		int ret;
 
 		ret = nng_pub0_open(&mSocket);
-		if (ret != 0) 
-		{
-			setError("Creating publish socket", ret);
-			return false;
-		}
+		NNG_ERROR("Creating publish scocket");
 
 		if ((ret = nng_listen(mSocket, url, NULL, 0)) < 0) {
 			setError("Could not listen", ret);
 			return false;
 		}
+
+		mState = Connector::STARTED;
+
 		return true;
 	}
 
