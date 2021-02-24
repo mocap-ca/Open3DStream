@@ -447,14 +447,14 @@ namespace O3DS
 
 	void SubjectList::ParseSubject(const O3DS::Data::Subject *inSubject, TransformBuilder *builder)
 	{
-		std::string name = inSubject->name()->str();
+		std::string subjectName = inSubject->name()->str();
 
 		// Check to see if this subject already exists
-		Subject *outSubject = this->findSubject(name);
+		Subject *outSubject = this->findSubject(subjectName);
 		if (outSubject == nullptr)
 		{
 			// Add it
-			outSubject = this->addSubject(name);
+			outSubject = this->addSubject(subjectName);
 		}
 
 		outSubject->mContext.mX = dir(inSubject->x_axis());
@@ -478,8 +478,8 @@ namespace O3DS
 
 			auto inMatrixIter = inMatrix->begin();
 
-			std::string name = inName->str();
-			Transform *outTransform = outSubject->addTransform(name, inNode->parent());
+			std::string transformName = inName->str();
+			Transform *outTransform = outSubject->addTransform(transformName, inNode->parent());
 
 			// Add the components to the transform stack in the order they are defined.
 			for (int8_t componentId : *inComponents)
