@@ -27,10 +27,14 @@ namespace O3DS
 
 			if (order == FBModelRotationOrder::kFBEulerXYZ) dst = x * y * z;
 			if (order == FBModelRotationOrder::kFBEulerXZY) dst = x * z * y;
-			if (order == FBModelRotationOrder::kFBEulerYZX) dst = y * x * z;
-			if (order == FBModelRotationOrder::kFBEulerYXZ) dst = y * z * x;
+			if (order == FBModelRotationOrder::kFBEulerYZX) dst = y * z * x;
+			if (order == FBModelRotationOrder::kFBEulerYXZ) dst = y * x * z;
 			if (order == FBModelRotationOrder::kFBEulerZXY) dst = z * x * y;
-			if (order == FBModelRotationOrder::kFBEulerZYX) dst = y * y * x;
+			if (order == FBModelRotationOrder::kFBEulerZYX) dst = z * y * x;
+			if (order == kFBSphericXYZ)
+			{
+				dst = x * y * z;
+			}
 		}
 
 		void setRotation(const FBVector3d& src, const FBModelRotationOrder &order, O3DS::Vector4d& dst)
@@ -44,6 +48,10 @@ namespace O3DS
 			: O3DS::Transform(std::string(model->Name.AsString()), parentId)
 			, mModel(model)
 		{
+
+			// const char* name = model->GetFullName();
+
+
 			FBModelRotationOrder rotOrder = mModel->RotationOrder;
 			(FBVector3d)(mModel->Translation) >> this->translation.value;
 			setRotation(mModel->Rotation, rotOrder, this->rotation.value);
@@ -52,8 +60,11 @@ namespace O3DS
 			O3DS::Matrixd pre;
 			O3DS::Matrixd post;
 
-			setRotation(mModel->PreRotation, rotOrder, pre);
-			setRotation(mModel->PostRotation, rotOrder, post);
+			//setRotation(mModel->PreRotation, rotOrder, pre);
+			//setRotation(mModel->PostRotation, rotOrder, post);
+			
+			setRotation(mModel->PreRotation, FBModelRotationOrder::kFBEulerXYZ, pre);
+			setRotation(mModel->PostRotation, FBModelRotationOrder::kFBEulerXYZ, post);
 
 			this->matrices.push_back(pre);
 			this->matrices.push_back(post);
