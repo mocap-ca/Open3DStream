@@ -16,19 +16,23 @@ function(build_mobu version path)
 
 endfunction()
 
-if(EXISTS  "E:/api/mobu/2014/OpenRealitySDK")
-build_mobu("2014" "E:/api/mobu/2014/OpenRealitySDK")
+if(EXISTS  "M:/code/api/windows/mobu/2014/OpenRealitySDK")
+build_mobu("2014" "M:/code/api/windows/mobu/2014/OpenRealitySDK")
 endif()
 
-if(EXISTS  "C:/Program Files/Autodesk/MotionBuilder 2018/OpenRealitySDK")
-build_mobu("2018" "C:/Program Files/Autodesk/MotionBuilder 2018/OpenRealitySDK")
+if(EXISTS  "M:/code/api/windows/mobu/2016/OpenRealitySDK")
+build_mobu("2016" "M:/code/api/windows/mobu/2016/OpenRealitySDK")
 endif()
 
-if(EXISTS  "C:/Program Files/Autodesk/MotionBuilder 2019/OpenRealitySDK")
-build_mobu("2019" "C:/Program Files/Autodesk/MotionBuilder 2019/OpenRealitySDK")
+if(EXISTS  "M:/code/api/windows/mobu/2017/OpenRealitySDK")
+build_mobu("2017" "M:/code/api/windows/mobu/2017/OpenRealitySDK")
 endif()
 
-if(EXISTS  "C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK")
-build_mobu("2020" "C:/Program Files/Autodesk/MotionBuilder 2020/OpenRealitySDK")
+if(EXISTS  "M:/code/api/windows/mobu/2018/OpenRealitySDK")
+build_mobu("2018" "M:/code/api/windows/mobu/2018/OpenRealitySDK")
+endif()
+
+if(EXISTS  "M:/code/api/windows/2020/OpenRealitySDK")
+build_mobu("2020" "M:/code/api/windows/mobu/2020/OpenRealitySDK")
 endif()
 
