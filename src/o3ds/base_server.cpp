@@ -17,13 +17,13 @@ namespace O3DS
 		mError = msg;
 		mError += ": ";
 		mError += nng_strerror(ret);
-		mState = Connector::ERROR;
+		mState = Connector::STATE_ERROR;
 	}
 
 	void Connector::setError(const char* msg)
 	{
 		mError = msg;
-		mState = Connector::ERROR;
+		mState = Connector::STATE_ERROR;
 	}
 
 	bool BlockingConnector::write(const char *data, size_t len)
@@ -176,7 +176,7 @@ namespace O3DS
 		if (ret != 0)
 		{
 			setError("Async read", ret);
-			mState = Connector::ERROR;
+			mState = Connector::STATE_ERROR;
 			return false;
 		}
 
@@ -184,7 +184,7 @@ namespace O3DS
 		if (msg == nullptr)
 		{
 			setError("No message wile doing an async read");
-			mState = Connector::ERROR;
+			mState = Connector::STATE_ERROR;
 			return false;
 		}
 

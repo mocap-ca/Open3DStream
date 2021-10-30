@@ -16,7 +16,7 @@ namespace O3DS
 	class Connector
 	{
 	public:
-		enum eState { NOTSTARTED, STARTED, READING, ERROR, CLOSED };
+		enum eState { NOTSTARTED, STARTED, READING, STATE_ERROR, CLOSED };
 
 		Connector() : mState(NOTSTARTED) {};
 

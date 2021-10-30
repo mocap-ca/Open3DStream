@@ -34,18 +34,52 @@ function(build_maya version)
 
 endfunction()
 
+if(EXISTS "M:/code/api/windows/maya/2022")
+build_maya("2022")
+endif()
 
+if(EXISTS "M:/code/api/windows/maya/2020_4")
+build_maya("2020_4")
+endif()
 
 if(EXISTS "M:/code/api/windows/maya/2020")
 build_maya("2020")
+endif()
+
+if(EXISTS "M:/code/api/windows/maya/2019_3")
+build_maya("2019_3")
 endif()
 
 if(EXISTS "M:/code/api/windows/maya/2019")
 build_maya("2019")
 endif()
 
+if(EXISTS "M:/code/api/windows/maya/2018_6")
+build_maya("2018_6")
+endif()
+
 if(EXISTS "M:/code/api/windows/maya/2018")
 build_maya("2018")
+endif()
+
+if(EXISTS "M:/code/api/windows/maya/2017")
+build_maya("2017")
+endif()
+
+if(EXISTS "M:/code/api/windows/maya/2017_5")
+build_maya("2017_5")
+endif()
+
+if(EXISTS "M:/code/api/windows/maya/2016")
+build_maya("2016")
+endif()
+
+if(EXISTS "M:/code/api/windows/maya/2016_5")
+build_maya("2016_5")
+endif()
+
+if(EXISTS "M:/code/api/windows/maya/2015")
+build_maya("2015")
 endif()
 
 
