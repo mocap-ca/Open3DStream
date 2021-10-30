@@ -82,6 +82,10 @@ if(EXISTS "M:/code/api/windows/maya/2015")
 build_maya("2015")
 endif()
 
+if(EXISTS "M:/code/api/windows/maya/2014")
+build_maya("2014")
+endif()
+
 
 
 
