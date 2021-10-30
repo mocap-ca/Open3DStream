@@ -68,12 +68,20 @@ m.setAttr( x+ ".live", 1)
 
 m.getAttr(x + ".mocap[0].outputTranslate")
 
-for i in range(m.getAttr(x + ".mocap", size=True)):
-	node = "%s.mocap[%d]" % (x, i)
-	name = m.getAttr(node + ".name" )
-	if m.objExists("beta:" + name):
-		m.connectAttr("%s.ot" % node , "beta:%s.t" % name)
-		m.connectAttr("%s.orot" % node , "beta:%s.r" % name)
+// The connection link needs to be delayed to make sure the data has started streaming
+
+def connect():
+
+	for i in range(m.getAttr(x + ".mocap", size=True)):
+		node = "%s.mocap[%d]" % (x, i)
+		name = m.getAttr(node + ".name" )
+		if m.objExists("beta:" + name):
+			m.connectAttr("%s.ot" % node , "beta:%s.t" % name)
+			m.connectAttr("%s.orot" % node , "beta:%s.r" % name)
+
+import PySide2
+
+PySide2.QtCore.QTimer.singleShot(100, connect)
 
 
 */

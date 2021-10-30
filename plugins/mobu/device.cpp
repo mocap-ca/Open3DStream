@@ -458,7 +458,7 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 		{
 			pFbxObject->FieldReadEnd();
 		}
-#if K_KERNEL_VERSION == 14000
+#if 1
 		SetSamplingRate(pFbxObject->FieldReadD(FBX_SAMPLERATE));
 		int n = pFbxObject->FieldReadI(FBX_SUBJECT_COUNT);
 #else
@@ -488,7 +488,7 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 			}
 		}
 
-#if K_KERNEL_VERSION == 14000
+#if 1
 		SetNetworkAddress(pFbxObject->FieldReadC(FBX_NETWORK_IP));
 		SetNetworkPort(pFbxObject->FieldReadI(FBX_NETWORK_PORT));
 		SetProtocol(static_cast<TProtocol>(pFbxObject->FieldReadI(FBX_NETWORK_PROTO)));
