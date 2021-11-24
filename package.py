@@ -23,7 +23,8 @@ fp = zipfile.ZipFile(outzip, "w", zipfile.ZIP_DEFLATED)
 release = os.path.abspath('build_release')
 
 # FbxStream
-fp.write(os.path.join(release, "apps", "FbxStream", "FbxStream.exe"), "FbxStream.exe")
+fp.write(os.path.join(release, "apps", "FbxStream", "FbxStream.exe"), "FbxStream\\FbxStream.exe")
+fp.write(r"C:\Program Files\Autodesk\FBX\FBX SDK\2020.0.1\lib\vs2017\x64\release\libfbxsdk.dll", "FbxStream\\libfbxsdk.dll")
 
 # Maya
 for i in os.listdir(os.path.join(release, "plugins", "maya")):
