@@ -4,20 +4,7 @@ Open 3D Stream
 Alastair Macleod, 2022
 
 The goal of this project is to provide a simple and unified way to stream realtime
-3d content between devices, applications and locations.
-
-Currently there are a number of standards and proprietary applications that can be
-used to stream realtime. Getting devices to interface with applications or applications
-to interface with each other often requires writing custom code to connect protocols
-or API’s. It would be much easier if a standard could be adopted for transmitting
-and receiving realtime data. This project seeks to create this harmony by creating
-awareness of existing standards where they exist and are useful, proposing new
-standards, documenting examples and providing test cases.
-
-While theoretically any time sampled or event data that is taken from the real world
-and needs to be transmitted is considered, the focus of this project is on data
-captured by mobile devices (AR Kit, Accelerometer, GPS), Motion/Performance capture
-and Virtual Production (Camera Intrinsic/Extrinsic)
+animation for 3d content between devices, applications and locations.
 
 .. doxygenindex::
     :allow-dot-graphs:
@@ -26,15 +13,18 @@ and Virtual Production (Camera Intrinsic/Extrinsic)
    :maxdepth: 1
    :caption: Contents:
 
-   plugins
+   background
+   downloads
    doxyindex
    connectors
    utilities
    model
    o3ds/o3ds
+   license
    
 Links
 =====
+* `Builds <https://github.com/mocap-ca/Open3DStream/releases/latest>`_
 * `GitHub <https://github.com/mocap-ca/Open3DStream>`_
 * `Discord <https://discord.gg/GndFxeM]>`_
 * `Contact <https://open3dstream.com/contact>`_
@@ -46,3 +36,16 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+
+.. raw:: html
+
+    <div style="display: inline-block">
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+    <input type="hidden" name="cmd" value="_s-xclick" />
+    <input type="hidden" name="hosted_button_id" value="2RFK63F29X6LL" />
+    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+    <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+    </form>
+    </div>
+    <br>

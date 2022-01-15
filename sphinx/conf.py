@@ -4,7 +4,7 @@ author = 'Alastair Macleod'
 
 extensions = [ "breathe", "exhale", "sphinx.ext.autosectionlabel", "sphinx.ext.graphviz", "sphinx.ext.autodoc"]
 graphviz_output_format = "svg"
-breathe_projects = { "o3ds": "../doc/xml" }
+breathe_projects = { "o3ds": "../xmldoc/xml" }
 breathe_default_project = "o3ds"
 autosectionlabel_prefix_document = True
 

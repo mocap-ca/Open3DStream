@@ -1,11 +1,11 @@
 INPUT                  = src
 PROJECT_NAME           = "Open 3D Stream"
-OUTPUT_DIRECTORY       = doc
+OUTPUT_DIRECTORY       = xmldoc
 
 GENERATE_XML           = YES
 XML_OUTPUT             = xml
 
-GENERATE_HTML          = YES
+GENERATE_HTML          = NO
 HTML_OUTPUT            = html
 
 SEARCH_INCLUDES        = YES

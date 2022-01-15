@@ -8,6 +8,8 @@
 
 namespace O3DS
 {
+	//! Wrapper for nng pub0 - Asynchronous publish connection
+	/*! \class Starts a server and listens for connections, publishes data to clients. */
 	class AsyncPublisher : public AsyncConnector
 	{
 	public:

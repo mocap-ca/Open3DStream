@@ -25,11 +25,11 @@ namespace O3DS
 			nng_close(mSocket);
 		}
 		// Base class for all servers.  Has  a nng_socket and error handling.
-		virtual bool start(const char* url) = 0;                 //! Starts the connector, often using nng_dial or nng_listen
-		virtual bool write(const char *data, size_t len) = 0;    //!< Write bytes - len is the size of teh data to write
-		virtual bool writeMsg(const char *data, size_t len) = 0; //!< Read bytes - len is the size of buffer, returns the number of bytes read
-		virtual size_t read(char *data, size_t len) = 0;         //!< Writes an nng message.  Len is the size of the data to write
-		virtual size_t readMsg(char *data, size_t len) = 0;      //!< Read bytes - len is the size of buffer, returns the number of bytes read
+		virtual bool start(const char* url) = 0;                  //!< Starts the connector, often using nng_dial or nng_listen
+		virtual bool write(const char *data, size_t len) = 0;     //!< Write bytes - len is the size of data 
+		virtual bool writeMsg(const char *data, size_t len) = 0;  //!< Writes an nng message.  Len is the size of the data to write
+		virtual size_t read(char *data, size_t len) = 0;          //!< Read bytes - len is the size of buffer, returns the number of bytes read
+		virtual size_t readMsg(char *data, size_t len) = 0;       //!< Read an nng message - len is the size of buffer, returns the number of bytes read
 
 		enum eState getState() { return mState;  }
 
