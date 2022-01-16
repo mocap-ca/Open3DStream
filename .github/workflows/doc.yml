@@ -21,9 +21,14 @@ jobs:
       
     - name: Sphinx
       run: sphinx-build -b html sphinx doc
-
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
+      
+    - name: Create .nojekyll
+      run: touch doc/html/.nojekyll
+      shell: bash
+        
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@3.7.1
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./doc
+        github_token: ${{ inputs.github_token }}
+        branch: gh-pages
+        folder: doc/html
