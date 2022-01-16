@@ -23,7 +23,7 @@ jobs:
       run: sphinx-build -b html sphinx doc
       
     - name: Create .nojekyll
-      run: touch doc/html/.nojekyll
+      run: touch doc/.nojekyll
       shell: bash
         
     - name: Deploy to GitHub Pages
@@ -31,4 +31,4 @@ jobs:
       with:
         github_token: ${{ inputs.github_token }}
         branch: gh-pages
-        folder: doc/html
+        folder: doc
