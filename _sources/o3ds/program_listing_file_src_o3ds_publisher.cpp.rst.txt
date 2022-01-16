@@ -1,0 +1,36 @@
+
+.. _program_listing_file_src_o3ds_publisher.cpp:
+
+Program Listing for File publisher.cpp
+======================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_o3ds_publisher.cpp>` (``src/o3ds/publisher.cpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include <string.h>
+   #include <time.h>
+   #include <string>
+   #include "publisher.h"
+   
+   
+   bool O3DS::Publisher::start(const char *url)
+   {
+       int ret;
+   
+       if ((ret = nng_pub0_open(&mSocket)) != 0) {
+           setError("Could not open socket", ret);
+           return false;
+       }
+       if ((ret = nng_listen(mSocket, url, NULL, 0)) < 0) {
+           setError("Could not listen", ret);
+           return false;
+       }
+       return true;
+   }
+   

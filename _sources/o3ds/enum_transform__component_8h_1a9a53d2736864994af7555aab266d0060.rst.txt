@@ -1,0 +1,13 @@
+.. _exhale_enum_transform__component_8h_1a9a53d2736864994af7555aab266d0060:
+
+Enum ComponentType
+==================
+
+- Defined in :ref:`file_src_o3ds_transform_component.h`
+
+
+Enum Documentation
+------------------
+
+
+.. doxygenenum:: O3DS::ComponentType

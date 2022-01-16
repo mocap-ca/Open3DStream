@@ -1,0 +1,28 @@
+.. _exhale_class_classO3DS_1_1TransformComponent:
+
+Class TransformComponent
+========================
+
+- Defined in :ref:`file_src_o3ds_transform_component.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Derived Types
+*************
+
+- ``public O3DS::TransformMatrix`` (:ref:`exhale_class_classO3DS_1_1TransformMatrix`)
+- ``public O3DS::TransformRotation`` (:ref:`exhale_class_classO3DS_1_1TransformRotation`)
+- ``public O3DS::TransformScale`` (:ref:`exhale_class_classO3DS_1_1TransformScale`)
+- ``public O3DS::TransformTranslation`` (:ref:`exhale_class_classO3DS_1_1TransformTranslation`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: O3DS::TransformComponent
+   :members:
+   :protected-members:
+   :undoc-members:

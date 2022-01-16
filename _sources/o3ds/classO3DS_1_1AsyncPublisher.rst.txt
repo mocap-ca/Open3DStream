@@ -1,0 +1,25 @@
+.. _exhale_class_classO3DS_1_1AsyncPublisher:
+
+Class AsyncPublisher
+====================
+
+- Defined in :ref:`file_src_o3ds_async_publisher.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public O3DS::AsyncConnector`` (:ref:`exhale_class_classO3DS_1_1AsyncConnector`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: O3DS::AsyncPublisher
+   :members:
+   :protected-members:
+   :undoc-members:

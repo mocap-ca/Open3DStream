@@ -1,0 +1,26 @@
+.. _exhale_class_classO3DS_1_1Connector:
+
+Class Connector
+===============
+
+- Defined in :ref:`file_src_o3ds_base_server.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Derived Types
+*************
+
+- ``public O3DS::AsyncConnector`` (:ref:`exhale_class_classO3DS_1_1AsyncConnector`)
+- ``public O3DS::BlockingConnector`` (:ref:`exhale_class_classO3DS_1_1BlockingConnector`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: O3DS::Connector
+   :members:
+   :protected-members:
+   :undoc-members:

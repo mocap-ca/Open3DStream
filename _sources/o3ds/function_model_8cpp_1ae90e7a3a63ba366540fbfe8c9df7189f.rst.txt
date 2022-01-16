@@ -1,0 +1,13 @@
+.. _exhale_function_model_8cpp_1ae90e7a3a63ba366540fbfe8c9df7189f:
+
+Function operator>>(const O3DS::Data::ScaleUpdate&, O3DS::TransformScale&)
+==========================================================================
+
+- Defined in :ref:`file_src_o3ds_model.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: operator>>(const O3DS::Data::ScaleUpdate&, O3DS::TransformScale&)

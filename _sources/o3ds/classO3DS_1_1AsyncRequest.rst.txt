@@ -1,0 +1,25 @@
+.. _exhale_class_classO3DS_1_1AsyncRequest:
+
+Class AsyncRequest
+==================
+
+- Defined in :ref:`file_src_o3ds_async_request.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public O3DS::AsyncRequestReply`` (:ref:`exhale_class_classO3DS_1_1AsyncRequestReply`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: O3DS::AsyncRequest
+   :members:
+   :protected-members:
+   :undoc-members:

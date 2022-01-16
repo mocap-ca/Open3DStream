@@ -1,0 +1,16 @@
+.. _exhale_class_classO3DS_1_1TransformBuilder:
+
+Class TransformBuilder
+======================
+
+- Defined in :ref:`file_src_o3ds_model.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: O3DS::TransformBuilder
+   :members:
+   :protected-members:
+   :undoc-members:

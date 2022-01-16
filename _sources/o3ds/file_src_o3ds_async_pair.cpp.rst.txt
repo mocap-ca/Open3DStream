@@ -1,0 +1,44 @@
+
+.. _file_src_o3ds_async_pair.cpp:
+
+File async_pair.cpp
+===================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_o3ds>` (``src/o3ds``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/o3ds/async_pair.cpp``)
+----------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_o3ds_async_pair.cpp.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``async_pair.h`` (:ref:`file_src_o3ds_async_pair.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_O3DS`
+

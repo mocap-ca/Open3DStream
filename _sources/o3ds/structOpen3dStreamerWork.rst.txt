@@ -1,0 +1,16 @@
+.. _exhale_struct_structOpen3dStreamerWork:
+
+Struct Open3dStreamerWork
+=========================
+
+- Defined in :ref:`file_src_Open3dStreamServer.h`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: Open3dStreamerWork
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,13 @@
+.. _exhale_define_o3ds__pingServer_8c_1adb2d9505bae635c86de4a47561d7d930:
+
+Define PARALLEL
+===============
+
+- Defined in :ref:`file_src_cmd_o3ds_pingServer.c`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: PARALLEL

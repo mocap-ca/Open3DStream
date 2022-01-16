@@ -1,0 +1,13 @@
+.. _exhale_function_o3ds__ping_8c_1ac192943c1c0308c2e14dd82eb0bcab53:
+
+Function client
+===============
+
+- Defined in :ref:`file_src_cmd_o3ds_ping.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: client(const char *)

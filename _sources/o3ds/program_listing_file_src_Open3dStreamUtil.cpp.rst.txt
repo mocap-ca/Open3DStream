@@ -1,0 +1,24 @@
+
+.. _program_listing_file_src_Open3dStreamUtil.cpp:
+
+Program Listing for File Open3dStreamUtil.cpp
+=============================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_Open3dStreamUtil.cpp>` (``src/Open3dStreamUtil.cpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #include <nng/nng.h>
+   #include <nng/supplemental/http/http.h>
+   #include <stdio.h>
+   #include <stdlib.h>
+   
+   #include "Open3dStreamUtil.h"
+   
+   void
+   fatal(int rv) {
+     fprintf(stderr, "%s\n", nng_strerror(rv));
+     exit(1);
+   }

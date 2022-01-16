@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Program Listing for File base_server.cpp &mdash; Open3DStream  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Open3DStream
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connectors.html">Connector Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="o3ds.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Open3DStream</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Program Listing for File base_server.cpp</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/o3ds/program_listing_file_src_o3ds_base_server.cpp.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="program-listing-for-file-base-server-cpp">
+<span id="program-listing-file-src-o3ds-base-server-cpp"></span><h1>Program Listing for File base_server.cpp<a class="headerlink" href="#program-listing-for-file-base-server-cpp" title="Permalink to this headline"></a></h1>
+<p>↰ <a class="reference internal" href="file_src_o3ds_base_server.cpp.html#file-src-o3ds-base-server-cpp"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">src/o3ds/base_server.cpp</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;base_server.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;nng/nng.h&quot;</span><span class="cp"></span>
+
+
+<span class="k">namespace</span> <span class="n">O3DS</span>
+<span class="p">{</span>
+    <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">Connector</span><span class="o">::</span><span class="n">getError</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">mError</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kt">void</span> <span class="n">Connector</span><span class="o">::</span><span class="n">setError</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">msg</span><span class="p">,</span> <span class="kt">int</span> <span class="n">ret</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">mError</span> <span class="o">=</span> <span class="n">msg</span><span class="p">;</span>
+        <span class="n">mError</span> <span class="o">+=</span> <span class="s">&quot;: &quot;</span><span class="p">;</span>
+        <span class="n">mError</span> <span class="o">+=</span> <span class="n">nng_strerror</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span>
+        <span class="n">mState</span> <span class="o">=</span> <span class="n">Connector</span><span class="o">::</span><span class="n">STATE_ERROR</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kt">void</span> <span class="n">Connector</span><span class="o">::</span><span class="n">setError</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">msg</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">mError</span> <span class="o">=</span> <span class="n">msg</span><span class="p">;</span>
+        <span class="n">mState</span> <span class="o">=</span> <span class="n">Connector</span><span class="o">::</span><span class="n">STATE_ERROR</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kt">bool</span> <span class="n">BlockingConnector</span><span class="o">::</span><span class="n">write</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">nng_send</span><span class="p">(</span><span class="n">mSocket</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">,</span> <span class="n">len</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">NNG_ERROR</span><span class="p">(</span><span class="s">&quot;Sending data&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kt">bool</span> <span class="n">BlockingConnector</span><span class="o">::</span><span class="n">writeMsg</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
+        <span class="n">nng_msg</span> <span class="o">*</span><span class="n">msg</span><span class="p">;</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">nng_msg_alloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">NNG_ERROR</span><span class="p">(</span><span class="s">&quot;Creating message&quot;</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">nng_msg_append</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+        <span class="n">NNG_ERROR</span><span class="p">(</span><span class="s">&quot;Appending message&quot;</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">nng_sendmsg</span><span class="p">(</span><span class="n">mSocket</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">NNG_ERROR</span><span class="p">(</span><span class="s">&quot;Sending message&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kt">size_t</span> <span class="n">BlockingConnector</span><span class="o">::</span><span class="n">read</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span>  <span class="c1">// Read bytes - len is the size of data</span>
+    <span class="p">{</span>
+        <span class="kt">size_t</span> <span class="n">sz</span> <span class="o">=</span> <span class="n">len</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">nng_recv</span><span class="p">(</span><span class="n">mSocket</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sz</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">NNG_ERROR</span><span class="p">(</span><span class="s">&quot;Reading data&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">sz</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kt">size_t</span> <span class="n">BlockingConnector</span><span class="o">::</span><span class="n">readMsg</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span>  <span class="c1">// Read bytes - len is the size of data</span>
+    <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
+
+        <span class="n">nng_msg</span> <span class="o">*</span><span class="n">msg</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">nng_recvmsg</span><span class="p">(</span><span class="n">mSocket</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">NNG_ERROR</span><span class="p">(</span><span class="s">&quot;Receiving message&quot;</span><span class="p">);</span>
+
+        <span class="kt">size_t</span> <span class="n">msglen</span> <span class="o">=</span> <span class="n">nng_msg_len</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">msglen</span> <span class="o">&gt;</span> <span class="n">len</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">nng_msg_free</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+            <span class="n">setError</span><span class="p">(</span><span class="s">&quot;Message too large&quot;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="kt">void</span> <span class="o">*</span><span class="n">msgBody</span> <span class="o">=</span> <span class="n">nng_msg_body</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">msgBody</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">setError</span><span class="p">(</span><span class="s">&quot;Invalid Message&quot;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="n">memcpy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">msgBody</span><span class="p">,</span> <span class="n">msglen</span><span class="p">);</span>
+
+        <span class="n">nng_msg_free</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="n">msglen</span><span class="p">;</span>
+    <span class="p">}</span>
+
+
+    <span class="kt">bool</span> <span class="n">AsyncConnector</span><span class="o">::</span><span class="n">write</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">nng_send</span><span class="p">(</span><span class="n">mSocket</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">,</span> <span class="n">len</span><span class="p">,</span> <span class="n">NNG_FLAG_NONBLOCK</span><span class="p">);</span>
+        <span class="n">NNG_ERROR</span><span class="p">(</span><span class="s">&quot;Sending data&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kt">bool</span> <span class="n">AsyncConnector</span><span class="o">::</span><span class="n">writeMsg</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
+        <span class="n">nng_msg</span> <span class="o">*</span><span class="n">msg</span><span class="p">;</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">nng_msg_alloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">NNG_ERROR</span><span class="p">(</span><span class="s">&quot;Message alloc&quot;</span><span class="p">);</span>
+
+        <span class="n">ret</span> <span class="o">=</span><span class="n">nng_msg_append</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+        <span class="n">NNG_ERROR</span><span class="p">(</span><span class="s">&quot;Creating message&quot;</span><span class="p">)</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">nng_sendmsg</span><span class="p">(</span><span class="n">mSocket</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">NNG_FLAG_NONBLOCK</span><span class="p">);</span>
+        <span class="n">NNG_ERROR</span><span class="p">(</span><span class="s">&quot;Sending message&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span>
+
+
+    <span class="kt">size_t</span> <span class="n">AsyncConnector</span><span class="o">::</span><span class="n">read</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span>  <span class="c1">// Read bytes - len is the size of data</span>
+    <span class="p">{</span>
+        <span class="kt">size_t</span> <span class="n">sz</span> <span class="o">=</span> <span class="n">len</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">nng_recv</span><span class="p">(</span><span class="n">mSocket</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sz</span><span class="p">,</span> <span class="n">NNG_FLAG_NONBLOCK</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">==</span> <span class="n">NNG_EAGAIN</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+        <span class="n">NNG_ERROR</span><span class="p">(</span><span class="s">&quot;Receiving data&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sz</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kt">size_t</span> <span class="n">AsyncConnector</span><span class="o">::</span><span class="n">readMsg</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span>  <span class="c1">// Read bytes - len is the size of data</span>
+    <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
+
+        <span class="n">nng_msg</span> <span class="o">*</span><span class="n">msg</span><span class="p">;</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">nng_recvmsg</span><span class="p">(</span><span class="n">mSocket</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">NNG_FLAG_NONBLOCK</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">==</span> <span class="n">NNG_EAGAIN</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="p">}</span>
+        <span class="n">NNG_ERROR</span><span class="p">(</span><span class="s">&quot;Receiving message&quot;</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">msg</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="kt">size_t</span> <span class="n">msglen</span> <span class="o">=</span> <span class="n">nng_msg_len</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">msglen</span> <span class="o">&gt;</span> <span class="n">len</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">setError</span><span class="p">(</span><span class="s">&quot;Message too large&quot;</span><span class="p">);</span>
+            <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="n">memcpy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nng_msg_body</span><span class="p">(</span><span class="n">msg</span><span class="p">),</span> <span class="n">len</span><span class="p">);</span>
+
+        <span class="n">nng_msg_free</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+
+        <span class="n">mState</span> <span class="o">=</span> <span class="n">Connector</span><span class="o">::</span><span class="n">READING</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="n">msglen</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kt">void</span> <span class="n">AsyncConnector</span><span class="o">::</span><span class="n">setFunc</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">inDataFunc</span> <span class="n">f</span><span class="p">)</span>  <span class="c1">// User implemented callback to receive data (optional)</span>
+    <span class="p">{</span>
+        <span class="n">fnContext</span> <span class="o">=</span> <span class="n">ctx</span><span class="p">;</span>
+        <span class="n">fnRef</span> <span class="o">=</span> <span class="n">f</span><span class="p">;</span>
+    <span class="p">}</span>
+
+
+
+    <span class="kt">bool</span> <span class="n">AsyncConnector</span><span class="o">::</span><span class="n">asyncReadMsg</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="c1">// Only calls nng_recv_aio if the message was okay.</span>
+        <span class="kt">int</span> <span class="n">ret</span><span class="p">;</span>
+
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">nng_aio_result</span><span class="p">(</span><span class="n">aio</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">setError</span><span class="p">(</span><span class="s">&quot;Async read&quot;</span><span class="p">,</span> <span class="n">ret</span><span class="p">);</span>
+            <span class="n">mState</span> <span class="o">=</span> <span class="n">Connector</span><span class="o">::</span><span class="n">STATE_ERROR</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="n">nng_msg</span> <span class="o">*</span><span class="n">msg</span> <span class="o">=</span> <span class="n">nng_aio_get_msg</span><span class="p">(</span><span class="n">aio</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">msg</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">setError</span><span class="p">(</span><span class="s">&quot;No message wile doing an async read&quot;</span><span class="p">);</span>
+            <span class="n">mState</span> <span class="o">=</span> <span class="n">Connector</span><span class="o">::</span><span class="n">STATE_ERROR</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">fnRef</span><span class="p">)</span> <span class="n">fnRef</span><span class="p">(</span><span class="n">fnContext</span><span class="p">,</span> <span class="n">nng_msg_body</span><span class="p">(</span><span class="n">msg</span><span class="p">),</span> <span class="n">nng_msg_len</span><span class="p">(</span><span class="n">msg</span><span class="p">));</span>
+
+        <span class="n">nng_msg_free</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+
+        <span class="n">nng_recv_aio</span><span class="p">(</span><span class="n">mSocket</span><span class="p">,</span> <span class="n">aio</span><span class="p">);</span>
+
+        <span class="n">mState</span> <span class="o">=</span> <span class="n">Connector</span><span class="o">::</span><span class="n">READING</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+
+    <span class="p">}</span>
+<span class="p">}</span> <span class="c1">// namespace</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Alastair Macleod.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

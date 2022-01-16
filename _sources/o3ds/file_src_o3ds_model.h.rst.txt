@@ -1,0 +1,75 @@
+
+.. _file_src_o3ds_model.h:
+
+File model.h
+============
+
+|exhale_lsh| :ref:`Parent directory <dir_src_o3ds>` (``src/o3ds``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/o3ds/model.h``)
+---------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_o3ds_model.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``context.h`` (:ref:`file_src_o3ds_context.h`)
+
+- ``math.h`` (:ref:`file_src_o3ds_math.h`)
+
+- ``schema_generated.h``
+
+- ``string``
+
+- ``transform_component.h`` (:ref:`file_src_o3ds_transform_component.h`)
+
+- ``vector``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_o3ds_model.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_O3DS`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classO3DS_1_1Subject`
+
+- :ref:`exhale_class_classO3DS_1_1SubjectList`
+
+- :ref:`exhale_class_classO3DS_1_1Transform`
+
+- :ref:`exhale_class_classO3DS_1_1TransformBuilder`
+
+- :ref:`exhale_class_classO3DS_1_1TransformList`
+

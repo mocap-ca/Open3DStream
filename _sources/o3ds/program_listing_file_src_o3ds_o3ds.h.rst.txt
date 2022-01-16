@@ -1,0 +1,30 @@
+
+.. _program_listing_file_src_o3ds_o3ds.h:
+
+Program Listing for File o3ds.h
+===============================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_o3ds_o3ds.h>` (``src/o3ds/o3ds.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef O3DS_HEADER
+   #define O3DS_HEADER
+   
+   
+   #define O3DS_VERSION_MAJOR 0
+   #define O3DS_VERSION_MINOR 7
+   #define O3DS_VERSION       "0.7"
+   
+   namespace O3DS
+   {
+       static const char* version = O3DS_VERSION;
+       static const int   version_major = O3DS_VERSION_MAJOR;
+       static const int   version_minor = O3DS_VERSION_MINOR;
+   
+       const char* getVersion() { return version; }
+   }
+   
+   #endif

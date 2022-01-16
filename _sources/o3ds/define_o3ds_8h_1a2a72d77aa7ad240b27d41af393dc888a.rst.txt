@@ -1,0 +1,13 @@
+.. _exhale_define_o3ds_8h_1a2a72d77aa7ad240b27d41af393dc888a:
+
+Define O3DS_VERSION
+===================
+
+- Defined in :ref:`file_src_o3ds_o3ds.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: O3DS_VERSION

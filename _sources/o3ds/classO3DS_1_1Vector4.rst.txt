@@ -1,0 +1,16 @@
+.. _exhale_class_classO3DS_1_1Vector4:
+
+Template Class Vector4
+======================
+
+- Defined in :ref:`file_src_o3ds_math.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: O3DS::Vector4
+   :members:
+   :protected-members:
+   :undoc-members:

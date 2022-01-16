@@ -1,0 +1,50 @@
+
+.. _program_listing_file_src_o3ds_async_pair.h:
+
+Program Listing for File async_pair.h
+=====================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_o3ds_async_pair.h>` (``src/o3ds/async_pair.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef O3DS_ASYNC_PAIR
+   #define O3DS_ASYNC_PAIR
+   
+   #include <nng/nng.h>
+   #include <nng/protocol/pair1/pair.h>
+   #include "base_server.h"
+   #include <string>
+   
+   namespace O3DS
+   {
+       class AsyncPair : public AsyncConnector
+       {
+       public:
+           void callback_()
+           {
+               AsyncConnector::asyncReadMsg();
+           }
+           static void callback(void *ref)
+           {
+               ((AsyncPair*)ref)->callback_();
+           }
+           void Callback_();
+       };
+   
+       class AsyncPairClient : public AsyncPair
+       {
+       public:
+           bool start(const char* url) override;
+       };
+   
+       class AsyncPairServer : public AsyncPair
+       {
+       public:
+           bool start(const char* url) override;
+       };
+   }
+   
+   #endif

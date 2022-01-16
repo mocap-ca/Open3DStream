@@ -1,0 +1,61 @@
+
+.. _program_listing_file_src_o3ds_pipeline.cpp:
+
+Program Listing for File pipeline.cpp
+=====================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_o3ds_pipeline.cpp>` (``src/o3ds/pipeline.cpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #include "pipeline.h"
+   
+   #include <nng/protocol/pipeline0/pull.h>
+   #include <nng/protocol/pipeline0/push.h>
+   
+   namespace O3DS
+   {
+       bool Pull::start(const char* url)
+       {
+           int ret;
+   
+           ret = nng_push0_open(&mSocket);
+           if (ret != 0)
+           {
+               setError("Could not create pair socket for dial", ret);
+               return false;
+           }
+   
+           ret = nng_dial(mSocket, url, NULL, 0);
+           if (ret != 0)
+           {
+               setError("Could not dial using pair", ret);
+               return false;
+           }
+   
+           return true;
+       }
+   
+       bool Push::start(const char *url)
+       {
+           int ret;
+   
+           ret = nng_pull0_open(&mSocket);
+           if (ret != 0)
+           {
+               setError("Could not create pair socket for listen", ret);
+               return false;
+           }
+   
+           ret = nng_listen(mSocket, url, NULL, 0);
+           if (ret != 0)
+           {
+               setError("Could not listen on pair connection", ret);
+               return false;
+           }
+   
+           return true;
+       }
+   }

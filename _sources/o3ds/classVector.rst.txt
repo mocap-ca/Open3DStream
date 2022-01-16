@@ -1,0 +1,16 @@
+.. _exhale_class_classVector:
+
+Class Vector
+============
+
+- Defined in :ref:`file_src_o3ds_math.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: Vector
+   :members:
+   :protected-members:
+   :undoc-members:

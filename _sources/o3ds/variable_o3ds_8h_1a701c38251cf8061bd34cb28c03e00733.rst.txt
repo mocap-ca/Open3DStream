@@ -1,0 +1,13 @@
+.. _exhale_variable_o3ds_8h_1a701c38251cf8061bd34cb28c03e00733:
+
+Variable O3DS::version_minor
+============================
+
+- Defined in :ref:`file_src_o3ds_o3ds.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: O3DS::version_minor

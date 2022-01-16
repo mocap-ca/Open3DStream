@@ -1,0 +1,13 @@
+.. _exhale_function_math_8h_1a302281879be1f58b7287602af4f61de3:
+
+Function O3DS::rad
+==================
+
+- Defined in :ref:`file_src_o3ds_math.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: O3DS::rad(double)

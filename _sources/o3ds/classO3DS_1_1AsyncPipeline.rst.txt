@@ -1,0 +1,32 @@
+.. _exhale_class_classO3DS_1_1AsyncPipeline:
+
+Class AsyncPipeline
+===================
+
+- Defined in :ref:`file_src_o3ds_async_pipeline.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public O3DS::AsyncConnector`` (:ref:`exhale_class_classO3DS_1_1AsyncConnector`)
+
+
+Derived Types
+*************
+
+- ``public O3DS::AsyncClient`` (:ref:`exhale_class_classO3DS_1_1AsyncClient`)
+- ``public O3DS::AsyncServer`` (:ref:`exhale_class_classO3DS_1_1AsyncServer`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: O3DS::AsyncPipeline
+   :members:
+   :protected-members:
+   :undoc-members:

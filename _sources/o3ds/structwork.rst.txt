@@ -1,0 +1,16 @@
+.. _exhale_struct_structwork:
+
+Struct work
+===========
+
+- Defined in :ref:`file_src_cmd_o3ds_pingServer.c`
+
+
+Struct Documentation
+--------------------
+
+
+.. doxygenstruct:: work
+   :members:
+   :protected-members:
+   :undoc-members:

@@ -1,0 +1,13 @@
+.. _exhale_function_math_8h_1a75c6dea51a423c8955bfb104fd2f2b37:
+
+Template Function O3DS::operator\*(const Matrix<T>&, const Matrix<T>&)
+======================================================================
+
+- Defined in :ref:`file_src_o3ds_math.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: O3DS::operator*(const Matrix<T>&, const Matrix<T>&)

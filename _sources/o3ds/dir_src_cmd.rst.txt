@@ -1,0 +1,21 @@
+.. _dir_src_cmd:
+
+
+Directory cmd
+=============
+
+
+|exhale_lsh| :ref:`Parent directory <dir_src>` (``src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``src/cmd``
+
+
+Files
+-----
+
+- :ref:`file_src_cmd_o3ds_ping.c`
+- :ref:`file_src_cmd_o3ds_pingServer.c`
+
+

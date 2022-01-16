@@ -1,0 +1,106 @@
+
+.. _program_listing_file_src_o3ds_base_server.h:
+
+Program Listing for File base_server.h
+======================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_o3ds_base_server.h>` (``src/o3ds/base_server.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef O3DS_BASE_SERVER
+   #define O3DS_BASE_SERVER
+   
+   #include <string>
+   #include "nng/nng.h"
+   
+   #define NNG_ERROR(msg) if(ret != 0) { setError(msg, ret); return false;  }
+   
+   namespace O3DS
+   {
+   
+       class Connector
+       {
+       public:
+           enum eState { NOTSTARTED, STARTED, READING, STATE_ERROR, CLOSED };
+   
+           Connector() : mState(NOTSTARTED) {};
+   
+           virtual ~Connector()
+           {
+               nng_close(mSocket);
+           }
+           // Base class for all servers.  Has  a nng_socket and error handling.
+           virtual bool start(const char* url) = 0;                  
+           virtual bool write(const char *data, size_t len) = 0;     
+           virtual bool writeMsg(const char *data, size_t len) = 0;  
+           virtual size_t read(char *data, size_t len) = 0;          
+           virtual size_t readMsg(char *data, size_t len) = 0;       
+   
+           enum eState getState() { return mState;  }
+   
+           const std::string& getError();
+   
+           void setError(const char *msg, int ret);
+           void setError(const char* msg);
+           std::string err() { return mError;  }
+   
+       protected:
+           enum eState mState;
+           std::string mError;
+           nng_socket mSocket;
+       };
+   
+       class BlockingConnector : public Connector
+       {
+       public:
+           // Base class for blocking connectors
+           virtual bool write(const char *data, size_t len);    
+           virtual size_t read(char *data, size_t len);         
+           virtual bool writeMsg(const char *data, size_t len); 
+           virtual size_t readMsg(char *data, size_t len);      
+       };
+   
+   
+       typedef void(*inDataFunc)(void *, void *, size_t);
+   
+   
+       class AsyncConnector : public Connector
+       {
+       public:
+           AsyncConnector()
+               : Connector()
+               , fnContext(nullptr)
+               , fnRef(nullptr)
+               , aio(nullptr)
+           {
+               //nng_ctx_open(&ctx, mSocket);
+           };
+   
+           virtual ~AsyncConnector()
+           {
+               //nng_dialer_close(mDialer);
+               //if (aio)  nng_aio_free(aio);
+           }
+   
+           virtual bool start(const char* url) = 0;              
+           bool         write(const char *data, size_t len);     
+           size_t       read(char *data, size_t len);            
+           bool         writeMsg(const char *data, size_t len);  
+           size_t       readMsg(char *data, size_t len);         
+           void         setFunc(void* ctx, inDataFunc f);        
+           bool         asyncReadMsg();  
+   
+       protected:
+           void *     fnContext;  
+           inDataFunc fnRef;      
+   
+           nng_dialer mDialer;
+           nng_aio *aio;
+           //nng_ctx  ctx;
+       };
+   }
+   
+   #endif

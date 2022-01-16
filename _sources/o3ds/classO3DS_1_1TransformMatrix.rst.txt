@@ -1,0 +1,25 @@
+.. _exhale_class_classO3DS_1_1TransformMatrix:
+
+Class TransformMatrix
+=====================
+
+- Defined in :ref:`file_src_o3ds_transform_component.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public O3DS::TransformComponent`` (:ref:`exhale_class_classO3DS_1_1TransformComponent`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: O3DS::TransformMatrix
+   :members:
+   :protected-members:
+   :undoc-members:

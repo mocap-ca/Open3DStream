@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Template Class Matrix &mdash; Open3DStream  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class Publisher" href="classO3DS_1_1Publisher.html" />
+    <link rel="prev" title="Class Context" href="classO3DS_1_1Context.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Open3DStream
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connectors.html">Connector Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="o3ds.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Open3DStream</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="o3ds.html">Reference</a> &raquo;</li>
+      <li>Template Class Matrix</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/o3ds/classO3DS_1_1Matrix.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="template-class-matrix">
+<span id="exhale-class-classo3ds-1-1matrix"></span><h1>Template Class Matrix<a class="headerlink" href="#template-class-matrix" title="Permalink to this headline"></a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_src_o3ds_math.h.html#file-src-o3ds-math-h"><span class="std std-ref">File math.h</span></a></p></li>
+</ul>
+<section id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline"></a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4I0EN4O3DS6MatrixE">
+<span id="_CPPv3I0EN4O3DS6MatrixE"></span><span id="_CPPv2I0EN4O3DS6MatrixE"></span><span class="k"><span class="pre">template</span></span><span class="p"><span class="pre">&lt;</span></span><span class="k"><span class="pre">typename</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">T</span></span></span><span class="p"><span class="pre">&gt;</span></span><br /><span class="target" id="classO3DS_1_1Matrix"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">O3DS</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Matrix</span></span></span><a class="headerlink" href="#_CPPv4I0EN4O3DS6MatrixE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>A templated 4x4 matrix for transform operations. </p>
+<p>class <a class="reference internal" href="#classO3DS_1_1Matrix"><span class="std std-ref">Matrix</span></a> math.h o3ds\math.h </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix6MatrixE1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T">
+<span id="_CPPv3N4O3DS6Matrix6MatrixE1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T"></span><span id="_CPPv2N4O3DS6Matrix6MatrixE1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T"></span><span id="O3DS::Matrix::Matrix__T.T.T.T.T.T.T.T.T.T.T.T.T.T.T.T"></span><span class="target" id="classO3DS_1_1Matrix_1aa9092b1586e8a3b7e82d3d64b4028855"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Matrix</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m11</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m12</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m13</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m14</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m21</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m22</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m23</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m24</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m31</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m32</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m33</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m34</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m41</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m42</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m43</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">m44</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix6MatrixE1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T1T" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix6MatrixEv">
+<span id="_CPPv3N4O3DS6Matrix6MatrixEv"></span><span id="_CPPv2N4O3DS6Matrix6MatrixEv"></span><span id="O3DS::Matrix::Matrix"></span><span class="target" id="classO3DS_1_1Matrix_1aa29e82399c6400bc06fe759009ed8102"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Matrix</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix6MatrixEv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix6MatrixEA_1T">
+<span id="_CPPv3N4O3DS6Matrix6MatrixEA_1T"></span><span id="_CPPv2N4O3DS6Matrix6MatrixEA_1T"></span><span id="O3DS::Matrix::Matrix__TA"></span><span class="target" id="classO3DS_1_1Matrix_1a6f5973bf1a287ece0e16aa6a73e3aa83"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Matrix</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix6MatrixEA_1T" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6MatrixclEii">
+<span id="_CPPv3N4O3DS6MatrixclEii"></span><span id="_CPPv2N4O3DS6MatrixclEii"></span><span id="O3DS::Matrix::call-operator__i.i"></span><span class="target" id="classO3DS_1_1Matrix_1a085bdb905b963b92b998f1217107815f"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">()</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">u</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6MatrixclEii" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4NK4O3DS6Matrix9TransposeEv">
+<span id="_CPPv3NK4O3DS6Matrix9TransposeEv"></span><span id="_CPPv2NK4O3DS6Matrix9TransposeEv"></span><span id="O3DS::Matrix::TransposeC"></span><span class="target" id="classO3DS_1_1Matrix_1afcadd82c419c4d7a0ac3db9dbf52cdde"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix"><span class="n"><span class="pre">Matrix</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Transpose</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK4O3DS6Matrix9TransposeEv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix14GetTranslationEv">
+<span id="_CPPv3N4O3DS6Matrix14GetTranslationEv"></span><span id="_CPPv2N4O3DS6Matrix14GetTranslationEv"></span><span id="O3DS::Matrix::GetTranslation"></span><span class="target" id="classO3DS_1_1Matrix_1a5e45a4020fd25d395f0a5c1dac42decf"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="classO3DS_1_1Vector4.html#_CPPv4I0EN4O3DS7Vector4E" title="O3DS::Vector4"><span class="n"><span class="pre">Vector4</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GetTranslation</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix14GetTranslationEv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix7InverseEv">
+<span id="_CPPv3N4O3DS6Matrix7InverseEv"></span><span id="_CPPv2N4O3DS6Matrix7InverseEv"></span><span id="O3DS::Matrix::Inverse"></span><span class="target" id="classO3DS_1_1Matrix_1adc500ae385a20b8b22f01d04c3c4f166"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix"><span class="n"><span class="pre">Matrix</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Inverse</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix7InverseEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Contructs a new matrix as the inverse of this matrix. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix13GetQuaternionEv">
+<span id="_CPPv3N4O3DS6Matrix13GetQuaternionEv"></span><span id="_CPPv2N4O3DS6Matrix13GetQuaternionEv"></span><span id="O3DS::Matrix::GetQuaternion"></span><span class="target" id="classO3DS_1_1Matrix_1a22eb2722e3fd6ef429dc6a35a82c5d6c"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="classO3DS_1_1Vector4.html#_CPPv4I0EN4O3DS7Vector4E" title="O3DS::Vector4"><span class="n"><span class="pre">Vector4</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">GetQuaternion</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix13GetQuaternionEv" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix1mE">
+<span id="_CPPv3N4O3DS6Matrix1mE"></span><span id="_CPPv2N4O3DS6Matrix1mE"></span><span id="O3DS::Matrix::m__TAA"></span><span class="target" id="classO3DS_1_1Matrix_1a5a7621c3b57581e2fcd402858110ae24"></span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">m</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">4</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">4</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix1mE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix12TranslateXYZE1T1T1T">
+<span id="_CPPv3N4O3DS6Matrix12TranslateXYZE1T1T1T"></span><span id="_CPPv2N4O3DS6Matrix12TranslateXYZE1T1T1T"></span><span id="O3DS::Matrix::TranslateXYZ__T.T.T"></span><span class="target" id="classO3DS_1_1Matrix_1a6e52ef6cf5d603588e25da717f8c8efe"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix"><span class="n"><span class="pre">Matrix</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TranslateXYZ</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">tx</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">ty</span></span>, <a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">tz</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix12TranslateXYZE1T1T1T" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix12TranslateXYZE7Vector3I1TE">
+<span id="_CPPv3N4O3DS6Matrix12TranslateXYZE7Vector3I1TE"></span><span id="_CPPv2N4O3DS6Matrix12TranslateXYZE7Vector3I1TE"></span><span id="O3DS::Matrix::TranslateXYZ__Vector3:T:"></span><span class="target" id="classO3DS_1_1Matrix_1acb68d33e416b6f5193c2e620a490a545"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix"><span class="n"><span class="pre">Matrix</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TranslateXYZ</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="classO3DS_1_1Vector3.html#_CPPv4I0EN4O3DS7Vector3E" title="O3DS::Vector3"><span class="n"><span class="pre">Vector3</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">v</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix12TranslateXYZE7Vector3I1TE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix7RotateXE1T">
+<span id="_CPPv3N4O3DS6Matrix7RotateXE1T"></span><span id="_CPPv2N4O3DS6Matrix7RotateXE1T"></span><span id="O3DS::Matrix::RotateX__T"></span><span class="target" id="classO3DS_1_1Matrix_1af5991505b6b087950599e295999d6f15"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix"><span class="n"><span class="pre">Matrix</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">RotateX</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">a</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix7RotateXE1T" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix7RotateYE1T">
+<span id="_CPPv3N4O3DS6Matrix7RotateYE1T"></span><span id="_CPPv2N4O3DS6Matrix7RotateYE1T"></span><span id="O3DS::Matrix::RotateY__T"></span><span class="target" id="classO3DS_1_1Matrix_1abaa33a30b650303ed4d26061cb7a8e59"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix"><span class="n"><span class="pre">Matrix</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">RotateY</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">a</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix7RotateYE1T" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix7RotateZE1T">
+<span id="_CPPv3N4O3DS6Matrix7RotateZE1T"></span><span id="_CPPv2N4O3DS6Matrix7RotateZE1T"></span><span id="O3DS::Matrix::RotateZ__T"></span><span class="target" id="classO3DS_1_1Matrix_1ad28ac16d4bec107a6bab83ec6f52ac2c"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix"><span class="n"><span class="pre">Matrix</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">RotateZ</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">a</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix7RotateZE1T" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix10QuaternionE7Vector4I1TE">
+<span id="_CPPv3N4O3DS6Matrix10QuaternionE7Vector4I1TE"></span><span id="_CPPv2N4O3DS6Matrix10QuaternionE7Vector4I1TE"></span><span id="O3DS::Matrix::Quaternion__Vector4:T:"></span><span class="target" id="classO3DS_1_1Matrix_1a7d4a875184f9fb93689607ee185b8293"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix"><span class="n"><span class="pre">Matrix</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Quaternion</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="classO3DS_1_1Vector4.html#_CPPv4I0EN4O3DS7Vector4E" title="O3DS::Vector4"><span class="n"><span class="pre">Vector4</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">q</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix10QuaternionE7Vector4I1TE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS6Matrix5ScaleE7Vector3I1TE">
+<span id="_CPPv3N4O3DS6Matrix5ScaleE7Vector3I1TE"></span><span id="_CPPv2N4O3DS6Matrix5ScaleE7Vector3I1TE"></span><span id="O3DS::Matrix::Scale__Vector3:T:"></span><span class="target" id="classO3DS_1_1Matrix_1a07d45bfc30ec494bf60a7dceb53f5855"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix"><span class="n"><span class="pre">Matrix</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Scale</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="classO3DS_1_1Vector3.html#_CPPv4I0EN4O3DS7Vector3E" title="O3DS::Vector3"><span class="n"><span class="pre">Vector3</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="#_CPPv4I0EN4O3DS6MatrixE" title="O3DS::Matrix::T"><span class="n"><span class="pre">T</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">s</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS6Matrix5ScaleE7Vector3I1TE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="classO3DS_1_1Context.html" class="btn btn-neutral float-left" title="Class Context" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="classO3DS_1_1Publisher.html" class="btn btn-neutral float-right" title="Class Publisher" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Alastair Macleod.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

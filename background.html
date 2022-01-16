@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Background &mdash; Open3DStream  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/collapsible-lists/css/tree_view.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Downloads" href="downloads.html" />
+    <link rel="prev" title="Open 3D Stream" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Open3DStream
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connectors.html">Connector Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utilities.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="o3ds/o3ds.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Open3DStream</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Background</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/background.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="background">
+<h1>Background<a class="headerlink" href="#background" title="Permalink to this headline"></a></h1>
+<p>Currently there are a number of standards and proprietary applications that can be
+used to stream realtime animation. Getting devices to interface with applications
+or applications to interface with each other often requires writing custom code to
+connect protocols or API’s. It would be much easier if a standard could be adopted
+for transmitting and receiving realtime data. This project seeks to create this
+armony by creating awareness of existing standards where they exist and are useful,
+proposing new standards, documenting examples and providing test cases.</p>
+<p>While theoretically any time sampled or event data that is taken from the real world
+and needs to be transmitted is considered, the focus of this project is on data
+captured by mobile devices (AR Kit, Accelerometer, GPS), Motion/Performance capture
+and Virtual Production (Camera Intrinsic/Extrinsic)</p>
+<p><strong>Issues with current implementations</strong></p>
+<ul class="simple">
+<li><p>Each application uses a different wire protocol or custom api</p></li>
+<li><p>No one wire protocol supports all wanted data for streaming 3d data.</p></li>
+<li><p>Different applications and devices use different data representations (units, rotation order, axis, etc)</p></li>
+</ul>
+<p><strong>What does the standard aim to achieve</strong></p>
+<ul class="simple">
+<li><p>Define the wire protocol for real-time streaming applications</p></li>
+<li><p>A standard library may be used to achieve this rather than writing a new one</p></li>
+<li><p>Abstract the data from the context providing automatic type conversion and range checking (units, coordinate systems, euler/quaternions)</p></li>
+<li><p>Define an extensible system that so system itself doesn’t need to change in order to add new data types</p></li>
+<li><p>Optimize transmission by sending the schemas or hierarchy separate from the data. This can be sent once at the start, at an interval, on request, or whenever a change is made</p></li>
+<li><p>The per frame message can contain data that alerts the endpoints that the structure has changed (for instance)</p></li>
+<li><p>Send real-time data as a buffer of plain data that can be correlated to the template/schema on the receiving end.</p></li>
+</ul>
+<p><strong>Existing Standards</strong></p>
+<ul class="simple">
+<li><p>VRPN</p></li>
+<li><p>Unreal Live Link - message bus</p></li>
+<li><p>RTTrPM</p></li>
+</ul>
+<p><strong>Requirements</strong></p>
+<ul class="simple">
+<li><p>Lightweight - bare minimum of dependencies for building</p></li>
+<li><p>Easy to implement and use</p></li>
+<li><p>Platform and transport agnostic</p></li>
+<li><p>Transport options include zeromq and nng</p></li>
+<li><p>Transport binary messages</p></li>
+<li><p>Allow encryption of binary messages</p></li>
+<li><p>Define a set of network transports used to send a block of data</p></li>
+</ul>
+<p><strong>Example</strong></p>
+<ul class="simple">
+<li><p>Use off the shelf serialization/deserialization</p></li>
+<li><p>Quality of service control</p></li>
+</ul>
+<p><strong>Block Diagram</strong></p>
+<img alt="_images/diagram.png" src="_images/diagram.png" />
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Open 3D Stream" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="downloads.html" class="btn btn-neutral float-right" title="Downloads" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Alastair Macleod.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

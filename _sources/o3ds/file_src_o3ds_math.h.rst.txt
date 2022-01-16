@@ -1,0 +1,102 @@
+
+.. _file_src_o3ds_math.h:
+
+File math.h
+===========
+
+|exhale_lsh| :ref:`Parent directory <dir_src_o3ds>` (``src/o3ds``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/o3ds/math.h``)
+--------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_o3ds_math.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``math.h`` (:ref:`file_src_o3ds_math.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_o3ds_math.cpp`
+
+- :ref:`file_src_o3ds_math.h`
+
+- :ref:`file_src_o3ds_model.h`
+
+- :ref:`file_src_o3ds_transform_component.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_O3DS`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classO3DS_1_1Matrix`
+
+- :ref:`exhale_class_classO3DS_1_1Vector3`
+
+- :ref:`exhale_class_classO3DS_1_1Vector4`
+
+- :ref:`exhale_class_classVector`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_math_8h_1adbbde4d316892e10bade694d698601cf`
+
+- :ref:`exhale_function_math_8h_1a5748a0223959a81f8cfa53ac17b4fddb`
+
+- :ref:`exhale_function_math_8h_1a90102f9abbe4d01660682ba4f3855944`
+
+- :ref:`exhale_function_math_8h_1a75c6dea51a423c8955bfb104fd2f2b37`
+
+- :ref:`exhale_function_math_8h_1a302281879be1f58b7287602af4f61de3`
+
+
+Defines
+-------
+
+
+- :ref:`exhale_define_math_8h_1a874a0fd594492d1aed067d143660bdde`
+
+
+Typedefs
+--------
+
+
+- :ref:`exhale_typedef_math_8h_1a7fdcc877193964119aad97e11279ae83`
+
+- :ref:`exhale_typedef_math_8h_1aab1f617b16cd7d29b9202ae490f87e50`
+
+- :ref:`exhale_typedef_math_8h_1a732d149f68ae95e45a79402abeae1ec6`
+

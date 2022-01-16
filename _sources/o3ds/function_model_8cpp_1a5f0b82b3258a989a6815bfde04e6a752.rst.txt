@@ -1,0 +1,13 @@
+.. _exhale_function_model_8cpp_1a5f0b82b3258a989a6815bfde04e6a752:
+
+Function operator>>(const O3DS::Data::Matrix&, O3DS::TransformMatrix&)
+======================================================================
+
+- Defined in :ref:`file_src_o3ds_model.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: operator>>(const O3DS::Data::Matrix&, O3DS::TransformMatrix&)

@@ -1,0 +1,43 @@
+
+.. _program_listing_file_src_o3ds_async_request.h:
+
+Program Listing for File async_request.h
+========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_o3ds_async_request.h>` (``src/o3ds/async_request.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef O3DS_ASYNC_REQUEST
+   #define O3DS_ASYNC_REQUEST
+   
+   #include <nng/nng.h>
+   #include <nng/protocol/reqrep0/req.h>
+   #include "base_server.h"
+   
+   
+   namespace O3DS
+   {
+       class AsyncRequestReply : public AsyncConnector
+       {
+       public:
+           static void Callback(void *ref) { ((AsyncRequestReply*)ref)->Callback_(); }
+           void Callback_();
+       };
+   
+       class AsyncRequest : public AsyncRequestReply
+       {
+       public:
+           bool start(const char* url) override;
+       };
+   
+       class AsyncReply : public AsyncRequestReply
+       {
+       public:
+           bool start(const char* url) override;
+       };
+   }
+   
+   #endif

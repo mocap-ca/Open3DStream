@@ -1,0 +1,72 @@
+
+.. _file_src_o3ds_transform_component.h:
+
+File transform_component.h
+==========================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_o3ds>` (``src/o3ds``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/o3ds/transform_component.h``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_o3ds_transform_component.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``o3ds/math.h`` (:ref:`file_src_o3ds_math.h`)
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_o3ds_model.h`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_O3DS`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classO3DS_1_1TransformComponent`
+
+- :ref:`exhale_class_classO3DS_1_1TransformMatrix`
+
+- :ref:`exhale_class_classO3DS_1_1TransformRotation`
+
+- :ref:`exhale_class_classO3DS_1_1TransformScale`
+
+- :ref:`exhale_class_classO3DS_1_1TransformTranslation`
+
+
+Enums
+-----
+
+
+- :ref:`exhale_enum_transform__component_8h_1a9a53d2736864994af7555aab266d0060`
+

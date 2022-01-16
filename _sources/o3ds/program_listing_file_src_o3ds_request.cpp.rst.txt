@@ -1,0 +1,59 @@
+
+.. _program_listing_file_src_o3ds_request.cpp:
+
+Program Listing for File request.cpp
+====================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_o3ds_request.cpp>` (``src/o3ds/request.cpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #include "request.h"
+   
+   #include <nng/protocol/reqrep0/rep.h>
+   #include <nng/protocol/reqrep0/req.h>
+   
+   namespace O3DS
+   {
+       bool Request::start(const char* url)
+       {
+           int ret;
+   
+           ret = nng_req0_open(&mSocket);
+           if (ret != 0)
+           {
+               setError("Could not create pair socket for dial", ret);
+               return false;
+           }
+   
+           ret = nng_dial(mSocket, url, NULL, 0);
+           if (ret != 0)
+           {
+               setError("Could not dial using pair", ret);
+               return false;
+           }
+           return true;
+       }
+   
+       bool Reply::start(const char *url)
+       {
+           int ret;
+   
+           ret = nng_rep0_open(&mSocket);
+           if (ret != 0)
+           {
+               setError("Could not create pair socket for listen", ret);
+               return false;
+           }
+   
+           ret = nng_listen(mSocket, url, NULL, 0);
+           if (ret != 0)
+           {
+               setError("Could not listen on pair connection", ret);
+               return false;
+           }
+           return true;
+       }
+   }

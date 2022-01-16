@@ -1,0 +1,20 @@
+
+.. _program_listing_file_src_o3ds_getTime.h:
+
+Program Listing for File getTime.h
+==================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_o3ds_getTime.h>` (``src/o3ds/getTime.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef OPEN3DSTREAM_GET_TIME
+   #define OPEN3DSTREAM_GET_TIME
+   
+   
+   double GetTime();
+   
+   
+   #endif

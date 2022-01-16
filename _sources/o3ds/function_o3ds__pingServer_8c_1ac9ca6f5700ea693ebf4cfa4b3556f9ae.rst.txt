@@ -1,0 +1,13 @@
+.. _exhale_function_o3ds__pingServer_8c_1ac9ca6f5700ea693ebf4cfa4b3556f9ae:
+
+Function alloc_work
+===================
+
+- Defined in :ref:`file_src_cmd_o3ds_pingServer.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: alloc_work(nng_socket)

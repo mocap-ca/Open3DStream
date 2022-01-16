@@ -1,0 +1,13 @@
+.. _exhale_function_math_8h_1a5748a0223959a81f8cfa53ac17b4fddb:
+
+Template Function O3DS::dist(const Vector3<T>, const Vector3<T>)
+================================================================
+
+- Defined in :ref:`file_src_o3ds_math.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: O3DS::dist(const Vector3<T>, const Vector3<T>)

@@ -1,0 +1,35 @@
+
+.. _program_listing_file_src_o3ds_async_publisher.cpp:
+
+Program Listing for File async_publisher.cpp
+============================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_o3ds_async_publisher.cpp>` (``src/o3ds/async_publisher.cpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #include "o3ds/async_publisher.h"
+   
+   namespace O3DS
+   {
+   
+       bool AsyncPublisher::start(const char *url)
+       {
+           int ret;
+   
+           ret = nng_pub0_open(&mSocket);
+           NNG_ERROR("Creating publish scocket");
+   
+           if ((ret = nng_listen(mSocket, url, NULL, 0)) < 0) {
+               setError("Could not listen", ret);
+               return false;
+           }
+   
+           mState = Connector::STARTED;
+   
+           return true;
+       }
+   
+   }

@@ -1,0 +1,13 @@
+.. _exhale_function_model_8cpp_1ad40012b3aff24c3caa2b5e657dff477c:
+
+Function operator>>(const O3DS::Data::Translation&, O3DS::TransformTranslation&)
+================================================================================
+
+- Defined in :ref:`file_src_o3ds_model.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: operator>>(const O3DS::Data::Translation&, O3DS::TransformTranslation&)

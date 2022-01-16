@@ -1,0 +1,13 @@
+.. _exhale_function_Open3dStreamUtil_8h_1a42807bee46c139d92f539b8cf0871016:
+
+Function fatal(int)
+===================
+
+- Defined in :ref:`file_src_Open3dStreamUtil.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: fatal(int)

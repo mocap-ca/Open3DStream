@@ -1,0 +1,13 @@
+.. _exhale_function_model_8cpp_1ac954a1bbcf64b225a828b758a5127402:
+
+Function dir(enum O3DS::Direction)
+==================================
+
+- Defined in :ref:`file_src_o3ds_model.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: dir(enum O3DS::Direction)

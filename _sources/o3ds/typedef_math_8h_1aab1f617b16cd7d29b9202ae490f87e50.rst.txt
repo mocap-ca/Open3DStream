@@ -1,0 +1,13 @@
+.. _exhale_typedef_math_8h_1aab1f617b16cd7d29b9202ae490f87e50:
+
+Typedef O3DS::Vector3d
+======================
+
+- Defined in :ref:`file_src_o3ds_math.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: O3DS::Vector3d

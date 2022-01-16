@@ -1,0 +1,13 @@
+.. _exhale_typedef_base__server_8h_1a9cbad8d4e43cf6b15f45b45ebd850b06:
+
+Typedef O3DS::inDataFunc
+========================
+
+- Defined in :ref:`file_src_o3ds_base_server.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: O3DS::inDataFunc

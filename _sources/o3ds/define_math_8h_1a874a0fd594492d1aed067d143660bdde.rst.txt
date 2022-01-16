@@ -1,0 +1,13 @@
+.. _exhale_define_math_8h_1a874a0fd594492d1aed067d143660bdde:
+
+Define CALC
+===========
+
+- Defined in :ref:`file_src_o3ds_math.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: CALC

@@ -1,0 +1,13 @@
+.. _exhale_function_o3ds__ping_8c_1a283501cac6859a7911aa08a14ea86a11:
+
+Function fatal(const char \*, int)
+==================================
+
+- Defined in :ref:`file_src_cmd_o3ds_ping.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: fatal(const char *, int)

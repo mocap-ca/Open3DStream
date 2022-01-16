@@ -1,0 +1,13 @@
+.. _exhale_function_model_8cpp_1ae31e0c415865cd436ff70f683a99fa76:
+
+Function operator>>(const O3DS::TransformRotation&, O3DS::Data::Rotation&)
+==========================================================================
+
+- Defined in :ref:`file_src_o3ds_model.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: operator>>(const O3DS::TransformRotation&, O3DS::Data::Rotation&)

@@ -1,0 +1,18 @@
+
+.. _program_listing_file_src_o3ds_math.cpp:
+
+Program Listing for File math.cpp
+=================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_o3ds_math.cpp>` (``src/o3ds/math.cpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #include "o3ds/math.h"
+   
+   double O3DS::rad(double deg)
+   {
+       return deg * 3.14159265358979323846 / 180.0;
+   };

@@ -1,0 +1,25 @@
+.. _exhale_class_classO3DS_1_1AsyncSubscriber:
+
+Class AsyncSubscriber
+=====================
+
+- Defined in :ref:`file_src_o3ds_async_subscriber.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public O3DS::AsyncConnector`` (:ref:`exhale_class_classO3DS_1_1AsyncConnector`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: O3DS::AsyncSubscriber
+   :members:
+   :protected-members:
+   :undoc-members:

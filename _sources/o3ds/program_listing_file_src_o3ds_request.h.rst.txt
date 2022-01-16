@@ -1,0 +1,36 @@
+
+.. _program_listing_file_src_o3ds_request.h:
+
+Program Listing for File request.h
+==================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_o3ds_request.h>` (``src/o3ds/request.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #pragma once
+   
+   #include <nng/nng.h>
+   #include "base_server.h"
+   
+   #include <string>
+   
+   namespace O3DS
+   {
+       class Request : public BlockingConnector
+       {
+           // Request connector (blocking)
+       public:
+           bool start(const char *url);
+       };
+   
+       class Reply : public BlockingConnector
+       {
+           // Reply connector (blocking)
+       public:
+           bool start(const char *url);
+       };
+   
+   }

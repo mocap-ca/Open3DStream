@@ -1,0 +1,13 @@
+.. _exhale_function_o3ds__pingServer_8c_1ab18278a433c6ccfc53fb44fb03c1466f:
+
+Function server
+===============
+
+- Defined in :ref:`file_src_cmd_o3ds_pingServer.c`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: server(const char *)
