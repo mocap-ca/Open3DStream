@@ -10,6 +10,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       
+    - name: Install Apps
+      run: apt-get -y install python3 doxygen graphviz texlive vim git python3-pip
+      
+    - name: pip
+      run: pip3 install exhale sphinx-rtd-theme sphinx
+      
     - name: Doxygen
       run: doxygen 
       
