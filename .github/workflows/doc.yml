@@ -1,0 +1,17 @@
+name: Documentation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Doxygen
+      run: doxygen 
+      
+    - name: Sphinx
+      run: sphinx-build -b html sphinx doc
