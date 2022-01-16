@@ -116,9 +116,9 @@ Functions
 
 - :ref:`exhale_function_o3ds_8h_1ae98defb1ab2bc90e4668af35fa783a6e`
 
-- :ref:`exhale_function_math_8h_1a90102f9abbe4d01660682ba4f3855944`
-
 - :ref:`exhale_function_math_8h_1a75c6dea51a423c8955bfb104fd2f2b37`
+
+- :ref:`exhale_function_math_8h_1a90102f9abbe4d01660682ba4f3855944`
 
 - :ref:`exhale_function_math_8h_1a302281879be1f58b7287602af4f61de3`
 
