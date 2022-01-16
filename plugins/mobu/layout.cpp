@@ -1,6 +1,7 @@
 #include "device.h"
 #include "layout.h"
 
+#include "o3ds/o3ds.h" // for version#
 #include <sstream>
 
 #define OPEN3D_DEVICE__LAYOUT	Open3D_Device_Layout
@@ -144,14 +145,28 @@ void Open3D_Device_Layout::UICreate()
 	mLayoutLeft.SetControl("EditSubject", mEditSubject);
 	mEditSubject.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditSubject);
 
-	// Source info - Under EditSubject
+
+	// Version info - at bottom
+	mLayoutLeft.AddRegion("VersionInfo", "VersionInfo",
+		lS, kFBAttachRight, "SourcesList", 1.00,
+		-lH,  kFBAttachBottom, NULL, 1.00,
+		155, kFBAttachNone, NULL, 1.00,
+		0,   kFBAttachBottom, "", 1.00);
+	mLayoutLeft.SetControl("VersionInfo", mLabelPluginVersion);
+	//mPluginVersion.ReadOnly = true;
+	mLabelPluginVersion.Caption = "---";
+
+
+	// Source info - Between EditSubject and VersionInfo
 	mLayoutLeft.AddRegion("EditSourceInfo", "EditSourceInfo",
 		lS, kFBAttachRight,  "SourcesList", 1.00,
 		lS, kFBAttachBottom, "EditSubject", 1.00,
 		155, kFBAttachNone,  NULL, 1.00,
-		lH, kFBAttachBottom, NULL, 1.00);
-	mLayoutLeft.SetControl("EditSourceInfo", mEditSourceInfo);
-	mEditSourceInfo.ReadOnly = true;
+		lS,   kFBAttachTop, "VersionInfo", 1.00);
+	mLayoutLeft.SetControl("EditSourceInfo", mMemoSourceInfo);
+	mMemoSourceInfo.ReadOnly = true;
+	mMemoSourceInfo.Text = "---";
+
 
 
 	/* RIGHT */
@@ -276,7 +291,7 @@ void Open3D_Device_Layout::UIConfigure()
 	if (protocol == Open3D_Device::kNNGServer) mListProtocol.ItemIndex = 3;
 	if (protocol == Open3D_Device::kNNGClient) mListProtocol.ItemIndex = 4;
 	if (protocol == Open3D_Device::kNNGPublish) mListProtocol.ItemIndex = 5;
-
+	 
 	PopulateSubjectList();
 	PopulateSubjectFields();
 
@@ -288,6 +303,9 @@ void Open3D_Device_Layout::UIConfigure()
 	sprintf_s(buffer, 40, "%d", mDevice->GetNetworkPort());
 	mEditDestPort.Text = buffer;
 	mEditDestPort.Enabled = false; // enabed by the combo changing
+
+	mLabelPluginVersion.Caption = FBString("Version: ") + FBString(O3DS::getVersion());
+
 
 }
 
@@ -354,13 +372,12 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 		if (id < mDevice->Items.size())
 		{
 			O3DS::Subject* subject = mDevice->Items[id];
-			MobuSubjectInfo *info = dynamic_cast<MobuSubjectInfo*>(subject->mInfo);
+			FBModel *model = static_cast<FBModel*>(subject->mReference);
 
-			FBComponent *model = info->mModel;
 			mEditSubject.Text = mDevice->Items[id]->mName.c_str();
 			mEditSource.Text = model->LongName;
 
-			TraverseSubject(subject, info->mModel);
+			O3DS::Mobu::TraverseSubject(subject, model);
 
 			std::ostringstream oss;
 
@@ -375,7 +392,7 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 
 			oss << "Items: " << mDevice->Items[id]->mTransforms.size();
 
-			mEditSourceInfo.Text = oss.str().c_str();
+			mMemoSourceInfo.Text = oss.str().c_str();
 		}
 	}
 }
@@ -421,7 +438,7 @@ void Open3D_Device_Layout::EventDel(HISender pSender, HKEvent pEvent)
 	int id = mSourcesList.ItemIndex;
 	if (id >= 0)
 	{
-		mDevice->Items.items.erase(mDevice->Items.begin() + id);
+		mDevice->Items.mItems.erase(mDevice->Items.begin() + id);
 		PopulateSubjectList();
 	}
 }

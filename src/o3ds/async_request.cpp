@@ -7,15 +7,17 @@ namespace O3DS
 		int ret;
 
 		ret = nng_req0_open(&mSocket);
-		if (ret != 0) { return false; }
+		NNG_ERROR("Creating request socket")
 
 		ret = nng_aio_alloc(&aio, AsyncRequest::Callback, this);
-		if (ret != 0) { return false; }
+		NNG_ERROR("Creating request socket aio")
 
 		ret = nng_dial(mSocket, url, 0, 0);
-		if (ret != 0) { return false; }
+		NNG_ERROR("Conecting request socket")
 
 		nng_recv_aio(mSocket, aio);
+
+		mState = Connector::STARTED;
 
 		return true;
 	}
@@ -25,15 +27,17 @@ namespace O3DS
 		int ret;
 
 		ret = nng_req0_open(&mSocket);
-		if (ret != 0) { return false; }
+		NNG_ERROR("Creating reply socket")
 
 		ret = nng_aio_alloc(&aio, AsyncReply::Callback, this);
-		if (ret != 0) { return false; }
+		NNG_ERROR("Creating reply socket aio")
 
 		ret = nng_listen(mSocket, url, NULL, 0);
-		if (ret != 0) return false;
+		NNG_ERROR("Listening on reply socket");
 
 		nng_recv_aio(mSocket, aio);
+
+		mState = Connector::STARTED;
 
 		return true;
 	}
@@ -43,12 +47,20 @@ namespace O3DS
 		int ret;
 
 		ret = nng_aio_result(aio);
-		if (ret != 0) return;
+		if (ret != 0)
+		{
+			setError("Aio result on async request reply", ret);
+			return;
+		}
 
 		char *buf = NULL;
 		size_t sz;
 		ret = nng_recv(mSocket, &buf, &sz, NNG_FLAG_ALLOC);
-		if (ret != 0) return;
+		if (ret != 0)
+		{
+			setError("Async receive request", ret);
+			return;
+		}
 
 		if (fnRef) fnRef(fnContext, (void*)buf, sz);
 

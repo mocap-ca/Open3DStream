@@ -1,4 +1,6 @@
 /*
+Open 3D Stream
+
 Copyright 2020 Alastair Macleod
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -28,16 +30,65 @@ SOFTWARE.
 namespace O3DS
 {
 
+	double rad(double deg);
+
+	/*! \class Vector4 math.h o3ds\math.h */
+	//! A templated type 3D vector4 
 	template<typename T>
-	class Vector
+	class Vector4
 	{
 	public:
-		T v[4];
+		Vector4(T x, T y, T z, T w) : v{ x, y, z, w } {}
 
+		Vector4() : v{0, 0, 0, 1} {}
+
+		T v[4];
 		T& operator[](int n) { return v[n]; }
-		
 	};
 
+	typedef Vector4 <double> Vector4d;
+
+	template<typename T>
+	double dist(const Vector4<T> a, const Vector4<T> b)
+	{
+		double x = a.v[0] - b.v[0];
+		double y = a.v[1] - b.v[1];
+		double z = a.v[2] - b.v[2];
+		double w = a.v[3] - b.v[3];
+		double r = x * x + y * y + z * z + w * w;
+		if (r == 0) return 0;
+		return sqrt(r);
+	}
+
+	/*! \class Vector math.h o3ds\math.h */
+	//! A templated type 3D vector4 
+	template<typename T>
+	class Vector3
+	{
+	public:
+		Vector3(T x, T y, T z) : v{ x, y, z } {}
+
+		Vector3() : v{ 0, 0, 0 } {}
+
+		T v[3];
+		T& operator[](int n) { return v[n]; }
+	};
+
+	typedef Vector3<double> Vector3d;
+
+	template<typename T>
+	double dist(const Vector3<T> a, const Vector3<T> b)
+	{
+		double x = a.v[0] - b.v[0];
+		double y = a.v[1] - b.v[1];
+		double z = a.v[2] - b.v[2];
+		double r = x * x + y * y + z * z;
+		if (r == 0) return 0;
+		return sqrt(r);
+	}
+
+	/*! class Matrix math.h o3ds\math.h */
+	//! A templated 4x4 matrix for transform operations
 	template<typename T>
 	class Matrix
 	{
@@ -61,6 +112,18 @@ namespace O3DS
 			m[3][0] = 0; 	m[3][1] = 0;	m[3][2] = 0;	m[3][3] = 1;
 		}
 
+		Matrix(T value[])
+		{
+			for(int u=0,i=0; u < 4; u++)
+			{
+				for (int v = 0; v < 4; v++, i++)
+				{
+					m[u][v] = value[i];
+				}
+			}
+
+		}
+
 		double& operator()(int u, int v) { return m[u][v]; }
 
 		const Matrix Transpose() const
@@ -72,9 +135,9 @@ namespace O3DS
 				m[0][3], m[1][3], m[2][3], m[3][3]);
 		}
 
-		const Vector<T> GetTranslation()
+		const Vector4<T> GetTranslation()
 		{
-			Vector<T> v;
+			Vector4<T> v;
 			v.v[0] = m[3][0];
 			v.v[1] = m[3][1];
 			v.v[2] = m[3][2];
@@ -83,12 +146,21 @@ namespace O3DS
 			return v;
 		}
 
+		static
 		const Matrix TranslateXYZ(T tx, T ty, T tz)
 		{
-			return CMatrix4x4(1, 0, 0, 0,
+			return Matrix(1, 0, 0, 0,
 				0, 1, 0, 0,
 				0, 0, 1, 0,
 				tx, ty, tz, 1);
+		}
+
+		static Matrix TranslateXYZ(Vector3<T> v)
+		{
+			return Matrix(1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				v.v[0], v.v[1], v.v[2], 1);
 		}
 
 		static
@@ -101,6 +173,7 @@ namespace O3DS
 				0, 0, 0, 1);
 		}
 
+		static
 		const Matrix RotateY(T a)
 		{
 			return Matrix(
@@ -110,15 +183,50 @@ namespace O3DS
 				0,      0,   0,     1);
 		}
 
-		const Matrix RotateZ(T a)
+		static
+			const Matrix RotateZ(T a)
 		{
 			return Matrix(
-				 cos(a), sin(a), 0, 0,
+				cos(a), sin(a), 0, 0,
 				-sin(a), cos(a), 0, 0,
 				0, 0, 1, 0,
 				0, 0, 0, 1);
 		}
 
+		static
+		const Matrix Quaternion(Vector4<T> q)
+		{
+			T x2 = q.v[0] + q.v[0];
+			T y2 = q.v[1] + q.v[1];
+			T z2 = q.v[2] + q.v[2];
+			T xx = q.v[0] * x2;
+			T xy = q.v[0] * y2;
+			T xz = q.v[0] * z2;
+			T yy = q.v[1] * y2;
+			T yz = q.v[1] * z2;
+			T zz = q.v[2] * z2;
+			T wx = q.v[3] * x2;
+			T wy = q.v[3] * y2;
+			T wz = q.v[3] * z2;
+
+			return Matrix(
+				1.0 - (yy + zz), xy + wz, xz - wy, 0.0,
+				xy - wz, 1.0 - (xx + zz), yz + wx, 0.0,
+				xz + wy, yz - wx, 1.0 - (xx + yy), 0.0,
+				0, 0, 0, 1);
+		}
+
+		static
+			const Matrix Scale(Vector3<T> s)
+		{
+			return Matrix(
+				s[0], 0,    0,    0,
+				0,    s[1], 0,    0,
+				0,    0,    s[2], 0,
+				0,    0,    0,    1);
+		}
+
+		//! Contructs a new matrix as the inverse of this matrix
 		const Matrix Inverse()
 		{
 			T m22_33_23_32 = m[2][2] * m[3][3] - m[2][3] * m[3][2];
@@ -164,7 +272,7 @@ namespace O3DS
 			 -d03 / D,  d13 / D, -d23 / D,  d33 / D);
 		}
 		
-		Vector<T> GetQuaternion()
+		Vector4<T> GetQuaternion()
 		{
 			T qx, qy, qz, qw;
 			T tr = m[0][0] + m[1][1] + m[2][2];
@@ -227,7 +335,7 @@ namespace O3DS
 				qw = 1;
 			}
 
-			Vector<T> ret;
+			Vector4<T> ret;
 			ret.v[0] = qx;
 			ret.v[1] = qy;
 			ret.v[2] = qz;
@@ -235,8 +343,26 @@ namespace O3DS
 			return ret;
 		}
 
+#if 0
+		void pr(const char *lbl)
+		{
+			printf("==== %s ====\n", this->lbl);
+			for (int u = 0; u < 4; u++)
+			{
+				for (int v = 0; v < 4; v++)
+				{
+					printf("%f  ", this->m[u][v]);
+				}
+				printf("\n");
+			}
+
+		}
+#endif
+
 		T m[4][4];
 	}; // Matrix
+
+	typedef Matrix<double> Matrixd;
 
 #define CALC(i, j)	lhs.m[i][0] * rhs.m[0][j] + lhs.m[i][1] * rhs.m[1][j] + \
 	 				lhs.m[i][2] * rhs.m[2][j] + lhs.m[i][3] * rhs.m[3][j]
@@ -252,12 +378,13 @@ namespace O3DS
 	}
 
 	template<typename T>
-	const Vector<T> operator *(const Matrix<T> &m, const Vector<T> &v)
+	const Vector4<T> operator *(const Matrix<T> &m, const Vector4<T> &v)
 	{
-		Vector<T> res;
+		Vector4<T> res;
 		res.v[0] = v.v[0] * m.m[0][0] + v.v[1] * m.m[1][0] + v.v[2] * m.m[2][0] + m.m[3][0];
 		res.v[1] = v.v[0] * m.m[0][1] + v.v[1] * m.m[1][1] + v.v[2] * m.m[2][1] + m.m[3][1];
 		res.v[2] = v.v[0] * m.m[0][2] + v.v[1] * m.m[1][2] + v.v[2] * m.m[2][2] + m.m[3][2];
+		res.v[3] = v.v[0] * m.m[0][3] + v.v[1] * m.m[1][3] + v.v[2] * m.m[2][3] + m.m[3][3];
 		return res;
 	}
 } // O3DS

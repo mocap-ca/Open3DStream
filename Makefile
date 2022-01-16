@@ -44,7 +44,6 @@ UNAME_S := $(shell uname -s)
 ###################################### Linux ##################################
 ifeq ($(UNAME_S),Linux)
 
-
 .PHONY: release
 release: build/release
 	mkdir -p build/release
@@ -56,6 +55,9 @@ debug: build/debug
 	mkdir -p build/debug
 	cd build/debug; cmake ../../ -DCMAKE_BUILD_TYPE=Debug
 	cd build/debug; $(MAKE)
+
+install: release
+	cd build/release; $(MAKE) install
 
 .PHONY: format
 format:

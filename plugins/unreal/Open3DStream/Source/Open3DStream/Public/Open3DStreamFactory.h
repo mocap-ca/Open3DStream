@@ -1,7 +1,7 @@
 #pragma once
 
 #include "LiveLinkSourceFactory.h"
-#include "Open3DStreamData.h"
+#include "Open3DStreamSourceSettings.h"
 #include "Open3DStreamFactory.generated.h"
 
 /* 
@@ -30,5 +30,5 @@ public:
 	virtual TSharedPtr<ILiveLinkSource> CreateSource(const FString& ConnectionString) const override;
 
 private:
-	void OnSourceEvent(FOpen3DStreamDataPtr SourceData, FOnLiveLinkSourceCreated OnLiveLinkSourceCreated) const;
+	void OnSourceEvent(FOpen3DStreamSettingsPtr SourceData, FOnLiveLinkSourceCreated OnLiveLinkSourceCreated) const;
 };

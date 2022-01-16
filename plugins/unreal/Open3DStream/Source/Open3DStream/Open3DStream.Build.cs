@@ -19,6 +19,8 @@ public class Open3DStream : ModuleRules
 		PublicDependencyModuleNames.AddRange( new string[] { "Core" } );
 
         PublicAdditionalLibraries.Add(LibDir + "nng.lib");
+        PublicAdditionalLibraries.Add(LibDir + "flatbuffers.lib");
+        PublicAdditionalLibraries.Add(LibDir + "open3dstreamstatic.lib");
 
         PublicDefinitions.Add("NNG_STATIC_LIB");
 

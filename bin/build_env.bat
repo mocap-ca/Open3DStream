@@ -1,27 +1,36 @@
-REM Set the build environment (Visual Studio 2017 and cmake)
+@ECHO On
+REM Set the build environment (Visual Studio 2019/2017 and cmake)
+
+IF "%OPEN3DSBLD%" == "" GOTO DOBLD
+ECHO Environment already set
+EXIT /B 0
+
+:DOBLD
+
 
 REM Check for visual studio
-CL.exe
-IF %ERRORLEVEL% == 0 GOTO VSOK
-
-SET CMAKE_VS_VERSION="Visual Studio 15 2107"
-SET VSPATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat
-IF EXIST "%VSPATH%" GOTO VSOK
+CL.exe >NUL 2>NUL
+IF %ERRORLEVEL% == 0 GOTO CLOK
 
 SET CMAKE_VS_VERSION="Visual Studio 16 2019"
 SET VSPATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat
 IF EXIST "%VSPATH%" GOTO VSOK
 
+SET CMAKE_VS_VERSION="Visual Studio 15 2017"
+SET VSPATH=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat
+IF EXIST "%VSPATH%" GOTO VSOK
+
+
 ECHO "Could not find visual studio install"
-EXIT /B
+EXIT /B 1
 
 :VSOK
 CALL "%VSPATH%"
-CL.exe
+CL.exe >NUL 2>NUL
 IF %ERRORLEVEL% == 0 GOTO CLOK
 
 ECHO "Could not find cl.exe"
-EXIT /B
+EXIT /B 1
 
 :CLOK
 

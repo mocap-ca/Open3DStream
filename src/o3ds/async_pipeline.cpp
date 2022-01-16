@@ -2,7 +2,7 @@
 
 namespace O3DS
 {
-	bool AsyncPull::start(const char *url)
+	bool AsyncClient::start(const char *url)
 	{
 		int ret;
 
@@ -20,7 +20,7 @@ namespace O3DS
 		return true;
 	}
 
-	bool AsyncPush::start(const char *url)
+	bool AsyncServer::start(const char *url)
 	{
 		int ret;
 

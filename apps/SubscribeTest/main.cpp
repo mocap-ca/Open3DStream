@@ -12,14 +12,12 @@
 
 void ReadFunc(void *ptr, void *buf, size_t len)
 {
-	std::string key;
 	O3DS::SubjectList subjects;
-	O3DS::Parse(key, subjects, (const char*)buf, len);
-	printf("%s  ", key.c_str());
+	subjects.Parse((const char*)buf, len);
 	printf("%zd\n", len);
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[])	
 {
 	if (argc != 3)
 	{

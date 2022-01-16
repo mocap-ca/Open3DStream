@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION  3.13)
 
 project(Open3DStream)
 
+if (UNIX)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -ldl")
+endif()
+
 set(CMAKE_DEBUG_POSTFIX d)
 
 # Build the flatbuffer schema
@@ -24,7 +28,8 @@ add_custom_command(
 add_custom_target(protocol DEPENDS ${schema_out})
         
 add_subdirectory(apps/FbxStream)
-add_subdirectory(apps/SubscribeTest)
+#add_subdirectory(apps/SubscribeTest)
 add_subdirectory(src)     
 add_subdirectory(plugins/mobu)
+add_subdirectory(plugins/maya)
 

@@ -1,5 +1,5 @@
 #include "meshNode.h"
-#include "mesh.h"
+//#include "mesh.h"
 
 #include <maya/MGlobal.h>
 #include <maya/MString.h>
@@ -107,12 +107,12 @@ MStatus MocapMesh::compute( const MPlug &plug, MDataBlock &data )
 		unsigned int * header = (unsigned int*)data;
 
 		header[0] = 0x3223;
-		header[1] = pointLen;
-		header[2] = vertLen;
+		header[1] = (unsigned int)pointLen;
+		header[2] = (unsigned int)vertLen;
 		
 		float *fptr = (float*) (data + headLen);
 
-		for (int i = 0; i < points.length(); i++)
+		for (unsigned int i = 0; i < points.length(); i++)
 		{
 			*fptr = (float)points[i].x;  fptr++;
 			*fptr = (float)points[i].y;  fptr++;
@@ -120,7 +120,7 @@ MStatus MocapMesh::compute( const MPlug &plug, MDataBlock &data )
 		}
 
 		int *iptr = (int*) ( data + headLen + pointLen );
-		for (int i = 0; i < vertList.length(); i++)
+		for (unsigned int i = 0; i < vertList.length(); i++)
 		{
 			*iptr = vertList[i];  iptr++;
 		}

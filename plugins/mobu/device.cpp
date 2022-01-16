@@ -25,6 +25,32 @@
 #include <ws2tcpip.h>
 #include <sstream>
 
+#ifdef _WIN32
+#pragma warning( disable : 4996 ) 
+int inet_pton_alt(int af, const char *src, void *dst)
+{
+  struct sockaddr_storage ss;
+  int size = sizeof(ss);
+  char src_copy[INET6_ADDRSTRLEN+1];
+
+  ZeroMemory(&ss, sizeof(ss));
+  strncpy (src_copy, src, INET6_ADDRSTRLEN+1);
+  src_copy[INET6_ADDRSTRLEN] = 0;
+
+  if (WSAStringToAddress(src_copy, af, NULL, (struct sockaddr *)&ss, &size) == 0) {
+    switch(af) {
+      case AF_INET: 
+	      *(struct in_addr *)dst = ((struct sockaddr_in *)&ss)->sin_addr;
+          return 1;
+      case AF_INET6:
+          *(struct in6_addr *)dst = ((struct sockaddr_in6 *)&ss)->sin6_addr;
+          return 1;
+    }
+  }
+  return 0;
+}
+#endif
+
 FBDeviceImplementation	(	OPEN3D_DEVICE__CLASS	);
 FBRegisterDevice		(	OPEN3D_DEVICE__NAME,
 							OPEN3D_DEVICE__CLASS,
@@ -95,7 +121,7 @@ void Open3D_Device::AddItem(FBModel *model)
 		model->Is(FBCamera::TypeInfo) ||
 		model->Is(FBModelSkeleton::TypeInfo))
 	{
-		Items.addSubject(name.operator char *(), new MobuSubjectInfo(model));
+		Items.addSubject(name.operator char *(), (void*)model);
 	}
 
 }
@@ -116,8 +142,8 @@ bool Open3D_Device::Start()
 
 	FBProgress	lProgress;
 	lProgress.Caption	= "Starting up device";
-	lProgress.Text	= "Opening device communications";
-	Status			= "Opening device communications";
+	lProgress.Text	    = "Opening device communications";
+	Status			    = "Opening device communications";
 
 	if (mServer)
 	{
@@ -125,10 +151,10 @@ bool Open3D_Device::Start()
 		mServer = nullptr;
 	}
 
-	for (auto& subject : Items)
+	for (O3DS::Subject* subject : Items)
 	{
-		MobuSubjectInfo *info = dynamic_cast<MobuSubjectInfo*>(subject->mInfo);
-		TraverseSubject(subject, info->mModel);
+		FBModel *model = static_cast<FBModel*>(subject->mReference);
+		O3DS::Mobu::TraverseSubject(subject, model);
 	}
 
 	if (mProtocol == Open3D_Device::kTCPClient)
@@ -231,9 +257,11 @@ bool Open3D_Device::Stop()
     return true;
 }
 
+#define BUFSZ 1024*60
+
 void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDeviceNotifyInfo)
 {
-	uint8_t buf[1024 *12];
+	std::vector<char> buf;
 	int written;
 
 	uint32_t total = 0;
@@ -247,11 +275,15 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 	{
 		if (mNetworkSocket != -1)
 		{
-			Items.update(true);
+			Items.update();
 
-			int32_t bucket_size = O3DS::Serialize(mKey, Items, buf, 1024 * 12, true);
+			FBTime MobuTime = FBSystem().LocalTime;
+			int32_t bucket_size = Items.Serialize(buf, MobuTime.GetSecondDouble());
 			if (bucket_size == 0)
+			{
+				Status = "Buffer Error";
 				return;
+			}
 
 			if (mProtocol == Open3D_Device::kTCPClient)
 			{
@@ -275,7 +307,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				total += written;
 
 				// Write the bucket
-				if (!mTcpIp.Write(mNetworkSocket, buf, bucket_size, &written))
+				if (!mTcpIp.Write(mNetworkSocket, &buf[0], bucket_size, &written))
 				{
 					Status = "Error";
 				}
@@ -285,11 +317,11 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			if (mProtocol == Open3D_Device::kUDP)
 			{
 				struct in_addr ret;
-				if (!inet_pton(AF_INET, mNetworkAddress.operator char *(), &ret))
+				if (!inet_pton_alt(AF_INET, mNetworkAddress.operator char *(), &ret))		
 				{
 					Status = "UDP ERROR";
 				}
-				mTcpIp.WriteDatagram(mNetworkSocket, buf, bucket_size, &written, ret.S_un.S_addr, mNetworkPort);
+				mTcpIp.WriteDatagram(mNetworkSocket, &buf[0], bucket_size, &written, ret.S_un.S_addr, mNetworkPort);
 				std::ostringstream oss;
 				oss << written << " bytes";
 				Status = oss.str().c_str();
@@ -299,7 +331,11 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				mProtocol == Open3D_Device::kNNGServer ||
 				mProtocol == Open3D_Device::kNNGPublish)
 			{
-				mServer->write((const char*)buf, bucket_size);
+				if(mServer)
+					mServer->writeMsg((const char*)&buf[0], bucket_size);
+				std::ostringstream oss;
+				oss << bucket_size << " bytes";
+				Status = oss.str().c_str();
 			}
 		}
 	}
@@ -383,16 +419,16 @@ bool Open3D_Device::FbxStore(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat)
 		for (int i = 0; i < Items.size(); i++)
 		{
 			O3DS::Subject* subject = Items[i];
-			MobuSubjectInfo *info = dynamic_cast<MobuSubjectInfo*>(subject->mInfo);
+			FBModel *model = static_cast<FBModel*>(subject->mReference);
 
 			sprintf_s(buf, 40, "%s%d", FBX_SUBJECT_NAME, i);
 			pFbxObject->FieldWriteC(buf, subject->mName.c_str());
 
 			sprintf_s(buf, 40, "%s%d", FBX_SUBJECT_MODEL, i);
-			pFbxObject->FieldWriteC(buf, info->mModel->GetFullName());
+			pFbxObject->FieldWriteC(buf, model->GetFullName());
 
 			sprintf_s(buf, 40, "%s%d", FBX_SUBJECT_REF, i);
-			pFbxObject->FieldWriteObjectReference(buf, info->mModel);
+			pFbxObject->FieldWriteObjectReference(buf, model);
 
 		}
 
@@ -422,8 +458,13 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 		{
 			pFbxObject->FieldReadEnd();
 		}
+#if 1
+		SetSamplingRate(pFbxObject->FieldReadD(FBX_SAMPLERATE));
+		int n = pFbxObject->FieldReadI(FBX_SUBJECT_COUNT);
+#else
 		SetSamplingRate(pFbxObject->FieldReadD(FBX_SAMPLERATE, GetSamplingRate()));
 		int n = pFbxObject->FieldReadI(FBX_SUBJECT_COUNT);
+#endif
 
 		for (int i = 0; i < n; i++)
 		{
@@ -442,15 +483,22 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 			if (component)
 			{
 				FBModel *model = dynamic_cast<FBModel*>(component);
-				auto s = Items.addSubject(subjectName.operator char *(), new MobuSubjectInfo(model));
-				TraverseSubject(s, model);
+				auto s = Items.addSubject(subjectName.operator char *(), (void*)model);
+				O3DS::Mobu::TraverseSubject(s, model);
 			}
 		}
 
+#if 1
+		SetNetworkAddress(pFbxObject->FieldReadC(FBX_NETWORK_IP));
+		SetNetworkPort(pFbxObject->FieldReadI(FBX_NETWORK_PORT));
+		SetProtocol(static_cast<TProtocol>(pFbxObject->FieldReadI(FBX_NETWORK_PROTO)));
+		SetKey(pFbxObject->FieldReadC(FBX_KEY));
+#else
 		SetNetworkAddress(pFbxObject->FieldReadC(FBX_NETWORK_IP, GetNetworkAddress()));
 		SetNetworkPort(pFbxObject->FieldReadI(FBX_NETWORK_PORT, GetNetworkPort()));
 		SetProtocol(static_cast<TProtocol>(pFbxObject->FieldReadI(FBX_NETWORK_PROTO)));
 		SetKey(pFbxObject->FieldReadC(FBX_KEY, GetKey()));
+#endif		SetKey(pFbxObject->FieldReadC(FBX_KEY, GetKey()));
 	}
 
 	return true;

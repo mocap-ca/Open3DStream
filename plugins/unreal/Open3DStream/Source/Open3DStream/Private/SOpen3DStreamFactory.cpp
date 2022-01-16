@@ -1,9 +1,9 @@
 #include "SOpen3DStreamFactory.h"
 #include "Widgets/Input/SEditableTextBox.h"
 
+#include "o3ds/o3ds.h"  // for version
+
 #define LOCTEXT_NAMESPACE "Open3DStream"
-
-
 
 void SOpen3DStreamFactory::Construct(const FArguments& Args)
 {
@@ -14,6 +14,8 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 	Options.Add(MakeShareable(new FString("Client")));
 	Options.Add(MakeShareable(new FString("Server")));
 	CurrentProtocol = Options[0];
+
+	const char* version = O3DS::getVersion();
 
 
 	//mUrl = LOCTEXT("Open3DStreamUrlValue", "tcp://3.131.65.210:6001");
@@ -101,16 +103,22 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
    		    + SHorizontalBox::Slot()
 			.FillWidth(0.3f)
 		]
+		+ SVerticalBox::Slot()
+			.Padding(5)
+			[
+				SNew(STextBlock).Text(LOCTEXT("Open3DStreamVersion", O3DS_VERSION))
+			]
+
 	];
 }
 
 FReply SOpen3DStreamFactory::OnSource()
 {
-	TSharedPtr<FOpen3DStreamData, ESPMode::ThreadSafe> Data = MakeShared<FOpen3DStreamData, ESPMode::ThreadSafe>();
-	Data->TimeOffset = 0;
-	Data->Url = mUrl;
-	Data->Protocol = GetCurrentProtocol();
-	OnSelectedEvent.ExecuteIfBound(Data);
+	TSharedPtr<FOpen3DStreamSettings, ESPMode::ThreadSafe> Settings = MakeShared<FOpen3DStreamSettings, ESPMode::ThreadSafe>();
+	Settings->TimeOffset = 0;
+	Settings->Url = mUrl;
+	Settings->Protocol = GetCurrentProtocol();
+	OnSelectedEvent.ExecuteIfBound(Settings);
 	return FReply::Handled();
 }
 

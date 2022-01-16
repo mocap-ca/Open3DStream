@@ -1,42 +1,35 @@
-#ifndef OPEN3D_DEVICE_MODEL_H
-#define OPEN3D_DEVICE_MODEL_H
+#ifndef OPEN3D_DEVICE_MOBU_MODEL_H
+#define OPEN3D_DEVICE_MOBU_MODEL_H
 
-#include <fbsdk/fbsdk.h>
 #include <vector>
+#include <string>
 
 #include "o3ds/model.h"
 
-class MobuUpdater : public O3DS::Updater
+#include <fbsdk/fbsdk.h>
+
+// http://docs.autodesk.com/MB/2014/ENU/MotionBuilder-SDK-Documentation/cpp_ref/class_f_b_model.html
+
+namespace O3DS
 {
-public:
-	MobuUpdater(FBModel *model)
-		: mModel(model)
-	{}
+	namespace Mobu
+	{
+		class MobuTransform : public O3DS::Transform
+		{
+		public:
+			MobuTransform(FBModel *model, int parentId);
 
-	FBModel *mModel;
+			FBModel *mModel;
 
-	int mParentId;
+			void update() override;
 
-	void update(O3DS::Transform*);
+			std::string info() { return std::string(mModel->GetFullName()); }
+		};
 
-	std::string info() { return std::string(mModel->GetFullName()); }
+		void TraverseSubject(O3DS::Subject *subject, FBModel*, int parentId = -1);
+	}
 
-
-};
-
-class MobuSubjectInfo : public O3DS::SubjectInfo
-{
-public:
-	MobuSubjectInfo(FBModel *model) :mModel(model) {}
-
-	FBModel *mModel;
-};
-
-
-void TraverseSubject(O3DS::Subject *subject, FBModel*, int parentId = -1);
-
-
-
+}
 
 
 

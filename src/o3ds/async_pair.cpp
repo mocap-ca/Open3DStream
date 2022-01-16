@@ -7,15 +7,17 @@ namespace O3DS
 		int ret;
 
 		ret = nng_pair1_open(&mSocket);
-		if (ret != 0) { return false; }
+		NNG_ERROR("Async pair client connection")
 
 		ret = nng_aio_alloc(&aio, AsyncPairClient::callback, this);
-		if (ret != 0) { return false; }
+		NNG_ERROR("Async pair client connecting aio alloc")
 
 		ret = nng_dial(mSocket, url, 0, 0);
-		if (ret != 0) { return false; }
+		NNG_ERROR("Async pair client dial connecting")
 
 		nng_recv_aio(mSocket, aio);
+
+		mState = Connector::STARTED;
 
 		return true;
 	}
@@ -25,15 +27,17 @@ namespace O3DS
 		int ret;
 
 		ret = nng_pair1_open(&mSocket);
-		if (ret != 0) { return false; }
+		NNG_ERROR("Async pair server connecting");
 
 		ret = nng_aio_alloc(&aio, AsyncPair::callback, this);
-		if (ret != 0) { return false; }
+		NNG_ERROR("Async pair Server aio alloc")
 
 		ret = nng_listen(mSocket, url, NULL, 0);
-		if (ret != 0) return false;
+		NNG_ERROR("Async pair server listening")
 
 		nng_recv_aio(mSocket, aio);
+
+		mState = Connector::STARTED;
 
 		return true;
 	}

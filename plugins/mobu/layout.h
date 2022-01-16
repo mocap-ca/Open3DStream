@@ -43,7 +43,7 @@ private:
 	FBEdit        mEditSource;
 	FBLabel       mLabelSubject;
 	FBEdit        mEditSubject;
-	FBMemo        mEditSourceInfo;
+	FBMemo        mMemoSourceInfo;
 	FBLabel       mLabelDestIp;
 	FBEdit        mEditDestIp;
 	FBLabel       mLabelDestPort;
@@ -54,6 +54,7 @@ private:
 	FBEdit        mEditKey;
 	FBLabel		  mLabelSamplingRate;
 	FBEditNumber  mEditSamplingRate;
+	FBLabel       mLabelPluginVersion;
 
 	FBSystem    mSystem;
 	Open3D_Device*	mDevice;

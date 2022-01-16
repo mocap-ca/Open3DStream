@@ -6,7 +6,7 @@ if NOT EXIST nng\CMakeLists.txt git submodule init
 
 git submodule update
 
-mkdir build
+if NOT EXIST build mkdir build
 cd build
 
 cmake -H.. -B. -G %CMAKE_VS_VERSION% -A x64

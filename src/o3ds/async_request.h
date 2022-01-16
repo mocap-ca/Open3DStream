@@ -8,6 +8,10 @@
 
 namespace O3DS
 {
+	/*! \class AsyncRequestReply async_request.h o3ds/async_request.h
+	Wraps [nng req0](https://nng.nanomsg.org/man/tip/nng_req.7.html) 
+	pattern. Provides a common Callback function to get messages. */
+	//! Base class for Request/Reply connection pattern.
 	class AsyncRequestReply : public AsyncConnector
 	{
 	public:
@@ -15,12 +19,14 @@ namespace O3DS
 		void Callback_();
 	};
 
+	//! Wrapper for nng req0 dialer
 	class AsyncRequest : public AsyncRequestReply
 	{
 	public:
 		bool start(const char* url) override;
 	};
 
+	//! Wrapper for nng req0 listener
 	class AsyncReply : public AsyncRequestReply
 	{
 	public:

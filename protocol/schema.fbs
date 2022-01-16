@@ -1,34 +1,99 @@
-namespace MyGame.Sample;
+namespace O3DS.Data;
+
+enum Direction : byte { None = 0, Left, Right, Forward, Back, Up, Down }
+
+struct Matrix {
+  m00:float;
+  m01:float;
+  m02:float;
+  m03:float;
+  m10:float;
+  m11:float;
+  m12:float;
+  m13:float;
+  m20:float;
+  m21:float;
+  m22:float;
+  m23:float;
+  m30:float;
+  m31:float;
+  m32:float;
+  m33:float;
+}
 
 struct Translation {
-x:float;
-y:float;
-z:float;
+  x:float;
+  y:float;
+  z:float;
 }
 
 struct Rotation {
-x:float;
-y:float;
-z:float;
-w:float;
+  x:float;
+  y:float;
+  z:float;
+  w:float;
 }
 
-table Transform {
+struct Scale {
+  x:float;
+  y:float;
+  z:float;
+}
+
+struct TranslationUpdate {
+  x:float;
+  y:float;
+  z:float;
+  i:int;
+}
+
+struct RotationUpdate {
+  x:float;
+  y:float;
+  z:float;
+  w:float;
+  i:int;
+}
+
+struct ScaleUpdate {
+  x:float;
+  y:float;
+  z:float;
+  i:int;
+}
+
+
+enum Component : byte { Translation, Rotation, Scale, Matrix }
+
+table Transform { 
+  parent:int;
+  name:string;
   translation:Translation;
   rotation:Rotation;
-  parent:int;
+  scale:Scale;
+  matrix:[Matrix];
+  components:[Component];
 }
 
 table Subject {
   nodes:[Transform];
-  names:[string];
   name:string;
+  x_axis:Direction;
+  y_axis:Direction;
+  z_axis:Direction;
+}
+
+table SubjectUpdate {
+  name:string;
+  translations:[TranslationUpdate];
+  rotation:[RotationUpdate];
+  scale:[ScaleUpdate];
 }
 
 table SubjectList {
    subjects:[Subject];
+   updates:[SubjectUpdate];
    time:double;
-   key:string;
 }
 
 

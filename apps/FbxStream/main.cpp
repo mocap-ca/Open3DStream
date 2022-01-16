@@ -1,7 +1,7 @@
 
 
 #include "schema_generated.h"
-using namespace MyGame::Sample;
+using namespace O3DS::Data;
 
 #include <iostream>
 #include <chrono>
@@ -17,12 +17,14 @@ using namespace MyGame::Sample;
 #include "o3ds/publisher.h"
 //#include "o3ds/request.h"
 //#include "o3ds/pipeline.h"
+//
+
+#define BUFSZ 1024 * 80
 
 // C:\cpp\git\github\Open3DStream\test_data\beta_fight.fbx tcp://127.0.0.1:6001  
 
 int main(int argc, char *argv[])
 {
-
 	if(argc != 4)
 	{
 		fprintf(stderr, "%s file.fbx protocol url\n", argv[0]);
@@ -54,35 +56,22 @@ int main(int argc, char *argv[])
 		return 2;
 	}
 
-
 	O3DS::SubjectList subjects;
 
-	O3DS::TimeInfo time_info;
+	O3DS::Fb::TimeInfo time_info;
 
 	Load(argv[1], subjects, time_info);
-
-	subjects.update(true);
-
-	std::vector<O3DS::MobuUpdater*> refs;
-	for (auto s : subjects)
-	{
-		for (auto t : s->mTransforms)
-		{
-			refs.push_back((O3DS::MobuUpdater*)t->mVisitor);
-		}
-	}
 
 	for (auto s : subjects)
 	{
 		printf("Subject: %s\n", s->mName.c_str());
 		for (auto i : s->mTransforms)
 		{
-			printf("  %s\n", i->mVisitor->info().c_str());
+			printf("  %s\n", i->info().c_str());
 		}
 	}
 
 	// Connect 
-	//O3DS::Publisher publisher;
 
 	if (!connector->start(argv[3]))
 	{
@@ -92,57 +81,87 @@ int main(int argc, char *argv[])
 
 	// Serialize
 
-	uint8_t buffer[1024 * 16];
+	std::vector<char> buffer;
 
 redo:
 	double zerof = GetTime();
 
 	bool first = true;
+	int n = 0;
 
 	int skips = 0;
 
-	for (FbxTime t = time_info.Start; t < time_info.End; t = t + time_info.Inc)
+	printf("**************   Loop\n");
+
+	int frame = 0;
+
+	for (FbxTime t = time_info.Start; t < time_info.End; t += time_info.Inc, frame++)
 	{
+
+		printf("T: %f\n", t.GetSecondDouble());
+	
+		// Sync time
 		double tick = GetTime() - zerof;
-		int delay = (int)((t.GetSecondDouble() - tick) * 1000.f);
+		double fdelay = (t.GetSecondDouble() - tick ) * 1000.;
+		int delay = (int)(fdelay);
 
 		if (delay < 0)
 		{
 			skips++;
-			continue;
-		}
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-
-
-		printf("%f    %f   %f   %d    %d\n", GetTime(), tick, t.GetSecondDouble(), delay, skips);
-
-		skips = 0;
-
-		for (auto i : refs)
-		{
-			i->mTime = t;
-		}
-
-		subjects.update(true);
-
-		int ret = O3DS::Serialize(0, subjects, buffer, 1024 * 16, true);
-		first = false;
-		
-		if (ret > 0)
-		{
-			if (!connector->writeMsg((const char*)buffer, ret))
-			{
-				printf("Could not send: %s\n", connector->err().c_str());
-				break;
-			}
+			printf("Delay %f\n", fdelay);
 		}
 		else
 		{
-			//printf("No data returned\n");
+			std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+
+			// Introduce random delays to simulate packet buffering
+			if (rand() < RAND_MAX / 10)
+				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
 		}
 
-		//printf("%d bytes\n", ret);
+
+		// Update subjects
+		for (auto s : subjects)
+		{
+			for (auto transform : s->mTransforms)
+			{
+				dynamic_cast<O3DS::Fb::FbTransform*>(transform)->mTime = t;
+				transform->update();
+			}
+		}
+
+		// Serialize
+
+		// printf("time: %f  %f   %f\n", zerof, t.GetSecondDouble(), zerof + t.GetSecondDouble());
+
+		int ret = 0;
+		if (frame % 100 == 0)
+		{
+			ret = subjects.Serialize(buffer, zerof + t.GetSecondDouble());
+			first = false;
+		}
+		else
+		{
+			ret = subjects.SerializeUpdate(buffer, zerof + t.GetSecondDouble());
+		}
+		
+		// Send
+
+		if (ret > 0)
+		{
+			if (!connector->writeMsg((const char*)&buffer[0], ret))
+			{
+				printf("Could not send: %s\n", connector->err().c_str());
+			}
+		}
+
+		// O3DS::SubjectList s;
+		// s.Parse((const char*)buffer, ret);
+
+		// printf("%f    %f   %f   %f    %d  %d\n", GetTime(), tick, t.GetSecondDouble(), fdelay, skips, ret);
+
+		skips = 0;
 
 	}
 
