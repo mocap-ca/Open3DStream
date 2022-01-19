@@ -4,6 +4,8 @@ import os
 import sys
 import json
 
+""" creats a zip file release """
+
 if len(sys.argv) == 1 :
     print("Usage: package.py version")
     exit()
@@ -55,4 +57,7 @@ for base, _, files in os.walk(unreal_base):
         print(os.path.join(base, file))
         fp.write(os.path.join(base, file), os.path.join("unreal", "Open3dStream", sub, file))
     
+fp.write("lib/nng.lib", os.path.join("unreal", "Open3dStream", "lib", "nng.lib"))
+fp.write("lib/flatbuffers.lib", os.path.join("unreal", "Open3dStream", "lib", "flatbuffers.lib"))
+fp.write("lib/open3dstreamstatic.lib", os.path.join("unreal", "Open3dStream", "lib", "open3dstreamstatic.lib"))
 fp.close()    

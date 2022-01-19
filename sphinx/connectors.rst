@@ -1,5 +1,10 @@
 Connector Classes
 =================
+
+The connector classes provide message communication using nng.
+
+Most of the nng patterns have been wrapped in a class structure
+with a common interface to allow easy swapping out of network methods.
    
 Base
 ----

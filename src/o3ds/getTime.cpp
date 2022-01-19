@@ -3,8 +3,6 @@
 #ifdef _WIN32
 #include <windows.h>
 
-#if !defined(DOXYGEN_SHOULD_SKIP_THIS)
-
 double GetTime()
 {
 	LARGE_INTEGER StartTime;

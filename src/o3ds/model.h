@@ -126,8 +126,8 @@ namespace O3DS
 			{
 				if (mItems[i]->mName == name)
 					return mItems[i];
-				return nullptr;
 			}
+			return nullptr;
 		}
 	};
 

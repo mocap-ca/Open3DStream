@@ -2,13 +2,10 @@
 Background
 ==========
 
-Currently there are a number of standards and proprietary applications that can be
-used to stream realtime animation. Getting devices to interface with applications 
-or applications to interface with each other often requires writing custom code to
-connect protocols or API’s. It would be much easier if a standard could be adopted
-for transmitting and receiving realtime data. This project seeks to create this 
-armony by creating awareness of existing standards where they exist and are useful,
-proposing new standards, documenting examples and providing test cases.
+This project creates a simple and unified way to allow devices and 
+software applications to easily exchange 3d realtime animation data.  Communication
+classes are provided to simplify the setup of network connections and math routines 
+are provided to convert data between representations (euler/quaternion, z-up/y-up)
 
 While theoretically any time sampled or event data that is taken from the real world
 and needs to be transmitted is considered, the focus of this project is on data

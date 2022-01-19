@@ -61,7 +61,8 @@ namespace O3DS
 		return sz;
 	}
 
-	size_t BlockingConnector::readMsg(char *data, size_t len)  // Read bytes - len is the size of data
+	// Read bytes - len is the fixed size of data
+	size_t BlockingConnector::readMsg(char *data, size_t len)  
 	{
 		int ret;
 
@@ -82,6 +83,7 @@ namespace O3DS
 		if (!msgBody)
 		{
 			setError("Invalid Message");
+			nng_msg_free(msg);
 			return false;
 		}
 
@@ -90,6 +92,44 @@ namespace O3DS
 		nng_msg_free(msg);
 
 		return msglen;
+	}
+
+	size_t BlockingConnector::readMsg(char** data, size_t *len)
+	{
+		if (data == nullptr || len == nullptr)
+		{
+			setError("Invalid parameter");
+			return 0;
+		}
+
+		int ret;
+
+		nng_msg* msg = nullptr;
+
+		ret = nng_recvmsg(mSocket, &msg, 0);
+		NNG_ERROR("Receiving message");
+
+		size_t msglen = nng_msg_len(msg);
+		if (msglen > *len)
+		{
+			*data = (char*)realloc(*data, msglen);
+			*len = msglen;
+		}
+
+		void* msgBody = nng_msg_body(msg);
+		if (!msgBody)
+		{
+			setError("Invalid Message");
+			nng_msg_free(msg);
+			return false;
+		}
+
+		memcpy(*data, msgBody, msglen);
+
+		nng_msg_free(msg);
+
+		return msglen;
+
 	}
 
 

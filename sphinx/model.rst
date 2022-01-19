@@ -1,13 +1,5 @@
 Model
 =====
-
-Subject
--------
-
-- :ref:`exhale_class_classO3DS_1_1Subject`
-- :ref:`exhale_class_classO3DS_1_1SubjectList`
-- :ref:`exhale_class_classO3DS_1_1`
-
       
 Transform
 ---------
@@ -21,3 +13,9 @@ Transform
 - :ref:`exhale_class_classO3DS_1_1TransformScale`
 - :ref:`exhale_class_classO3DS_1_1TransformMatrix`
 
+Subject
+-------
+
+- :ref:`exhale_class_classO3DS_1_1Subject`
+- :ref:`exhale_class_classO3DS_1_1SubjectList`
+- :ref:`exhale_class_classO3DS_1_1`
