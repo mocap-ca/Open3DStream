@@ -2,6 +2,7 @@
 #define O3DS_BASE_SERVER
 
 #include <string>
+#include <vector>
 #include "nng/nng.h"
 
 #define NNG_ERROR(msg) if(ret != 0) { setError(msg, ret); return false;  }
@@ -24,20 +25,39 @@ namespace O3DS
 		{
 			nng_close(mSocket);
 		}
-		// Base class for all servers.  Has  a nng_socket and error handling.
-		virtual bool start(const char* url) = 0;                  //!< Starts the connector, often using nng_dial or nng_listen
-		virtual bool write(const char *data, size_t len) = 0;     //!< Write bytes - len is the size of data 
-		virtual bool writeMsg(const char *data, size_t len) = 0;  //!< Writes an nng message.  Len is the size of the data to write
-		virtual size_t read(char *data, size_t len) = 0;          //!< Read bytes - len is the size of buffer, returns the number of bytes read
-		virtual size_t readMsg(char *data, size_t len) = 0;       //!< Read an nng message - len is the size of buffer, returns the number of bytes read
 
+		//! Starts the connector, often using nng_dial or nng_listen
+		virtual bool start(const char* url) = 0;                  
+
+		//! Write bytes - len is the size of data 
+		virtual bool write(const char *data, size_t len) = 0;    
+
+		//! Writes an nng message.  Len is the size of the data to write
+		virtual bool writeMsg(const char *data, size_t len) = 0;  
+
+		//! Read bytes - len is the fixed size of buffer, returns the number of bytes read
+		virtual size_t read(char *data, size_t len) = 0;          
+
+		//! Read an nng message - len is the size of buffer, returns the number of bytes read
+		virtual size_t readMsg(char *data, size_t len) = 0;       
+
+		//! Read an nng message, realloc and rezie *data if needed.
+		//! If the buffer is reszied, len will be updated.
+		//! Returns the size of the message, which may be less than the buffer size
+		virtual size_t readMsg(char **data, size_t *len) = 0; 
+
+		// Return the state (eState) of the connection
 		enum eState getState() { return mState;  }
 
+		// Get the last error
 		const std::string& getError();
 
+		// Set the error with nng return code
 		void setError(const char *msg, int ret);
+
+		// Set the error message
 		void setError(const char* msg);
-		std::string err() { return mError;  }
+
 
 	protected:
 		enum eState mState;
@@ -53,6 +73,7 @@ namespace O3DS
 		virtual size_t read(char *data, size_t len);         //!< Read bytes - len is the size of buffer, returns the number of bytes read
 		virtual bool writeMsg(const char *data, size_t len); //!< Writes an nng message.  Len is the size of the data to write
 		virtual size_t readMsg(char *data, size_t len);      //!< Read bytes - len is the size of buffer, returns the number of bytes read
+		virtual size_t readMsg(char** data, size_t* len);
 	};
 
 

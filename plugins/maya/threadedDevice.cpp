@@ -31,7 +31,7 @@
 Usage:
 
 import maya.cmds as m
-m.loadPlugin("O3DSMaya2020Deviced.mll")
+m.loadPlugin("C:/cpp/git/github/Open3DStream/build/plugins/maya/Debug/O3DSMaya2020Deviced.mll")
 x = m.createNode('peelRealtimeMocap')
 loc = m.spaceLocator()
 m.connectAttr( x + ".mocap[0].outputTranslate", loc[0] + ".t")
@@ -117,7 +117,7 @@ MTypeId ThreadedDevice::id(0x001126D1);
 #define MCONT(s, msg) if( s != MS::kSuccess) { s.perror(msg); continue; }
 #define MCHECKERROR(x, msg) { if(x!=MS::kSuccess) { x.perror(msg); return x;} }
 
-#define BUFSIZE 9200
+#define BUFSIZE 9200 * 12
 
 
 void ThreadedDevice::postConstructor()
@@ -157,9 +157,6 @@ void ThreadedDevice::passMessage(const char *message, size_t msglen, unsigned ch
          msglen = strlen(message);
     }
 
-    if ( msglen + 1  >= BUFSIZE )
-		return; // Overflow
-	
     MCharBuffer buffer;
     status = acquireDataStorage(buffer);
     if( status != MS::kSuccess )
@@ -180,7 +177,7 @@ void ThreadedDevice::passMessage(const char *message, size_t msglen, unsigned ch
     beginThreadLoop();
     {
         *mode_ptr = mode;
-        * size_ptr = msglen;
+        *size_ptr = msglen;
         if(msglen > 0) memcpy(msgblock,  message, msglen);
         pushThreadData(buffer);
     }
@@ -195,7 +192,9 @@ void ThreadedDevice::threadHandler()
     MStatus status;
     setDone(false);
 
-	char buffer[BUFSIZE];
+	size_t bufsz = 1024 * 8;
+	char* buffer = (char*)malloc(bufsz);
+	
 
 	//passMessage("Starting");
 
@@ -211,7 +210,8 @@ void ThreadedDevice::threadHandler()
            
 	    while(!isDone() && isLive()  )
 		{
-			size_t sz = mConnector->readMsg(buffer, BUFSIZE);
+			size_t sz = mConnector->readMsg(&buffer, &bufsz);
+			if (sz == 0) passMessage(mConnector->getError().c_str());
 			if(sz > 0) passMessage(buffer, sz, 1);
         }
     }

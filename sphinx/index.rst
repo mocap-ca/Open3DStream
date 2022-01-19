@@ -3,7 +3,7 @@ Open 3D Stream
 
 Alastair Macleod, 2022
 
-The goal of this project is to provide a simple and unified way to stream realtime
+Open3DStream provides a simple and unified way to stream realtime
 animation for 3d content between devices, applications and locations.
 
 .. doxygenindex::
