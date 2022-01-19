@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
 	if (!connector->start(argv[3]))
 	{
-		printf(connector->err().c_str());
+		printf(connector->getError().c_str());
 		return 1;
 	}
 
@@ -152,7 +152,7 @@ redo:
 		{
 			if (!connector->writeMsg((const char*)&buffer[0], ret))
 			{
-				printf("Could not send: %s\n", connector->err().c_str());
+				printf("Could not send: %s\n", connector->getError().c_str());
 			}
 		}
 

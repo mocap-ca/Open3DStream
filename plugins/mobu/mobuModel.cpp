@@ -85,6 +85,12 @@ namespace O3DS
 			(FBVector3d)(mModel->Scaling) >> this->scale.value;
 		}
 
+		void TraverseSubject(O3DS::Subject* subject)
+		{
+			FBModel* model = static_cast<FBModel*>(subject->mReference);
+			TraverseSubject(subject, model);
+		}
+
 		void TraverseSubject(O3DS::Subject *subject, FBModel *model, int parentId)
 		{
 			// Called when mobu starts
@@ -96,7 +102,17 @@ namespace O3DS
 				subject->clear();
 			}
 
+			if (subject->mJoints.size() > 0)
+			{
+				// Search for matching joint names
+				std::vector<std::string>& names = subject->mJoints;
+				std::string jointNameStr(model->Name.operator const char* ());
+				if (std::find(names.begin(), names.end(), jointNameStr) == names.end())
+					return;
+			}
+
 			subject->addTransform(new MobuTransform(model, parentId));
+
 
 			int nextId = (int)subject->size() - 1;
 

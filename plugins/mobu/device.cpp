@@ -208,7 +208,7 @@ bool Open3D_Device::Start()
 		}
 		else
 		{
-			Status = mServer->err().c_str();
+			Status = mServer->getError().c_str();
 			return false;
 		}
 	}

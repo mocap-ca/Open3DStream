@@ -42,7 +42,9 @@ void Open3D_Device_Layout::UICreate()
 	int leftWidth = 300;
 	int buttonWidth = listWidth / 2 - 3;
 
-	// Left Layout - Attached to the left layout
+	// Left Panel
+
+	// Left Layout - Attached to the left
 	AddRegion("LeftLayout", "LeftLayout",
 		lS,         kFBAttachLeft,   "",   1.00,
 		lS,         kFBAttachTop,    "",   1.00,
@@ -59,24 +61,36 @@ void Open3D_Device_Layout::UICreate()
 	SetControl("LeftLabel", mLabelLeft);
 	mLabelLeft.Caption = "Source";
 
+	// Middle Panel
 
-	// Right Layout - Attached to right of left layout
-	AddRegion( "RightLayout",       "RightLayout",	
-		10,		kFBAttachRight,		"LeftLayout",	1.00,
-		lS,		kFBAttachTop,	    "",		  		1.00,
-		-lS,	kFBAttachRight,		"",				1.00,
-		-lS,	kFBAttachBottom,	"",				1.00 );
-	SetControl("RightLayout", mLayoutRight);
+	// Middle Layout - Attached to the right side of the left panel
+	AddRegion("MiddleLayout", "MiddleLayout",
+		lS * 2, kFBAttachRight, "LeftLayout", 1.00,
+		lS, kFBAttachTop, "", 1.00,
+		250, kFBAttachNone, "", 1.00,
+		-lS, kFBAttachBottom, "", 1.00);
+	SetControl("MiddleLayout", mLayoutMiddle);
 
-	// Right Label
-	AddRegion("RightLabel", "RightLabel",
-		5,    kFBAttachLeft,  "RightLayout", 1.00,
-		-10,  kFBAttachTop,   "RightLayout", 1.00,
-		50,   kFBAttachNone,  "", 1.00,
-		17,   kFBAttachNone,  "", 1.00);
-	SetControl("RightLabel", mLabelRight);
-	mLabelRight.Caption = "Network";
+	// Middle Label
+	AddRegion("MiddleLabel", "MiddleLabel",
+		5, kFBAttachLeft, "MiddleLayout", 1.00,
+		-10, kFBAttachTop, "MiddleLayout", 1.00,
+		50, kFBAttachNone, "", 1.00,
+		17, kFBAttachNone, "", 1.00);
+	SetControl("MiddleLabel", mLabelMiddle);
+	mLabelMiddle.Caption = "Link";
 
+	// Right Panel (log) - Left is attached to the right of Middle
+	//                   - Right is attached to the right
+	AddRegion("RightLayout", "RightLayout",
+		lS, kFBAttachRight, "MiddleLayout", 1.00,
+		lS, kFBAttachTop, "", 1.00,
+		lS, kFBAttachRight, "", 1.00,
+		-lS, kFBAttachBottom, "", 1.00);
+	SetControl("RightLayout", mMemoLog);
+
+
+	// LEFT - Elements
 
 	// Sources list - Top Left
 	mLayoutLeft.AddRegion("SourcesList", "SourcesList",
@@ -121,7 +135,7 @@ void Open3D_Device_Layout::UICreate()
 	// Source edit - Under source label
 	mLayoutLeft.AddRegion("EditSource", "EditSource",
 		lS, kFBAttachRight,  "SourcesList", 1.00,
-		0, kFBAttachBottom, "LabelSource", 1.00,
+		2, kFBAttachBottom, "LabelSource", 1.00,
 		155, kFBAttachNone, "", 1.00,
 		lH, kFBAttachNone,  NULL, 1.00);
 	mLayoutLeft.SetControl("EditSource", mEditSource);
@@ -130,7 +144,7 @@ void Open3D_Device_Layout::UICreate()
 	// Subject label - under EditSource
 	mLayoutLeft.AddRegion("LabelSubject", "LabelSubject",
 		lS, kFBAttachRight, "SourcesList", 1.00,
-		lS, kFBAttachBottom, "EditSource", 1.00,
+		2, kFBAttachBottom, "EditSource", 1.00,
 		155, kFBAttachNone, "", 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
 	mLayoutLeft.SetControl("LabelSubject", mLabelSubject);
@@ -139,136 +153,142 @@ void Open3D_Device_Layout::UICreate()
 	// Subject edit - Under subject label
 	mLayoutLeft.AddRegion("EditSubject", "EditSubject",
 		lS, kFBAttachRight, "SourcesList", 1.00,
-		0, kFBAttachBottom, "LabelSubject", 1.00,
+		2, kFBAttachBottom, "LabelSubject", 1.00,
 		155, kFBAttachNone, "", 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
 	mLayoutLeft.SetControl("EditSubject", mEditSubject);
 	mEditSubject.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditSubject);
 
+	// Joints label - under EditSubject
+	mLayoutLeft.AddRegion("LabelJoints", "LabelJoints",
+		lS, kFBAttachRight, "SourcesList", 1.00,
+		2, kFBAttachBottom, "EditSubject", 1.00,
+		155, kFBAttachNone, "", 1.00,
+		lH, kFBAttachNone, NULL, 1.00);
+	mLayoutLeft.SetControl("LabelJoints", mLabelJoints);
+	mLabelJoints.Caption = "Joints:";
+
+	// Joints list - Under Joints Label
+	mLayoutLeft.AddRegion("JointsList", "JointsList",
+		lS, kFBAttachRight, "SourcesList", 1.00,
+		2, kFBAttachBottom, "LabelJoints", 1.00,
+		155, kFBAttachNone, "", 1.00,
+		0, kFBAttachTop, "VersionInfo", 1.00);
+	mLayoutLeft.SetControl("JointsList", mMemoJoints);
+	mMemoJoints.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditJoints);
 
 	// Version info - at bottom
 	mLayoutLeft.AddRegion("VersionInfo", "VersionInfo",
 		lS, kFBAttachRight, "SourcesList", 1.00,
-		-lH,  kFBAttachBottom, NULL, 1.00,
+		-lH, kFBAttachBottom, NULL, 1.00,
 		155, kFBAttachNone, NULL, 1.00,
-		0,   kFBAttachBottom, "", 1.00);
+		0, kFBAttachBottom, "", 1.00);
 	mLayoutLeft.SetControl("VersionInfo", mLabelPluginVersion);
 	//mPluginVersion.ReadOnly = true;
 	mLabelPluginVersion.Caption = "---";
 
 
-	// Source info - Between EditSubject and VersionInfo
-	mLayoutLeft.AddRegion("EditSourceInfo", "EditSourceInfo",
-		lS, kFBAttachRight,  "SourcesList", 1.00,
-		lS, kFBAttachBottom, "EditSubject", 1.00,
-		155, kFBAttachNone,  NULL, 1.00,
-		lS,   kFBAttachTop, "VersionInfo", 1.00);
-	mLayoutLeft.SetControl("EditSourceInfo", mMemoSourceInfo);
-	mMemoSourceInfo.ReadOnly = true;
-	mMemoSourceInfo.Text = "---";
+	/* MIDDLE Elements */
 
-
-
-	/* RIGHT */
-
-	// Right: DestIp Label - Top Left
-	mLayoutRight.AddRegion("LabelDestIp", "LabelDestIp",
+	// Middle: DestIp Label - Top Left
+	mLayoutMiddle.AddRegion("LabelDestIp", "LabelDestIp",
 		lS, kFBAttachLeft, "", 1.00,
 		10, kFBAttachTop, "", 1.00,
 		labelWidth, kFBAttachNone, NULL, 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
-	mLayoutRight.SetControl("LabelDestIp", mLabelDestIp);
+	mLayoutMiddle.SetControl("LabelDestIp", mLabelDestIp);
 	mLabelDestIp.Caption = "IP:";
 
-	// Right: DestIp Edit - Top, Right of DestIp Label
-	mLayoutRight.AddRegion("EditDestIp", "EditDestIp",
+	// Middle: DestIp Edit - Top, Right of DestIp Label
+	mLayoutMiddle.AddRegion("EditDestIp", "EditDestIp",
 		lS, kFBAttachRight, "LabelDestIp", 1.00,
 		10, kFBAttachTop,   "", 1.00,
 		fieldWidth, kFBAttachNone, NULL, 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
-	mLayoutRight.SetControl("EditDestIp", mEditDestIp);
+	mLayoutMiddle.SetControl("EditDestIp", mEditDestIp);
 	mEditDestIp.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditIP);
 
 
 
-	// Right: Label Dest Port (Under DestIp)
-	mLayoutRight.AddRegion("LabelDestPort", "LabelDestPort",
+	// Middle: Label Dest Port (Under DestIp)
+	mLayoutMiddle.AddRegion("LabelDestPort", "LabelDestPort",
 		lS, kFBAttachLeft, "", 1.00,
 		lS, kFBAttachBottom, "LabelDestIp", 1.00,
 		labelWidth, kFBAttachNone, NULL, 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
-	mLayoutRight.SetControl("LabelDestPort", mLabelDestPort);
+	mLayoutMiddle.SetControl("LabelDestPort", mLabelDestPort);
 	mLabelDestPort.Caption = "Port:";
 
-	// Right: Edit DestPort (Under DestIp)
-	mLayoutRight.AddRegion("EditDestPort", "EditDestPort",
+	// Middle: Edit DestPort (Under DestIp)
+	mLayoutMiddle.AddRegion("EditDestPort", "EditDestPort",
 		lS, kFBAttachRight, "LabelDestPort", 1.00,
 		lS, kFBAttachBottom, "EditDestIp", 1.00,
 		fieldWidth, kFBAttachNone, NULL, 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
-	mLayoutRight.SetControl("EditDestPort", mEditDestPort);
+	mLayoutMiddle.SetControl("EditDestPort", mEditDestPort);
 	mEditDestPort.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditPort);
 
 
-	// Right: Label Protocol (Under DestPort)
-	mLayoutRight.AddRegion("LabelProtocol", "LabelProtocol",
+	// Middle: Label Protocol (Under DestPort)
+	mLayoutMiddle.AddRegion("LabelProtocol", "LabelProtocol",
 		lS, kFBAttachLeft, "", 1.00,
 		lS, kFBAttachBottom, "LabelDestPort", 1.00,
 		labelWidth, kFBAttachNone, NULL, 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
-	mLayoutRight.SetControl("LabelProtocol", mLabelProtocol);
+	mLayoutMiddle.SetControl("LabelProtocol", mLabelProtocol);
 	mLabelProtocol.Caption = "Protocol:";
 
-	// Right: Edit Protocol (Under DestPort)
-	mLayoutRight.AddRegion("EditProtocol", "EditProtocol",
+	// Middle: Edit Protocol (Under DestPort)
+	mLayoutMiddle.AddRegion("EditProtocol", "EditProtocol",
 		lS, kFBAttachRight, "LabelProtocol", 1.00,
 		lS, kFBAttachBottom, "EditDestPort", 1.00,
 		fieldWidth, kFBAttachNone, NULL, 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
-	mLayoutRight.SetControl("EditProtocol", mListProtocol);
+	mLayoutMiddle.SetControl("EditProtocol", mListProtocol);
 	mListProtocol.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditProtocol);
 
 
-	// Right: Label Key (Under Protocol)
-	mLayoutRight.AddRegion("LabelKey", "LabelKey",
+	// Middle: Label Key (Under Protocol)
+	mLayoutMiddle.AddRegion("LabelKey", "LabelKey",
 		lS, kFBAttachLeft, "", 1.00,
 		lS, kFBAttachBottom, "LabelProtocol", 1.00,
 		labelWidth, kFBAttachNone, NULL, 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
-	mLayoutRight.SetControl("LabelKey", mLabelKey);
+	mLayoutMiddle.SetControl("LabelKey", mLabelKey);
 	mLabelKey.Caption = "Key:";
 
-	// Right: Edit Key (Under Protocol)
-	mLayoutRight.AddRegion("EditKey", "EditKey",
+	// Middle: Edit Key (Under Protocol)
+	mLayoutMiddle.AddRegion("EditKey", "EditKey",
 		lS, kFBAttachRight, "LabelKey", 1.00,
 		lS, kFBAttachBottom, "EditProtocol", 1.00,
 		fieldWidth, kFBAttachNone, NULL, 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
-	mLayoutRight.SetControl("EditKey", mEditKey);
+	mLayoutMiddle.SetControl("EditKey", mEditKey);
 	mEditKey.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditKey);
 
 
-	// Right: Label SampleRate (Under Key)
-	mLayoutRight.AddRegion("LabelSampleRate", "LabelSampleRate",
+	// Middle: Label SampleRate (Under Key)
+	mLayoutMiddle.AddRegion("LabelSampleRate", "LabelSampleRate",
 		lS, kFBAttachLeft, "", 1.00,
 		lS, kFBAttachBottom, "LabelKey", 1.00,
 		labelWidth, kFBAttachNone, NULL, 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
-	mLayoutRight.SetControl("LabelSampleRate", mLabelSamplingRate);
+	mLayoutMiddle.SetControl("LabelSampleRate", mLabelSamplingRate);
 	mLabelSamplingRate.Caption = "Sample Rate:";
 
-	// Right: Edit Samplerate (Under Protocol)
-	mLayoutRight.AddRegion("EditSampleRate", "EditSampleRate",
+	// Middle: Edit Samplerate (Under Protocol)
+	mLayoutMiddle.AddRegion("EditSampleRate", "EditSampleRate",
 		lS, kFBAttachRight, "LabelSampleRate", 1.00,
 		lS, kFBAttachBottom, "EditKey", 1.00,
 		fieldWidth, kFBAttachNone, NULL, 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
-	mLayoutRight.SetControl("EditSampleRate", mEditSamplingRate);
+	mLayoutMiddle.SetControl("EditSampleRate", mEditSamplingRate);
 	mEditSamplingRate.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditSampleRate);
 
 
+
 	SetBorder("LeftLayout", kFBEmbossBorder, false, true, 2, 1, 90.0, 0);
-	SetBorder("RightLayout", kFBEmbossBorder, false, true, 2, 1, 90.0, 0);
+	SetBorder("MiddleLayout", kFBEmbossBorder, false, true, 2, 1, 90.0, 0);
 
 }
 
@@ -392,7 +412,7 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 
 			oss << "Items: " << mDevice->Items[id]->mTransforms.size();
 
-			mMemoSourceInfo.Text = oss.str().c_str();
+			mMemoLog.Text = oss.str().c_str();
 		}
 	}
 }
@@ -485,3 +505,18 @@ void Open3D_Device_Layout::EventEditKey(HISender pSender, HKEvent pEvent)
 	mDevice->SetKey(mEditKey.Text);
 }
 
+void Open3D_Device_Layout::EventEditJoints(HISender pSender, HKEvent pEvent)
+{
+	// The subject name has been changed, updae the device list and mSourcesList
+	int id = mSourcesList.ItemIndex;
+	if (id < 0) return;
+
+	std::string s(mMemoJoints.Text.AsString());
+	std::stringstream ss(s);
+	std::istream_iterator<std::string> begin(ss);
+	std::istream_iterator<std::string> end;
+	std::vector<std::string> vstrings(begin, end);
+	mDevice->Items[id]->mJoints.clear();
+	std::copy(vstrings.begin(), vstrings.end(), std::back_inserter(mDevice->Items[id]->mJoints));
+
+} 

@@ -112,7 +112,8 @@ namespace O3DS
 		size_t msglen = nng_msg_len(msg);
 		if (msglen > *len)
 		{
-			*data = (char*)realloc(*data, msglen);
+			char *buf = (char*)realloc(*data, msglen);
+			if (!buf) return 0;
 			*len = msglen;
 		}
 
@@ -190,13 +191,64 @@ namespace O3DS
 			return false;
 		}
 
-		memcpy(data, nng_msg_body(msg), len);
+		void* msgBody = nng_msg_body(msg);
+		if (!msgBody)
+		{
+			setError("Invalid Message");
+			nng_msg_free(msg);
+			return false;
+		}
+
+		memcpy(data, msgBody, len);
 
 		nng_msg_free(msg);
 
 		mState = Connector::READING;
 
 		return msglen;
+	}
+
+	size_t AsyncConnector::readMsg(char** data, size_t* len)
+	{
+		if (data == nullptr || len == nullptr)
+		{
+			setError("Invalid parameter");
+			return 0;
+		}
+
+		int ret;
+
+		nng_msg* msg = nullptr;
+
+		ret = nng_recvmsg(mSocket, &msg, NNG_FLAG_NONBLOCK);
+		if (ret == NNG_EAGAIN) { return 0; }
+		NNG_ERROR("Receiving message");
+
+		if (msg == nullptr)
+			return 0;
+
+		size_t msglen = nng_msg_len(msg);
+		if (msglen > *len)
+		{
+			char* buf = (char*)realloc(*data, msglen);
+			if (!buf) return 0;
+			*len = msglen;
+		}
+
+		void* msgBody = nng_msg_body(msg);
+		if (!msgBody)
+		{
+			setError("Invalid Message");
+			nng_msg_free(msg);
+			return false;
+		}
+
+		memcpy(*data, msgBody, msglen);
+
+		nng_msg_free(msg);
+
+		return msglen;
+
 	}
 
 	void AsyncConnector::setFunc(void* ctx, inDataFunc f)  // User implemented callback to receive data (optional)

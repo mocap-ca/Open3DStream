@@ -25,6 +25,7 @@ public:
 	void	EventDel(HISender pSender, HKEvent pEvent);
 	void	EventSelectDevice(HISender pSender, HKEvent pEvent);
 	void	EventEditSubject(HISender pSender, HKEvent pEvent);
+	void	EventEditJoints(HISender pSender, HKEvent pEvent);
 	void	EventEditIP(HISender pSender, HKEvent pEvent);
 	void	EventEditPort(HISender pSender, HKEvent pEvent);
 	void	EventEditProtocol(HISender pSender, HKEvent pEvent);
@@ -33,9 +34,11 @@ public:
 
 private:
 	FBLayout      mLayoutLeft;
-	FBLayout      mLayoutRight;
+	FBLayout      mLayoutMiddle;
+
 	FBLabel       mLabelLeft;
-	FBLabel       mLabelRight;
+	FBLabel       mLabelMiddle;
+
 	FBList        mSourcesList;
 	FBButton	  mButtonAdd;
 	FBButton      mButtonDel;
@@ -43,7 +46,6 @@ private:
 	FBEdit        mEditSource;
 	FBLabel       mLabelSubject;
 	FBEdit        mEditSubject;
-	FBMemo        mMemoSourceInfo;
 	FBLabel       mLabelDestIp;
 	FBEdit        mEditDestIp;
 	FBLabel       mLabelDestPort;
@@ -55,6 +57,9 @@ private:
 	FBLabel		  mLabelSamplingRate;
 	FBEditNumber  mEditSamplingRate;
 	FBLabel       mLabelPluginVersion;
+	FBLabel       mLabelJoints;
+	FBMemo        mMemoJoints;
+	FBMemo        mMemoLog;
 
 	FBSystem    mSystem;
 	Open3D_Device*	mDevice;

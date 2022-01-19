@@ -11,7 +11,7 @@ function(build_mobu version path)
 	target_include_directories(${mobu_target} PUBLIC "${path}/include")
 	target_link_directories(${mobu_target} PUBLIC "${path}/lib/x64")
 	if(EXISTS "C:/Program Files/Autodesk/MotionBuilder ${version}/bin/x64/plugins")
-		install(TARGETS ${mobu_target} DESTINATION "C:/Program Files/Autodesk/MotionBuilder {$version}/bin/x64/plugins")
+		install(TARGETS ${mobu_target} DESTINATION "C:/Program Files/Autodesk/MotionBuilder ${version}/bin/x64/plugins")
 	endif()
 
 endfunction()

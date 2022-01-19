@@ -69,11 +69,11 @@ namespace O3DS
 	{
 	public:
 		// Base class for blocking connectors
-		virtual bool write(const char *data, size_t len);    //!< Write bytes - len is the size of teh data to write
-		virtual size_t read(char *data, size_t len);         //!< Read bytes - len is the size of buffer, returns the number of bytes read
-		virtual bool writeMsg(const char *data, size_t len); //!< Writes an nng message.  Len is the size of the data to write
-		virtual size_t readMsg(char *data, size_t len);      //!< Read bytes - len is the size of buffer, returns the number of bytes read
-		virtual size_t readMsg(char** data, size_t* len);
+		virtual bool write(const char *data, size_t len)override ;    //!< Write bytes - len is the size of teh data to write
+		virtual size_t read(char *data, size_t len) override;         //!< Read bytes - len is the size of buffer, returns the number of bytes read
+		virtual bool writeMsg(const char *data, size_t len) override; //!< Writes an nng message.  Len is the size of the data to write
+		virtual size_t readMsg(char *data, size_t len) override;      //!< Read bytes - len is the size of buffer, returns the number of bytes read
+		virtual size_t readMsg(char** data, size_t* len) override;    //!< Read bytes, resize data if needed.
 	};
 
 
@@ -101,12 +101,13 @@ namespace O3DS
 		}
 
 		virtual bool start(const char* url) = 0;              //!< Starts the server - servers will listen, clients will dial
-		bool         write(const char *data, size_t len);     //!< Write bytes 
-		size_t       read(char *data, size_t len);            //!< Read bytes - len is the size of data
-		bool         writeMsg(const char *data, size_t len);  //!< Writes an nng message
-		size_t       readMsg(char *data, size_t len);         //!< Reads an nng message - len is the size of data
+		bool         write(const char *data, size_t len) override;     //!< Write bytes 
+		size_t       read(char *data, size_t len) override;            //!< Read bytes - len is the size of data
+		bool         writeMsg(const char *data, size_t len) override;  //!< Writes an nng message
+		size_t       readMsg(char *data, size_t len) override;         //!< Reads an nng message - len is the size of data
+		size_t       readMsg(char** data, size_t* len) override;       //!< Read bytes, resize data if needed
 		void         setFunc(void* ctx, inDataFunc f);        //!< User implemented callback to receive data (optional)
-		bool         asyncReadMsg();  //!< handles a nng_recv_aio call.  Calls nng_recv_aio again if message was okay and returns true
+		bool         asyncReadMsg();                          //!< handles a nng_recv_aio call.  Calls nng_recv_aio again if message was okay and returns true
 
 	protected:
 		void *     fnContext;  //!< The context provided for the user recieve callback
