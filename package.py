@@ -59,4 +59,5 @@ for base, _, files in os.walk(unreal_base):
     
 fp.write("lib/nng.lib", os.path.join("unreal", "Open3dStream", "lib", "nng.lib"))
 fp.write("lib/flatbuffers.lib", os.path.join("unreal", "Open3dStream", "lib", "flatbuffers.lib"))
+fp.write("lib/open3dstreamstatic.lib", os.path.join("unreal", "Open3dStream", "lib", "open3dstreamstatic.lib"))
 fp.close()    
