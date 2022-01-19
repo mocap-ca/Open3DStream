@@ -11,6 +11,15 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 nmake
 if %errorlevel% neq 0 exit /b %errorlevel%
 
+
+cd %~DP0
+if NOT EXIST build_RelWithDebInfo  MKDIR build_release
+cd build_RelWithDebInfo
+cmake -H.. -B. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo 
+if %errorlevel% neq 0 exit /b %errorlevel%
+nmake
+if %errorlevel% neq 0 exit /b %errorlevel%
+
 cd %~DP0
 if NOT EXIST build_debug mkdir build_debug
 cd build_debug
