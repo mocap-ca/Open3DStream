@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <mutex>
 #include "nng/nng.h"
 
 #define NNG_ERROR(msg) if(ret != 0) { setError(msg, ret); return false;  }
@@ -19,12 +20,9 @@ namespace O3DS
 	public:
 		enum eState { NOTSTARTED, STARTED, READING, STATE_ERROR, CLOSED };
 
-		Connector() : mState(NOTSTARTED) {};
+		Connector();
 
-		virtual ~Connector()
-		{
-			nng_close(mSocket);
-		}
+		virtual ~Connector();
 
 		//! Starts the connector, often using nng_dial or nng_listen
 		virtual bool start(const char* url) = 0;                  
@@ -63,6 +61,7 @@ namespace O3DS
 		enum eState mState;
 		std::string mError;
 		nng_socket mSocket;
+		std::mutex  mutex;
 	};
 
 	class BlockingConnector : public Connector

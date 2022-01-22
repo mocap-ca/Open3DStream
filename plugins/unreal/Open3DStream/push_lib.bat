@@ -1,6 +1,5 @@
 @ECHO OFF
-REM SET DST=E:\UnrealProjects\MyProject2\plugins\Open3DStream
-SET DST=E:\git\github\Open3DStream\plugins\unreal\Open3DStream
+SET DST=D:\Unreal Projects\Open3dStream1\Plugins\Open3DStream
 
 IF EXIST "%DST%\Open3DStream.uplugin" GOTO POK
 ECHO Invalid destination dir: %DST%

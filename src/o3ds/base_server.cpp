@@ -7,6 +7,14 @@
 
 namespace O3DS
 {
+	Connector::Connector() : mState(NOTSTARTED) {};
+
+	Connector::~Connector()
+	{
+		std::lock_guard<std::mutex> guard(mutex);
+		nng_close(mSocket);
+	}
+
 	const std::string& Connector::getError()
 	{
 		return mError;
@@ -29,6 +37,7 @@ namespace O3DS
 	bool BlockingConnector::write(const char *data, size_t len)
 	{
 		int ret;
+		std::lock_guard<std::mutex> guard(mutex);
 		ret = nng_send(mSocket, (void*)data, len, 0);
 		NNG_ERROR("Sending data")
 
@@ -39,6 +48,8 @@ namespace O3DS
 	{
 		int ret;
 		nng_msg *msg;
+
+		std::lock_guard<std::mutex> guard(mutex);
 
 		ret = nng_msg_alloc(&msg, 0);
 		NNG_ERROR("Creating message")
@@ -137,6 +148,7 @@ namespace O3DS
 	bool AsyncConnector::write(const char *data, size_t len)
 	{
 		int ret;
+		std::lock_guard<std::mutex> guard(mutex);
 		ret = nng_send(mSocket, (void*)data, len, NNG_FLAG_NONBLOCK);
 		NNG_ERROR("Sending data")
 		return true;
@@ -146,6 +158,8 @@ namespace O3DS
 	{
 		int ret;
 		nng_msg *msg;
+
+		std::lock_guard<std::mutex> guard(mutex);
 		
 		ret = nng_msg_alloc(&msg, 0);
 		NNG_ERROR("Message alloc");
@@ -163,6 +177,7 @@ namespace O3DS
 	size_t AsyncConnector::read(char *data, size_t len)  // Read bytes - len is the size of data
 	{
 		size_t sz = len;
+		std::lock_guard<std::mutex> guard(mutex);
 		int ret = nng_recv(mSocket, data, &sz, NNG_FLAG_NONBLOCK);
 		if (ret == NNG_EAGAIN) { return 0; }
 		NNG_ERROR("Receiving data")
@@ -172,6 +187,7 @@ namespace O3DS
 	size_t AsyncConnector::readMsg(char *data, size_t len)  // Read bytes - len is the size of data
 	{
 		int ret;
+		std::lock_guard<std::mutex> guard(mutex);
 
 		nng_msg *msg;
 
