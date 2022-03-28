@@ -62,29 +62,6 @@ if(EXISTS "M:/code/api/windows/maya/2018")
 build_maya("2018")
 endif()
 
-if(EXISTS "M:/code/api/windows/maya/2017")
-build_maya("2017")
-endif()
-
-if(EXISTS "M:/code/api/windows/maya/2017_5")
-build_maya("2017_5")
-endif()
-
-if(EXISTS "M:/code/api/windows/maya/2016")
-build_maya("2016")
-endif()
-
-if(EXISTS "M:/code/api/windows/maya/2016_5")
-build_maya("2016_5")
-endif()
-
-if(EXISTS "M:/code/api/windows/maya/2015")
-build_maya("2015")
-endif()
-
-if(EXISTS "M:/code/api/windows/maya/2014")
-build_maya("2014")
-endif()
 
 
 

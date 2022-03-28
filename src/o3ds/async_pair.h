@@ -3,19 +3,19 @@
 
 #include <nng/nng.h>
 #include <nng/protocol/pair1/pair.h>
-#include "base_server.h"
+#include "nng_connector.h"
 #include <string>
 
 namespace O3DS
 {
 	/*! \class AsyncPair async_pair.h o3ds/async_pair.h */
 	//! Wrapper for nng pair pattern with asynchronous calls
-	class AsyncPair : public AsyncConnector
+	class AsyncPair : public AsyncNngConnector
 	{
 	public:
 		void callback_()
 		{
-			AsyncConnector::asyncReadMsg();
+			AsyncNngConnector::asyncReadMsg();
 		}
 		static void callback(void *ref)
 		{

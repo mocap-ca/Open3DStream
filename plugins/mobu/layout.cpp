@@ -38,8 +38,8 @@ void Open3D_Device_Layout::UICreate()
 	int lH = 25;
 	int labelWidth = 80;
 	int fieldWidth = 150;
-	int listWidth = 130;
-	int leftWidth = 300;
+	int listWidth = 90;
+	int leftWidth = 220;
 	int buttonWidth = listWidth / 2 - 3;
 
 	// Left Panel
@@ -109,7 +109,7 @@ void Open3D_Device_Layout::UICreate()
 		buttonWidth, kFBAttachNone,   NULL,          1.00,
 		30,          kFBAttachNone,   "",            1.00);
 	mLayoutLeft.SetControl("AddButton", mButtonAdd);
-	mButtonAdd.Caption = "Add";
+	mButtonAdd.Caption = "+";
 	mButtonAdd.OnClick.Add(this, (FBCallback)&Open3D_Device_Layout::EventAdd);
 
 	// Del button - under sources list, right of add button
@@ -119,7 +119,7 @@ void Open3D_Device_Layout::UICreate()
 		buttonWidth,  kFBAttachNone,   NULL,        1.00,
 		30,           kFBAttachNone, "",          1.00);
 	mLayoutLeft.SetControl("DelButton", mButtonDel);
-	mButtonDel.Caption = "Del";
+	mButtonDel.Caption = "-";
 	mButtonDel.OnClick.Add(this, (FBCallback)&Open3D_Device_Layout::EventDel);
 
 
@@ -141,10 +141,10 @@ void Open3D_Device_Layout::UICreate()
 	mLayoutLeft.SetControl("EditSource", mEditSource);
 	mEditSource.ReadOnly = true;
 
-	// Subject label - under EditSource
+	// Subject label - Top, right of SourcesList
 	mLayoutLeft.AddRegion("LabelSubject", "LabelSubject",
 		lS, kFBAttachRight, "SourcesList", 1.00,
-		2, kFBAttachBottom, "EditSource", 1.00,
+		2, kFBAttachTop, "", 1.00,
 		155, kFBAttachNone, "", 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
 	mLayoutLeft.SetControl("LabelSubject", mLabelSubject);
@@ -285,8 +285,6 @@ void Open3D_Device_Layout::UICreate()
 	mLayoutMiddle.SetControl("EditSampleRate", mEditSamplingRate);
 	mEditSamplingRate.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditSampleRate);
 
-
-
 	SetBorder("LeftLayout", kFBEmbossBorder, false, true, 2, 1, 90.0, 0);
 	SetBorder("MiddleLayout", kFBEmbossBorder, false, true, 2, 1, 90.0, 0);
 
@@ -325,8 +323,6 @@ void Open3D_Device_Layout::UIConfigure()
 	mEditDestPort.Enabled = false; // enabed by the combo changing
 
 	mLabelPluginVersion.Caption = FBString("Version: ") + FBString(O3DS::getVersion());
-
-
 }
 
 void Open3D_Device_Layout::PopulateSubjectList()
@@ -518,5 +514,4 @@ void Open3D_Device_Layout::EventEditJoints(HISender pSender, HKEvent pEvent)
 	std::vector<std::string> vstrings(begin, end);
 	mDevice->Items[id]->mJoints.clear();
 	std::copy(vstrings.begin(), vstrings.end(), std::back_inserter(mDevice->Items[id]->mJoints));
-
 } 

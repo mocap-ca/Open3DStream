@@ -1,4 +1,4 @@
-#include "base_server.h"
+#include "nng_connector.h"
 
 #include <string>
 #include <string.h>
@@ -7,20 +7,13 @@
 
 namespace O3DS
 {
-	Connector::Connector() : mState(NOTSTARTED) {};
-
-	Connector::~Connector()
+	BlockingNngConnector::~BlockingNngConnector()
 	{
 		std::lock_guard<std::mutex> guard(mutex);
 		nng_close(mSocket);
 	}
 
-	const std::string& Connector::getError()
-	{
-		return mError;
-	}
-
-	void Connector::setError(const char *msg, int ret)
+	void BlockingNngConnector::setError(const char* msg, int ret)
 	{
 		mError = msg;
 		mError += ": ";
@@ -28,56 +21,31 @@ namespace O3DS
 		mState = Connector::STATE_ERROR;
 	}
 
-	void Connector::setError(const char* msg)
-	{
-		mError = msg;
-		mState = Connector::STATE_ERROR;
-	}
-
-	bool BlockingConnector::write(const char *data, size_t len)
+	bool BlockingNngConnector::write(const char* data, size_t len)
 	{
 		int ret;
-		std::lock_guard<std::mutex> guard(mutex);
-		ret = nng_send(mSocket, (void*)data, len, 0);
-		NNG_ERROR("Sending data")
-
-		return true;
-	}
-
-	bool BlockingConnector::writeMsg(const char *data, size_t len)
-	{
-		int ret;
-		nng_msg *msg;
+		nng_msg* msg;
 
 		std::lock_guard<std::mutex> guard(mutex);
 
 		ret = nng_msg_alloc(&msg, 0);
 		NNG_ERROR("Creating message")
 
-		ret = nng_msg_append(msg, data, len);
+			ret = nng_msg_append(msg, data, len);
 		NNG_ERROR("Appending message")
 
-		ret = nng_sendmsg(mSocket, msg, 0);
+			ret = nng_sendmsg(mSocket, msg, 0);
 		NNG_ERROR("Sending message")
 
-		return true;
-	}
-
-	size_t BlockingConnector::read(char *data, size_t len)  // Read bytes - len is the size of data
-	{
-		size_t sz = len;
-		int ret = nng_recv(mSocket, data, &sz, 0);
-		NNG_ERROR("Reading data")
-
-		return sz;
+			return true;
 	}
 
 	// Read bytes - len is the fixed size of data
-	size_t BlockingConnector::readMsg(char *data, size_t len)  
+	size_t BlockingNngConnector::read(char* data, size_t len)
 	{
 		int ret;
 
-		nng_msg *msg = nullptr;
+		nng_msg* msg = nullptr;
 
 		ret = nng_recvmsg(mSocket, &msg, 0);
 		NNG_ERROR("Receiving message");
@@ -86,14 +54,14 @@ namespace O3DS
 		if (msglen > len)
 		{
 			nng_msg_free(msg);
-			setError("Message too large");
+			Connector::setError("Message too large");
 			return false;
 		}
 
-		void *msgBody = nng_msg_body(msg);
+		void* msgBody = nng_msg_body(msg);
 		if (!msgBody)
 		{
-			setError("Invalid Message");
+			Connector::setError("Invalid Message");
 			nng_msg_free(msg);
 			return false;
 		}
@@ -105,11 +73,11 @@ namespace O3DS
 		return msglen;
 	}
 
-	size_t BlockingConnector::readMsg(char** data, size_t *len)
+	size_t BlockingNngConnector::read(char** data, size_t* len)
 	{
 		if (data == nullptr || len == nullptr)
 		{
-			setError("Invalid parameter");
+			Connector::setError("Invalid parameter");
 			return 0;
 		}
 
@@ -123,7 +91,7 @@ namespace O3DS
 		size_t msglen = nng_msg_len(msg);
 		if (msglen > *len)
 		{
-			char *buf = (char*)realloc(*data, msglen);
+			char* buf = (char*)realloc(*data, msglen);
 			if (!buf) return 0;
 			*len = msglen;
 		}
@@ -131,7 +99,7 @@ namespace O3DS
 		void* msgBody = nng_msg_body(msg);
 		if (!msgBody)
 		{
-			setError("Invalid Message");
+			Connector::setError("Invalid Message");
 			nng_msg_free(msg);
 			return false;
 		}
@@ -144,52 +112,43 @@ namespace O3DS
 
 	}
 
+	/*  ASYNC */
 
-	bool AsyncConnector::write(const char *data, size_t len)
+	void AsyncNngConnector::setError(const char* msg, int ret)
 	{
-		int ret;
-		std::lock_guard<std::mutex> guard(mutex);
-		ret = nng_send(mSocket, (void*)data, len, NNG_FLAG_NONBLOCK);
-		NNG_ERROR("Sending data")
-		return true;
+		mError = msg;
+		mError += ": ";
+		mError += nng_strerror(ret);
+		mState = Connector::STATE_ERROR;
 	}
 
-	bool AsyncConnector::writeMsg(const char *data, size_t len)
+
+	bool AsyncNngConnector::write(const char* data, size_t len)
 	{
 		int ret;
-		nng_msg *msg;
+		nng_msg* msg;
 
 		std::lock_guard<std::mutex> guard(mutex);
-		
+
 		ret = nng_msg_alloc(&msg, 0);
 		NNG_ERROR("Message alloc");
 
-		ret =nng_msg_append(msg, data, len);
+		ret = nng_msg_append(msg, data, len);
 		NNG_ERROR("Creating message")
 
-		ret = nng_sendmsg(mSocket, msg, NNG_FLAG_NONBLOCK);
+			ret = nng_sendmsg(mSocket, msg, NNG_FLAG_NONBLOCK);
 		NNG_ERROR("Sending message")
 
-		return true;
+			return true;
 	}
 
 
-	size_t AsyncConnector::read(char *data, size_t len)  // Read bytes - len is the size of data
-	{
-		size_t sz = len;
-		std::lock_guard<std::mutex> guard(mutex);
-		int ret = nng_recv(mSocket, data, &sz, NNG_FLAG_NONBLOCK);
-		if (ret == NNG_EAGAIN) { return 0; }
-		NNG_ERROR("Receiving data")
-		return sz;
-	}
-
-	size_t AsyncConnector::readMsg(char *data, size_t len)  // Read bytes - len is the size of data
+	size_t AsyncNngConnector::read(char* data, size_t len)  // Read bytes - len is the size of data
 	{
 		int ret;
 		std::lock_guard<std::mutex> guard(mutex);
 
-		nng_msg *msg;
+		nng_msg* msg;
 
 		ret = nng_recvmsg(mSocket, &msg, NNG_FLAG_NONBLOCK);
 		if (ret == NNG_EAGAIN) { return 0; }
@@ -203,14 +162,14 @@ namespace O3DS
 		size_t msglen = nng_msg_len(msg);
 		if (msglen > len)
 		{
-			setError("Message too large");
+			Connector::setError("Message too large");
 			return false;
 		}
 
 		void* msgBody = nng_msg_body(msg);
 		if (!msgBody)
 		{
-			setError("Invalid Message");
+			Connector::setError("Invalid Message");
 			nng_msg_free(msg);
 			return false;
 		}
@@ -224,11 +183,11 @@ namespace O3DS
 		return msglen;
 	}
 
-	size_t AsyncConnector::readMsg(char** data, size_t* len)
+	size_t AsyncNngConnector::read(char** data, size_t* len)
 	{
 		if (data == nullptr || len == nullptr)
 		{
-			setError("Invalid parameter");
+			Connector::setError("Invalid parameter");
 			return 0;
 		}
 
@@ -254,7 +213,7 @@ namespace O3DS
 		void* msgBody = nng_msg_body(msg);
 		if (!msgBody)
 		{
-			setError("Invalid Message");
+			Connector::setError("Invalid Message");
 			nng_msg_free(msg);
 			return false;
 		}
@@ -267,15 +226,15 @@ namespace O3DS
 
 	}
 
-	void AsyncConnector::setFunc(void* ctx, inDataFunc f)  // User implemented callback to receive data (optional)
-	{ 
+	void AsyncNngConnector::setFunc(void* ctx, inDataFunc f)  // User implemented callback to receive data (optional)
+	{
 		fnContext = ctx;
 		fnRef = f;
 	}
 
 
 
-	bool AsyncConnector::asyncReadMsg()
+	bool AsyncNngConnector::asyncReadMsg()
 	{
 		// Only calls nng_recv_aio if the message was okay.
 		int ret;
@@ -288,10 +247,10 @@ namespace O3DS
 			return false;
 		}
 
-		nng_msg *msg = nng_aio_get_msg(aio);
+		nng_msg* msg = nng_aio_get_msg(aio);
 		if (msg == nullptr)
 		{
-			setError("No message wile doing an async read");
+			Connector::setError("No message wile doing an async read");
 			mState = Connector::STATE_ERROR;
 			return false;
 		}

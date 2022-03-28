@@ -16,22 +16,6 @@ function(build_mobu version path)
 
 endfunction()
 
-if(EXISTS  "M:/code/api/windows/mobu/2014/OpenRealitySDK")
-build_mobu("2014" "M:/code/api/windows/mobu/2014/OpenRealitySDK")
-endif()
-
-if(EXISTS  "M:/code/api/windows/mobu/2015/OpenRealitySDK")
-build_mobu("2015" "M:/code/api/windows/mobu/2015/OpenRealitySDK")
-endif()
-
-if(EXISTS  "M:/code/api/windows/mobu/2016/OpenRealitySDK")
-build_mobu("2016" "M:/code/api/windows/mobu/2016/OpenRealitySDK")
-endif()
-
-if(EXISTS  "M:/code/api/windows/mobu/2017/OpenRealitySDK")
-build_mobu("2017" "M:/code/api/windows/mobu/2017/OpenRealitySDK")
-endif()
-
 if(EXISTS  "M:/code/api/windows/mobu/2018/OpenRealitySDK")
 build_mobu("2018" "M:/code/api/windows/mobu/2018/OpenRealitySDK")
 endif()
@@ -45,6 +29,7 @@ build_mobu("2020" "M:/code/api/windows/mobu/2020/OpenRealitySDK")
 endif()
 
 if(EXISTS  "M:/code/api/windows/mobu/2022/OpenRealitySDK")
+set(CMAKE_CXX_STANDARD 17)
 build_mobu("2022" "M:/code/api/windows/mobu/2022/OpenRealitySDK")
 endif()
 

@@ -3,37 +3,13 @@ cmake_minimum_required(VERSION ${CMAKE_MIN_REQ_VERSION})
 
 project(Repeater)
 
-set(CMAKE_DEBUG_POSTFIX d)
-
-set(libs debug flatbuffersd optimized flatbuffers debug nngd optimized nng)
-
-if (UNIX)
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -ldl")
-endif()
-
-
-if(WIN32)
-	link_directories(${CMAKE_CURRENT_LIST_DIR}/../../lib)
-	add_definitions(-DNNG_STATIC_LIB )
-
-	# As we are adding full paths to the debug/release fbx libs, we need to set the CMP0003 policy
-	if(COMMAND cmake_policy)
-		cmake_policy(SET CMP0003 NEW)
-	endif(COMMAND cmake_policy)
-
-	set(libs ${libs} wsock32 ws2_32)
-	set(MSVC_VERSION "1911")
-endif()
-
 add_executable(Repeater main.cpp 
-	${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/base_server.cpp
+	${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/websocket.cpp
+	${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/nng_connector.cpp
+	${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/base_connector.cpp
 	${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/pair.cpp
 	${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/publisher.cpp
 )
-
-target_link_libraries(Repeater PRIVATE ${libs} )
-
-target_include_directories(Repeater PUBLIC ${CMAKE_CURRENT_LIST_DIR}/../../src ${CMAKE_CURRENT_LIST_DIR}/../../include)
 
 if(WIN32)
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG")

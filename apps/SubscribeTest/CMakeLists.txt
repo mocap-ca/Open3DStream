@@ -11,3 +11,5 @@ if(WIN32)
 endif()
 
 target_link_libraries(SubscribeTest PRIVATE open3dstreamstatic ${libs})
+
+set_target_properties(SubscribeTest PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "ws ws://127.0.0.1:6001")

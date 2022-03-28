@@ -4,6 +4,7 @@
 //#include "o3ds/async_pipeline.h"
 #include "o3ds/async_subscriber.h"
 #include "o3ds/async_pair.h"
+#include "o3ds/websocket.h"
 #include <nng/nng.h>
 #include <chrono>
 #include <thread>
@@ -45,6 +46,12 @@ int main(int argc, char *argv[])
 		printf("Connecting to: %s\n", argv[2]);
 		connector = new O3DS::AsyncPairServer();
 	}
+	
+	if (strcmp(argv[1], "ws") == 0)
+	{
+		printf("Connecting to: %s\n", argv[2]);
+		connector = new O3DS::WebsocketClient();
+	}
 
 	if (!connector)
 	{
@@ -56,7 +63,7 @@ int main(int argc, char *argv[])
 
 	if (!connector->start(argv[2]))
 	{
-		fprintf(stderr, "Could not start server: %s\n", connector->err().c_str());
+		fprintf(stderr, "Could not start server: %s\n", connector->getError().c_str());
 		return 3;
 	}
 

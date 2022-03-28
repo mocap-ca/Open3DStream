@@ -4,7 +4,7 @@
 #include <fbsdk/fbsdk.h>
 #include <vector>
 #include "mobuModel.h"
-#include "o3ds/base_server.h"
+#include "o3ds/base_connector.h"
 
 
 #define OPEN3D_DEVICE__CLASSNAME	Open3D_Device
@@ -43,7 +43,7 @@ public:
 	bool		Stop();
 	bool		Done();
 
-	void		AddItem(FBModel *model);
+	void		AddItem(FBModel* model);
 
 	void		DeviceRecordFrame( FBDeviceNotifyInfo &pDeviceNotifyInfo );
 

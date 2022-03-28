@@ -7,6 +7,7 @@ using namespace O3DS::Data;
 #include <chrono>
 #include <thread>
 
+
 #include "fbxloader.h"
 #include "o3ds/model.h"
 #include "o3ds/getTime.h"
@@ -14,6 +15,7 @@ using namespace O3DS::Data;
 #include "o3ds/async_publisher.h"
 #include "o3ds/async_pair.h"
 #include "o3ds/pair.h"
+#include "o3ds/websocket.h"
 #include "o3ds/publisher.h"
 //#include "o3ds/request.h"
 //#include "o3ds/pipeline.h"
@@ -42,12 +44,12 @@ int main(int argc, char *argv[])
 	if (strcmp(argv[2], "client") == 0)
 	{
 		printf("Conecting to on: %s\n", argv[3]);
-		connector = new O3DS::ClientPair();
+		connector = new O3DS::WebsocketClient();
 	}
 	if (strcmp(argv[2], "server") == 0)
 	{
 		printf("Listening on: %s\n", argv[3]);
-		connector = new O3DS::ServerPair();
+		connector = new O3DS::WebsocketBroadcastServer();
 	}
 
 	if (!connector)
@@ -78,6 +80,10 @@ int main(int argc, char *argv[])
 		printf(connector->getError().c_str());
 		return 1;
 	}
+
+	// Run
+
+
 
 	// Serialize
 
@@ -150,7 +156,7 @@ redo:
 
 		if (ret > 0)
 		{
-			if (!connector->writeMsg((const char*)&buffer[0], ret))
+			if (!connector->write((const char*)&buffer[0], ret))
 			{
 				printf("Could not send: %s\n", connector->getError().c_str());
 			}

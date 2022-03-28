@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION ${CMAKE_MIN_REQ_VERSION})
 
 project(FbxStream)
 
+
 set(libs debug flatbuffersd optimized flatbuffers debug nngd optimized nng)
 
 if (UNIX)
@@ -56,7 +57,7 @@ add_custom_command(TARGET FbxStream POST_BUILD
 
 # https://cmake.org/cmake/help/git-stage/prop_tgt/VS_DEBUGGER_COMMAND_ARGUMENTS.html
 # https://stackoverflow.com/questions/52649753/how-to-send-visual-studio-configuration-options-from-cmake
-set_target_properties(FbxStream PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "${CMAKE_CURRENT_LIST_DIR}/../../test_data/beta_fight.fbx pub tcp://127.0.0.1:6001")
+set_target_properties(FbxStream PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "${CMAKE_CURRENT_LIST_DIR}/../../test_data/beta_fight.fbx server ws://127.0.0.1:6001")
 
 endif()
 

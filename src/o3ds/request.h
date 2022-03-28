@@ -1,20 +1,20 @@
 #pragma once
 
 #include <nng/nng.h>
-#include "base_server.h"
+#include "nng_connector.h"
 
 #include <string>
 
 namespace O3DS
 {
-	class Request : public BlockingConnector
+	class Request : public BlockingNngConnector
 	{
 		// Request connector (blocking)
 	public:
 		bool start(const char *url);
 	};
 
-	class Reply : public BlockingConnector
+	class Reply : public BlockingNngConnector
 	{
 		// Reply connector (blocking)
 	public:

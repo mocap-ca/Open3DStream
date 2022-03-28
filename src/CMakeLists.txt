@@ -10,8 +10,10 @@ set(SOURCES
 	o3ds/getTime.h
 	o3ds/model.cpp	
 	o3ds/model.h
-	o3ds/base_server.h
-	o3ds/base_server.cpp
+	o3ds/base_connector.h
+	o3ds/base_connector.cpp
+	o3ds/nng_connector.h
+	o3ds/nng_connector.cpp
 	o3ds/subscriber.cpp
 	o3ds/subscriber.h
 	o3ds/async_subscriber.cpp
@@ -38,6 +40,8 @@ set(SOURCES
 	o3ds/math.cpp
 	o3ds/transform_component.h
 	o3ds/o3ds.h
+	o3ds/websocket.h
+	o3ds/websocket.cpp
 	)
 
 set(libs debug flatbuffersd optimized flatbuffers debug nngd optimized nng)

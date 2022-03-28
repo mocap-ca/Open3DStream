@@ -6,3 +6,4 @@ set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_LIST_DIR}/..)
 
 add_subdirectory(flatbuffers)
 add_subdirectory(nng)
+add_subdirectory(websocketpp)

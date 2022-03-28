@@ -2,20 +2,20 @@
 #define O3DS_PIPELINE_H
 
 #include <nng/nng.h>
-#include "base_server.h"
+#include "nng_connector.h"
 
 #include <string>
 
 namespace O3DS
 {
-	class Push : public BlockingConnector
+	class Push : public BlockingNngConnector
 	{
 		// Request connector (blocking)
 	public:
 		bool start(const char *url);
 	};
 
-	class Pull : public BlockingConnector
+	class Pull : public BlockingNngConnector
 	{
 		// Reply connector (blocking)
 	public:

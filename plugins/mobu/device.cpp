@@ -332,7 +332,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				mProtocol == Open3D_Device::kNNGPublish)
 			{
 				if(mServer)
-					mServer->writeMsg((const char*)&buf[0], bucket_size);
+					mServer->write((const char*)&buf[0], bucket_size);
 				std::ostringstream oss;
 				oss << bucket_size << " bytes";
 				Status = oss.str().c_str();
