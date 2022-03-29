@@ -48,7 +48,7 @@ public:
 
 	static MTypeId id;
 
-	O3DS::BlockingConnector *mConnector;
+	O3DS::BlockingNngConnector*mConnector;
 	O3DS::SubjectList mSubjectList;
 
     MStringArray  mNames;
