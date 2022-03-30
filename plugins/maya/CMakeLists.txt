@@ -14,8 +14,6 @@ function(build_maya version)
 
 	set(mayatarget O3DSMaya${version}Device)
 
-	message(DEBUG "M:/code/api/windows/maya/${version}")
-
 	add_library(${mayatarget}  SHARED ${SRCS} )
 	target_link_libraries(${mayatarget}  ${MAYALIBS} ${libs})
 	target_include_directories(${mayatarget} PUBLIC "M:/code/api/windows/maya/${version}/include")

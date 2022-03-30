@@ -29,7 +29,6 @@ build_mobu("2020" "M:/code/api/windows/mobu/2020/OpenRealitySDK")
 endif()
 
 if(EXISTS  "M:/code/api/windows/mobu/2022/OpenRealitySDK")
-set(CMAKE_CXX_STANDARD 17)
 build_mobu("2022" "M:/code/api/windows/mobu/2022/OpenRealitySDK")
 endif()
 

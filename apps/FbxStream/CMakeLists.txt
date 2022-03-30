@@ -30,10 +30,8 @@ endif()
 
 include_directories(${fbxroot}/include)
 
-
 add_executable(FbxStream main.cpp fbxloader.cpp fbxloader.h)
 
-message("LIBS ${libs}")
 target_link_libraries(FbxStream PRIVATE ${libs} open3dstreamstatic)
 
 if(WIN32)

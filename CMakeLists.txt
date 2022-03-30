@@ -4,17 +4,19 @@ project(Open3DStream)
 
 # BOOST
 
-if(EXISTS "D:/cpp/source/boost_1_78_0")
-set(BOOST_ROOT "D:/cpp/source/boost_1_78_0")
+if(UNIX)
+find_package(Boost COMPONENTS thread)
+else()
+find_package(Boost)
 endif()
 
-find_package(Boost COMPONENTS thread)
-
 if(NOT Boost_FOUND)
-    message(FATAL_ERROR "Could not find boost")
+    message(FATAL_ERROR "Could not find boost - set BOOST_ROOT?")
 endif()
 
 set(libs debug flatbuffersd optimized flatbuffers debug nngd optimized nng ${Boost_LIBRARIES})
+
+set(CMAKE_CXX_STANDARD 17)
 
 include_directories( 
     ${Boost_INCLUDE_DIRS} 
@@ -25,7 +27,8 @@ include_directories(
 link_directories(${Boost_LIBRARY_DIRS} ${CMAKE_CURRENT_LIST_DIR}/lib)
 if (UNIX)
 	link_directories(${CMAKE_CURRENT_LIST_DIR}/lib64)
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -ldl")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -pthread -ldl")
+    # -std=c++14
 endif()
 
 # Linking nng static lib, so need to define this otherwise we will get linker errors.
