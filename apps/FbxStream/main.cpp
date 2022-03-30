@@ -50,7 +50,6 @@ int main(int argc, char *argv[])
 	{
 		printf("Listening on: %s\n", argv[3]);
 		O3DS::WebsocketBroadcastServer* ws = new O3DS::WebsocketBroadcastServer();
-		ws->start(argv[3]);
 		connector =ws;
 	}
 

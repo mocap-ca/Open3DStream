@@ -122,8 +122,8 @@ namespace O3DS
 			boost::system::error_code ec;
 			boost::asio::ip::address ip_address = boost::asio::ip::address::from_string(url, ec);
 
-			// Listen on port 9002
-			mServer.listen(ip_address, ref.get_port());
+			std::cout << "IP: " << ip_address << "   port: " << ref.get_port() << std::endl;
+			mServer.listen(ref.get_port());
 
 			mServer.start_accept();
 
