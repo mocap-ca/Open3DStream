@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION  3.13)
 
 project(Open3DStream)
 
+# BOOST
+
 if(EXISTS "D:/cpp/source/boost_1_78_0")
 set(BOOST_ROOT "D:/cpp/source/boost_1_78_0")
 endif()
 
-find_package(Boost)
+find_package(Boost COMPONENTS thread)
 
 if(NOT Boost_FOUND)
     message(FATAL_ERROR "Could not find boost")
@@ -14,32 +16,30 @@ endif()
 
 set(libs debug flatbuffersd optimized flatbuffers debug nngd optimized nng ${Boost_LIBRARIES})
 
-set(inc_dirs 
+include_directories( 
     ${Boost_INCLUDE_DIRS} 
     ${CMAKE_CURRENT_LIST_DIR}/include 
     ${CMAKE_CURRENT_LIST_DIR}/include/websocketpp
     ${CMAKE_CURRENT_LIST_DIR}/src)
 
-set(link_dirs ${Boost_LIBRARY_DIRS} ${CMAKE_CURRENT_LIST_DIR}/lib)
-
-link_libraries(${libs})
-include_directories(${inc_dirs})
-link_directories(${link_dirs})
-
+link_directories(${Boost_LIBRARY_DIRS} ${CMAKE_CURRENT_LIST_DIR}/lib)
 if (UNIX)
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -ldl")
+	link_directories(${CMAKE_CURRENT_LIST_DIR}/lib64)
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pthread -ldl")
 endif()
 
+# Linking nng static lib, so need to define this otherwise we will get linker errors.
+# see - thirdparty\nng\include\nng\nng.h:32
+add_definitions(-DNNG_STATIC_LIB )
+
 if(WIN32)
-	link_directories(${CMAKE_CURRENT_LIST_DIR}/../../lib)
-	add_definitions(-DNNG_STATIC_LIB )
 
 	# As we are adding full paths to the debug/release fbx libs, we need to set the CMP0003 policy
 	if(COMMAND cmake_policy)
 		cmake_policy(SET CMP0003 NEW)
 	endif(COMMAND cmake_policy)
 
-	set(libs ${libs} wsock32 ws2_32)
+	list(APPEND libs wsock32 ws2_32)
 	set(MSVC_VERSION "1911")
 endif()
 
@@ -49,10 +49,6 @@ set(CMAKE_DEBUG_POSTFIX d)
 # Build the flatbuffer schema
 set(schema_in ${CMAKE_CURRENT_LIST_DIR}/protocol/schema.fbs) 
 set(schema_out ${CMAKE_CURRENT_LIST_DIR}/include/schema_generated.h)
-
-# Linking nng static lib, so need to define this otherwise we will get linker errors.
-# see - thirdparty\nng\include\nng\nng.h:32
-add_definitions(-DNNG_STATIC_LIB)    
 
 add_custom_command(
     OUTPUT ${schema_out}

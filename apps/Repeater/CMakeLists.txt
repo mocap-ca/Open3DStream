@@ -20,4 +20,5 @@ add_custom_command(TARGET Repeater POST_BUILD
 endif()
 endif()
 
+target_link_libraries(Repeater ${libs})
 

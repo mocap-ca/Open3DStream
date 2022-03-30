@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 		return 3;
 	}
 
-	using namespace std::chrono_literals;
+	using namespace std::literals::chrono_literals;
 
 	while (1)
 	{

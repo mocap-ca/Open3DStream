@@ -49,7 +49,9 @@ int main(int argc, char *argv[])
 	if (strcmp(argv[2], "server") == 0)
 	{
 		printf("Listening on: %s\n", argv[3]);
-		connector = new O3DS::WebsocketBroadcastServer();
+		O3DS::WebsocketBroadcastServer* ws = new O3DS::WebsocketBroadcastServer();
+		ws->start(argv[3]);
+		connector =ws;
 	}
 
 	if (!connector)

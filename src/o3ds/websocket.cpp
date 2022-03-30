@@ -34,7 +34,7 @@ namespace O3DS
 	void Websocket::setFunc(void *ctx, inDataFunc f)
 	{
 		mContext = ctx;
-		mInDataFunc = f;
+		mInDataFunc = (void*)f;
 	}
 
 	// CLIENT
