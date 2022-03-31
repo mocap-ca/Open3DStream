@@ -26,12 +26,6 @@ namespace O3DS
 	{
 	public:
 		Websocket();
-
-		void setFunc(void* ctx, inDataFunc f) override;
-
-		void* mContext;
-		void* mInDataFunc;
-
 		boost::thread_group threads;
 
 	};

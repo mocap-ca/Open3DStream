@@ -223,15 +223,7 @@ namespace O3DS
 		nng_msg_free(msg);
 
 		return msglen;
-
 	}
-
-	void AsyncNngConnector::setFunc(void* ctx, inDataFunc f)  // User implemented callback to receive data (optional)
-	{
-		fnContext = ctx;
-		fnRef = f;
-	}
-
 
 
 	bool AsyncNngConnector::asyncReadMsg()
@@ -255,7 +247,7 @@ namespace O3DS
 			return false;
 		}
 
-		if (fnRef) fnRef(fnContext, nng_msg_body(msg), nng_msg_len(msg));
+		if (mInDataFunc) mInDataFunc(mContext, nng_msg_body(msg), nng_msg_len(msg));
 
 		nng_msg_free(msg);
 

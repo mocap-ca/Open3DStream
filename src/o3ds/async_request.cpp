@@ -62,7 +62,7 @@ namespace O3DS
 			return;
 		}
 
-		if (fnRef) fnRef(fnContext, (void*)buf, sz);
+		if (mInDataFunc) mInDataFunc(mContext, (void*)buf, sz);
 
 		nng_free(buf, sz);
 

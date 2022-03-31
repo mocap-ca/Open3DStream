@@ -16,6 +16,10 @@ void ReadFunc(void *ptr, void *buf, size_t len)
 	O3DS::SubjectList subjects;
 	subjects.Parse((const char*)buf, len);
 	printf("%zd\n", len);
+	for (auto i : subjects)
+	{
+		printf("   %s\n", i->mName.c_str());
+	}
 }
 
 int main(int argc, char *argv[])	

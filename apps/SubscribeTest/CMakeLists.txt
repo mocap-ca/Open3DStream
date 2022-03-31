@@ -12,4 +12,4 @@ add_executable(SubscribeTest main.cpp)
 
 target_link_libraries(SubscribeTest PRIVATE open3dstreamstatic ${libs})
 
-set_target_properties(SubscribeTest PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "ws ws://127.0.0.1:6001")
+set_target_properties(SubscribeTest PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "ws ws://rt.zip.media:80")

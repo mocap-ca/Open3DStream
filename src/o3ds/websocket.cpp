@@ -12,30 +12,22 @@ namespace O3DS
 
 	void WebsocketClient::onMessage(websocketpp::connection_hdl hdl, client_message_ptr msg)
 	{
-		std::cout << "on_message called with hdl: " << hdl.lock().get() << std::endl;
-		/*
 		if (mInDataFunc)
 		{
 			std::string message = msg->get_payload();
 			mInDataFunc(mContext, (void*)message.c_str(), message.size());
-		}*/
+		}
 	}
 
 	// BASE
 
 	Websocket::Websocket()
 		: AsyncConnector()
-		, mContext(nullptr)
-		, mInDataFunc(nullptr)
 	{
 
 	}
 
-	void Websocket::setFunc(void *ctx, inDataFunc f)
-	{
-		mContext = ctx;
-		mInDataFunc = (void*)f;
-	}
+
 
 	// CLIENT
 

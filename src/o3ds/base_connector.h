@@ -51,12 +51,15 @@ namespace O3DS
 		std::string mError;
 	};
 
-	typedef void(*inDataFunc)(void*, void*, size_t);
+	typedef void(*InDataFunc)(void*, void*, size_t);
 
 	class AsyncConnector : public Connector
 	{
 	public:
-		virtual void setFunc(void* ctx, inDataFunc f) = 0;        //!< User implemented callback to receive data (optional)
+		void setFunc(void* ctx, InDataFunc f);        //!< User implemented callback to receive data (optional)
+
+		InDataFunc mInDataFunc;
+		void*      mContext;
 	};
 }
 

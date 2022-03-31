@@ -40,10 +40,9 @@ namespace O3DS
 	public:
 		AsyncNngConnector()
 			: AsyncConnector()
-			, fnContext(nullptr)
-			, fnRef(nullptr)
 			, mDialer()
 			, aio(nullptr)
+			, mSocket(NNG_SOCKET_INITIALIZER)
 		{
 			//nng_ctx_open(&ctx, mSocket);
 		};
@@ -61,13 +60,9 @@ namespace O3DS
 		bool         write(const char* data, size_t len) override;  //!< Writes an nng message
 		size_t       read(char* data, size_t len) override;            //!< Read bytes - len is the size of data
 		size_t       read(char** data, size_t* len) override;       //!< Read bytes, resize data if needed
-		void         setFunc(void* ctx, inDataFunc f);        //!< User implemented callback to receive data (optional)
 		bool         asyncReadMsg();                          //!< handles a nng_recv_aio call.  Calls nng_recv_aio again if message was okay and returns true
 
 	protected:
-		void* fnContext;  //!< The context provided for the user recieve callback
-		inDataFunc fnRef;      //!< The user receive callback
-
 		nng_dialer mDialer;
 		nng_aio* aio;
 

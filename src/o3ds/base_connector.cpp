@@ -24,4 +24,10 @@ namespace O3DS
 		mState = Connector::STATE_ERROR;
 	}
 
+	void AsyncConnector::setFunc(void* ctx, InDataFunc f)
+	{
+		mContext = ctx;
+		mInDataFunc = f;
+	}
+
 } // namespace
