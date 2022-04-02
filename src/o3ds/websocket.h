@@ -34,6 +34,7 @@ namespace O3DS
 	{
 	public:
 		WebsocketClient();
+		~WebsocketClient();
 
 		virtual bool start(const char* url) override;
 
@@ -44,8 +45,16 @@ namespace O3DS
 		virtual size_t read(char** data, size_t* len) override;
 
 		void onMessage(websocketpp::connection_hdl hdl, client_message_ptr msg);
+		void onClose(websocketpp::connection_hdl hdl);
+		void onFail(websocketpp::connection_hdl hdl);
+
+		bool connect();
 
 		client mClient;
+		std::string mUrl;
+
+	private:
+		client::connection_ptr _con;
 	};
 
 

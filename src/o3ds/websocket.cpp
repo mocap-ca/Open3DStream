@@ -9,6 +9,35 @@ using websocketpp::lib::placeholders::_2;
 namespace O3DS
 {
 
+	// BASE
+
+	Websocket::Websocket()
+		: AsyncConnector()
+		
+	{}
+
+	// CLIENT
+
+	WebsocketClient::WebsocketClient() 
+		: Websocket()
+	{
+		// Set logging to be pretty verbose (everything except message payloads)
+		mClient.set_access_channels(websocketpp::log::alevel::all);
+		mClient.clear_access_channels(websocketpp::log::alevel::frame_payload);
+
+		mClient.set_message_handler(bind(&WebsocketClient::onMessage, this, ::_1, ::_2));
+
+		mClient.set_close_handler(bind(&WebsocketClient::onClose, this, ::_1));
+
+		mClient.set_fail_handler(bind(&WebsocketClient::onFail, this, ::_1));
+
+		mClient.init_asio();
+	}
+
+	WebsocketClient::~WebsocketClient()
+	{
+	}
+
 
 	void WebsocketClient::onMessage(websocketpp::connection_hdl hdl, client_message_ptr msg)
 	{
@@ -19,56 +48,56 @@ namespace O3DS
 		}
 	}
 
-	// BASE
-
-	Websocket::Websocket()
-		: AsyncConnector()
+	void WebsocketClient::onClose(websocketpp::connection_hdl hdl)
 	{
-
+		std::cout << "Closed" << std::endl;
 	}
 
-
-
-	// CLIENT
-
-	WebsocketClient::WebsocketClient() : Websocket()
+	void WebsocketClient::onFail(websocketpp::connection_hdl hdl)
 	{
-		// Set logging to be pretty verbose (everything except message payloads)
-		mClient.set_access_channels(websocketpp::log::alevel::all);
-		mClient.clear_access_channels(websocketpp::log::alevel::frame_payload);
-
-		mClient.set_message_handler(bind(&WebsocketClient::onMessage, this, ::_1, ::_2));
-
-		mClient.init_asio();
+		std::cout << "Fail" << std::endl;
+		std::this_thread::sleep_for(std::chrono::seconds(8));
+		this->connect();
 	}
 
-	bool WebsocketClient::start(const char* url)
+	bool WebsocketClient::connect()
 	{
+		std::cout << "CONNECTING" << std::endl;
+
+		websocketpp::lib::error_code errorCode;
+		_con = mClient.get_connection(mUrl, errorCode);
+		if (errorCode)
+		{
+			setError(errorCode.message().c_str());
+			return false;
+		}
+
 		try
 		{
-			websocketpp::lib::error_code errorCode;
-			client::connection_ptr con = mClient.get_connection(url, errorCode);
-			if (errorCode)
-			{
-				setError(errorCode.message().c_str());
-				return false;
-			}
+			mClient.connect(_con);
 
-			mClient.connect(con);
-
-			for (int n = 0; n < 2; ++n) {
-				threads.create_thread([&] { mClient.run(); });
-			}
+			threads.create_thread([&]()
+				{ 
+					std::cout << "RUN" << std::endl;
+					mClient.run();
+					std::cout << "END" << std::endl;
+				});
 
 			return true;
 		}
 		catch (websocketpp::exception const& e) {
+			std::cout << "ERROR" << std::endl;
 			setError(e.what());
 		}
 
-		
-
 		return false;
+	}
+
+	bool WebsocketClient::start(const char* url)
+	{
+		mUrl = url;
+		connect();
+		return true;
 	}
 
 	bool WebsocketClient::write(const char* data, size_t len)
