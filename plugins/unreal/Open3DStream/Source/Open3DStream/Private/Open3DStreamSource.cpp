@@ -18,25 +18,34 @@ using namespace O3DS::Data;
 // E:\Unreal\UE_4.25\Engine\Plugins\Runtime\AR\Apple\AppleARKit\Source\AppleARKitPoseTrackingLiveLink\Private\AppleARKitPoseTrackingLiveLinkSource.cpp
 
 
+#define LOCTEXT_NAMESPACE "Open3DStream"
+
 FOpen3DStreamSource::FOpen3DStreamSource()
 :FOpen3DStreamSource(GetDefault<UOpen3DStreamSettingsObject>()->Settings)
 {
 }
 
 FOpen3DStreamSource::FOpen3DStreamSource(const FOpen3DStreamSettings& Settings)
-	: SourceType(NSLOCTEXT("Open3DStream", "ConnctionType", "Open 3D Stream"))
-	, SourceMachineName(NSLOCTEXT("Open3DStream", "SourceMachineName", "-"))
-	, SourceStatus(NSLOCTEXT("Open3DStream", "ConnctionStatus", "Inactive"))
+	: SourceType(LOCTEXT("ConnctionType", "Open 3D Stream"))
+	, SourceMachineName(LOCTEXT("SourceMachineName", "-"))
+	, SourceStatus(LOCTEXT("ConnctionStatus", "Inactive"))
 	, Settings(nullptr)
 	, Client(nullptr)
 	, ArrivalTimeOffset(0.0)
 	, Frame(0)
-	, bIsValid(false)
+	, bIsValid(true)
+	, mBuffer(nullptr)
+	, mBufferSize(0)
+	, mRemainder(0)
+	, mPtr(0)
+	, mAddr(ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr())
 {
 	Url        = Settings.Url;
 	Protocol   = Settings.Protocol;
 	Key        = Settings.Key;
 	TimeOffset = Settings.TimeOffset;
+
+	
 }
 
 FOpen3DStreamSource::~FOpen3DStreamSource()
@@ -59,21 +68,129 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 	SourceGuid = InSourceGuid;
 	bIsValid = true;
 
-	server.DataDelegate.BindRaw(this, &FOpen3DStreamSource::OnNnpData);
+	SourceStatus = FText::Format(LOCTEXT("ConnectingString", "Connecting {0}"), Protocol);
+
+	server.OnData.BindRaw(this, &FOpen3DStreamSource::OnPackage);
 	server.start(TCHAR_TO_ANSI(*Url.ToString()), TCHAR_TO_ANSI(*Protocol.ToString()));
 	UpdateConnectionLastActive();
 }
 
-void FOpen3DStreamSource::OnNnpData()
+/*
+void FOpen3DStreamSource::Tick(float DeltaTime)
 {
-	this->server.mutex.Lock();
-	this->buffer.reserve(this->server.buffer.size());
-	this->buffer = this->server.buffer;
+	 NOW HANDLED BY LAMBDA/THREAD
+	if (this->server.mUdp)
+	{
+		if (mBuffer == nullptr)
+		{
+			mBuffer = (uint8*)malloc(65507u);
+			mBufferSize = 65507u;
+		}
+		if (mBufferSize < 65507u)
+		{
+			mBuffer = (uint8*)realloc(mBuffer, 65507u);
+		}
 
-	this->server.mutex.Unlock();
+		if (mBuffer)
+		{
+			uint32 Size;
+			while (this->server.mUdp->HasPendingData(Size))
+			{
+				int32 read;
+				this->server.mUdp->RecvFrom(mBuffer, FMath::Min(Size, 65507u), read, *this->mAddr);
+				if(read > 0)
+					OnPackage((uint8*)mBuffer, read);
+			}
+		}
+	}
 
-	OnPackage((uint8*)&this->buffer[0], this->buffer.size());
+	if (!Client) return;
+
+	if (this->server.mTcp)
+	{
+
+		while(1)
+		{
+			int32 read = 0;
+
+			if (mRemainder)
+			{
+				// Finish a fragment
+				if (!this->server.mTcp->Recv(mBuffer + mPtr, mRemainder, read))
+				{
+					return;			
+				}
+
+				if (read < mRemainder)
+				{
+					mRemainder-= read;
+					mPtr += read;
+					return;
+				}
+
+				mRemainder = 0;
+			}
+			else
+			{
+				// Get a header
+				this->server.mTcp->Recv(mHeader, 8, read, ESocketReceiveFlags::Peek);
+				if (read != 8) return;
+
+				this->server.mTcp->Recv(mHeader, 8, read);
+				uint32_t heading = ((uint32_t*)mHeader)[0];
+				uint32_t bucketSize = ((uint32_t*)mHeader)[1];
+
+				if (mBuffer == nullptr)
+				{
+					mBuffer = (uint8*)malloc(bucketSize);
+					mBufferSize = bucketSize;
+				}
+				else
+				{
+					if (mBufferSize < bucketSize)
+					{
+						mBuffer = (uint8*)realloc(mBuffer, bucketSize);
+						mBufferSize = bucketSize;
+					}
+				}
+
+				if (!this->server.mTcp->Recv(mBuffer, bucketSize, read))
+				{
+					return;
+				}
+
+				if (read < (int32)bucketSize)
+				{
+					mRemainder = bucketSize - read;
+					mPtr = read;
+					return;
+				}
+
+
+				if (heading != 0x0203)
+				{
+					this->server.mTcp->Close();
+					this->server.mTcp = nullptr;
+					return;
+				}
+
+				// Process
+				TArray<uint8> Data;
+				Data.Append((uint8*)mBuffer, bucketSize);
+				OnPackage(Data);
+
+			}
+		}
+	}
+		
+
 }
+
+
+bool FOpen3DStreamSource::IsTickable() const
+{
+	return this->server.mTcp != nullptr || this->server.mUdp != nullptr;
+}*/
 
 void operator >>(const O3DS::Matrixd& src, FMatrix& dst)
 {
@@ -116,15 +233,20 @@ void operator >>(const O3DS::Matrixd& src, FMatrix& dst)
 
 }
 
-void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
+void FOpen3DStreamSource::OnPackage(const TArray<uint8>& data)
 {
+	if (!bIsValid)
+		return;
+
+	SourceStatus = FText::Format(LOCTEXT("ReceivingString", "Receiving {0}"), Protocol);
+
+
 	//O3DS::Unreal::UnBuilder builder;
-	mSubjects.Parse((const char*)data, sz, 0);// &builder);
+	mSubjects.Parse((const char*)data.GetData(), data.Num(), 0);// &builder);
 
 
 	TArray<FName>      BoneNames;
 	TArray<int32>      BoneParents;
-
 
 	for (O3DS::Subject* subject : mSubjects)
 	{
@@ -223,15 +345,17 @@ void FOpen3DStreamSource::OnPackage(uint8 *data, size_t sz)
 
 	}
 
-	
-\
+
 }
 
 bool FOpen3DStreamSource::RequestSourceShutdown()
 {
+	bIsValid = false;
+	this->server.OnData.Unbind();
 	this->server.stop();
 	Client = nullptr;
 	SourceGuid.Invalidate();
+
 	return true;
 }
 

@@ -16,8 +16,13 @@ class OPEN3DSTREAM_API SOpen3DStreamFactory : public SCompoundWidget
 
 	void Construct(const FArguments& Args);
 
-	void SetUrl(const FText &InUrl) { mUrl = InUrl; }
-	FText GetUrl() const { return mUrl; }
+	void SetUrl(const FText &InUrl)	{
+		mUrl = InUrl; 
+		SOpen3DStreamFactory::LastUrl = InUrl;
+	}
+	FText GetUrl() const {
+		return mUrl;
+	}
 
 	void SetKey(const FText &InKey) { mKey = InKey; }
 	FText GetKey() const { return mKey; }
@@ -41,5 +46,7 @@ private:
 
 	TArray<FComboItemType> Options;
 	FComboItemType CurrentProtocol;
+
+	static FText LastUrl;
 
 };

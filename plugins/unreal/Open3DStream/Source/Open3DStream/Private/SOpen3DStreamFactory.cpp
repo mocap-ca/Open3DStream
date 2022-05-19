@@ -5,6 +5,8 @@
 
 #define LOCTEXT_NAMESPACE "Open3DStream"
 
+FText SOpen3DStreamFactory::LastUrl;
+
 void SOpen3DStreamFactory::Construct(const FArguments& Args)
 {
 	//LastTickTime = 0.0;
@@ -13,13 +15,18 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 	Options.Add(MakeShareable(new FString("Subscribe")));
 	Options.Add(MakeShareable(new FString("Client")));
 	Options.Add(MakeShareable(new FString("Server")));
+	Options.Add(MakeShareable(new FString("TCP")));
+	Options.Add(MakeShareable(new FString("UDP")));
 	CurrentProtocol = Options[0];
 
 	const char* version = O3DS::getVersion();
 
+	if (SOpen3DStreamFactory::LastUrl.IsEmpty())
+	{
+		LastUrl = LOCTEXT("Open3DStreamUrlValue", "127.0.0.1:3001");
+	}
 
-	//mUrl = LOCTEXT("Open3DStreamUrlValue", "tcp://3.131.65.210:6001");
-	mUrl = LOCTEXT("Open3DStreamUrlValue", "tcp://127.0.0.1:6001");
+	mUrl = LastUrl;
 
 	ChildSlot
 	[
@@ -37,7 +44,7 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 			.FillWidth(0.7f)
 			[	
 				SNew(SEditableTextBox)
-				.Text(this, &SOpen3DStreamFactory::GetUrl)
+				.Text(mUrl)
 				.OnTextChanged(this, &SOpen3DStreamFactory::SetUrl)
 			]
 		]
@@ -114,6 +121,9 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 
 FReply SOpen3DStreamFactory::OnSource()
 {
+	
+	FString s = mUrl.ToString();
+	const TCHAR* url = s.operator*();
 	TSharedPtr<FOpen3DStreamSettings, ESPMode::ThreadSafe> Settings = MakeShared<FOpen3DStreamSettings, ESPMode::ThreadSafe>();
 	Settings->TimeOffset = 0;
 	Settings->Url = mUrl;
