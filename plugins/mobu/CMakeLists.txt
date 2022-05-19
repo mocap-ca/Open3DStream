@@ -20,8 +20,8 @@ if(EXISTS  "M:/code/api/windows/mobu/2018/OpenRealitySDK")
 build_mobu("2018" "M:/code/api/windows/mobu/2018/OpenRealitySDK")
 endif()
 
-if(EXISTS  "M:/code/api/windows/mobu/2018/OpenRealitySDK")
-build_mobu("2019" "M:/code/api/windows/mobu/2018/OpenRealitySDK")
+if(EXISTS  "M:/code/api/windows/mobu/2019/OpenRealitySDK")
+build_mobu("2019" "M:/code/api/windows/mobu/2019/OpenRealitySDK")
 endif()
 
 if(EXISTS  "M:/code/api/windows/mobu/2020/OpenRealitySDK")

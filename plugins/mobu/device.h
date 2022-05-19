@@ -65,10 +65,13 @@ public:
 
 	void InData(void *, size_t);
 
+	int32_t WriteTcp(int socket, void *data, int32_t bucketSize);
+
 	O3DS::SubjectList       Items;
 	FBTCPIP                 mTcpIp;
 	O3DS::Connector*        mServer;
 	int                     mNetworkSocket;
+	std::vector<int>        mClients;
 
 private:
 	double                mSamplingRate;

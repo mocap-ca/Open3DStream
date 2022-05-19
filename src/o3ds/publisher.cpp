@@ -15,7 +15,7 @@ bool O3DS::Publisher::start(const char *url)
 		setError("Could not open socket", ret);
 		return false;
 	}
-	if ((ret = nng_listen(mSocket, url, NULL, 0)) < 0) {
+	if ((ret = nng_listen(mSocket, url, NULL, 0)) != 0) {
 		setError("Could not listen", ret);
 		return false;
 	}

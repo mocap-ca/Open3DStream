@@ -58,6 +58,7 @@ namespace O3DS
 	public:
 		void setFunc(void* ctx, InDataFunc f);        //!< User implemented callback to receive data (optional)
 
+		virtual void stop() = 0;
 		InDataFunc mInDataFunc;
 		void*      mContext;
 	};

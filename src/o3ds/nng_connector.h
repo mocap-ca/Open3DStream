@@ -61,7 +61,7 @@ namespace O3DS
 		size_t       read(char* data, size_t len) override;            //!< Read bytes - len is the size of data
 		size_t       read(char** data, size_t* len) override;       //!< Read bytes, resize data if needed
 		bool         asyncReadMsg();                          //!< handles a nng_recv_aio call.  Calls nng_recv_aio again if message was okay and returns true
-
+		void         stop();
 	protected:
 		nng_dialer mDialer;
 		nng_aio* aio;

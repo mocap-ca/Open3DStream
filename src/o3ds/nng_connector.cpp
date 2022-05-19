@@ -114,6 +114,14 @@ namespace O3DS
 
 	/*  ASYNC */
 
+	void AsyncNngConnector::stop()
+	{
+		nng_close(mSocket);
+		mSocket = NNG_SOCKET_INITIALIZER;
+		nng_dialer_close(mDialer);
+		if (aio)	nng_aio_free(aio);
+	}
+
 	void AsyncNngConnector::setError(const char* msg, int ret)
 	{
 		mError = msg;
@@ -230,6 +238,8 @@ namespace O3DS
 	{
 		// Only calls nng_recv_aio if the message was okay.
 		int ret;
+
+		std::lock_guard<std::mutex> guard(mutex);
 
 		ret = nng_aio_result(aio);
 		if (ret != 0)

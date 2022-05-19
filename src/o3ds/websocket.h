@@ -38,6 +38,9 @@ namespace O3DS
 
 		virtual bool start(const char* url) override;
 
+		virtual void stop() override;
+
+
 		virtual bool write(const char* data, size_t len) override;
 
 		virtual size_t read(char* data, size_t len) override;
@@ -62,6 +65,8 @@ namespace O3DS
 	{
 	public:
 		WebsocketBroadcastServer();
+
+		virtual void stop() override;
 
 		virtual bool start(const char* url) override;
 

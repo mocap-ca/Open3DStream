@@ -38,6 +38,11 @@ namespace O3DS
 	{
 	}
 
+	void WebsocketClient::stop()
+	{
+		mClient.stop();
+	}
+
 
 	void WebsocketClient::onMessage(websocketpp::connection_hdl hdl, client_message_ptr msg)
 	{
@@ -159,6 +164,11 @@ namespace O3DS
 			setError(e.what());
 		}
 		return false;
+	}
+
+	void WebsocketBroadcastServer::stop()
+	{
+		mServer.stop_listening();
 	}
 
 	bool WebsocketBroadcastServer::write(const char* data, size_t len)
