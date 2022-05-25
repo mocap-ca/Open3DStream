@@ -13,6 +13,9 @@ function(build_mobu version path)
 	if(EXISTS "C:/Program Files/Autodesk/MotionBuilder ${version}/bin/x64/plugins")
 		install(TARGETS ${mobu_target} DESTINATION "C:/Program Files/Autodesk/MotionBuilder ${version}/bin/x64/plugins")
 	endif()
+	if(EXISTS "D:/Programs/Autodesk/MotionBuilder ${version}/bin/x64/plugins")
+		install(TARGETS ${mobu_target} DESTINATION "D:/Programs/Autodesk/MotionBuilder ${version}/bin/x64/plugins")
+	endif()
 
 endfunction()
 

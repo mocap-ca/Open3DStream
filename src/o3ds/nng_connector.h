@@ -49,6 +49,7 @@ namespace O3DS
 
 		virtual ~AsyncNngConnector()
 		{
+			stop();
 			//nng_dialer_close(mDialer);
 			//if (aio)	nng_aio_free(aio);
 		}

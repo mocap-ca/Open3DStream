@@ -369,10 +369,17 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				{
 					Status = "UDP ERROR";
 				}
-				mTcpIp.WriteDatagram(mNetworkSocket, &buf[0], bucketSize, &written, ret.S_un.S_addr, mNetworkPort);
-				std::ostringstream oss;
-				oss << written << " bytes";
-				Status = oss.str().c_str();
+				if (mTcpIp.WriteDatagram(mNetworkSocket, &buf[0], bucketSize, &written, ret.S_un.S_addr, mNetworkPort))
+				{
+					std::ostringstream oss;
+					oss << written << " bytes";
+					Status = oss.str().c_str();
+				}
+				else
+				{
+					Status = "UDP SEND ERROR";
+				}
+
 			}
 
 			if (mProtocol == Open3D_Device::kNNGClient ||

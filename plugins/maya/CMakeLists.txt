@@ -30,6 +30,7 @@ function(build_maya version)
 	install(TARGETS ${mayatarget} DESTINATION "$ENV{USERPROFILE}/Documents/maya/2020/plug-ins")
 	endif()
 
+
 endfunction()
 
 if(EXISTS "M:/code/api/windows/maya/2022")
