@@ -11,12 +11,15 @@ function(build_mobu version path)
 	target_include_directories(${mobu_target} PUBLIC "${path}/include")
 	target_link_directories(${mobu_target} PUBLIC "${path}/lib/x64")
 	if(EXISTS "C:/Program Files/Autodesk/MotionBuilder ${version}/bin/x64/plugins")
-		install(TARGETS ${mobu_target} DESTINATION "C:/Program Files/Autodesk/MotionBuilder ${version}/bin/x64/plugins")
+		install(TARGETS ${mobu_target} DESTINATION "C:/Program Files/Autodesk/MotionBuilder ${version}/bin/x64/plugins" OPTIONAL)
 	endif()
 	if(EXISTS "D:/Programs/Autodesk/MotionBuilder ${version}/bin/x64/plugins")
-		install(TARGETS ${mobu_target} DESTINATION "D:/Programs/Autodesk/MotionBuilder ${version}/bin/x64/plugins")
+		install(TARGETS ${mobu_target} DESTINATION "D:/Programs/Autodesk/MotionBuilder ${version}/bin/x64/plugins" OPTIONAL)
 	endif()
-
+	
+	install(TARGETS ${mobu_target} DESTINATION plugins/mobu)
+	install(FILES $<TARGET_PDB_FILE:${mobu_target}> DESTINATION plugins/mobu OPTIONAL)
+	
 endfunction()
 
 if(EXISTS  "M:/code/api/windows/mobu/2018/OpenRealitySDK")
@@ -33,5 +36,9 @@ endif()
 
 if(EXISTS  "M:/code/api/windows/mobu/2022/OpenRealitySDK")
 build_mobu("2022" "M:/code/api/windows/mobu/2022/OpenRealitySDK")
+endif()
+
+if(EXISTS  "M:/code/api/windows/mobu/2023/OpenRealitySDK")
+build_mobu("2023" "M:/code/api/windows/mobu/2023/OpenRealitySDK")
 endif()
 

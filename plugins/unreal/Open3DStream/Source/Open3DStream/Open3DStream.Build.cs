@@ -17,8 +17,6 @@ public class Open3DStream : ModuleRules
 		PrivateIncludePaths.AddRange( new string[] 
         { LibDir + "include" } );
 
-		Log.TraceError(LibDir + "include");
-
 		PublicDependencyModuleNames.AddRange( new string[] { "Core" } );
 
         PublicAdditionalLibraries.Add(LibDir + "nng.lib");

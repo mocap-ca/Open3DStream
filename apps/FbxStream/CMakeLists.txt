@@ -45,6 +45,9 @@ add_custom_command(TARGET FbxStream POST_BUILD
 # https://stackoverflow.com/questions/52649753/how-to-send-visual-studio-configuration-options-from-cmake
 set_target_properties(FbxStream PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "${CMAKE_CURRENT_LIST_DIR}/../../test_data/beta_fight.fbx server ws://127.0.0.1:6001")
 
+install(TARGETS FbxStream DESTINATION bin)
+install(FILES ${fbxroot}/lib/vs2017/x64/$<$<CONFIG:RelWithDebInfo>:Release>$<$<NOT:$<CONFIG:RelWithDebInfo>>:$<CONFIG>>/libfbxsdk.dll DESTINATION bin)
+
 endif()
 
 # install(TARGETS FbxStream DESTINATION ${CMAKE_CURRENT_LIST_DIR}/../../bin)

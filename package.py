@@ -24,40 +24,57 @@ fp = zipfile.ZipFile(outzip, "w", zipfile.ZIP_DEFLATED)
 
 release = os.path.abspath('build_release')
 
-# FbxStream
-fp.write(os.path.join(release, "apps", "FbxStream", "FbxStream.exe"), "FbxStream\\FbxStream.exe")
-fp.write(r"C:\Program Files\Autodesk\FBX\FBX SDK\2020.0.1\lib\vs2017\x64\release\libfbxsdk.dll", "FbxStream\\libfbxsdk.dll")
-
-# Maya
-for i in os.listdir(os.path.join(release, "plugins", "maya")):
-    if not i.endswith(".mll"):
-        continue        
-    fp.write(os.path.join(release, "plugins", "maya", i), "maya/" + i)
+root = "usr"
+for base, _, files in os.walk(root):
+    sub = base[len(root)+1:]
     
-# Mobu
-for i in os.listdir(os.path.join(release, "plugins", "mobu")):
-    if not i.endswith(".dll"):
-        continue        
-    fp.write(os.path.join(release, "plugins", "mobu", i), "mobu/" + i)
-    
+    for file in files:
+        src = os.path.join(base, file)
+        dst = os.path.join(sub, file)
+        print(dst)
+        fp.write(src, dst)
+        
+fp.write("lib/flatbuffers.lib", "lib/flatbuffers.lib")
+fp.write("lib/nng.lib", "lib/nng.lib")
 
 # Unreal    
-unreal_base = os.path.abspath("plugins/unreal/Open3DStream")
-for base, _, files in os.walk(unreal_base):
-    sub = base[len(unreal_base)+1:]
+unreal_src_base = os.path.abspath("plugins/unreal/Open3DStream")
+unreal_dst_base = os.path.join("plugins/unreal", "Open3DStream")
+for base, _, files in os.walk(unreal_src_base):
+    sub = base[len(unreal_src_base)+1:]
     #if os.path.split(sub)[0] in ["Source", "Resources", "lib", "Content"]:
        
     for file in files: 
         if len(sub) == 0:
             if file.endswith(".uplugin"):
-                print(os.path.join(base, file))
-                fp.write(os.path.join(base, file), os.path.join("unreal", "Open3dStream", file))
+                dst = os.path.join(unreal_dst_base, file)
+                print(dst)
+                fp.write(os.path.join(base, file), dst)
             continue
 
-        print(os.path.join(base, file))
-        fp.write(os.path.join(base, file), os.path.join("unreal", "Open3dStream", sub, file))
+        src = os.path.join(base, file)
+        dst = os.path.join(unreal_dst_base, sub, file)
+        print(dst)
+        fp.write(src, dst)
     
-fp.write("lib/nng.lib", os.path.join("unreal", "Open3dStream", "lib", "nng.lib"))
-fp.write("lib/flatbuffers.lib", os.path.join("unreal", "Open3dStream", "lib", "flatbuffers.lib"))
-fp.write("lib/open3dstreamstatic.lib", os.path.join("unreal", "Open3dStream", "lib", "open3dstreamstatic.lib"))
+fp.write("lib/nng.lib", unreal_dst_base + "/lib/nng.lib")
+fp.write("lib/flatbuffers.lib", unreal_dst_base + "/lib/flatbuffers.lib")
+fp.write("usr/lib/open3dstreamstatic.lib", unreal_dst_base + "/lib/open3dstreamstatic.lib")
+
+for i in os.listdir("src/o3ds"):
+    if i.endswith(".h"):
+        dst = unreal_dst_base + "/lib/include/o3ds/" + i
+        print(dst)
+        fp.write("src/o3ds/" + i, dst)
+
+root = "include"
+for base, _, files in os.walk("include"):
+    for file in files:
+        sub = base[len(root)+1:]
+        src = os.path.join(base, file)
+        dst = os.path.join(unreal_dst_base, "lib", "include", sub, file)
+        print(dst)
+        fp.write(src, dst)
+
 fp.close()    
+        

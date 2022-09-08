@@ -4,7 +4,6 @@
 #include <string.h>
 #include "nng/nng.h"
 
-
 namespace O3DS
 {
 	Connector::Connector() : mState(NOTSTARTED) {};

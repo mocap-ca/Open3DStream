@@ -1,4 +1,3 @@
-@ECHO On
 REM Set the build environment (Visual Studio 2019/2017 and cmake)
 
 IF "%OPEN3DSBLD%" == "" GOTO DOBLD

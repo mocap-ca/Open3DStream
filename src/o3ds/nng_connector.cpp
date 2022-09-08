@@ -116,10 +116,14 @@ namespace O3DS
 
 	void AsyncNngConnector::stop()
 	{
+		if(mSocket.id == 0)
+			return;
+		
 		nng_close(mSocket);
 		mSocket = NNG_SOCKET_INITIALIZER;
 		nng_dialer_close(mDialer);
-		if (aio)	nng_aio_free(aio);
+		if (aio) nng_aio_stop(aio);
+		aio = nullptr;
 	}
 
 	void AsyncNngConnector::setError(const char* msg, int ret)
