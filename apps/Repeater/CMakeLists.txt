@@ -3,13 +3,8 @@ cmake_minimum_required(VERSION ${CMAKE_MIN_REQ_VERSION})
 
 project(Repeater)
 
-add_executable(Repeater main.cpp 
-	${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/websocket.cpp
-	${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/nng_connector.cpp
-	${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/base_connector.cpp
-	${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/pair.cpp
-	${CMAKE_CURRENT_LIST_DIR}/../../src/o3ds/publisher.cpp
-)
+add_executable(Repeater main.cpp)
+target_link_libraries(Repeater open3dstreamstatic)
 
 if(WIN32)
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
