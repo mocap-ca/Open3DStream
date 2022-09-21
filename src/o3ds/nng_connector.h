@@ -44,14 +44,13 @@ namespace O3DS
 			, aio(nullptr)
 			, mSocket(NNG_SOCKET_INITIALIZER)
 		{
-			//nng_ctx_open(&ctx, mSocket);
+			nng_ctx_open(&ctx, mSocket);
 		};
 
 		virtual ~AsyncNngConnector()
 		{
 			stop();
-			//nng_dialer_close(mDialer);
-			//if (aio)	nng_aio_free(aio);
+			if (aio) nng_aio_free(aio);
 		}
 
 		// Set the error with nng return code
@@ -69,7 +68,7 @@ namespace O3DS
 
 		nng_socket mSocket;
 		std::mutex  mutex;
-		//nng_ctx  ctx;
+		nng_ctx  ctx;
 	};
 }
 

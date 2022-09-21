@@ -31,13 +31,13 @@ namespace O3DS
 		ret = nng_msg_alloc(&msg, 0);
 		NNG_ERROR("Creating message")
 
-			ret = nng_msg_append(msg, data, len);
+		ret = nng_msg_append(msg, data, len);
 		NNG_ERROR("Appending message")
 
-			ret = nng_sendmsg(mSocket, msg, 0);
+		ret = nng_sendmsg(mSocket, msg, 0);
 		NNG_ERROR("Sending message")
 
-			return true;
+		return true;
 	}
 
 	// Read bytes - len is the fixed size of data

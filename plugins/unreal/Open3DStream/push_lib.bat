@@ -1,6 +1,6 @@
 @ECHO OFF
-SET DST=D:\Unreal Projects\Open3dStream1\Plugins\Open3DStream
-SET BLD=%~DP0..\..\..\vs_build
+SET DST=D:\Unreal Projects\O3DS_UE5\Plugins\Open3DStream
+SET BLD=%~DP0..\..\..\vsbuild
 
 IF EXIST "%DST%\Open3DStream.uplugin" GOTO POK
 ECHO Invalid destination dir: %DST%
@@ -25,7 +25,7 @@ IF NOT EXIST "%DST%"\lib\include\nng MKDIR "%DST%"\lib\include\flatbuffers
 
 COPY "%BLD%\src\RelWithDebInfo\open3dstreamstatic.lib"  "%DST%"\lib
 COPY "%BLD%\src\RelWithDebInfo\open3dstreamstatic.pdb"  "%DST%"\lib
-COPY "%BLD%\src\RelWithDebInfo\open3dstreamstatic.bsr"  "%DST%"\lib
+REM COPY "%BLD%\src\RelWithDebInfo\open3dstreamstatic.bsr"  "%DST%"\lib
 
 COPY "%~DP0..\..\..\thirdparty\build\nng\RelWithDebInfo\nng.lib" "%DST%"\lib
 COPY "%~DP0..\..\..\thirdparty\build\flatbuffers\RelWithDebInfo\flatbuffers.lib" "%DST%"\lib

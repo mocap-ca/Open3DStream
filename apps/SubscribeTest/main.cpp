@@ -73,8 +73,15 @@ int main(int argc, char *argv[])
 
 	using namespace std::literals::chrono_literals;
 
+	char buf[1024 * 60];
+
 	while (1)
 	{
+		/*size_t ret = connector->read(buf, 1024 * 60);
+		if(ret)
+		{
+			printf("%ld\n", ret);
+		}*/
 		nng_msleep(1000);
 		printf(".");
 		continue;

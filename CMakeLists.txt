@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION  3.13)
 
 project(Open3DStream)
 
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_LIST_DIR}/usr )
+endif()
+
 # BOOST
 
 if(UNIX)
