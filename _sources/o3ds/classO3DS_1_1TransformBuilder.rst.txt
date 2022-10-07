@@ -11,6 +11,7 @@ Class Documentation
 
 
 .. doxygenclass:: O3DS::TransformBuilder
+   :project: o3ds
    :members:
    :protected-members:
    :undoc-members:

@@ -11,3 +11,4 @@ Enum Documentation
 
 
 .. doxygenenum:: O3DS::Direction
+   :project: o3ds

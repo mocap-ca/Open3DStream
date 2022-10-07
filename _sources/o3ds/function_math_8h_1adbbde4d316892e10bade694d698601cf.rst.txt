@@ -11,3 +11,4 @@ Function Documentation
 
 
 .. doxygenfunction:: O3DS::dist(const Vector4<T>, const Vector4<T>)
+   :project: o3ds

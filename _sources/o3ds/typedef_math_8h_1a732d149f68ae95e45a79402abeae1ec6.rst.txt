@@ -11,3 +11,4 @@ Typedef Documentation
 
 
 .. doxygentypedef:: O3DS::Vector4d
+   :project: o3ds

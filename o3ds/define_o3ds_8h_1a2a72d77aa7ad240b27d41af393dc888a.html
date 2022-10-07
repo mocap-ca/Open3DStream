@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Define O3DS_VERSION &mdash; Open3DStream  documentation</title>
@@ -16,14 +16,16 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
         <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Define O3DS_VERSION_MAJOR" href="define_o3ds_8h_1ab608e0d4d822391b370bb994e4f2871b.html" />
-    <link rel="prev" title="Define NNG_ERROR" href="define_base__server_8h_1ae13cc27b4c11f771420d845b641c09ed.html" /> 
+    <link rel="prev" title="Define NNG_ERROR" href="define_nng__connector_8h_1ae13cc27b4c11f771420d845b641c09ed.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,13 +44,35 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../connectors.html">Connector Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../model.html">Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="o3ds.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="o3ds.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="o3ds.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="o3ds.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="o3ds.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#classes-and-structs">Classes and Structs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#enums">Enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#variables">Variables</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="o3ds.html#defines">Defines</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="define_math_8h_1a874a0fd594492d1aed067d143660bdde.html">Define CALC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_nng__connector_8h_1ae13cc27b4c11f771420d845b641c09ed.html">Define NNG_ERROR</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Define O3DS_VERSION</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_o3ds_8h_1ab608e0d4d822391b370bb994e4f2871b.html">Define O3DS_VERSION_MAJOR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_o3ds_8h_1a5d659fbf3a9cfae9bfd03767e4be2197.html">Define O3DS_VERSION_MINOR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_o3ds__pingServer_8c_1adb2d9505bae635c86de4a47561d7d930.html">Define PARALLEL</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#typedefs">Typedefs</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 </ul>
 
@@ -78,15 +102,15 @@
            <div itemprop="articleBody">
              
   <section id="define-o3ds-version">
-<span id="exhale-define-o3ds-8h-1a2a72d77aa7ad240b27d41af393dc888a"></span><h1>Define O3DS_VERSION<a class="headerlink" href="#define-o3ds-version" title="Permalink to this headline"></a></h1>
+<span id="exhale-define-o3ds-8h-1a2a72d77aa7ad240b27d41af393dc888a"></span><h1>Define O3DS_VERSION<a class="headerlink" href="#define-o3ds-version" title="Permalink to this heading"></a></h1>
 <ul class="simple">
 <li><p>Defined in <a class="reference internal" href="file_src_o3ds_o3ds.h.html#file-src-o3ds-o3ds-h"><span class="std std-ref">File o3ds.h</span></a></p></li>
 </ul>
 <section id="define-documentation">
-<h2>Define Documentation<a class="headerlink" href="#define-documentation" title="Permalink to this headline"></a></h2>
+<h2>Define Documentation<a class="headerlink" href="#define-documentation" title="Permalink to this heading"></a></h2>
 <dl class="cpp macro">
 <dt class="sig sig-object cpp" id="c.O3DS_VERSION">
-<span class="target" id="o3ds_8h_1a2a72d77aa7ad240b27d41af393dc888a"></span><span class="sig-name descname"><span class="n"><span class="pre">O3DS_VERSION</span></span></span><a class="headerlink" href="#c.O3DS_VERSION" title="Permalink to this definition"></a><br /></dt>
+<span class="target" id="o3ds_8h_1a2a72d77aa7ad240b27d41af393dc888a"></span><span class="sig-name descname"><span class="n"><span class="pre">O3DS_VERSION</span></span></span><br /></dt>
 <dd></dd></dl>
 
 </section>
@@ -96,7 +120,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="define_base__server_8h_1ae13cc27b4c11f771420d845b641c09ed.html" class="btn btn-neutral float-left" title="Define NNG_ERROR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="define_nng__connector_8h_1ae13cc27b4c11f771420d845b641c09ed.html" class="btn btn-neutral float-left" title="Define NNG_ERROR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="define_o3ds_8h_1ab608e0d4d822391b370bb994e4f2871b.html" class="btn btn-neutral float-right" title="Define O3DS_VERSION_MAJOR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

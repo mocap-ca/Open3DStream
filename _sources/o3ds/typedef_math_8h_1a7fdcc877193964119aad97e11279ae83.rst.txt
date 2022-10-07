@@ -11,3 +11,4 @@ Typedef Documentation
 
 
 .. doxygentypedef:: O3DS::Matrixd
+   :project: o3ds

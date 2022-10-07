@@ -1,0 +1,14 @@
+.. _exhale_typedef_websocket_8h_1af5b7e0cfbb94321a1a614d891cda70f4:
+
+Typedef O3DS::server_message_ptr
+================================
+
+- Defined in :ref:`file_src_o3ds_websocket.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: O3DS::server_message_ptr
+   :project: o3ds

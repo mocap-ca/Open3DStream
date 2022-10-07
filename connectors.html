@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Connector Classes &mdash; Open3DStream  documentation</title>
@@ -16,13 +16,15 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
         <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Utilities" href="utilities.html" />
+    <link rel="next" title="Model" href="model.html" />
     <link rel="prev" title="Downloads" href="downloads.html" /> 
 </head>
 
@@ -51,8 +53,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#blocking">Blocking</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="o3ds/o3ds.html">Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
@@ -82,17 +84,20 @@
            <div itemprop="articleBody">
              
   <section id="connector-classes">
-<h1>Connector Classes<a class="headerlink" href="#connector-classes" title="Permalink to this headline"></a></h1>
+<h1>Connector Classes<a class="headerlink" href="#connector-classes" title="Permalink to this heading"></a></h1>
+<p>The connector classes provide message communication using nng.</p>
+<p>Most of the nng patterns have been wrapped in a class structure
+with a common interface to allow easy swapping out of network methods.</p>
 <section id="base">
-<h2>Base<a class="headerlink" href="#base" title="Permalink to this headline"></a></h2>
+<h2>Base<a class="headerlink" href="#base" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="o3ds/classO3DS_1_1Connector.html#exhale-class-classo3ds-1-1connector"><span class="std std-ref">Class Connector</span></a></p></li>
-<li><p><a class="reference internal" href="o3ds/classO3DS_1_1BlockingConnector.html#exhale-class-classo3ds-1-1blockingconnector"><span class="std std-ref">Class BlockingConnector</span></a></p></li>
+<li><p><span class="xref std std-ref">exhale_class_classO3DS_1_1BlockingConnector</span></p></li>
 <li><p><a class="reference internal" href="o3ds/classO3DS_1_1AsyncConnector.html#exhale-class-classo3ds-1-1asyncconnector"><span class="std std-ref">Class AsyncConnector</span></a></p></li>
 </ul>
 </section>
 <section id="async">
-<h2>Async<a class="headerlink" href="#async" title="Permalink to this headline"></a></h2>
+<h2>Async<a class="headerlink" href="#async" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="o3ds/classO3DS_1_1AsyncSubscriber.html#exhale-class-classo3ds-1-1asyncsubscriber"><span class="std std-ref">Class AsyncSubscriber</span></a></p></li>
 <li><p><a class="reference internal" href="o3ds/classO3DS_1_1AsyncRequestReply.html#exhale-class-classo3ds-1-1asyncrequestreply"><span class="std std-ref">Class AsyncRequestReply</span></a></p></li>
@@ -106,7 +111,7 @@
 </ul>
 </section>
 <section id="blocking">
-<h2>Blocking<a class="headerlink" href="#blocking" title="Permalink to this headline"></a></h2>
+<h2>Blocking<a class="headerlink" href="#blocking" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="o3ds/classO3DS_1_1Push.html#exhale-class-classo3ds-1-1push"><span class="std std-ref">Class Push</span></a></p></li>
 <li><p><a class="reference internal" href="o3ds/classO3DS_1_1Pull.html#exhale-class-classo3ds-1-1pull"><span class="std std-ref">Class Pull</span></a></p></li>
@@ -125,7 +130,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="downloads.html" class="btn btn-neutral float-left" title="Downloads" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="utilities.html" class="btn btn-neutral float-right" title="Utilities" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="model.html" class="btn btn-neutral float-right" title="Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

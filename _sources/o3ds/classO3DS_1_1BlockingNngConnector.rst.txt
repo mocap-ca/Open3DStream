@@ -1,0 +1,39 @@
+.. _exhale_class_classO3DS_1_1BlockingNngConnector:
+
+Class BlockingNngConnector
+==========================
+
+- Defined in :ref:`file_src_o3ds_nng_connector.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public O3DS::Connector`` (:ref:`exhale_class_classO3DS_1_1Connector`)
+
+
+Derived Types
+*************
+
+- ``public O3DS::ClientPair`` (:ref:`exhale_class_classO3DS_1_1ClientPair`)
+- ``public O3DS::Publisher`` (:ref:`exhale_class_classO3DS_1_1Publisher`)
+- ``public O3DS::Pull`` (:ref:`exhale_class_classO3DS_1_1Pull`)
+- ``public O3DS::Push`` (:ref:`exhale_class_classO3DS_1_1Push`)
+- ``public O3DS::Reply`` (:ref:`exhale_class_classO3DS_1_1Reply`)
+- ``public O3DS::Request`` (:ref:`exhale_class_classO3DS_1_1Request`)
+- ``public O3DS::ServerPair`` (:ref:`exhale_class_classO3DS_1_1ServerPair`)
+- ``public O3DS::Subscriber`` (:ref:`exhale_class_classO3DS_1_1Subscriber`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: O3DS::BlockingNngConnector
+   :project: o3ds
+   :members:
+   :protected-members:
+   :undoc-members:

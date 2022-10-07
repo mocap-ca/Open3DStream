@@ -12,7 +12,7 @@ Inheritance Relationships
 Base Type
 *********
 
-- ``public O3DS::AsyncConnector`` (:ref:`exhale_class_classO3DS_1_1AsyncConnector`)
+- ``public O3DS::AsyncNngConnector`` (:ref:`exhale_class_classO3DS_1_1AsyncNngConnector`)
 
 
 Derived Types
@@ -27,6 +27,7 @@ Class Documentation
 
 
 .. doxygenclass:: O3DS::AsyncRequestReply
+   :project: o3ds
    :members:
    :protected-members:
    :undoc-members:

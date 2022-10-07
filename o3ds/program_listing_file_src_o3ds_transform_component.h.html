@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Program Listing for File transform_component.h &mdash; Open3DStream  documentation</title>
@@ -16,7 +16,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
         <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -44,8 +46,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../connectors.html">Connector Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="o3ds.html">Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 </ul>
@@ -75,147 +77,147 @@
            <div itemprop="articleBody">
              
   <section id="program-listing-for-file-transform-component-h">
-<span id="program-listing-file-src-o3ds-transform-component-h"></span><h1>Program Listing for File transform_component.h<a class="headerlink" href="#program-listing-for-file-transform-component-h" title="Permalink to this headline"></a></h1>
+<span id="program-listing-file-src-o3ds-transform-component-h"></span><h1>Program Listing for File transform_component.h<a class="headerlink" href="#program-listing-for-file-transform-component-h" title="Permalink to this heading"></a></h1>
 <p>↰ <a class="reference internal" href="file_src_o3ds_transform_component.h.html#file-src-o3ds-transform-component-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">src/o3ds/transform_component.h</span></code>)</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef TRANSFORM_COMPONENT_H</span>
 <span class="cp">#define TRANSFORM_COMPONENT_H</span>
 
-<span class="cp">#include</span> <span class="cpf">&quot;o3ds/math.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;o3ds/math.h&quot;</span><span class="cp"></span>
 
-<span class="k">namespace</span> <span class="n">O3DS</span>
-<span class="p">{</span>
-    <span class="k">enum</span> <span class="n">ComponentType</span> <span class="p">{</span> <span class="n">TTranslation</span><span class="p">,</span> <span class="n">TRotation</span><span class="p">,</span> <span class="n">TOrientation</span><span class="p">,</span> <span class="n">TScale</span><span class="p">,</span> <span class="n">TMatrix</span> <span class="p">};</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">O3DS</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="nc">ComponentType</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">TTranslation</span><span class="p">,</span><span class="w"> </span><span class="n">TRotation</span><span class="p">,</span><span class="w"> </span><span class="n">TOrientation</span><span class="p">,</span><span class="w"> </span><span class="n">TScale</span><span class="p">,</span><span class="w"> </span><span class="n">TMatrix</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
 
-    <span class="k">class</span> <span class="nc">TransformComponent</span>
-    <span class="p">{</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="k">virtual</span> <span class="o">~</span><span class="n">TransformComponent</span><span class="p">()</span> <span class="p">{};</span>
+<span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">TransformComponent</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">TransformComponent</span><span class="p">()</span><span class="w"> </span><span class="p">{};</span><span class="w"></span>
 
-        <span class="k">virtual</span> <span class="n">Matrixd</span> <span class="nf">asMatrix</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="n">Matrixd</span><span class="w"> </span><span class="nf">asMatrix</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
 
-        <span class="n">Matrixd</span> <span class="k">operator</span> <span class="o">*</span><span class="p">(</span><span class="n">Matrixd</span> <span class="o">&amp;</span><span class="n">other</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="k">return</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">asMatrix</span><span class="p">()</span> <span class="o">*</span> <span class="n">other</span><span class="p">;</span>
-        <span class="p">}</span>
+<span class="w">        </span><span class="n">Matrixd</span><span class="w"> </span><span class="k">operator</span><span class="w"> </span><span class="o">*</span><span class="p">(</span><span class="n">Matrixd</span><span class="w"> </span><span class="o">&amp;</span><span class="n">other</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">asMatrix</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">other</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
 
-        <span class="k">virtual</span> <span class="k">enum</span> <span class="n">ComponentType</span> <span class="n">transformType</span><span class="p">()</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="p">};</span>
+<span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="nc">ComponentType</span><span class="w"> </span><span class="n">transformType</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">};</span><span class="w"></span>
 
-    <span class="k">class</span> <span class="nc">TransformTranslation</span> <span class="o">:</span> <span class="k">public</span> <span class="n">TransformComponent</span>
-    <span class="p">{</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="n">TransformTranslation</span><span class="p">()</span>
-            <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="p">{}</span>
+<span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">TransformTranslation</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">TransformComponent</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">        </span><span class="n">TransformTranslation</span><span class="p">()</span><span class="w"></span>
+<span class="w">            </span><span class="o">:</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-        <span class="n">TransformTranslation</span><span class="p">(</span><span class="n">Vector3d</span> <span class="n">v</span><span class="p">)</span>
-            <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="p">{}</span>
+<span class="w">        </span><span class="n">TransformTranslation</span><span class="p">(</span><span class="n">Vector3d</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="o">:</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-        <span class="n">TransformTranslation</span><span class="p">(</span><span class="kt">double</span> <span class="n">x</span><span class="p">,</span> <span class="kt">double</span> <span class="n">y</span><span class="p">,</span> <span class="kt">double</span> <span class="n">z</span><span class="p">)</span>
-            <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="p">{}</span>
+<span class="w">        </span><span class="n">TransformTranslation</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="o">:</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-        <span class="k">virtual</span> <span class="o">~</span><span class="n">TransformTranslation</span><span class="p">()</span> <span class="p">{};</span>
+<span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">TransformTranslation</span><span class="p">()</span><span class="w"> </span><span class="p">{};</span><span class="w"></span>
 
-        <span class="n">Matrixd</span> <span class="nf">asMatrix</span><span class="p">()</span> <span class="k">override</span>
-        <span class="p">{</span>
-            <span class="k">return</span> <span class="n">Matrixd</span><span class="o">::</span><span class="n">TranslateXYZ</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
-        <span class="p">}</span>
+<span class="w">        </span><span class="n">Matrixd</span><span class="w"> </span><span class="nf">asMatrix</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Matrixd</span><span class="o">::</span><span class="n">TranslateXYZ</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">value</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
 
-        <span class="k">enum</span> <span class="n">ComponentType</span> <span class="nf">transformType</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span> <span class="k">return</span> <span class="n">TTranslation</span><span class="p">;</span>  <span class="p">}</span>
+<span class="w">        </span><span class="k">enum</span><span class="w"> </span><span class="nc">ComponentType</span><span class="w"> </span><span class="n">transformType</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">TTranslation</span><span class="p">;</span><span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-        <span class="kt">double</span> <span class="nf">delta</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">dist</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">lastSentValue</span><span class="p">);</span> <span class="p">}</span>
+<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">dist</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">lastSentValue</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-        <span class="kt">void</span> <span class="nf">sent</span><span class="p">()</span> <span class="p">{</span> <span class="n">lastSentValue</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span> <span class="p">}</span>
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="n">sent</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">lastSentValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-        <span class="n">Vector3d</span> <span class="n">value</span><span class="p">;</span>
-        <span class="n">Vector3d</span> <span class="n">lastSentValue</span><span class="p">;</span>
-    <span class="p">};</span>
+<span class="w">        </span><span class="n">Vector3d</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">Vector3d</span><span class="w"> </span><span class="n">lastSentValue</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">};</span><span class="w"></span>
 
-    <span class="k">class</span> <span class="nc">TransformRotation</span> <span class="o">:</span> <span class="k">public</span> <span class="n">TransformComponent</span>
-    <span class="p">{</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="n">TransformRotation</span><span class="p">()</span>
-            <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="p">{}</span>
+<span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">TransformRotation</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">TransformComponent</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">        </span><span class="n">TransformRotation</span><span class="p">()</span><span class="w"></span>
+<span class="w">            </span><span class="o">:</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-        <span class="n">TransformRotation</span><span class="p">(</span><span class="n">Vector4d</span> <span class="n">v</span><span class="p">)</span>
-            <span class="o">:</span><span class="n">value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="p">{}</span>
+<span class="w">        </span><span class="n">TransformRotation</span><span class="p">(</span><span class="n">Vector4d</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="o">:</span><span class="n">value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-        <span class="n">TransformRotation</span><span class="p">(</span><span class="kt">double</span> <span class="n">x</span><span class="p">,</span> <span class="kt">double</span> <span class="n">y</span><span class="p">,</span> <span class="kt">double</span> <span class="n">z</span><span class="p">,</span> <span class="kt">double</span> <span class="n">w</span><span class="p">)</span>
-            <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="p">{}</span>
+<span class="w">        </span><span class="n">TransformRotation</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="o">:</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-        <span class="k">virtual</span> <span class="o">~</span><span class="n">TransformRotation</span><span class="p">()</span> <span class="p">{};</span>
+<span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">TransformRotation</span><span class="p">()</span><span class="w"> </span><span class="p">{};</span><span class="w"></span>
 
-        <span class="n">Matrixd</span> <span class="nf">asMatrix</span><span class="p">()</span> <span class="k">override</span>
-        <span class="p">{</span>
-            <span class="k">return</span> <span class="n">Matrixd</span><span class="o">::</span><span class="n">Quaternion</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
-        <span class="p">}</span>
+<span class="w">        </span><span class="n">Matrixd</span><span class="w"> </span><span class="nf">asMatrix</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Matrixd</span><span class="o">::</span><span class="n">Quaternion</span><span class="p">(</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
 
-        <span class="k">enum</span> <span class="n">ComponentType</span> <span class="nf">transformType</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span> <span class="k">return</span> <span class="n">TRotation</span><span class="p">;</span> <span class="p">}</span>
+<span class="w">        </span><span class="k">enum</span><span class="w"> </span><span class="nc">ComponentType</span><span class="w"> </span><span class="n">transformType</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">TRotation</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-        <span class="kt">double</span> <span class="nf">delta</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">dist</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">lastSentValue</span><span class="p">);</span> <span class="p">}</span>
+<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">dist</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">lastSentValue</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-        <span class="kt">void</span> <span class="nf">sent</span><span class="p">()</span> <span class="p">{</span> <span class="n">lastSentValue</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span> <span class="p">}</span>
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="n">sent</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">lastSentValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-        <span class="n">Vector4d</span> <span class="n">value</span><span class="p">;</span>
-        <span class="n">Vector4d</span> <span class="n">lastSentValue</span><span class="p">;</span>
-    <span class="p">};</span>
+<span class="w">        </span><span class="n">Vector4d</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">Vector4d</span><span class="w"> </span><span class="n">lastSentValue</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">};</span><span class="w"></span>
 
-    <span class="k">class</span> <span class="nc">TransformScale</span> <span class="o">:</span> <span class="k">public</span> <span class="n">TransformComponent</span>
-    <span class="p">{</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="n">TransformScale</span><span class="p">()</span>
-            <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="p">{}</span>
+<span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">TransformScale</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">TransformComponent</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">        </span><span class="n">TransformScale</span><span class="p">()</span><span class="w"></span>
+<span class="w">            </span><span class="o">:</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-        <span class="n">TransformScale</span><span class="p">(</span><span class="n">Vector3d</span> <span class="n">v</span><span class="p">)</span>
-            <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="p">{}</span>
+<span class="w">        </span><span class="n">TransformScale</span><span class="p">(</span><span class="n">Vector3d</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="o">:</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-        <span class="n">TransformScale</span><span class="p">(</span><span class="kt">double</span> <span class="n">x</span><span class="p">,</span> <span class="kt">double</span> <span class="n">y</span><span class="p">,</span> <span class="kt">double</span> <span class="n">z</span><span class="p">)</span>
-            <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="p">{}</span>
+<span class="w">        </span><span class="n">TransformScale</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="o">:</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-        <span class="k">virtual</span> <span class="o">~</span><span class="n">TransformScale</span><span class="p">()</span> <span class="p">{};</span>
+<span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">TransformScale</span><span class="p">()</span><span class="w"> </span><span class="p">{};</span><span class="w"></span>
 
-        <span class="n">Matrixd</span> <span class="nf">asMatrix</span><span class="p">()</span> <span class="k">override</span>
-        <span class="p">{</span>
-            <span class="k">return</span> <span class="n">Matrixd</span><span class="o">::</span><span class="n">Scale</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
-        <span class="p">}</span>
+<span class="w">        </span><span class="n">Matrixd</span><span class="w"> </span><span class="nf">asMatrix</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Matrixd</span><span class="o">::</span><span class="n">Scale</span><span class="p">(</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
 
-        <span class="k">enum</span> <span class="n">ComponentType</span> <span class="nf">transformType</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span> <span class="k">return</span> <span class="n">TScale</span><span class="p">;</span> <span class="p">}</span>
+<span class="w">        </span><span class="k">enum</span><span class="w"> </span><span class="nc">ComponentType</span><span class="w"> </span><span class="n">transformType</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">TScale</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-        <span class="kt">double</span> <span class="nf">delta</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">dist</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">lastSentValue</span><span class="p">);</span> <span class="p">}</span>
+<span class="w">        </span><span class="kt">double</span><span class="w"> </span><span class="n">delta</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">dist</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">lastSentValue</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-        <span class="kt">void</span> <span class="nf">sent</span><span class="p">()</span> <span class="p">{</span> <span class="n">lastSentValue</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span> <span class="p">}</span>
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="n">sent</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">lastSentValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-        <span class="n">Vector3d</span> <span class="n">value</span><span class="p">;</span>
-        <span class="n">Vector3d</span> <span class="n">lastSentValue</span><span class="p">;</span>
-    <span class="p">};</span>
+<span class="w">        </span><span class="n">Vector3d</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="n">Vector3d</span><span class="w"> </span><span class="n">lastSentValue</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">};</span><span class="w"></span>
 
-    <span class="k">class</span> <span class="nc">TransformMatrix</span> <span class="o">:</span> <span class="k">public</span> <span class="n">TransformComponent</span>
-    <span class="p">{</span>
-    <span class="k">public</span><span class="o">:</span>
-        <span class="n">TransformMatrix</span><span class="p">(</span><span class="n">O3DS</span><span class="o">::</span><span class="n">Matrixd</span> <span class="n">m</span><span class="p">)</span>
-            <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="p">{}</span>
+<span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">TransformMatrix</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">TransformComponent</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">        </span><span class="n">TransformMatrix</span><span class="p">(</span><span class="n">O3DS</span><span class="o">::</span><span class="n">Matrixd</span><span class="w"> </span><span class="n">m</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="o">:</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-        <span class="n">TransformMatrix</span><span class="p">(</span><span class="kt">double</span> <span class="n">m</span><span class="p">[])</span>
-            <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="p">{}</span>
+<span class="w">        </span><span class="n">TransformMatrix</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">m</span><span class="p">[])</span><span class="w"></span>
+<span class="w">            </span><span class="o">:</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-        <span class="n">TransformMatrix</span><span class="p">()</span>
-            <span class="o">:</span> <span class="n">value</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
-                <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
-                <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
-                <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span> <span class="p">{}</span>
+<span class="w">        </span><span class="n">TransformMatrix</span><span class="p">()</span><span class="w"></span>
+<span class="w">            </span><span class="o">:</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"></span>
+<span class="w">                </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 
-        <span class="k">virtual</span> <span class="o">~</span><span class="n">TransformMatrix</span><span class="p">()</span> <span class="p">{};</span>
+<span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">TransformMatrix</span><span class="p">()</span><span class="w"> </span><span class="p">{};</span><span class="w"></span>
 
-        <span class="n">Matrixd</span> <span class="nf">asMatrix</span><span class="p">()</span> <span class="k">override</span>
-        <span class="p">{</span>
-            <span class="k">return</span> <span class="n">value</span><span class="p">;</span>
-        <span class="p">}</span>
+<span class="w">        </span><span class="n">Matrixd</span><span class="w"> </span><span class="nf">asMatrix</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
 
-        <span class="k">enum</span> <span class="n">ComponentType</span> <span class="nf">transformType</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span> <span class="k">return</span> <span class="n">TMatrix</span><span class="p">;</span> <span class="p">}</span>
+<span class="w">        </span><span class="k">enum</span><span class="w"> </span><span class="nc">ComponentType</span><span class="w"> </span><span class="n">transformType</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">TMatrix</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-        <span class="n">Matrixd</span> <span class="n">value</span><span class="p">;</span>
-    <span class="p">};</span>
+<span class="w">        </span><span class="n">Matrixd</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="p">};</span><span class="w"></span>
 
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 
 <span class="cp">#endif</span>
 </pre></div>

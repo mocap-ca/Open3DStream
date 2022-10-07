@@ -11,3 +11,4 @@ Function Documentation
 
 
 .. doxygenfunction:: O3DS::operator*(const Matrix<T>&, const Matrix<T>&)
+   :project: o3ds

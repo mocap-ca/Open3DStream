@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Class Starts &mdash; Open3DStream  documentation</title>
@@ -16,14 +16,16 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
         <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Class Vector" href="classVector.html" />
-    <link rel="prev" title="Class Open3dStreamerServer" href="classOpen3dStreamerServer.html" /> 
+    <link rel="prev" title="Class WebsocketClient" href="classO3DS_1_1WebsocketClient.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,13 +44,72 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../connectors.html">Connector Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../model.html">Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="o3ds.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="o3ds.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="o3ds.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="o3ds.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="o3ds.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="o3ds.html#classes-and-structs">Classes and Structs</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="structwork.html">Struct work</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncClient.html">Class AsyncClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncConnector.html">Class AsyncConnector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncNngConnector.html">Class AsyncNngConnector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPair.html">Class AsyncPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPairClient.html">Class AsyncPairClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPairServer.html">Class AsyncPairServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPipeline.html">Class AsyncPipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPublisher.html">Class AsyncPublisher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncReply.html">Class AsyncReply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncRequest.html">Class AsyncRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncRequestReply.html">Class AsyncRequestReply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncServer.html">Class AsyncServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncSubscriber.html">Class AsyncSubscriber</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1BlockingNngConnector.html">Class BlockingNngConnector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1ClientPair.html">Class ClientPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Connector.html">Class Connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Context.html">Class Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Matrix.html">Template Class Matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Publisher.html">Class Publisher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Pull.html">Class Pull</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Push.html">Class Push</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Reply.html">Class Reply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Request.html">Class Request</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1ServerPair.html">Class ServerPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Subject.html">Class Subject</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1SubjectList.html">Class SubjectList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Subscriber.html">Class Subscriber</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Transform.html">Class Transform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformBuilder.html">Class TransformBuilder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformComponent.html">Class TransformComponent</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformList.html">Class TransformList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformMatrix.html">Class TransformMatrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformRotation.html">Class TransformRotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformScale.html">Class TransformScale</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformTranslation.html">Class TransformTranslation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Vector3.html">Template Class Vector3</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Vector4.html">Template Class Vector4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Websocket.html">Class Websocket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1WebsocketBroadcastServer.html">Class WebsocketBroadcastServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1WebsocketClient.html">Class WebsocketClient</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Class Starts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classVector.html">Class Vector</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#enums">Enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#defines">Defines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#typedefs">Typedefs</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 </ul>
 
@@ -78,15 +139,15 @@
            <div itemprop="articleBody">
              
   <section id="class-starts">
-<span id="exhale-class-classstarts"></span><h1>Class Starts<a class="headerlink" href="#class-starts" title="Permalink to this headline"></a></h1>
+<span id="exhale-class-classstarts"></span><h1>Class Starts<a class="headerlink" href="#class-starts" title="Permalink to this heading"></a></h1>
 <ul class="simple">
 <li><p>Defined in <a class="reference internal" href="file_src_o3ds_async_publisher.h.html#file-src-o3ds-async-publisher-h"><span class="std std-ref">File async_publisher.h</span></a></p></li>
 </ul>
 <section id="class-documentation">
-<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline"></a></h2>
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this heading"></a></h2>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv46Starts">
-<span id="_CPPv36Starts"></span><span id="_CPPv26Starts"></span><span id="Starts"></span><span class="target" id="classStarts"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Starts</span></span></span><a class="headerlink" href="#_CPPv46Starts" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv36Starts"></span><span id="_CPPv26Starts"></span><span id="Starts"></span><span class="target" id="classStarts"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Starts</span></span></span><br /></dt>
 <dd><p>Wrapper for nng pub0 - Asynchronous publish connection. </p>
 <p>and listens for connections, publishes data to clients. </p>
 </dd></dl>
@@ -98,7 +159,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="classOpen3dStreamerServer.html" class="btn btn-neutral float-left" title="Class Open3dStreamerServer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="classO3DS_1_1WebsocketClient.html" class="btn btn-neutral float-left" title="Class WebsocketClient" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="classVector.html" class="btn btn-neutral float-right" title="Class Vector" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

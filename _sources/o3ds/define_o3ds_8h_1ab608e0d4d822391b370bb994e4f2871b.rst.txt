@@ -11,3 +11,4 @@ Define Documentation
 
 
 .. doxygendefine:: O3DS_VERSION_MAJOR
+   :project: o3ds

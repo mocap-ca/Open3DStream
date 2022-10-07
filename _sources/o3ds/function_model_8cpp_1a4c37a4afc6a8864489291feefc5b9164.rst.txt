@@ -11,3 +11,4 @@ Function Documentation
 
 
 .. doxygenfunction:: dir(O3DS::Data::Direction)
+   :project: o3ds

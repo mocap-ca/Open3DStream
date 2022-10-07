@@ -1,0 +1,26 @@
+.. _exhale_class_classO3DS_1_1WebsocketBroadcastServer:
+
+Class WebsocketBroadcastServer
+==============================
+
+- Defined in :ref:`file_src_o3ds_websocket.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public O3DS::Websocket`` (:ref:`exhale_class_classO3DS_1_1Websocket`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: O3DS::WebsocketBroadcastServer
+   :project: o3ds
+   :members:
+   :protected-members:
+   :undoc-members:

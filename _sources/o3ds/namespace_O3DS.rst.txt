@@ -28,6 +28,8 @@ Classes
 
 - :ref:`exhale_class_classO3DS_1_1AsyncConnector`
 
+- :ref:`exhale_class_classO3DS_1_1AsyncNngConnector`
+
 - :ref:`exhale_class_classO3DS_1_1AsyncPair`
 
 - :ref:`exhale_class_classO3DS_1_1AsyncPairClient`
@@ -48,7 +50,7 @@ Classes
 
 - :ref:`exhale_class_classO3DS_1_1AsyncSubscriber`
 
-- :ref:`exhale_class_classO3DS_1_1BlockingConnector`
+- :ref:`exhale_class_classO3DS_1_1BlockingNngConnector`
 
 - :ref:`exhale_class_classO3DS_1_1ClientPair`
 
@@ -96,6 +98,12 @@ Classes
 
 - :ref:`exhale_class_classO3DS_1_1Vector4`
 
+- :ref:`exhale_class_classO3DS_1_1Websocket`
+
+- :ref:`exhale_class_classO3DS_1_1WebsocketBroadcastServer`
+
+- :ref:`exhale_class_classO3DS_1_1WebsocketClient`
+
 
 Enums
 -----
@@ -127,9 +135,17 @@ Typedefs
 --------
 
 
-- :ref:`exhale_typedef_base__server_8h_1a9cbad8d4e43cf6b15f45b45ebd850b06`
+- :ref:`exhale_typedef_websocket_8h_1ab6257f1be51c5bb4ecc2d706fad555bf`
+
+- :ref:`exhale_typedef_websocket_8h_1a19120318c7fe65af1045855e548f9e3b`
+
+- :ref:`exhale_typedef_base__connector_8h_1a2cbf23ac21e20f54728d78a752473e36`
 
 - :ref:`exhale_typedef_math_8h_1a7fdcc877193964119aad97e11279ae83`
+
+- :ref:`exhale_typedef_websocket_8h_1ab260f1e07e835370e7e8c0838dd2e659`
+
+- :ref:`exhale_typedef_websocket_8h_1af5b7e0cfbb94321a1a614d891cda70f4`
 
 - :ref:`exhale_typedef_math_8h_1aab1f617b16cd7d29b9202ae490f87e50`
 

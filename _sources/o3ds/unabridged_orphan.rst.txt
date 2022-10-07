@@ -80,12 +80,12 @@ Files
 .. toctree::
    :maxdepth: 5
 
-   file_src_o3ds_base_server.cpp.rst
+   file_src_o3ds_base_connector.cpp.rst
 
 .. toctree::
    :maxdepth: 5
 
-   file_src_o3ds_base_server.h.rst
+   file_src_o3ds_base_connector.h.rst
 
 .. toctree::
    :maxdepth: 5
@@ -135,6 +135,16 @@ Files
 .. toctree::
    :maxdepth: 5
 
+   file_src_o3ds_nng_connector.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_src_o3ds_nng_connector.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
    file_src_o3ds_o3ds.h.rst
 
 .. toctree::
@@ -146,41 +156,6 @@ Files
    :maxdepth: 5
 
    file_src_cmd_o3ds_pingServer.c.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   file_src_Open3dStream.cpp.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   file_src_Open3dStreamClient.cpp.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   file_src_Open3dStreamClient.h.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   file_src_Open3dStreamServer.cpp.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   file_src_Open3dStreamServer.h.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   file_src_Open3dStreamUtil.cpp.rst
-
-.. toctree::
-   :maxdepth: 5
-
-   file_src_Open3dStreamUtil.h.rst
 
 .. toctree::
    :maxdepth: 5
@@ -236,3 +211,13 @@ Files
    :maxdepth: 5
 
    file_src_o3ds_transform_component.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_src_o3ds_websocket.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_src_o3ds_websocket.h.rst

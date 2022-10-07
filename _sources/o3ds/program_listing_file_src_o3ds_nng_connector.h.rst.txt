@@ -1,0 +1,85 @@
+
+.. _program_listing_file_src_o3ds_nng_connector.h:
+
+Program Listing for File nng_connector.h
+========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_o3ds_nng_connector.h>` (``src/o3ds/nng_connector.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #ifndef O3DS_NNG_CONNECTOR
+   #define O3DS_NNG_CONNECTOR
+   
+   #include <string>
+   #include <vector>
+   #include <mutex>
+   #include "base_connector.h"
+   #include "nng/nng.h"
+   
+   #define NNG_ERROR(msg) if(ret != 0) { setError(msg, ret); return false;  }
+   
+   namespace O3DS
+   {
+       class BlockingNngConnector : public Connector
+       {
+       public:
+   
+           virtual ~BlockingNngConnector();
+   
+           // Base class for blocking connectors
+           virtual bool   write(const char* data, size_t len) override;  
+           virtual size_t read(char* data, size_t len) override;         
+           virtual size_t read(char** data, size_t* len) override;       
+   
+           // Set the error with nng return code
+           void setError(const char* msg, int ret);
+       protected:
+           nng_socket mSocket;
+           std::mutex  mutex;
+       };
+   
+   
+       
+   
+   
+       class AsyncNngConnector : public AsyncConnector
+       {
+       public:
+           AsyncNngConnector()
+               : AsyncConnector()
+               , mDialer()
+               , aio(nullptr)
+               , mSocket(NNG_SOCKET_INITIALIZER)
+           {
+               nng_ctx_open(&ctx, mSocket);
+           };
+   
+           virtual ~AsyncNngConnector()
+           {
+               stop();
+               if (aio) nng_aio_free(aio);
+           }
+   
+           // Set the error with nng return code
+           void setError(const char* msg, int ret);
+   
+           virtual bool start(const char* url) = 0;              
+           bool         write(const char* data, size_t len) override;  
+           size_t       read(char* data, size_t len) override;            
+           size_t       read(char** data, size_t* len) override;       
+           bool         asyncReadMsg();                          
+           void         stop();
+       protected:
+           nng_dialer mDialer;
+           nng_aio* aio;
+   
+           nng_socket mSocket;
+           std::mutex  mutex;
+           nng_ctx  ctx;
+       };
+   }
+   
+   #endif  // O3DS_NNG_CONNECTOR

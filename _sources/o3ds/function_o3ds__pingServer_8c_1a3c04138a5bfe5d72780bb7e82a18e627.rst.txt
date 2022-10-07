@@ -11,3 +11,4 @@ Function Documentation
 
 
 .. doxygenfunction:: main(int, char **)
+   :project: o3ds

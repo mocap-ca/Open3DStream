@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Program Listing for File CMakeLists.txt &mdash; Open3DStream  documentation</title>
@@ -16,7 +16,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
         <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -44,8 +46,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../connectors.html">Connector Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="o3ds.html">Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 </ul>
@@ -75,67 +77,99 @@
            <div itemprop="articleBody">
              
   <section id="program-listing-for-file-cmakelists-txt">
-<span id="program-listing-file-src-cmakelists-txt"></span><h1>Program Listing for File CMakeLists.txt<a class="headerlink" href="#program-listing-for-file-cmakelists-txt" title="Permalink to this headline"></a></h1>
+<span id="program-listing-file-src-cmakelists-txt"></span><h1>Program Listing for File CMakeLists.txt<a class="headerlink" href="#program-listing-for-file-cmakelists-txt" title="Permalink to this heading"></a></h1>
 <p>↰ <a class="reference internal" href="file_src_CMakeLists.txt.html#file-src-cmakelists-txt"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">src/CMakeLists.txt</span></code>)</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>cmake_minimum_required(VERSION  3.13)
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">cmake_minimum_required</span><span class="p">(</span><span class="n">VERSION</span><span class="w">  </span><span class="mf">3.13</span><span class="p">)</span><span class="w"></span>
 
-project(Open3DStreamLib)
+<span class="n">project</span><span class="p">(</span><span class="n">Open3DStreamLib</span><span class="p">)</span><span class="w"></span>
 
-#include_directories( ${CMAKE_CURRENT_LIST_DIR}/../include)
-#link_directories( ${CMAKE_CURRENT_LIST_DIR}/../lib)
+<span class="cp">#include_directories( ${CMAKE_CURRENT_LIST_DIR}/../include)</span>
+<span class="cp">#link_directories( ${CMAKE_CURRENT_LIST_DIR}/../lib)</span>
 
-set(SOURCES
-    o3ds/getTime.cpp
-    o3ds/getTime.h
-    o3ds/model.cpp
-    o3ds/model.h
-    o3ds/base_server.h
-    o3ds/base_server.cpp
-    o3ds/subscriber.cpp
-    o3ds/subscriber.h
-    o3ds/async_subscriber.cpp
-    o3ds/async_subscriber.h
-    o3ds/async_publisher.cpp
-    o3ds/async_publisher.h
-    o3ds/pair.cpp
-    o3ds/pair.h
-    o3ds/async_pair.cpp
-    o3ds/async_pair.h
-    o3ds/publisher.h
-    o3ds/publisher.cpp
-    o3ds/async_request.h
-    o3ds/async_request.cpp
-    o3ds/request.h
-    o3ds/request.cpp
-    o3ds/pipeline.h
-    o3ds/pipeline.cpp
-    o3ds/async_pipeline.h
-    o3ds/async_pipeline.cpp
-    o3ds/context.h
-    o3ds/context.cpp
-    o3ds/math.h
-    o3ds/math.cpp
-    o3ds/transform_component.h
-    o3ds/o3ds.h
-    )
-
-set(libs debug flatbuffersd optimized flatbuffers debug nngd optimized nng)
-if(WIN32)
-set(libs wsock32 ws2_32 ${libs})
-endif()
-
-# Shared library
-# add_library(open3dstream SHARED ${SOURCES})
-#target_link_libraries(open3dstream PRIVATE ${libs}  )
-# add_dependencies(open3dstream protocol)
+<span class="n">set</span><span class="p">(</span><span class="n">SOURCES</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">getTime</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">getTime</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">model</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">model</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">base_connector</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">base_connector</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">nng_connector</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">nng_connector</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">subscriber</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">subscriber</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_subscriber</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_subscriber</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_publisher</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_publisher</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">pair</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">pair</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_pair</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_pair</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">publisher</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">publisher</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_request</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_request</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">request</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">request</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">pipeline</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">pipeline</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_pipeline</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_pipeline</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">context</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">context</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">math</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">math</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">transform_component</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">o3ds</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">websocket</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">websocket</span><span class="p">.</span><span class="n">cpp</span><span class="w"></span>
+<span class="w">    </span><span class="p">)</span><span class="w"></span>
 
 
-# Static linkable library
-add_library(open3dstreamstatic STATIC ${SOURCES})
-target_link_libraries(open3dstreamstatic PRIVATE ${libs})
-add_dependencies(open3dstreamstatic protocol)
+<span class="n">set</span><span class="p">(</span><span class="n">libs</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="n">flatbuffersd</span><span class="w"> </span><span class="n">optimized</span><span class="w"> </span><span class="n">flatbuffers</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="n">nngd</span><span class="w"> </span><span class="n">optimized</span><span class="w"> </span><span class="n">nng</span><span class="p">)</span><span class="w"></span>
+<span class="k">if</span><span class="p">(</span><span class="n">WIN32</span><span class="p">)</span><span class="w"></span>
+<span class="n">set</span><span class="p">(</span><span class="n">libs</span><span class="w"> </span><span class="n">wsock32</span><span class="w"> </span><span class="n">ws2_32</span><span class="w"> </span><span class="n">$</span><span class="p">{</span><span class="n">libs</span><span class="p">})</span><span class="w"></span>
+<span class="n">endif</span><span class="p">()</span><span class="w"></span>
 
-install(TARGETS open3dstreamstatic DESTINATION ${CMAKE_CURRENT_LIST_DIR}/../lib)
+<span class="cp"># Shared library</span>
+<span class="cp"># add_library(open3dstream SHARED ${SOURCES})</span>
+<span class="cp">#target_link_libraries(open3dstream PRIVATE ${libs}  )</span>
+<span class="cp"># add_dependencies(open3dstream protocol)</span>
+
+
+<span class="cp"># Static linkable library</span>
+<span class="n">add_library</span><span class="p">(</span><span class="n">open3dstreamstatic</span><span class="w"> </span><span class="n">STATIC</span><span class="w"> </span><span class="n">$</span><span class="p">{</span><span class="n">SOURCES</span><span class="p">})</span><span class="w"></span>
+<span class="n">target_link_libraries</span><span class="p">(</span><span class="n">open3dstreamstatic</span><span class="w"> </span><span class="n">PRIVATE</span><span class="w"> </span><span class="n">$</span><span class="p">{</span><span class="n">libs</span><span class="p">})</span><span class="w"></span>
+<span class="n">add_dependencies</span><span class="p">(</span><span class="n">open3dstreamstatic</span><span class="w"> </span><span class="n">protocol</span><span class="p">)</span><span class="w"></span>
+
+<span class="n">set</span><span class="p">(</span><span class="n">pub_headers</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">getTime</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">model</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">base_connector</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">nng_connector</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">subscriber</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_subscriber</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_publisher</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">pair</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_pair</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">publisher</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_request</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">request</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">pipeline</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">async_pipeline</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">context</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">math</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">transform_component</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">o3ds</span><span class="p">.</span><span class="n">h</span><span class="w"></span>
+<span class="w">    </span><span class="n">o3ds</span><span class="o">/</span><span class="n">websocket</span><span class="p">.</span><span class="n">h</span><span class="w"> </span><span class="p">)</span><span class="w"></span>
+
+
+<span class="n">list</span><span class="p">(</span><span class="n">JOIN</span><span class="w"> </span><span class="n">pub_headers</span><span class="w"> </span><span class="s">&quot;;&quot;</span><span class="w"> </span><span class="n">pub_headers_str</span><span class="p">)</span><span class="w"></span>
+<span class="n">set_target_properties</span><span class="p">(</span><span class="n">open3dstreamstatic</span><span class="w"> </span><span class="n">PROPERTIES</span><span class="w"> </span><span class="n">PUBLIC_HEADER</span><span class="w"> </span><span class="s">&quot;${pub_headers_str}&quot;</span><span class="p">)</span><span class="w"></span>
+
+<span class="n">install</span><span class="p">(</span><span class="n">TARGETS</span><span class="w"> </span><span class="n">open3dstreamstatic</span><span class="w"></span>
+<span class="w">    </span><span class="n">LIBRARY</span><span class="w"> </span><span class="n">DESTINATION</span><span class="w"> </span><span class="n">lib</span><span class="w"></span>
+<span class="w">    </span><span class="n">PUBLIC_HEADER</span><span class="w"> </span><span class="n">DESTINATION</span><span class="w"> </span><span class="n">include</span><span class="o">/</span><span class="n">o3ds</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </section>

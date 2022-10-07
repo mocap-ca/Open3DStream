@@ -8,6 +8,7 @@ File pipeline.h
 
 .. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
 
+
 .. contents:: Contents
    :local:
    :backlinks: none
@@ -29,9 +30,9 @@ Includes
 --------
 
 
-- ``base_server.h`` (:ref:`file_src_o3ds_base_server.h`)
-
 - ``nng/nng.h``
+
+- ``nng_connector.h`` (:ref:`file_src_o3ds_nng_connector.h`)
 
 - ``string``
 

@@ -1,0 +1,14 @@
+.. _exhale_typedef_websocket_8h_1ab260f1e07e835370e7e8c0838dd2e659:
+
+Typedef O3DS::server
+====================
+
+- Defined in :ref:`file_src_o3ds_websocket.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: O3DS::server
+   :project: o3ds

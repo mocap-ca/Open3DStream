@@ -131,8 +131,8 @@ Program Listing for File model.h
                {
                    if (mItems[i]->mName == name)
                        return mItems[i];
-                   return nullptr;
                }
+               return nullptr;
            }
        };
    
@@ -148,6 +148,8 @@ Program Listing for File model.h
            {}
    
            std::string   mName;
+           std::vector<std::string> mJoints;
+   
            TransformList mTransforms;
            void*         mReference;
            Context       mContext;

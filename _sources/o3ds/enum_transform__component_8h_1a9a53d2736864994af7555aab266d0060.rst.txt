@@ -11,3 +11,4 @@ Enum Documentation
 
 
 .. doxygenenum:: O3DS::ComponentType
+   :project: o3ds

@@ -1,7 +1,7 @@
 .. _exhale_function_getTime_8h_1a0e47c74b5a3e6246b9936d96ff4c66b1:
 
-Function GetTime
-================
+Function GetTime()
+==================
 
 - Defined in :ref:`file_src_o3ds_getTime.h`
 
@@ -11,3 +11,4 @@ Function Documentation
 
 
 .. doxygenfunction:: GetTime()
+   :project: o3ds

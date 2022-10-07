@@ -15,17 +15,17 @@ Program Listing for File async_pair.h
    
    #include <nng/nng.h>
    #include <nng/protocol/pair1/pair.h>
-   #include "base_server.h"
+   #include "nng_connector.h"
    #include <string>
    
    namespace O3DS
    {
-       class AsyncPair : public AsyncConnector
+       class AsyncPair : public AsyncNngConnector
        {
        public:
            void callback_()
            {
-               AsyncConnector::asyncReadMsg();
+               AsyncNngConnector::asyncReadMsg();
            }
            static void callback(void *ref)
            {

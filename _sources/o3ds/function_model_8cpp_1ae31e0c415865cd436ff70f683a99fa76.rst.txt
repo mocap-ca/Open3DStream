@@ -11,3 +11,4 @@ Function Documentation
 
 
 .. doxygenfunction:: operator>>(const O3DS::TransformRotation&, O3DS::Data::Rotation&)
+   :project: o3ds

@@ -11,3 +11,4 @@ Function Documentation
 
 
 .. doxygenfunction:: alloc_work(nng_socket)
+   :project: o3ds

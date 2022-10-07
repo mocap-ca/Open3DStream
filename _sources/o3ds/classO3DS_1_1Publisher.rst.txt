@@ -12,7 +12,7 @@ Inheritance Relationships
 Base Type
 *********
 
-- ``public O3DS::BlockingConnector`` (:ref:`exhale_class_classO3DS_1_1BlockingConnector`)
+- ``public O3DS::BlockingNngConnector`` (:ref:`exhale_class_classO3DS_1_1BlockingNngConnector`)
 
 
 Class Documentation
@@ -20,6 +20,7 @@ Class Documentation
 
 
 .. doxygenclass:: O3DS::Publisher
+   :project: o3ds
    :members:
    :protected-members:
    :undoc-members:

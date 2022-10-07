@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reference &mdash; Open3DStream  documentation</title>
@@ -16,14 +16,16 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
         <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Namespace O3DS" href="namespace_O3DS.html" />
-    <link rel="prev" title="Model" href="../model.html" /> 
+    <link rel="prev" title="Utilities" href="../utilities.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,8 +48,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../connectors.html">Connector Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#class-hierarchy">Class Hierarchy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#file-hierarchy">File Hierarchy</a></li>
@@ -58,10 +60,10 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#classes-and-structs">Classes and Structs</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="structOpen3dStreamerWork.html">Struct Open3dStreamerWork</a></li>
 <li class="toctree-l4"><a class="reference internal" href="structwork.html">Struct work</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncClient.html">Class AsyncClient</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncConnector.html">Class AsyncConnector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncNngConnector.html">Class AsyncNngConnector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPair.html">Class AsyncPair</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPairClient.html">Class AsyncPairClient</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPairServer.html">Class AsyncPairServer</a></li>
@@ -72,7 +74,7 @@
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncRequestReply.html">Class AsyncRequestReply</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncServer.html">Class AsyncServer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncSubscriber.html">Class AsyncSubscriber</a></li>
-<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1BlockingConnector.html">Class BlockingConnector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1BlockingNngConnector.html">Class BlockingNngConnector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1ClientPair.html">Class ClientPair</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Connector.html">Class Connector</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Context.html">Class Context</a></li>
@@ -96,8 +98,9 @@
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformTranslation.html">Class TransformTranslation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Vector3.html">Template Class Vector3</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Vector4.html">Template Class Vector4</a></li>
-<li class="toctree-l4"><a class="reference internal" href="classOpen3dStreamerClient.html">Class Open3dStreamerClient</a></li>
-<li class="toctree-l4"><a class="reference internal" href="classOpen3dStreamerServer.html">Class Open3dStreamerServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Websocket.html">Class Websocket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1WebsocketBroadcastServer.html">Class WebsocketBroadcastServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1WebsocketClient.html">Class WebsocketClient</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classStarts.html">Class Starts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="classVector.html">Class Vector</a></li>
 </ul>
@@ -105,24 +108,21 @@
 <li class="toctree-l3"><a class="reference internal" href="#enums">Enums</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="enum_transform__component_8h_1a9a53d2736864994af7555aab266d0060.html">Enum ComponentType</a></li>
 <li class="toctree-l4"><a class="reference internal" href="enum_context_8h_1a424f099dd559d810dfda21d5c85d40bc.html">Enum Direction</a></li>
-<li class="toctree-l4"><a class="reference internal" href="enum_Open3dStreamServer_8h_1a48ca7fb24df61ab4bf80c61e070491df.html">Enum WorkState</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="function_o3ds__pingServer_8c_1ac9ca6f5700ea693ebf4cfa4b3556f9ae.html">Function alloc_work</a></li>
 <li class="toctree-l4"><a class="reference internal" href="function_o3ds__ping_8c_1ac192943c1c0308c2e14dd82eb0bcab53.html">Function client</a></li>
-<li class="toctree-l4"><a class="reference internal" href="function_CMakeLists_8txt_1a3b664927388f44bd3fdbb502d7dacaff.html">Function cmake_minimum_required</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_CMakeLists_8txt_1a075675ac1497671a88f3ff8ba59dac4f.html">Function cmake_minimum_required</a></li>
 <li class="toctree-l4"><a class="reference internal" href="function_model_8cpp_1ac954a1bbcf64b225a828b758a5127402.html">Function dir(enum O3DS::Direction)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="function_model_8cpp_1a4c37a4afc6a8864489291feefc5b9164.html">Function dir(O3DS::Data::Direction)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="function_CMakeLists_8txt_1a05598eee4b1c8d42666339d345073693.html">Function endif</a></li>
 <li class="toctree-l4"><a class="reference internal" href="function_o3ds__ping_8c_1a283501cac6859a7911aa08a14ea86a11.html">Function fatal(const char *, int)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="function_o3ds__pingServer_8c_1a283501cac6859a7911aa08a14ea86a11.html">Function fatal(const char *, int)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="function_Open3dStreamUtil_8cpp_1a42807bee46c139d92f539b8cf0871016.html">Function fatal(int)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="function_Open3dStreamUtil_8h_1a42807bee46c139d92f539b8cf0871016.html">Function fatal(int)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="function_getTime_8h_1a0e47c74b5a3e6246b9936d96ff4c66b1.html">Function GetTime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_getTime_8cpp_1a0e47c74b5a3e6246b9936d96ff4c66b1.html">Function GetTime()</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_getTime_8h_1a0e47c74b5a3e6246b9936d96ff4c66b1.html">Function GetTime()</a></li>
 <li class="toctree-l4"><a class="reference internal" href="function_o3ds__ping_8c_1a3c04138a5bfe5d72780bb7e82a18e627.html">Function main(int, char **)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="function_o3ds__pingServer_8c_1a3c04138a5bfe5d72780bb7e82a18e627.html">Function main(int, char **)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="function_Open3dStream_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627.html">Function main(int, char **)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="function_math_8h_1adbbde4d316892e10bade694d698601cf.html">Template Function O3DS::dist(const Vector4&lt;T&gt;, const Vector4&lt;T&gt;)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="function_math_8h_1a5748a0223959a81f8cfa53ac17b4fddb.html">Template Function O3DS::dist(const Vector3&lt;T&gt;, const Vector3&lt;T&gt;)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="function_o3ds_8h_1ae98defb1ab2bc90e4668af35fa783a6e.html">Function O3DS::getVersion</a></li>
@@ -142,7 +142,7 @@
 <li class="toctree-l4"><a class="reference internal" href="function_model_8cpp_1a5f0b82b3258a989a6815bfde04e6a752.html">Function operator&gt;&gt;(const O3DS::Data::Matrix&amp;, O3DS::TransformMatrix&amp;)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="function_o3ds__pingServer_8c_1ab18278a433c6ccfc53fb44fb03c1466f.html">Function server</a></li>
 <li class="toctree-l4"><a class="reference internal" href="function_o3ds__pingServer_8c_1a000d64ca6d7b170099e2090bed3fb770.html">Function server_cb</a></li>
-<li class="toctree-l4"><a class="reference internal" href="function_CMakeLists_8txt_1a4161df4656e54e06bdd408b2e185252e.html">Function target_link_libraries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="function_CMakeLists_8txt_1a09b5da6a6bf1ca3a24700967c08b2d19.html">Function target_link_libraries</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#variables">Variables</a><ul>
@@ -153,7 +153,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#defines">Defines</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="define_math_8h_1a874a0fd594492d1aed067d143660bdde.html">Define CALC</a></li>
-<li class="toctree-l4"><a class="reference internal" href="define_base__server_8h_1ae13cc27b4c11f771420d845b641c09ed.html">Define NNG_ERROR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="define_nng__connector_8h_1ae13cc27b4c11f771420d845b641c09ed.html">Define NNG_ERROR</a></li>
 <li class="toctree-l4"><a class="reference internal" href="define_o3ds_8h_1a2a72d77aa7ad240b27d41af393dc888a.html">Define O3DS_VERSION</a></li>
 <li class="toctree-l4"><a class="reference internal" href="define_o3ds_8h_1ab608e0d4d822391b370bb994e4f2871b.html">Define O3DS_VERSION_MAJOR</a></li>
 <li class="toctree-l4"><a class="reference internal" href="define_o3ds_8h_1a5d659fbf3a9cfae9bfd03767e4be2197.html">Define O3DS_VERSION_MINOR</a></li>
@@ -161,8 +161,12 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#typedefs">Typedefs</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="typedef_base__server_8h_1a9cbad8d4e43cf6b15f45b45ebd850b06.html">Typedef O3DS::inDataFunc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="typedef_websocket_8h_1ab6257f1be51c5bb4ecc2d706fad555bf.html">Typedef O3DS::client</a></li>
+<li class="toctree-l4"><a class="reference internal" href="typedef_websocket_8h_1a19120318c7fe65af1045855e548f9e3b.html">Typedef O3DS::client_message_ptr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="typedef_base__connector_8h_1a2cbf23ac21e20f54728d78a752473e36.html">Typedef O3DS::InDataFunc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="typedef_math_8h_1a7fdcc877193964119aad97e11279ae83.html">Typedef O3DS::Matrixd</a></li>
+<li class="toctree-l4"><a class="reference internal" href="typedef_websocket_8h_1ab260f1e07e835370e7e8c0838dd2e659.html">Typedef O3DS::server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="typedef_websocket_8h_1af5b7e0cfbb94321a1a614d891cda70f4.html">Typedef O3DS::server_message_ptr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="typedef_math_8h_1aab1f617b16cd7d29b9202ae490f87e50.html">Typedef O3DS::Vector3d</a></li>
 <li class="toctree-l4"><a class="reference internal" href="typedef_math_8h_1a732d149f68ae95e45a79402abeae1ec6.html">Typedef O3DS::Vector4d</a></li>
 </ul>
@@ -199,29 +203,29 @@
            <div itemprop="articleBody">
              
   <section id="reference">
-<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline"></a></h1>
+<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this heading"></a></h1>
 <section id="class-hierarchy">
-<h2>Class Hierarchy<a class="headerlink" href="#class-hierarchy" title="Permalink to this headline"></a></h2>
+<h2>Class Hierarchy<a class="headerlink" href="#class-hierarchy" title="Permalink to this heading"></a></h2>
 <ul class="treeView" id="class-treeView">
   <li>
     <ul class="collapsibleList">
-      <li>Namespace <a href="namespace_O3DS.html#namespace-O3DS">O3DS</a><ul><li>Class <a href="classO3DS_1_1AsyncClient.html#exhale-class-classO3DS-1-1AsyncClient">AsyncClient</a></li><li>Class <a href="classO3DS_1_1AsyncConnector.html#exhale-class-classO3DS-1-1AsyncConnector">AsyncConnector</a></li><li>Class <a href="classO3DS_1_1AsyncPair.html#exhale-class-classO3DS-1-1AsyncPair">AsyncPair</a></li><li>Class <a href="classO3DS_1_1AsyncPairClient.html#exhale-class-classO3DS-1-1AsyncPairClient">AsyncPairClient</a></li><li>Class <a href="classO3DS_1_1AsyncPairServer.html#exhale-class-classO3DS-1-1AsyncPairServer">AsyncPairServer</a></li><li>Class <a href="classO3DS_1_1AsyncPipeline.html#exhale-class-classO3DS-1-1AsyncPipeline">AsyncPipeline</a></li><li>Class <a href="classO3DS_1_1AsyncPublisher.html#exhale-class-classO3DS-1-1AsyncPublisher">AsyncPublisher</a></li><li>Class <a href="classO3DS_1_1AsyncReply.html#exhale-class-classO3DS-1-1AsyncReply">AsyncReply</a></li><li>Class <a href="classO3DS_1_1AsyncRequest.html#exhale-class-classO3DS-1-1AsyncRequest">AsyncRequest</a></li><li>Class <a href="classO3DS_1_1AsyncRequestReply.html#exhale-class-classO3DS-1-1AsyncRequestReply">AsyncRequestReply</a></li><li>Class <a href="classO3DS_1_1AsyncServer.html#exhale-class-classO3DS-1-1AsyncServer">AsyncServer</a></li><li>Class <a href="classO3DS_1_1AsyncSubscriber.html#exhale-class-classO3DS-1-1AsyncSubscriber">AsyncSubscriber</a></li><li>Class <a href="classO3DS_1_1BlockingConnector.html#exhale-class-classO3DS-1-1BlockingConnector">BlockingConnector</a></li><li>Class <a href="classO3DS_1_1ClientPair.html#exhale-class-classO3DS-1-1ClientPair">ClientPair</a></li><li>Class <a href="classO3DS_1_1Connector.html#exhale-class-classO3DS-1-1Connector">Connector</a></li><li>Class <a href="classO3DS_1_1Context.html#exhale-class-classO3DS-1-1Context">Context</a></li><li>Template Class <a href="classO3DS_1_1Matrix.html#exhale-class-classO3DS-1-1Matrix">Matrix</a></li><li>Class <a href="classO3DS_1_1Publisher.html#exhale-class-classO3DS-1-1Publisher">Publisher</a></li><li>Class <a href="classO3DS_1_1Pull.html#exhale-class-classO3DS-1-1Pull">Pull</a></li><li>Class <a href="classO3DS_1_1Push.html#exhale-class-classO3DS-1-1Push">Push</a></li><li>Class <a href="classO3DS_1_1Reply.html#exhale-class-classO3DS-1-1Reply">Reply</a></li><li>Class <a href="classO3DS_1_1Request.html#exhale-class-classO3DS-1-1Request">Request</a></li><li>Class <a href="classO3DS_1_1ServerPair.html#exhale-class-classO3DS-1-1ServerPair">ServerPair</a></li><li>Class <a href="classO3DS_1_1Subject.html#exhale-class-classO3DS-1-1Subject">Subject</a></li><li>Class <a href="classO3DS_1_1SubjectList.html#exhale-class-classO3DS-1-1SubjectList">SubjectList</a></li><li>Class <a href="classO3DS_1_1Subscriber.html#exhale-class-classO3DS-1-1Subscriber">Subscriber</a></li><li>Class <a href="classO3DS_1_1Transform.html#exhale-class-classO3DS-1-1Transform">Transform</a></li><li>Class <a href="classO3DS_1_1TransformBuilder.html#exhale-class-classO3DS-1-1TransformBuilder">TransformBuilder</a></li><li>Class <a href="classO3DS_1_1TransformComponent.html#exhale-class-classO3DS-1-1TransformComponent">TransformComponent</a></li><li>Class <a href="classO3DS_1_1TransformList.html#exhale-class-classO3DS-1-1TransformList">TransformList</a></li><li>Class <a href="classO3DS_1_1TransformMatrix.html#exhale-class-classO3DS-1-1TransformMatrix">TransformMatrix</a></li><li>Class <a href="classO3DS_1_1TransformRotation.html#exhale-class-classO3DS-1-1TransformRotation">TransformRotation</a></li><li>Class <a href="classO3DS_1_1TransformScale.html#exhale-class-classO3DS-1-1TransformScale">TransformScale</a></li><li>Class <a href="classO3DS_1_1TransformTranslation.html#exhale-class-classO3DS-1-1TransformTranslation">TransformTranslation</a></li><li>Template Class <a href="classO3DS_1_1Vector3.html#exhale-class-classO3DS-1-1Vector3">Vector3</a></li><li>Template Class <a href="classO3DS_1_1Vector4.html#exhale-class-classO3DS-1-1Vector4">Vector4</a></li><li>Enum <a href="enum_transform__component_8h_1a9a53d2736864994af7555aab266d0060.html#exhale-enum-transform-component-8h-1a9a53d2736864994af7555aab266d0060">ComponentType</a></li><li class="lastChild">Enum <a href="enum_context_8h_1a424f099dd559d810dfda21d5c85d40bc.html#exhale-enum-context-8h-1a424f099dd559d810dfda21d5c85d40bc">Direction</a></li></ul></li><li>Struct <a href="structOpen3dStreamerWork.html#exhale-struct-structOpen3dStreamerWork">Open3dStreamerWork</a></li><li>Struct <a href="structwork.html#exhale-struct-structwork">work</a></li><li>Class <a href="classOpen3dStreamerClient.html#exhale-class-classOpen3dStreamerClient">Open3dStreamerClient</a></li><li>Class <a href="classOpen3dStreamerServer.html#exhale-class-classOpen3dStreamerServer">Open3dStreamerServer</a></li><li>Class <a href="classStarts.html#exhale-class-classStarts">Starts</a></li><li>Class <a href="classVector.html#exhale-class-classVector">Vector</a></li><li class="lastChild">Enum <a href="enum_Open3dStreamServer_8h_1a48ca7fb24df61ab4bf80c61e070491df.html#exhale-enum-Open3dStreamServer-8h-1a48ca7fb24df61ab4bf80c61e070491df">WorkState</a></li>
+      <li>Namespace <a href="namespace_O3DS.html#namespace-O3DS">O3DS</a><ul><li>Class <a href="classO3DS_1_1AsyncClient.html#exhale-class-classO3DS-1-1AsyncClient">AsyncClient</a></li><li>Class <a href="classO3DS_1_1AsyncConnector.html#exhale-class-classO3DS-1-1AsyncConnector">AsyncConnector</a></li><li>Class <a href="classO3DS_1_1AsyncNngConnector.html#exhale-class-classO3DS-1-1AsyncNngConnector">AsyncNngConnector</a></li><li>Class <a href="classO3DS_1_1AsyncPair.html#exhale-class-classO3DS-1-1AsyncPair">AsyncPair</a></li><li>Class <a href="classO3DS_1_1AsyncPairClient.html#exhale-class-classO3DS-1-1AsyncPairClient">AsyncPairClient</a></li><li>Class <a href="classO3DS_1_1AsyncPairServer.html#exhale-class-classO3DS-1-1AsyncPairServer">AsyncPairServer</a></li><li>Class <a href="classO3DS_1_1AsyncPipeline.html#exhale-class-classO3DS-1-1AsyncPipeline">AsyncPipeline</a></li><li>Class <a href="classO3DS_1_1AsyncPublisher.html#exhale-class-classO3DS-1-1AsyncPublisher">AsyncPublisher</a></li><li>Class <a href="classO3DS_1_1AsyncReply.html#exhale-class-classO3DS-1-1AsyncReply">AsyncReply</a></li><li>Class <a href="classO3DS_1_1AsyncRequest.html#exhale-class-classO3DS-1-1AsyncRequest">AsyncRequest</a></li><li>Class <a href="classO3DS_1_1AsyncRequestReply.html#exhale-class-classO3DS-1-1AsyncRequestReply">AsyncRequestReply</a></li><li>Class <a href="classO3DS_1_1AsyncServer.html#exhale-class-classO3DS-1-1AsyncServer">AsyncServer</a></li><li>Class <a href="classO3DS_1_1AsyncSubscriber.html#exhale-class-classO3DS-1-1AsyncSubscriber">AsyncSubscriber</a></li><li>Class <a href="classO3DS_1_1BlockingNngConnector.html#exhale-class-classO3DS-1-1BlockingNngConnector">BlockingNngConnector</a></li><li>Class <a href="classO3DS_1_1ClientPair.html#exhale-class-classO3DS-1-1ClientPair">ClientPair</a></li><li>Class <a href="classO3DS_1_1Connector.html#exhale-class-classO3DS-1-1Connector">Connector</a></li><li>Class <a href="classO3DS_1_1Context.html#exhale-class-classO3DS-1-1Context">Context</a></li><li>Template Class <a href="classO3DS_1_1Matrix.html#exhale-class-classO3DS-1-1Matrix">Matrix</a></li><li>Class <a href="classO3DS_1_1Publisher.html#exhale-class-classO3DS-1-1Publisher">Publisher</a></li><li>Class <a href="classO3DS_1_1Pull.html#exhale-class-classO3DS-1-1Pull">Pull</a></li><li>Class <a href="classO3DS_1_1Push.html#exhale-class-classO3DS-1-1Push">Push</a></li><li>Class <a href="classO3DS_1_1Reply.html#exhale-class-classO3DS-1-1Reply">Reply</a></li><li>Class <a href="classO3DS_1_1Request.html#exhale-class-classO3DS-1-1Request">Request</a></li><li>Class <a href="classO3DS_1_1ServerPair.html#exhale-class-classO3DS-1-1ServerPair">ServerPair</a></li><li>Class <a href="classO3DS_1_1Subject.html#exhale-class-classO3DS-1-1Subject">Subject</a></li><li>Class <a href="classO3DS_1_1SubjectList.html#exhale-class-classO3DS-1-1SubjectList">SubjectList</a></li><li>Class <a href="classO3DS_1_1Subscriber.html#exhale-class-classO3DS-1-1Subscriber">Subscriber</a></li><li>Class <a href="classO3DS_1_1Transform.html#exhale-class-classO3DS-1-1Transform">Transform</a></li><li>Class <a href="classO3DS_1_1TransformBuilder.html#exhale-class-classO3DS-1-1TransformBuilder">TransformBuilder</a></li><li>Class <a href="classO3DS_1_1TransformComponent.html#exhale-class-classO3DS-1-1TransformComponent">TransformComponent</a></li><li>Class <a href="classO3DS_1_1TransformList.html#exhale-class-classO3DS-1-1TransformList">TransformList</a></li><li>Class <a href="classO3DS_1_1TransformMatrix.html#exhale-class-classO3DS-1-1TransformMatrix">TransformMatrix</a></li><li>Class <a href="classO3DS_1_1TransformRotation.html#exhale-class-classO3DS-1-1TransformRotation">TransformRotation</a></li><li>Class <a href="classO3DS_1_1TransformScale.html#exhale-class-classO3DS-1-1TransformScale">TransformScale</a></li><li>Class <a href="classO3DS_1_1TransformTranslation.html#exhale-class-classO3DS-1-1TransformTranslation">TransformTranslation</a></li><li>Template Class <a href="classO3DS_1_1Vector3.html#exhale-class-classO3DS-1-1Vector3">Vector3</a></li><li>Template Class <a href="classO3DS_1_1Vector4.html#exhale-class-classO3DS-1-1Vector4">Vector4</a></li><li>Class <a href="classO3DS_1_1Websocket.html#exhale-class-classO3DS-1-1Websocket">Websocket</a></li><li>Class <a href="classO3DS_1_1WebsocketBroadcastServer.html#exhale-class-classO3DS-1-1WebsocketBroadcastServer">WebsocketBroadcastServer</a></li><li>Class <a href="classO3DS_1_1WebsocketClient.html#exhale-class-classO3DS-1-1WebsocketClient">WebsocketClient</a></li><li>Enum <a href="enum_transform__component_8h_1a9a53d2736864994af7555aab266d0060.html#exhale-enum-transform-component-8h-1a9a53d2736864994af7555aab266d0060">ComponentType</a></li><li class="lastChild">Enum <a href="enum_context_8h_1a424f099dd559d810dfda21d5c85d40bc.html#exhale-enum-context-8h-1a424f099dd559d810dfda21d5c85d40bc">Direction</a></li></ul></li><li>Struct <a href="structwork.html#exhale-struct-structwork">work</a></li><li>Class <a href="classStarts.html#exhale-class-classStarts">Starts</a></li><li class="lastChild">Class <a href="classVector.html#exhale-class-classVector">Vector</a></li>
     </ul>
   </li><!-- only tree view element -->
 </ul><!-- /treeView class-treeView --></section>
 <section id="file-hierarchy">
-<h2>File Hierarchy<a class="headerlink" href="#file-hierarchy" title="Permalink to this headline"></a></h2>
+<h2>File Hierarchy<a class="headerlink" href="#file-hierarchy" title="Permalink to this heading"></a></h2>
 <ul class="treeView" id="file-treeView">
   <li>
     <ul class="collapsibleList">
-      <li class="lastChild">Directory <a href="dir_src.html#dir-src">src</a><ul><li>Directory <a href="dir_src_cmd.html#dir-src-cmd">cmd</a><ul><li>File <a href="file_src_cmd_o3ds_ping.c.html#file-src-cmd-o3ds-ping.c">o3ds_ping.c</a></li><li class="lastChild">File <a href="file_src_cmd_o3ds_pingServer.c.html#file-src-cmd-o3ds-pingServer.c">o3ds_pingServer.c</a></li></ul></li><li>Directory <a href="dir_src_o3ds.html#dir-src-o3ds">o3ds</a><ul><li>File <a href="file_src_o3ds_async_pair.cpp.html#file-src-o3ds-async-pair.cpp">async_pair.cpp</a></li><li>File <a href="file_src_o3ds_async_pair.h.html#file-src-o3ds-async-pair.h">async_pair.h</a></li><li>File <a href="file_src_o3ds_async_pipeline.cpp.html#file-src-o3ds-async-pipeline.cpp">async_pipeline.cpp</a></li><li>File <a href="file_src_o3ds_async_pipeline.h.html#file-src-o3ds-async-pipeline.h">async_pipeline.h</a></li><li>File <a href="file_src_o3ds_async_publisher.cpp.html#file-src-o3ds-async-publisher.cpp">async_publisher.cpp</a></li><li>File <a href="file_src_o3ds_async_publisher.h.html#file-src-o3ds-async-publisher.h">async_publisher.h</a></li><li>File <a href="file_src_o3ds_async_request.cpp.html#file-src-o3ds-async-request.cpp">async_request.cpp</a></li><li>File <a href="file_src_o3ds_async_request.h.html#file-src-o3ds-async-request.h">async_request.h</a></li><li>File <a href="file_src_o3ds_async_subscriber.cpp.html#file-src-o3ds-async-subscriber.cpp">async_subscriber.cpp</a></li><li>File <a href="file_src_o3ds_async_subscriber.h.html#file-src-o3ds-async-subscriber.h">async_subscriber.h</a></li><li>File <a href="file_src_o3ds_base_server.cpp.html#file-src-o3ds-base-server.cpp">base_server.cpp</a></li><li>File <a href="file_src_o3ds_base_server.h.html#file-src-o3ds-base-server.h">base_server.h</a></li><li>File <a href="file_src_o3ds_context.cpp.html#file-src-o3ds-context.cpp">context.cpp</a></li><li>File <a href="file_src_o3ds_context.h.html#file-src-o3ds-context.h">context.h</a></li><li>File <a href="file_src_o3ds_getTime.cpp.html#file-src-o3ds-getTime.cpp">getTime.cpp</a></li><li>File <a href="file_src_o3ds_getTime.h.html#file-src-o3ds-getTime.h">getTime.h</a></li><li>File <a href="file_src_o3ds_math.cpp.html#file-src-o3ds-math.cpp">math.cpp</a></li><li>File <a href="file_src_o3ds_math.h.html#file-src-o3ds-math.h">math.h</a></li><li>File <a href="file_src_o3ds_model.cpp.html#file-src-o3ds-model.cpp">model.cpp</a></li><li>File <a href="file_src_o3ds_model.h.html#file-src-o3ds-model.h">model.h</a></li><li>File <a href="file_src_o3ds_o3ds.h.html#file-src-o3ds-o3ds.h">o3ds.h</a></li><li>File <a href="file_src_o3ds_pair.cpp.html#file-src-o3ds-pair.cpp">pair.cpp</a></li><li>File <a href="file_src_o3ds_pair.h.html#file-src-o3ds-pair.h">pair.h</a></li><li>File <a href="file_src_o3ds_pipeline.cpp.html#file-src-o3ds-pipeline.cpp">pipeline.cpp</a></li><li>File <a href="file_src_o3ds_pipeline.h.html#file-src-o3ds-pipeline.h">pipeline.h</a></li><li>File <a href="file_src_o3ds_publisher.cpp.html#file-src-o3ds-publisher.cpp">publisher.cpp</a></li><li>File <a href="file_src_o3ds_publisher.h.html#file-src-o3ds-publisher.h">publisher.h</a></li><li>File <a href="file_src_o3ds_request.cpp.html#file-src-o3ds-request.cpp">request.cpp</a></li><li>File <a href="file_src_o3ds_request.h.html#file-src-o3ds-request.h">request.h</a></li><li>File <a href="file_src_o3ds_subscriber.cpp.html#file-src-o3ds-subscriber.cpp">subscriber.cpp</a></li><li>File <a href="file_src_o3ds_subscriber.h.html#file-src-o3ds-subscriber.h">subscriber.h</a></li><li class="lastChild">File <a href="file_src_o3ds_transform_component.h.html#file-src-o3ds-transform-component.h">transform_component.h</a></li></ul></li><li>File <a href="file_src_CMakeLists.txt.html#file-src-CMakeLists.txt">CMakeLists.txt</a></li><li>File <a href="file_src_Open3dStream.cpp.html#file-src-Open3dStream.cpp">Open3dStream.cpp</a></li><li>File <a href="file_src_Open3dStreamClient.cpp.html#file-src-Open3dStreamClient.cpp">Open3dStreamClient.cpp</a></li><li>File <a href="file_src_Open3dStreamClient.h.html#file-src-Open3dStreamClient.h">Open3dStreamClient.h</a></li><li>File <a href="file_src_Open3dStreamServer.cpp.html#file-src-Open3dStreamServer.cpp">Open3dStreamServer.cpp</a></li><li>File <a href="file_src_Open3dStreamServer.h.html#file-src-Open3dStreamServer.h">Open3dStreamServer.h</a></li><li>File <a href="file_src_Open3dStreamUtil.cpp.html#file-src-Open3dStreamUtil.cpp">Open3dStreamUtil.cpp</a></li><li class="lastChild">File <a href="file_src_Open3dStreamUtil.h.html#file-src-Open3dStreamUtil.h">Open3dStreamUtil.h</a></li></ul></li>
+      <li class="lastChild">Directory <a href="dir_src.html#dir-src">src</a><ul><li>Directory <a href="dir_src_cmd.html#dir-src-cmd">cmd</a><ul><li>File <a href="file_src_cmd_o3ds_ping.c.html#file-src-cmd-o3ds-ping.c">o3ds_ping.c</a></li><li class="lastChild">File <a href="file_src_cmd_o3ds_pingServer.c.html#file-src-cmd-o3ds-pingServer.c">o3ds_pingServer.c</a></li></ul></li><li>Directory <a href="dir_src_o3ds.html#dir-src-o3ds">o3ds</a><ul><li>File <a href="file_src_o3ds_async_pair.cpp.html#file-src-o3ds-async-pair.cpp">async_pair.cpp</a></li><li>File <a href="file_src_o3ds_async_pair.h.html#file-src-o3ds-async-pair.h">async_pair.h</a></li><li>File <a href="file_src_o3ds_async_pipeline.cpp.html#file-src-o3ds-async-pipeline.cpp">async_pipeline.cpp</a></li><li>File <a href="file_src_o3ds_async_pipeline.h.html#file-src-o3ds-async-pipeline.h">async_pipeline.h</a></li><li>File <a href="file_src_o3ds_async_publisher.cpp.html#file-src-o3ds-async-publisher.cpp">async_publisher.cpp</a></li><li>File <a href="file_src_o3ds_async_publisher.h.html#file-src-o3ds-async-publisher.h">async_publisher.h</a></li><li>File <a href="file_src_o3ds_async_request.cpp.html#file-src-o3ds-async-request.cpp">async_request.cpp</a></li><li>File <a href="file_src_o3ds_async_request.h.html#file-src-o3ds-async-request.h">async_request.h</a></li><li>File <a href="file_src_o3ds_async_subscriber.cpp.html#file-src-o3ds-async-subscriber.cpp">async_subscriber.cpp</a></li><li>File <a href="file_src_o3ds_async_subscriber.h.html#file-src-o3ds-async-subscriber.h">async_subscriber.h</a></li><li>File <a href="file_src_o3ds_base_connector.cpp.html#file-src-o3ds-base-connector.cpp">base_connector.cpp</a></li><li>File <a href="file_src_o3ds_base_connector.h.html#file-src-o3ds-base-connector.h">base_connector.h</a></li><li>File <a href="file_src_o3ds_context.cpp.html#file-src-o3ds-context.cpp">context.cpp</a></li><li>File <a href="file_src_o3ds_context.h.html#file-src-o3ds-context.h">context.h</a></li><li>File <a href="file_src_o3ds_getTime.cpp.html#file-src-o3ds-getTime.cpp">getTime.cpp</a></li><li>File <a href="file_src_o3ds_getTime.h.html#file-src-o3ds-getTime.h">getTime.h</a></li><li>File <a href="file_src_o3ds_math.cpp.html#file-src-o3ds-math.cpp">math.cpp</a></li><li>File <a href="file_src_o3ds_math.h.html#file-src-o3ds-math.h">math.h</a></li><li>File <a href="file_src_o3ds_model.cpp.html#file-src-o3ds-model.cpp">model.cpp</a></li><li>File <a href="file_src_o3ds_model.h.html#file-src-o3ds-model.h">model.h</a></li><li>File <a href="file_src_o3ds_nng_connector.cpp.html#file-src-o3ds-nng-connector.cpp">nng_connector.cpp</a></li><li>File <a href="file_src_o3ds_nng_connector.h.html#file-src-o3ds-nng-connector.h">nng_connector.h</a></li><li>File <a href="file_src_o3ds_o3ds.h.html#file-src-o3ds-o3ds.h">o3ds.h</a></li><li>File <a href="file_src_o3ds_pair.cpp.html#file-src-o3ds-pair.cpp">pair.cpp</a></li><li>File <a href="file_src_o3ds_pair.h.html#file-src-o3ds-pair.h">pair.h</a></li><li>File <a href="file_src_o3ds_pipeline.cpp.html#file-src-o3ds-pipeline.cpp">pipeline.cpp</a></li><li>File <a href="file_src_o3ds_pipeline.h.html#file-src-o3ds-pipeline.h">pipeline.h</a></li><li>File <a href="file_src_o3ds_publisher.cpp.html#file-src-o3ds-publisher.cpp">publisher.cpp</a></li><li>File <a href="file_src_o3ds_publisher.h.html#file-src-o3ds-publisher.h">publisher.h</a></li><li>File <a href="file_src_o3ds_request.cpp.html#file-src-o3ds-request.cpp">request.cpp</a></li><li>File <a href="file_src_o3ds_request.h.html#file-src-o3ds-request.h">request.h</a></li><li>File <a href="file_src_o3ds_subscriber.cpp.html#file-src-o3ds-subscriber.cpp">subscriber.cpp</a></li><li>File <a href="file_src_o3ds_subscriber.h.html#file-src-o3ds-subscriber.h">subscriber.h</a></li><li>File <a href="file_src_o3ds_transform_component.h.html#file-src-o3ds-transform-component.h">transform_component.h</a></li><li>File <a href="file_src_o3ds_websocket.cpp.html#file-src-o3ds-websocket.cpp">websocket.cpp</a></li><li class="lastChild">File <a href="file_src_o3ds_websocket.h.html#file-src-o3ds-websocket.h">websocket.h</a></li></ul></li><li class="lastChild">File <a href="file_src_CMakeLists.txt.html#file-src-CMakeLists.txt">CMakeLists.txt</a></li></ul></li>
     </ul>
   </li><!-- only tree view element -->
 </ul><!-- /treeView file-treeView --></section>
 <section id="full-api">
-<h2>Full API<a class="headerlink" href="#full-api" title="Permalink to this headline"></a></h2>
+<h2>Full API<a class="headerlink" href="#full-api" title="Permalink to this heading"></a></h2>
 <section id="namespaces">
-<h3>Namespaces<a class="headerlink" href="#namespaces" title="Permalink to this headline"></a></h3>
+<h3>Namespaces<a class="headerlink" href="#namespaces" title="Permalink to this heading"></a></h3>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="namespace_O3DS.html">Namespace O3DS</a><ul>
@@ -242,15 +246,7 @@
 </div>
 </section>
 <section id="classes-and-structs">
-<h3>Classes and Structs<a class="headerlink" href="#classes-and-structs" title="Permalink to this headline"></a></h3>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="structOpen3dStreamerWork.html">Struct Open3dStreamerWork</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="structOpen3dStreamerWork.html#struct-documentation">Struct Documentation</a></li>
-</ul>
-</li>
-</ul>
-</div>
+<h3>Classes and Structs<a class="headerlink" href="#classes-and-structs" title="Permalink to this heading"></a></h3>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="structwork.html">Struct work</a><ul>
@@ -280,6 +276,19 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="classO3DS_1_1AsyncConnector.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classO3DS_1_1AsyncNngConnector.html">Class AsyncNngConnector</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classO3DS_1_1AsyncNngConnector.html#inheritance-relationships">Inheritance Relationships</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="classO3DS_1_1AsyncNngConnector.html#base-type">Base Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classO3DS_1_1AsyncNngConnector.html#derived-types">Derived Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="classO3DS_1_1AsyncNngConnector.html#class-documentation">Class Documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -409,13 +418,13 @@
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="classO3DS_1_1BlockingConnector.html">Class BlockingConnector</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="classO3DS_1_1BlockingConnector.html#inheritance-relationships">Inheritance Relationships</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="classO3DS_1_1BlockingConnector.html#base-type">Base Type</a></li>
-<li class="toctree-l3"><a class="reference internal" href="classO3DS_1_1BlockingConnector.html#derived-types">Derived Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classO3DS_1_1BlockingNngConnector.html">Class BlockingNngConnector</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classO3DS_1_1BlockingNngConnector.html#inheritance-relationships">Inheritance Relationships</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="classO3DS_1_1BlockingNngConnector.html#base-type">Base Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classO3DS_1_1BlockingNngConnector.html#derived-types">Derived Types</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="classO3DS_1_1BlockingConnector.html#class-documentation">Class Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classO3DS_1_1BlockingNngConnector.html#class-documentation">Class Documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -662,16 +671,37 @@
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="classOpen3dStreamerClient.html">Class Open3dStreamerClient</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="classOpen3dStreamerClient.html#class-documentation">Class Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classO3DS_1_1Websocket.html">Class Websocket</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classO3DS_1_1Websocket.html#inheritance-relationships">Inheritance Relationships</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="classO3DS_1_1Websocket.html#base-type">Base Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classO3DS_1_1Websocket.html#derived-types">Derived Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="classO3DS_1_1Websocket.html#class-documentation">Class Documentation</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="classOpen3dStreamerServer.html">Class Open3dStreamerServer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="classOpen3dStreamerServer.html#class-documentation">Class Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="classO3DS_1_1WebsocketBroadcastServer.html">Class WebsocketBroadcastServer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classO3DS_1_1WebsocketBroadcastServer.html#inheritance-relationships">Inheritance Relationships</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="classO3DS_1_1WebsocketBroadcastServer.html#base-type">Base Type</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="classO3DS_1_1WebsocketBroadcastServer.html#class-documentation">Class Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="classO3DS_1_1WebsocketClient.html">Class WebsocketClient</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="classO3DS_1_1WebsocketClient.html#inheritance-relationships">Inheritance Relationships</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="classO3DS_1_1WebsocketClient.html#base-type">Base Type</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="classO3DS_1_1WebsocketClient.html#class-documentation">Class Documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -694,7 +724,7 @@
 </div>
 </section>
 <section id="enums">
-<h3>Enums<a class="headerlink" href="#enums" title="Permalink to this headline"></a></h3>
+<h3>Enums<a class="headerlink" href="#enums" title="Permalink to this heading"></a></h3>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="enum_transform__component_8h_1a9a53d2736864994af7555aab266d0060.html">Enum ComponentType</a><ul>
@@ -711,17 +741,9 @@
 </li>
 </ul>
 </div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="enum_Open3dStreamServer_8h_1a48ca7fb24df61ab4bf80c61e070491df.html">Enum WorkState</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="enum_Open3dStreamServer_8h_1a48ca7fb24df61ab4bf80c61e070491df.html#enum-documentation">Enum Documentation</a></li>
-</ul>
-</li>
-</ul>
-</div>
 </section>
 <section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h3>
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading"></a></h3>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="function_o3ds__pingServer_8c_1ac9ca6f5700ea693ebf4cfa4b3556f9ae.html">Function alloc_work</a><ul>
@@ -740,8 +762,8 @@
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="function_CMakeLists_8txt_1a3b664927388f44bd3fdbb502d7dacaff.html">Function cmake_minimum_required</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="function_CMakeLists_8txt_1a3b664927388f44bd3fdbb502d7dacaff.html#function-documentation">Function Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="function_CMakeLists_8txt_1a075675ac1497671a88f3ff8ba59dac4f.html">Function cmake_minimum_required</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_CMakeLists_8txt_1a075675ac1497671a88f3ff8ba59dac4f.html#function-documentation">Function Documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -788,23 +810,15 @@
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="function_Open3dStreamUtil_8cpp_1a42807bee46c139d92f539b8cf0871016.html">Function fatal(int)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="function_Open3dStreamUtil_8cpp_1a42807bee46c139d92f539b8cf0871016.html#function-documentation">Function Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="function_getTime_8cpp_1a0e47c74b5a3e6246b9936d96ff4c66b1.html">Function GetTime()</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_getTime_8cpp_1a0e47c74b5a3e6246b9936d96ff4c66b1.html#function-documentation">Function Documentation</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="function_Open3dStreamUtil_8h_1a42807bee46c139d92f539b8cf0871016.html">Function fatal(int)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="function_Open3dStreamUtil_8h_1a42807bee46c139d92f539b8cf0871016.html#function-documentation">Function Documentation</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="function_getTime_8h_1a0e47c74b5a3e6246b9936d96ff4c66b1.html">Function GetTime</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="function_getTime_8h_1a0e47c74b5a3e6246b9936d96ff4c66b1.html">Function GetTime()</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="function_getTime_8h_1a0e47c74b5a3e6246b9936d96ff4c66b1.html#function-documentation">Function Documentation</a></li>
 </ul>
 </li>
@@ -822,14 +836,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="function_o3ds__pingServer_8c_1a3c04138a5bfe5d72780bb7e82a18e627.html">Function main(int, char **)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="function_o3ds__pingServer_8c_1a3c04138a5bfe5d72780bb7e82a18e627.html#function-documentation">Function Documentation</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="function_Open3dStream_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627.html">Function main(int, char **)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="function_Open3dStream_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627.html#function-documentation">Function Documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -988,15 +994,15 @@
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="function_CMakeLists_8txt_1a4161df4656e54e06bdd408b2e185252e.html">Function target_link_libraries</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="function_CMakeLists_8txt_1a4161df4656e54e06bdd408b2e185252e.html#function-documentation">Function Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="function_CMakeLists_8txt_1a09b5da6a6bf1ca3a24700967c08b2d19.html">Function target_link_libraries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="function_CMakeLists_8txt_1a09b5da6a6bf1ca3a24700967c08b2d19.html#function-documentation">Function Documentation</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </section>
 <section id="variables">
-<h3>Variables<a class="headerlink" href="#variables" title="Permalink to this headline"></a></h3>
+<h3>Variables<a class="headerlink" href="#variables" title="Permalink to this heading"></a></h3>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="variable_o3ds_8h_1a5f302fa9f793a52bc835393ca7f7a731.html">Variable O3DS::version</a><ul>
@@ -1023,7 +1029,7 @@
 </div>
 </section>
 <section id="defines">
-<h3>Defines<a class="headerlink" href="#defines" title="Permalink to this headline"></a></h3>
+<h3>Defines<a class="headerlink" href="#defines" title="Permalink to this heading"></a></h3>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="define_math_8h_1a874a0fd594492d1aed067d143660bdde.html">Define CALC</a><ul>
@@ -1034,8 +1040,8 @@
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="define_base__server_8h_1ae13cc27b4c11f771420d845b641c09ed.html">Define NNG_ERROR</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="define_base__server_8h_1ae13cc27b4c11f771420d845b641c09ed.html#define-documentation">Define Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="define_nng__connector_8h_1ae13cc27b4c11f771420d845b641c09ed.html">Define NNG_ERROR</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="define_nng__connector_8h_1ae13cc27b4c11f771420d845b641c09ed.html#define-documentation">Define Documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -1074,11 +1080,27 @@
 </div>
 </section>
 <section id="typedefs">
-<h3>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline"></a></h3>
+<h3>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this heading"></a></h3>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="typedef_base__server_8h_1a9cbad8d4e43cf6b15f45b45ebd850b06.html">Typedef O3DS::inDataFunc</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="typedef_base__server_8h_1a9cbad8d4e43cf6b15f45b45ebd850b06.html#typedef-documentation">Typedef Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typedef_websocket_8h_1ab6257f1be51c5bb4ecc2d706fad555bf.html">Typedef O3DS::client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="typedef_websocket_8h_1ab6257f1be51c5bb4ecc2d706fad555bf.html#typedef-documentation">Typedef Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="typedef_websocket_8h_1a19120318c7fe65af1045855e548f9e3b.html">Typedef O3DS::client_message_ptr</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="typedef_websocket_8h_1a19120318c7fe65af1045855e548f9e3b.html#typedef-documentation">Typedef Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="typedef_base__connector_8h_1a2cbf23ac21e20f54728d78a752473e36.html">Typedef O3DS::InDataFunc</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="typedef_base__connector_8h_1a2cbf23ac21e20f54728d78a752473e36.html#typedef-documentation">Typedef Documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -1087,6 +1109,22 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="typedef_math_8h_1a7fdcc877193964119aad97e11279ae83.html">Typedef O3DS::Matrixd</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="typedef_math_8h_1a7fdcc877193964119aad97e11279ae83.html#typedef-documentation">Typedef Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="typedef_websocket_8h_1ab260f1e07e835370e7e8c0838dd2e659.html">Typedef O3DS::server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="typedef_websocket_8h_1ab260f1e07e835370e7e8c0838dd2e659.html#typedef-documentation">Typedef Documentation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="typedef_websocket_8h_1af5b7e0cfbb94321a1a614d891cda70f4.html">Typedef O3DS::server_message_ptr</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="typedef_websocket_8h_1af5b7e0cfbb94321a1a614d891cda70f4.html#typedef-documentation">Typedef Documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -1115,7 +1153,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../model.html" class="btn btn-neutral float-left" title="Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../utilities.html" class="btn btn-neutral float-left" title="Utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="namespace_O3DS.html" class="btn btn-neutral float-right" title="Namespace O3DS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

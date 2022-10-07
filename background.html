@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Background &mdash; Open3DStream  documentation</title>
@@ -16,7 +16,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
         <script src="_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -46,8 +48,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="downloads.html">Downloads</a></li>
 <li class="toctree-l1"><a class="reference internal" href="connectors.html">Connector Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="o3ds/o3ds.html">Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 </ul>
@@ -77,14 +79,11 @@
            <div itemprop="articleBody">
              
   <section id="background">
-<h1>Background<a class="headerlink" href="#background" title="Permalink to this headline"></a></h1>
-<p>Currently there are a number of standards and proprietary applications that can be
-used to stream realtime animation. Getting devices to interface with applications
-or applications to interface with each other often requires writing custom code to
-connect protocols or API’s. It would be much easier if a standard could be adopted
-for transmitting and receiving realtime data. This project seeks to create this
-armony by creating awareness of existing standards where they exist and are useful,
-proposing new standards, documenting examples and providing test cases.</p>
+<h1>Background<a class="headerlink" href="#background" title="Permalink to this heading"></a></h1>
+<p>This project creates a simple and unified way to allow devices and
+software applications to easily exchange 3d realtime animation data.  Communication
+classes are provided to simplify the setup of network connections and math routines
+are provided to convert data between representations (euler/quaternion, z-up/y-up)</p>
 <p>While theoretically any time sampled or event data that is taken from the real world
 and needs to be transmitted is considered, the focus of this project is on data
 captured by mobile devices (AR Kit, Accelerometer, GPS), Motion/Performance capture

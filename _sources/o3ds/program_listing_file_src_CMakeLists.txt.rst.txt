@@ -22,8 +22,10 @@ Program Listing for File CMakeLists.txt
        o3ds/getTime.h
        o3ds/model.cpp  
        o3ds/model.h
-       o3ds/base_server.h
-       o3ds/base_server.cpp
+       o3ds/base_connector.h
+       o3ds/base_connector.cpp
+       o3ds/nng_connector.h
+       o3ds/nng_connector.cpp
        o3ds/subscriber.cpp
        o3ds/subscriber.h
        o3ds/async_subscriber.cpp
@@ -50,7 +52,10 @@ Program Listing for File CMakeLists.txt
        o3ds/math.cpp
        o3ds/transform_component.h
        o3ds/o3ds.h
+       o3ds/websocket.h
+       o3ds/websocket.cpp
        )
+       
    
    set(libs debug flatbuffersd optimized flatbuffers debug nngd optimized nng)
    if(WIN32)
@@ -68,4 +73,33 @@ Program Listing for File CMakeLists.txt
    target_link_libraries(open3dstreamstatic PRIVATE ${libs})        
    add_dependencies(open3dstreamstatic protocol)
    
-   install(TARGETS open3dstreamstatic DESTINATION ${CMAKE_CURRENT_LIST_DIR}/../lib)
+   set(pub_headers
+       o3ds/getTime.h
+       o3ds/model.h   
+       o3ds/base_connector.h
+       o3ds/nng_connector.h
+       o3ds/subscriber.h
+       o3ds/async_subscriber.h
+       o3ds/async_publisher.h
+       o3ds/pair.h
+       o3ds/async_pair.h
+       o3ds/publisher.h
+       o3ds/async_request.h
+       o3ds/request.h
+       o3ds/pipeline.h
+       o3ds/async_pipeline.h
+       o3ds/context.h
+       o3ds/math.h
+       o3ds/transform_component.h
+       o3ds/o3ds.h
+       o3ds/websocket.h )
+   
+   
+   list(JOIN pub_headers ";" pub_headers_str)
+   set_target_properties(open3dstreamstatic PROPERTIES PUBLIC_HEADER "${pub_headers_str}")
+   
+   install(TARGETS open3dstreamstatic 
+       LIBRARY DESTINATION lib
+       PUBLIC_HEADER DESTINATION include/o3ds)
+   
+   

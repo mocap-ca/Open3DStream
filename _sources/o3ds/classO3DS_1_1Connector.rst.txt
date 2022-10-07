@@ -3,7 +3,7 @@
 Class Connector
 ===============
 
-- Defined in :ref:`file_src_o3ds_base_server.h`
+- Defined in :ref:`file_src_o3ds_base_connector.h`
 
 
 Inheritance Relationships
@@ -13,7 +13,7 @@ Derived Types
 *************
 
 - ``public O3DS::AsyncConnector`` (:ref:`exhale_class_classO3DS_1_1AsyncConnector`)
-- ``public O3DS::BlockingConnector`` (:ref:`exhale_class_classO3DS_1_1BlockingConnector`)
+- ``public O3DS::BlockingNngConnector`` (:ref:`exhale_class_classO3DS_1_1BlockingNngConnector`)
 
 
 Class Documentation
@@ -21,6 +21,7 @@ Class Documentation
 
 
 .. doxygenclass:: O3DS::Connector
+   :project: o3ds
    :members:
    :protected-members:
    :undoc-members:

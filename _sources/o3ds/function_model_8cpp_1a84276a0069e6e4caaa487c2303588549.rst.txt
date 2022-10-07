@@ -11,3 +11,4 @@ Function Documentation
 
 
 .. doxygenfunction:: operator>>(const O3DS::Data::Scale&, O3DS::TransformScale&)
+   :project: o3ds

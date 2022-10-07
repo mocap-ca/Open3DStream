@@ -11,3 +11,4 @@ Function Documentation
 
 
 .. doxygenfunction:: O3DS::rad(double)
+   :project: o3ds

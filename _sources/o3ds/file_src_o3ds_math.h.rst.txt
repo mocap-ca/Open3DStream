@@ -8,6 +8,7 @@ File math.h
 
 .. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
 
+
 .. contents:: Contents
    :local:
    :backlinks: none
@@ -72,9 +73,9 @@ Functions
 ---------
 
 
-- :ref:`exhale_function_math_8h_1a5748a0223959a81f8cfa53ac17b4fddb`
-
 - :ref:`exhale_function_math_8h_1adbbde4d316892e10bade694d698601cf`
+
+- :ref:`exhale_function_math_8h_1a5748a0223959a81f8cfa53ac17b4fddb`
 
 - :ref:`exhale_function_math_8h_1a75c6dea51a423c8955bfb104fd2f2b37`
 

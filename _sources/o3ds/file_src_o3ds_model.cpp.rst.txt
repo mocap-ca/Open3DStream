@@ -8,6 +8,7 @@ File model.cpp
 
 .. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
 
+
 .. contents:: Contents
    :local:
    :backlinks: none
@@ -59,18 +60,6 @@ Functions
 
 - :ref:`exhale_function_model_8cpp_1a4c37a4afc6a8864489291feefc5b9164`
 
-- :ref:`exhale_function_model_8cpp_1ad40012b3aff24c3caa2b5e657dff477c`
-
-- :ref:`exhale_function_model_8cpp_1a2d609c40cb9aeb0344163aa891d0c1d8`
-
-- :ref:`exhale_function_model_8cpp_1ae31e0c415865cd436ff70f683a99fa76`
-
-- :ref:`exhale_function_model_8cpp_1a84e24322bfb0bbed82fb25b5b1d42370`
-
-- :ref:`exhale_function_model_8cpp_1aeaa24242a75aaebacad30c6175a36b19`
-
-- :ref:`exhale_function_model_8cpp_1a0b3b556b53d65ead94e4d0c6bdecb8dd`
-
 - :ref:`exhale_function_model_8cpp_1a47a27dc54599df534ba431778365957c`
 
 - :ref:`exhale_function_model_8cpp_1a84276a0069e6e4caaa487c2303588549`
@@ -79,5 +68,17 @@ Functions
 
 - :ref:`exhale_function_model_8cpp_1a2069a4812baff3df69f7d214544fbaeb`
 
+- :ref:`exhale_function_model_8cpp_1a84e24322bfb0bbed82fb25b5b1d42370`
+
 - :ref:`exhale_function_model_8cpp_1a5f0b82b3258a989a6815bfde04e6a752`
+
+- :ref:`exhale_function_model_8cpp_1ad40012b3aff24c3caa2b5e657dff477c`
+
+- :ref:`exhale_function_model_8cpp_1a2d609c40cb9aeb0344163aa891d0c1d8`
+
+- :ref:`exhale_function_model_8cpp_1ae31e0c415865cd436ff70f683a99fa76`
+
+- :ref:`exhale_function_model_8cpp_1aeaa24242a75aaebacad30c6175a36b19`
+
+- :ref:`exhale_function_model_8cpp_1a0b3b556b53d65ead94e4d0c6bdecb8dd`
 

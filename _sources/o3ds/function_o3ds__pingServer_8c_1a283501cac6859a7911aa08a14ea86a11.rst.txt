@@ -11,3 +11,4 @@ Function Documentation
 
 
 .. doxygenfunction:: fatal(const char *, int)
+   :project: o3ds

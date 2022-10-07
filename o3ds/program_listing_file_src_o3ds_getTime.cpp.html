@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Program Listing for File getTime.cpp &mdash; Open3DStream  documentation</title>
@@ -16,7 +16,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
         <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -44,8 +46,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../connectors.html">Connector Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="o3ds.html">Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 </ul>
@@ -75,38 +77,36 @@
            <div itemprop="articleBody">
              
   <section id="program-listing-for-file-gettime-cpp">
-<span id="program-listing-file-src-o3ds-gettime-cpp"></span><h1>Program Listing for File getTime.cpp<a class="headerlink" href="#program-listing-for-file-gettime-cpp" title="Permalink to this headline"></a></h1>
+<span id="program-listing-file-src-o3ds-gettime-cpp"></span><h1>Program Listing for File getTime.cpp<a class="headerlink" href="#program-listing-for-file-gettime-cpp" title="Permalink to this heading"></a></h1>
 <p>↰ <a class="reference internal" href="file_src_o3ds_getTime.cpp.html#file-src-o3ds-gettime-cpp"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">src/o3ds/getTime.cpp</span></code>)</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;getTime.h&quot;</span><span class="cp"></span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;getTime.h&quot;</span><span class="cp"></span>
 
 <span class="cp">#ifdef _WIN32</span>
-<span class="cp">#include</span> <span class="cpf">&lt;windows.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;windows.h&gt;</span><span class="cp"></span>
 
-<span class="cp">#if !defined(DOXYGEN_SHOULD_SKIP_THIS)</span>
+<span class="kt">double</span><span class="w"> </span><span class="nf">GetTime</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">LARGE_INTEGER</span><span class="w"> </span><span class="n">StartTime</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">LARGE_INTEGER</span><span class="w"> </span><span class="n">Freq</span><span class="p">;</span><span class="w"></span>
 
-<span class="kt">double</span> <span class="nf">GetTime</span><span class="p">()</span>
-<span class="p">{</span>
-    <span class="n">LARGE_INTEGER</span> <span class="n">StartTime</span><span class="p">;</span>
-    <span class="n">LARGE_INTEGER</span> <span class="n">Freq</span><span class="p">;</span>
+<span class="w">    </span><span class="n">QueryPerformanceCounter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">StartTime</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">QueryPerformanceFrequency</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Freq</span><span class="p">);</span><span class="w"></span>
 
-    <span class="n">QueryPerformanceCounter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">StartTime</span><span class="p">);</span>
-    <span class="n">QueryPerformanceFrequency</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Freq</span><span class="p">);</span>
-
-    <span class="k">return</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">StartTime</span><span class="p">.</span><span class="n">QuadPart</span> <span class="o">/</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">Freq</span><span class="p">.</span><span class="n">QuadPart</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">StartTime</span><span class="p">.</span><span class="n">QuadPart</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">Freq</span><span class="p">.</span><span class="n">QuadPart</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
 <span class="cp">#else</span>
 
-<span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;time.h&gt;</span><span class="cp"></span>
 
-<span class="kt">double</span> <span class="nf">GetTime</span><span class="p">()</span>
-<span class="p">{</span>
+<span class="kt">double</span><span class="w"> </span><span class="nf">GetTime</span><span class="p">()</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
 
-    <span class="n">timespec</span> <span class="n">time1</span><span class="p">;</span>
-    <span class="n">clock_gettime</span><span class="p">(</span><span class="n">CLOCK_MONOTONIC</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">time1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">timespec</span><span class="w"> </span><span class="n">time1</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">clock_gettime</span><span class="p">(</span><span class="n">CLOCK_MONOTONIC</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">time1</span><span class="p">);</span><span class="w"></span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">time1</span><span class="p">.</span><span class="n">tv_sec</span> <span class="o">+</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">time1</span><span class="p">.</span><span class="n">tv_nsec</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="n">f</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">time1</span><span class="p">.</span><span class="n">tv_sec</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">time1</span><span class="p">.</span><span class="n">tv_nsec</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1e-9f</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
 <span class="cp">#endif</span>
 </pre></div>

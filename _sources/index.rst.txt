@@ -3,7 +3,7 @@ Open 3D Stream
 
 Alastair Macleod, 2022
 
-The goal of this project is to provide a simple and unified way to stream realtime
+Open3DStream provides a simple and unified way to stream realtime
 animation for 3d content between devices, applications and locations.
 
 .. doxygenindex::
@@ -14,11 +14,12 @@ animation for 3d content between devices, applications and locations.
    :caption: Contents:
 
    background
+   gettingstarted
    downloads
    doxyindex
    connectors
-   utilities
    model
+   utilities
    o3ds/o3ds
    license
    
@@ -27,7 +28,6 @@ Links
 * `Builds <https://github.com/mocap-ca/Open3DStream/releases/latest>`_
 * `GitHub <https://github.com/mocap-ca/Open3DStream>`_
 * `Discord <https://discord.gg/GndFxeM]>`_
-* `Contact <https://open3dstream.com/contact>`_
  
 
 Indices and tables

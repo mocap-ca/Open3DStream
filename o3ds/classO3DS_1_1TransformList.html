@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Class TransformList &mdash; Open3DStream  documentation</title>
@@ -16,7 +16,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
         <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -42,13 +44,72 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../connectors.html">Connector Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../model.html">Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="o3ds.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="o3ds.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="o3ds.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="o3ds.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="o3ds.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="o3ds.html#classes-and-structs">Classes and Structs</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="structwork.html">Struct work</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncClient.html">Class AsyncClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncConnector.html">Class AsyncConnector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncNngConnector.html">Class AsyncNngConnector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPair.html">Class AsyncPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPairClient.html">Class AsyncPairClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPairServer.html">Class AsyncPairServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPipeline.html">Class AsyncPipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPublisher.html">Class AsyncPublisher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncReply.html">Class AsyncReply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncRequest.html">Class AsyncRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncRequestReply.html">Class AsyncRequestReply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncServer.html">Class AsyncServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncSubscriber.html">Class AsyncSubscriber</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1BlockingNngConnector.html">Class BlockingNngConnector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1ClientPair.html">Class ClientPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Connector.html">Class Connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Context.html">Class Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Matrix.html">Template Class Matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Publisher.html">Class Publisher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Pull.html">Class Pull</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Push.html">Class Push</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Reply.html">Class Reply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Request.html">Class Request</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1ServerPair.html">Class ServerPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Subject.html">Class Subject</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1SubjectList.html">Class SubjectList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Subscriber.html">Class Subscriber</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Transform.html">Class Transform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformBuilder.html">Class TransformBuilder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformComponent.html">Class TransformComponent</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Class TransformList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformMatrix.html">Class TransformMatrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformRotation.html">Class TransformRotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformScale.html">Class TransformScale</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformTranslation.html">Class TransformTranslation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Vector3.html">Template Class Vector3</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Vector4.html">Template Class Vector4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Websocket.html">Class Websocket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1WebsocketBroadcastServer.html">Class WebsocketBroadcastServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1WebsocketClient.html">Class WebsocketClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classStarts.html">Class Starts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classVector.html">Class Vector</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#enums">Enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#defines">Defines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#typedefs">Typedefs</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 </ul>
 
@@ -78,64 +139,64 @@
            <div itemprop="articleBody">
              
   <section id="class-transformlist">
-<span id="exhale-class-classo3ds-1-1transformlist"></span><h1>Class TransformList<a class="headerlink" href="#class-transformlist" title="Permalink to this headline"></a></h1>
+<span id="exhale-class-classo3ds-1-1transformlist"></span><h1>Class TransformList<a class="headerlink" href="#class-transformlist" title="Permalink to this heading"></a></h1>
 <ul class="simple">
 <li><p>Defined in <a class="reference internal" href="file_src_o3ds_model.h.html#file-src-o3ds-model-h"><span class="std std-ref">File model.h</span></a></p></li>
 </ul>
 <section id="class-documentation">
-<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline"></a></h2>
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this heading"></a></h2>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N4O3DS13TransformListE">
-<span id="_CPPv3N4O3DS13TransformListE"></span><span id="_CPPv2N4O3DS13TransformListE"></span><span id="O3DS::TransformList"></span><span class="target" id="classO3DS_1_1TransformList"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">O3DS</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">TransformList</span></span></span><a class="headerlink" href="#_CPPv4N4O3DS13TransformListE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N4O3DS13TransformListE"></span><span id="_CPPv2N4O3DS13TransformListE"></span><span id="O3DS::TransformList"></span><span class="target" id="classO3DS_1_1TransformList"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TransformList</span></span></span><br /></dt>
 <dd><p>A list (std::vector) of <a class="reference internal" href="classO3DS_1_1Transform.html#classO3DS_1_1Transform"><span class="std std-ref">Transform</span></a> objects. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4O3DS13TransformList13TransformListEv">
-<span id="_CPPv3N4O3DS13TransformList13TransformListEv"></span><span id="_CPPv2N4O3DS13TransformList13TransformListEv"></span><span id="O3DS::TransformList::TransformList"></span><span class="target" id="classO3DS_1_1TransformList_1abfe26ea6d5e07b95dce29a3790ad87a4"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TransformList</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS13TransformList13TransformListEv" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N4O3DS13TransformList13TransformListEv"></span><span id="_CPPv2N4O3DS13TransformList13TransformListEv"></span><span id="O3DS::TransformList::TransformList"></span><span class="target" id="classO3DS_1_1TransformList_1abfe26ea6d5e07b95dce29a3790ad87a4"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TransformList</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4O3DS13TransformListD0Ev">
-<span id="_CPPv3N4O3DS13TransformListD0Ev"></span><span id="_CPPv2N4O3DS13TransformListD0Ev"></span><span id="O3DS::TransformList::~TransformList"></span><span class="target" id="classO3DS_1_1TransformList_1ac95efec41e63e4e1d4161e6e501496e8"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~TransformList</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS13TransformListD0Ev" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N4O3DS13TransformListD0Ev"></span><span id="_CPPv2N4O3DS13TransformListD0Ev"></span><span id="O3DS::TransformList::~TransformList"></span><span class="target" id="classO3DS_1_1TransformList_1ac95efec41e63e4e1d4161e6e501496e8"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~TransformList</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
 <dd><p>deletes the transform objects in the list </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4O3DS13TransformList4sizeEv">
-<span id="_CPPv3N4O3DS13TransformList4sizeEv"></span><span id="_CPPv2N4O3DS13TransformList4sizeEv"></span><span id="O3DS::TransformList::size"></span><span class="target" id="classO3DS_1_1TransformList_1a3153901fb1ca3be0787c6d2141267e9d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS13TransformList4sizeEv" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N4O3DS13TransformList4sizeEv"></span><span id="_CPPv2N4O3DS13TransformList4sizeEv"></span><span id="O3DS::TransformList::size"></span><span class="target" id="classO3DS_1_1TransformList_1a3153901fb1ca3be0787c6d2141267e9d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Returns the number of transforms. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4O3DS13TransformList5clearEv">
-<span id="_CPPv3N4O3DS13TransformList5clearEv"></span><span id="_CPPv2N4O3DS13TransformList5clearEv"></span><span id="O3DS::TransformList::clear"></span><span class="target" id="classO3DS_1_1TransformList_1a0d62e03f8d7df80310679e13b32612df"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">clear</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS13TransformList5clearEv" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N4O3DS13TransformList5clearEv"></span><span id="_CPPv2N4O3DS13TransformList5clearEv"></span><span id="O3DS::TransformList::clear"></span><span class="target" id="classO3DS_1_1TransformList_1a0d62e03f8d7df80310679e13b32612df"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">clear</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Delete the transform objects and clear the least. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4O3DS13TransformList6updateEv">
-<span id="_CPPv3N4O3DS13TransformList6updateEv"></span><span id="_CPPv2N4O3DS13TransformList6updateEv"></span><span id="O3DS::TransformList::update"></span><span class="target" id="classO3DS_1_1TransformList_1a18b352f4bae06803f005dd42adaa9d10"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">update</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS13TransformList6updateEv" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N4O3DS13TransformList6updateEv"></span><span id="_CPPv2N4O3DS13TransformList6updateEv"></span><span id="O3DS::TransformList::update"></span><span class="target" id="classO3DS_1_1TransformList_1a18b352f4bae06803f005dd42adaa9d10"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">update</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4O3DS13TransformList5beginEv">
-<span id="_CPPv3N4O3DS13TransformList5beginEv"></span><span id="_CPPv2N4O3DS13TransformList5beginEv"></span><span id="O3DS::TransformList::begin"></span><span class="target" id="classO3DS_1_1TransformList_1abea3ef63fa46d9d89325e456709de422"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="classO3DS_1_1Transform.html#_CPPv4N4O3DS9TransformE" title="O3DS::Transform"><span class="n"><span class="pre">Transform</span></span></a><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">iterator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">begin</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS13TransformList5beginEv" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N4O3DS13TransformList5beginEv"></span><span id="_CPPv2N4O3DS13TransformList5beginEv"></span><span id="O3DS::TransformList::begin"></span><span class="target" id="classO3DS_1_1TransformList_1abea3ef63fa46d9d89325e456709de422"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../index.html#_CPPv4N4O3DS9TransformE" title="O3DS::Transform"><span class="n"><span class="pre">Transform</span></span></a><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">iterator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">begin</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4O3DS13TransformList3endEv">
-<span id="_CPPv3N4O3DS13TransformList3endEv"></span><span id="_CPPv2N4O3DS13TransformList3endEv"></span><span id="O3DS::TransformList::end"></span><span class="target" id="classO3DS_1_1TransformList_1aa55e72363df75432a21e251534e79a5d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="classO3DS_1_1Transform.html#_CPPv4N4O3DS9TransformE" title="O3DS::Transform"><span class="n"><span class="pre">Transform</span></span></a><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">iterator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">end</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS13TransformList3endEv" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N4O3DS13TransformList3endEv"></span><span id="_CPPv2N4O3DS13TransformList3endEv"></span><span id="O3DS::TransformList::end"></span><span class="target" id="classO3DS_1_1TransformList_1aa55e72363df75432a21e251534e79a5d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../index.html#_CPPv4N4O3DS9TransformE" title="O3DS::Transform"><span class="n"><span class="pre">Transform</span></span></a><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">iterator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">end</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4O3DS13TransformListixE6size_t">
-<span id="_CPPv3N4O3DS13TransformListixE6size_t"></span><span id="_CPPv2N4O3DS13TransformListixE6size_t"></span><span id="O3DS::TransformList::subscript-operator__s"></span><span class="target" id="classO3DS_1_1TransformList_1af7c4cf66507077dd4c1fee35ebd31a58"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="classO3DS_1_1Transform.html#_CPPv4N4O3DS9TransformE" title="O3DS::Transform"><span class="n"><span class="pre">Transform</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">[]</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS13TransformListixE6size_t" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N4O3DS13TransformListixE6size_t"></span><span id="_CPPv2N4O3DS13TransformListixE6size_t"></span><span id="O3DS::TransformList::subscript-operator__s"></span><span class="target" id="classO3DS_1_1TransformList_1af7c4cf66507077dd4c1fee35ebd31a58"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="../index.html#_CPPv4N4O3DS9TransformE" title="O3DS::Transform"><span class="n"><span class="pre">Transform</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">[]</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">id</span></span><span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N4O3DS13TransformList4findERKNSt6stringE">
-<span id="_CPPv3N4O3DS13TransformList4findERKNSt6stringE"></span><span id="_CPPv2N4O3DS13TransformList4findERKNSt6stringE"></span><span id="O3DS::TransformList::find__ssCR"></span><span class="target" id="classO3DS_1_1TransformList_1a4dc66cccba3409c4013c8306f17f70d3"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="classO3DS_1_1Transform.html#_CPPv4N4O3DS9TransformE" title="O3DS::Transform"><span class="n"><span class="pre">Transform</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">find</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4O3DS13TransformList4findERKNSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N4O3DS13TransformList4findERKNSt6stringE"></span><span id="_CPPv2N4O3DS13TransformList4findERKNSt6stringE"></span><span id="O3DS::TransformList::find__ssCR"></span><span class="target" id="classO3DS_1_1TransformList_1a4dc66cccba3409c4013c8306f17f70d3"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><a class="reference internal" href="../index.html#_CPPv4N4O3DS9TransformE" title="O3DS::Transform"><span class="n"><span class="pre">Transform</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">find</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">name</span></span><span class="sig-paren">)</span><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -143,7 +204,7 @@
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N4O3DS13TransformList6mItemsE">
-<span id="_CPPv3N4O3DS13TransformList6mItemsE"></span><span id="_CPPv2N4O3DS13TransformList6mItemsE"></span><span id="O3DS::TransformList::mItems__std::vector:TransformP:"></span><span class="target" id="classO3DS_1_1TransformList_1a37f14c120982a9105d78459a24d1e124"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="classO3DS_1_1Transform.html#_CPPv4N4O3DS9TransformE" title="O3DS::Transform"><span class="n"><span class="pre">Transform</span></span></a><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mItems</span></span></span><a class="headerlink" href="#_CPPv4N4O3DS13TransformList6mItemsE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N4O3DS13TransformList6mItemsE"></span><span id="_CPPv2N4O3DS13TransformList6mItemsE"></span><span id="O3DS::TransformList::mItems__std::vector:TransformP:"></span><span class="target" id="classO3DS_1_1TransformList_1a37f14c120982a9105d78459a24d1e124"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../index.html#_CPPv4N4O3DS9TransformE" title="O3DS::Transform"><span class="n"><span class="pre">Transform</span></span></a><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mItems</span></span></span><br /></dt>
 <dd></dd></dl>
 
 </div>

@@ -74,7 +74,7 @@ Program Listing for File async_request.cpp
                return;
            }
    
-           if (fnRef) fnRef(fnContext, (void*)buf, sz);
+           if (mInDataFunc) mInDataFunc(mContext, (void*)buf, sz);
    
            nng_free(buf, sz);
    

@@ -15,12 +15,12 @@ Program Listing for File async_request.h
    
    #include <nng/nng.h>
    #include <nng/protocol/reqrep0/req.h>
-   #include "base_server.h"
+   #include "nng_connector.h"
    
    
    namespace O3DS
    {
-       class AsyncRequestReply : public AsyncConnector
+       class AsyncRequestReply : public AsyncNngConnector
        {
        public:
            static void Callback(void *ref) { ((AsyncRequestReply*)ref)->Callback_(); }

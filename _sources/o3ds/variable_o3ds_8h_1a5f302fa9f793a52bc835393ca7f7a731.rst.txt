@@ -11,3 +11,4 @@ Variable Documentation
 
 
 .. doxygenvariable:: O3DS::version
+   :project: o3ds

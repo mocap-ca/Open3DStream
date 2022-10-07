@@ -1,0 +1,87 @@
+
+.. _file_src_o3ds_websocket.h:
+
+File websocket.h
+================
+
+|exhale_lsh| :ref:`Parent directory <dir_src_o3ds>` (``src/o3ds``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``src/o3ds/websocket.h``)
+-------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_src_o3ds_websocket.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``base_connector.h`` (:ref:`file_src_o3ds_base_connector.h`)
+
+- ``boost/thread.hpp``
+
+- ``set``
+
+- ``websocketpp/client.hpp``
+
+- ``websocketpp/config/asio_no_tls.hpp``
+
+- ``websocketpp/config/asio_no_tls_client.hpp``
+
+- ``websocketpp/server.hpp``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_src_o3ds_websocket.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_O3DS`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classO3DS_1_1Websocket`
+
+- :ref:`exhale_class_classO3DS_1_1WebsocketBroadcastServer`
+
+- :ref:`exhale_class_classO3DS_1_1WebsocketClient`
+
+
+Typedefs
+--------
+
+
+- :ref:`exhale_typedef_websocket_8h_1ab6257f1be51c5bb4ecc2d706fad555bf`
+
+- :ref:`exhale_typedef_websocket_8h_1a19120318c7fe65af1045855e548f9e3b`
+
+- :ref:`exhale_typedef_websocket_8h_1ab260f1e07e835370e7e8c0838dd2e659`
+
+- :ref:`exhale_typedef_websocket_8h_1af5b7e0cfbb94321a1a614d891cda70f4`
+

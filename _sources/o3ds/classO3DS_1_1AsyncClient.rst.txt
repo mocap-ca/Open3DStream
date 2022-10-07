@@ -20,6 +20,7 @@ Class Documentation
 
 
 .. doxygenclass:: O3DS::AsyncClient
+   :project: o3ds
    :members:
    :protected-members:
    :undoc-members:

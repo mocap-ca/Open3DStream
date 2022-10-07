@@ -15,12 +15,12 @@ Program Listing for File async_pipeline.h
    
    #include <nng/nng.h>
    #include <nng/protocol/pair1/pair.h>
-   #include "base_server.h"
+   #include "nng_connector.h"
    #include <string>
    
    namespace O3DS
    {
-       class AsyncPipeline : public AsyncConnector
+       class AsyncPipeline : public AsyncNngConnector
        {
        public:
            static void Callback(void *ref) { ((AsyncPipeline*)ref)->Callback_(); }

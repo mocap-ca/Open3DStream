@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Class WebsocketBroadcastServer &mdash; Open3DStream  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class WebsocketClient" href="classO3DS_1_1WebsocketClient.html" />
+    <link rel="prev" title="Class Websocket" href="classO3DS_1_1Websocket.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Open3DStream
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connectors.html">Connector Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="o3ds.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="o3ds.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="o3ds.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="o3ds.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="o3ds.html#classes-and-structs">Classes and Structs</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="structwork.html">Struct work</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncClient.html">Class AsyncClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncConnector.html">Class AsyncConnector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncNngConnector.html">Class AsyncNngConnector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPair.html">Class AsyncPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPairClient.html">Class AsyncPairClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPairServer.html">Class AsyncPairServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPipeline.html">Class AsyncPipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPublisher.html">Class AsyncPublisher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncReply.html">Class AsyncReply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncRequest.html">Class AsyncRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncRequestReply.html">Class AsyncRequestReply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncServer.html">Class AsyncServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncSubscriber.html">Class AsyncSubscriber</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1BlockingNngConnector.html">Class BlockingNngConnector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1ClientPair.html">Class ClientPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Connector.html">Class Connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Context.html">Class Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Matrix.html">Template Class Matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Publisher.html">Class Publisher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Pull.html">Class Pull</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Push.html">Class Push</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Reply.html">Class Reply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Request.html">Class Request</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1ServerPair.html">Class ServerPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Subject.html">Class Subject</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1SubjectList.html">Class SubjectList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Subscriber.html">Class Subscriber</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Transform.html">Class Transform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformBuilder.html">Class TransformBuilder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformComponent.html">Class TransformComponent</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformList.html">Class TransformList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformMatrix.html">Class TransformMatrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformRotation.html">Class TransformRotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformScale.html">Class TransformScale</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformTranslation.html">Class TransformTranslation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Vector3.html">Template Class Vector3</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Vector4.html">Template Class Vector4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Websocket.html">Class Websocket</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Class WebsocketBroadcastServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1WebsocketClient.html">Class WebsocketClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classStarts.html">Class Starts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classVector.html">Class Vector</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#enums">Enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#defines">Defines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#typedefs">Typedefs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Open3DStream</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="o3ds.html">Reference</a> &raquo;</li>
+      <li>Class WebsocketBroadcastServer</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/o3ds/classO3DS_1_1WebsocketBroadcastServer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="class-websocketbroadcastserver">
+<span id="exhale-class-classo3ds-1-1websocketbroadcastserver"></span><h1>Class WebsocketBroadcastServer<a class="headerlink" href="#class-websocketbroadcastserver" title="Permalink to this heading"></a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_src_o3ds_websocket.h.html#file-src-o3ds-websocket-h"><span class="std std-ref">File websocket.h</span></a></p></li>
+</ul>
+<section id="inheritance-relationships">
+<h2>Inheritance Relationships<a class="headerlink" href="#inheritance-relationships" title="Permalink to this heading"></a></h2>
+<section id="base-type">
+<h3>Base Type<a class="headerlink" href="#base-type" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">O3DS::Websocket</span></code> (<a class="reference internal" href="classO3DS_1_1Websocket.html#exhale-class-classo3ds-1-1websocket"><span class="std std-ref">Class Websocket</span></a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this heading"></a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS24WebsocketBroadcastServerE">
+<span id="_CPPv3N4O3DS24WebsocketBroadcastServerE"></span><span id="_CPPv2N4O3DS24WebsocketBroadcastServerE"></span><span id="O3DS::WebsocketBroadcastServer"></span><span class="target" id="classO3DS_1_1WebsocketBroadcastServer"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">WebsocketBroadcastServer</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../index.html#_CPPv44O3DS" title="O3DS"><span class="n"><span class="pre">O3DS</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../index.html#_CPPv4N4O3DS9WebsocketE" title="O3DS::Websocket"><span class="n"><span class="pre">Websocket</span></span></a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS24WebsocketBroadcastServer15TConnectionListE">
+<span id="_CPPv3N4O3DS24WebsocketBroadcastServer15TConnectionListE"></span><span id="_CPPv2N4O3DS24WebsocketBroadcastServer15TConnectionListE"></span><span id="O3DS::WebsocketBroadcastServer::TConnectionList"></span><span class="target" id="classO3DS_1_1WebsocketBroadcastServer_1a19df0475ac28d56e35178c6f54859f7e"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">set</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">connection_hdl</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">owner_less</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">connection_hdl</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TConnectionList</span></span></span><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS24WebsocketBroadcastServer24WebsocketBroadcastServerEv">
+<span id="_CPPv3N4O3DS24WebsocketBroadcastServer24WebsocketBroadcastServerEv"></span><span id="_CPPv2N4O3DS24WebsocketBroadcastServer24WebsocketBroadcastServerEv"></span><span id="O3DS::WebsocketBroadcastServer::WebsocketBroadcastServer"></span><span class="target" id="classO3DS_1_1WebsocketBroadcastServer_1ad326e9b58ad09593d47fd491a3874f95"></span><span class="sig-name descname"><span class="n"><span class="pre">WebsocketBroadcastServer</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS24WebsocketBroadcastServer4stopEv">
+<span id="_CPPv3N4O3DS24WebsocketBroadcastServer4stopEv"></span><span id="_CPPv2N4O3DS24WebsocketBroadcastServer4stopEv"></span><span id="O3DS::WebsocketBroadcastServer::stop"></span><span class="target" id="classO3DS_1_1WebsocketBroadcastServer_1a085c37ba05eae31fd4912639e805c748"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS24WebsocketBroadcastServer5startEPKc">
+<span id="_CPPv3N4O3DS24WebsocketBroadcastServer5startEPKc"></span><span id="_CPPv2N4O3DS24WebsocketBroadcastServer5startEPKc"></span><span id="O3DS::WebsocketBroadcastServer::start__cCP"></span><span class="target" id="classO3DS_1_1WebsocketBroadcastServer_1a21aa52ab5da41d44e7201a35ee9ed680"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">start</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">url</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><br /></dt>
+<dd><p><a class="reference internal" href="classStarts.html#classStarts"><span class="std std-ref">Starts</span></a> the connector, often using nng_dial or nng_listen. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS24WebsocketBroadcastServer5writeEPKc6size_t">
+<span id="_CPPv3N4O3DS24WebsocketBroadcastServer5writeEPKc6size_t"></span><span id="_CPPv2N4O3DS24WebsocketBroadcastServer5writeEPKc6size_t"></span><span id="O3DS::WebsocketBroadcastServer::write__cCP.s"></span><span class="target" id="classO3DS_1_1WebsocketBroadcastServer_1a55de238d82f6307e9e4106e98a5d25c9"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">len</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><br /></dt>
+<dd><p>Write bytes - len is the size of data. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS24WebsocketBroadcastServer4readEPc6size_t">
+<span id="_CPPv3N4O3DS24WebsocketBroadcastServer4readEPc6size_t"></span><span id="_CPPv2N4O3DS24WebsocketBroadcastServer4readEPc6size_t"></span><span id="O3DS::WebsocketBroadcastServer::read__cP.s"></span><span class="target" id="classO3DS_1_1WebsocketBroadcastServer_1a257e8ad63d4725dd774d80f65d714a1e"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">len</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><br /></dt>
+<dd><p>Read bytes - len is the fixed size of buffer, returns the number of bytes read. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS24WebsocketBroadcastServer4readEPPcP6size_t">
+<span id="_CPPv3N4O3DS24WebsocketBroadcastServer4readEPPcP6size_t"></span><span id="_CPPv2N4O3DS24WebsocketBroadcastServer4readEPPcP6size_t"></span><span id="O3DS::WebsocketBroadcastServer::read__cPP.sP"></span><span class="target" id="classO3DS_1_1WebsocketBroadcastServer_1a9e86dd3e642837384a26297575222420"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">len</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><br /></dt>
+<dd><p>Read a message, realloc and rezie *data if needed. If the buffer is reszied, len will be updated. Returns the size of the message, which may be less than the buffer size </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS24WebsocketBroadcastServer6onOpenE14connection_hdl">
+<span id="_CPPv3N4O3DS24WebsocketBroadcastServer6onOpenE14connection_hdl"></span><span id="_CPPv2N4O3DS24WebsocketBroadcastServer6onOpenE14connection_hdl"></span><span id="O3DS::WebsocketBroadcastServer::onOpen__connection_hdl"></span><span class="target" id="classO3DS_1_1WebsocketBroadcastServer_1adf6af9eea8390c5b4ae6b8b46ba20456"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">onOpen</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">connection_hdl</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">hdl</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS24WebsocketBroadcastServer7onCloseE14connection_hdl">
+<span id="_CPPv3N4O3DS24WebsocketBroadcastServer7onCloseE14connection_hdl"></span><span id="_CPPv2N4O3DS24WebsocketBroadcastServer7onCloseE14connection_hdl"></span><span id="O3DS::WebsocketBroadcastServer::onClose__connection_hdl"></span><span class="target" id="classO3DS_1_1WebsocketBroadcastServer_1ac6ea797a42a45e16b217ef91180bff24"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">onClose</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">connection_hdl</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">hdl</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS24WebsocketBroadcastServer9onMessageE14connection_hdlN6server11message_ptrE">
+<span id="_CPPv3N4O3DS24WebsocketBroadcastServer9onMessageE14connection_hdlN6server11message_ptrE"></span><span id="_CPPv2N4O3DS24WebsocketBroadcastServer9onMessageE14connection_hdlN6server11message_ptrE"></span><span id="O3DS::WebsocketBroadcastServer::onMessage__connection_hdl.server::message_ptr"></span><span class="target" id="classO3DS_1_1WebsocketBroadcastServer_1a232b9e29090a1c28224b4862a5e5d28a"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">onMessage</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">connection_hdl</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">hdl</span></span>, <a class="reference internal" href="../index.html#_CPPv4N4O3DS6serverE" title="O3DS::server"><span class="n"><span class="pre">server</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">message_ptr</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">msg</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS24WebsocketBroadcastServer7mServerE">
+<span id="_CPPv3N4O3DS24WebsocketBroadcastServer7mServerE"></span><span id="_CPPv2N4O3DS24WebsocketBroadcastServer7mServerE"></span><span id="O3DS::WebsocketBroadcastServer::mServer__server"></span><span class="target" id="classO3DS_1_1WebsocketBroadcastServer_1a62bc95d5a902fe45b9fbd394c2b714d7"></span><a class="reference internal" href="../index.html#_CPPv4N4O3DS6serverE" title="O3DS::server"><span class="n"><span class="pre">server</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mServer</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS24WebsocketBroadcastServer12mConnectionsE">
+<span id="_CPPv3N4O3DS24WebsocketBroadcastServer12mConnectionsE"></span><span id="_CPPv2N4O3DS24WebsocketBroadcastServer12mConnectionsE"></span><span id="O3DS::WebsocketBroadcastServer::mConnections__TConnectionList"></span><span class="target" id="classO3DS_1_1WebsocketBroadcastServer_1aa010ac607b4fcba98f4488a6fab977ce"></span><a class="reference internal" href="../index.html#_CPPv4N4O3DS24WebsocketBroadcastServer15TConnectionListE" title="O3DS::WebsocketBroadcastServer::TConnectionList"><span class="n"><span class="pre">TConnectionList</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mConnections</span></span></span><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="classO3DS_1_1Websocket.html" class="btn btn-neutral float-left" title="Class Websocket" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="classO3DS_1_1WebsocketClient.html" class="btn btn-neutral float-right" title="Class WebsocketClient" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Alastair Macleod.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

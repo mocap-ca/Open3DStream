@@ -1,0 +1,14 @@
+.. _exhale_function_CMakeLists_8txt_1a09b5da6a6bf1ca3a24700967c08b2d19:
+
+Function target_link_libraries
+==============================
+
+- Defined in :ref:`file_src_CMakeLists.txt`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: target_link_libraries(open3dstreamstatic PRIVATE ${libs})
+   :project: o3ds

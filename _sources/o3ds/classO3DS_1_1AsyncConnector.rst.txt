@@ -3,7 +3,7 @@
 Class AsyncConnector
 ====================
 
-- Defined in :ref:`file_src_o3ds_base_server.h`
+- Defined in :ref:`file_src_o3ds_base_connector.h`
 
 
 Inheritance Relationships
@@ -18,11 +18,8 @@ Base Type
 Derived Types
 *************
 
-- ``public O3DS::AsyncPair`` (:ref:`exhale_class_classO3DS_1_1AsyncPair`)
-- ``public O3DS::AsyncPipeline`` (:ref:`exhale_class_classO3DS_1_1AsyncPipeline`)
-- ``public O3DS::AsyncPublisher`` (:ref:`exhale_class_classO3DS_1_1AsyncPublisher`)
-- ``public O3DS::AsyncRequestReply`` (:ref:`exhale_class_classO3DS_1_1AsyncRequestReply`)
-- ``public O3DS::AsyncSubscriber`` (:ref:`exhale_class_classO3DS_1_1AsyncSubscriber`)
+- ``public O3DS::AsyncNngConnector`` (:ref:`exhale_class_classO3DS_1_1AsyncNngConnector`)
+- ``public O3DS::Websocket`` (:ref:`exhale_class_classO3DS_1_1Websocket`)
 
 
 Class Documentation
@@ -30,6 +27,7 @@ Class Documentation
 
 
 .. doxygenclass:: O3DS::AsyncConnector
+   :project: o3ds
    :members:
    :protected-members:
    :undoc-members:

@@ -9,6 +9,7 @@ Directory o3ds
 
 .. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
 
+
 *Directory path:* ``src/o3ds``
 
 
@@ -25,8 +26,8 @@ Files
 - :ref:`file_src_o3ds_async_request.h`
 - :ref:`file_src_o3ds_async_subscriber.cpp`
 - :ref:`file_src_o3ds_async_subscriber.h`
-- :ref:`file_src_o3ds_base_server.cpp`
-- :ref:`file_src_o3ds_base_server.h`
+- :ref:`file_src_o3ds_base_connector.cpp`
+- :ref:`file_src_o3ds_base_connector.h`
 - :ref:`file_src_o3ds_context.cpp`
 - :ref:`file_src_o3ds_context.h`
 - :ref:`file_src_o3ds_getTime.cpp`
@@ -35,6 +36,8 @@ Files
 - :ref:`file_src_o3ds_math.h`
 - :ref:`file_src_o3ds_model.cpp`
 - :ref:`file_src_o3ds_model.h`
+- :ref:`file_src_o3ds_nng_connector.cpp`
+- :ref:`file_src_o3ds_nng_connector.h`
 - :ref:`file_src_o3ds_o3ds.h`
 - :ref:`file_src_o3ds_pair.cpp`
 - :ref:`file_src_o3ds_pair.h`
@@ -47,5 +50,7 @@ Files
 - :ref:`file_src_o3ds_subscriber.cpp`
 - :ref:`file_src_o3ds_subscriber.h`
 - :ref:`file_src_o3ds_transform_component.h`
+- :ref:`file_src_o3ds_websocket.cpp`
+- :ref:`file_src_o3ds_websocket.h`
 
 

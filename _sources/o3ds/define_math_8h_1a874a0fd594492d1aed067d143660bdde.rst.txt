@@ -11,3 +11,4 @@ Define Documentation
 
 
 .. doxygendefine:: CALC
+   :project: o3ds

@@ -15,13 +15,13 @@ Program Listing for File async_publisher.h
    
    #include <nng/nng.h>
    #include <nng/protocol/pubsub0/pub.h>
-   #include "base_server.h"
+   #include "nng_connector.h"
    #include <vector>
    
    namespace O3DS
    {
    
-       class AsyncPublisher : public AsyncConnector
+       class AsyncPublisher : public AsyncNngConnector
        {
        public:
            virtual bool start(const char* url);

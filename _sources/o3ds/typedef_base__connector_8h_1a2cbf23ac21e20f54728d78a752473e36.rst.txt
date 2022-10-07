@@ -1,0 +1,14 @@
+.. _exhale_typedef_base__connector_8h_1a2cbf23ac21e20f54728d78a752473e36:
+
+Typedef O3DS::InDataFunc
+========================
+
+- Defined in :ref:`file_src_o3ds_base_connector.h`
+
+
+Typedef Documentation
+---------------------
+
+
+.. doxygentypedef:: O3DS::InDataFunc
+   :project: o3ds

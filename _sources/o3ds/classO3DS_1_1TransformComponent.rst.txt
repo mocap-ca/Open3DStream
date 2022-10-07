@@ -23,6 +23,7 @@ Class Documentation
 
 
 .. doxygenclass:: O3DS::TransformComponent
+   :project: o3ds
    :members:
    :protected-members:
    :undoc-members:

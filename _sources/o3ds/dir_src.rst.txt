@@ -18,12 +18,5 @@ Files
 -----
 
 - :ref:`file_src_CMakeLists.txt`
-- :ref:`file_src_Open3dStream.cpp`
-- :ref:`file_src_Open3dStreamClient.cpp`
-- :ref:`file_src_Open3dStreamClient.h`
-- :ref:`file_src_Open3dStreamServer.cpp`
-- :ref:`file_src_Open3dStreamServer.h`
-- :ref:`file_src_Open3dStreamUtil.cpp`
-- :ref:`file_src_Open3dStreamUtil.h`
 
 

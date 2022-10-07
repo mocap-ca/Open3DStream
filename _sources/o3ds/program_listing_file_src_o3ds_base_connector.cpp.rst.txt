@@ -1,0 +1,44 @@
+
+.. _program_listing_file_src_o3ds_base_connector.cpp:
+
+Program Listing for File base_connector.cpp
+===========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_src_o3ds_base_connector.cpp>` (``src/o3ds/base_connector.cpp``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   #include "base_connector.h"
+   
+   #include <string>
+   #include <string.h>
+   #include "nng/nng.h"
+   
+   namespace O3DS
+   {
+       Connector::Connector() : mState(NOTSTARTED) {};
+   
+       Connector::~Connector()
+       {
+       }
+   
+       const std::string& Connector::getError()
+       {
+           return mError;
+       }
+   
+       void Connector::setError(const char* msg)
+       {
+           mError = msg;
+           mState = Connector::STATE_ERROR;
+       }
+   
+       void AsyncConnector::setFunc(void* ctx, InDataFunc f)
+       {
+           mContext = ctx;
+           mInDataFunc = f;
+       }
+   
+   } // namespace

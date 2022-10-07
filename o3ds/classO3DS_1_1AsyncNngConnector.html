@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Class AsyncNngConnector &mdash; Open3DStream  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class AsyncPair" href="classO3DS_1_1AsyncPair.html" />
+    <link rel="prev" title="Class AsyncConnector" href="classO3DS_1_1AsyncConnector.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Open3DStream
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connectors.html">Connector Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="o3ds.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="o3ds.html#class-hierarchy">Class Hierarchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="o3ds.html#file-hierarchy">File Hierarchy</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="o3ds.html#full-api">Full API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#namespaces">Namespaces</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="o3ds.html#classes-and-structs">Classes and Structs</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="structwork.html">Struct work</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncClient.html">Class AsyncClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncConnector.html">Class AsyncConnector</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Class AsyncNngConnector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPair.html">Class AsyncPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPairClient.html">Class AsyncPairClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPairServer.html">Class AsyncPairServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPipeline.html">Class AsyncPipeline</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncPublisher.html">Class AsyncPublisher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncReply.html">Class AsyncReply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncRequest.html">Class AsyncRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncRequestReply.html">Class AsyncRequestReply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncServer.html">Class AsyncServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1AsyncSubscriber.html">Class AsyncSubscriber</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1BlockingNngConnector.html">Class BlockingNngConnector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1ClientPair.html">Class ClientPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Connector.html">Class Connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Context.html">Class Context</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Matrix.html">Template Class Matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Publisher.html">Class Publisher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Pull.html">Class Pull</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Push.html">Class Push</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Reply.html">Class Reply</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Request.html">Class Request</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1ServerPair.html">Class ServerPair</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Subject.html">Class Subject</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1SubjectList.html">Class SubjectList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Subscriber.html">Class Subscriber</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Transform.html">Class Transform</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformBuilder.html">Class TransformBuilder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformComponent.html">Class TransformComponent</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformList.html">Class TransformList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformMatrix.html">Class TransformMatrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformRotation.html">Class TransformRotation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformScale.html">Class TransformScale</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1TransformTranslation.html">Class TransformTranslation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Vector3.html">Template Class Vector3</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Vector4.html">Template Class Vector4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1Websocket.html">Class Websocket</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1WebsocketBroadcastServer.html">Class WebsocketBroadcastServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classO3DS_1_1WebsocketClient.html">Class WebsocketClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classStarts.html">Class Starts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="classVector.html">Class Vector</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#enums">Enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#variables">Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#defines">Defines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="o3ds.html#typedefs">Typedefs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Open3DStream</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="o3ds.html">Reference</a> &raquo;</li>
+      <li>Class AsyncNngConnector</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/o3ds/classO3DS_1_1AsyncNngConnector.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="class-asyncnngconnector">
+<span id="exhale-class-classo3ds-1-1asyncnngconnector"></span><h1>Class AsyncNngConnector<a class="headerlink" href="#class-asyncnngconnector" title="Permalink to this heading"></a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_src_o3ds_nng_connector.h.html#file-src-o3ds-nng-connector-h"><span class="std std-ref">File nng_connector.h</span></a></p></li>
+</ul>
+<section id="inheritance-relationships">
+<h2>Inheritance Relationships<a class="headerlink" href="#inheritance-relationships" title="Permalink to this heading"></a></h2>
+<section id="base-type">
+<h3>Base Type<a class="headerlink" href="#base-type" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">O3DS::AsyncConnector</span></code> (<a class="reference internal" href="classO3DS_1_1AsyncConnector.html#exhale-class-classo3ds-1-1asyncconnector"><span class="std std-ref">Class AsyncConnector</span></a>)</p></li>
+</ul>
+</section>
+<section id="derived-types">
+<h3>Derived Types<a class="headerlink" href="#derived-types" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">O3DS::AsyncPair</span></code> (<a class="reference internal" href="classO3DS_1_1AsyncPair.html#exhale-class-classo3ds-1-1asyncpair"><span class="std std-ref">Class AsyncPair</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">O3DS::AsyncPipeline</span></code> (<a class="reference internal" href="classO3DS_1_1AsyncPipeline.html#exhale-class-classo3ds-1-1asyncpipeline"><span class="std std-ref">Class AsyncPipeline</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">O3DS::AsyncPublisher</span></code> (<a class="reference internal" href="classO3DS_1_1AsyncPublisher.html#exhale-class-classo3ds-1-1asyncpublisher"><span class="std std-ref">Class AsyncPublisher</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">O3DS::AsyncRequestReply</span></code> (<a class="reference internal" href="classO3DS_1_1AsyncRequestReply.html#exhale-class-classo3ds-1-1asyncrequestreply"><span class="std std-ref">Class AsyncRequestReply</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">O3DS::AsyncSubscriber</span></code> (<a class="reference internal" href="classO3DS_1_1AsyncSubscriber.html#exhale-class-classo3ds-1-1asyncsubscriber"><span class="std std-ref">Class AsyncSubscriber</span></a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this heading"></a></h2>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnectorE">
+<span id="_CPPv3N4O3DS17AsyncNngConnectorE"></span><span id="_CPPv2N4O3DS17AsyncNngConnectorE"></span><span id="O3DS::AsyncNngConnector"></span><span class="target" id="classO3DS_1_1AsyncNngConnector"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AsyncNngConnector</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="../index.html#_CPPv44O3DS" title="O3DS"><span class="n"><span class="pre">O3DS</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../index.html#_CPPv4N4O3DS14AsyncConnectorE" title="O3DS::AsyncConnector"><span class="n"><span class="pre">AsyncConnector</span></span></a><br /></dt>
+<dd><p>Subclassed by <a class="reference internal" href="classO3DS_1_1AsyncPair.html#classO3DS_1_1AsyncPair"><span class="std std-ref">O3DS::AsyncPair</span></a>, <a class="reference internal" href="classO3DS_1_1AsyncPipeline.html#classO3DS_1_1AsyncPipeline"><span class="std std-ref">O3DS::AsyncPipeline</span></a>, <a class="reference internal" href="classO3DS_1_1AsyncPublisher.html#classO3DS_1_1AsyncPublisher"><span class="std std-ref">O3DS::AsyncPublisher</span></a>, <a class="reference internal" href="classO3DS_1_1AsyncRequestReply.html#classO3DS_1_1AsyncRequestReply"><span class="std std-ref">O3DS::AsyncRequestReply</span></a>, <a class="reference internal" href="classO3DS_1_1AsyncSubscriber.html#classO3DS_1_1AsyncSubscriber"><span class="std std-ref">O3DS::AsyncSubscriber</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnector17AsyncNngConnectorEv">
+<span id="_CPPv3N4O3DS17AsyncNngConnector17AsyncNngConnectorEv"></span><span id="_CPPv2N4O3DS17AsyncNngConnector17AsyncNngConnectorEv"></span><span id="O3DS::AsyncNngConnector::AsyncNngConnector"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1afce3e3b5a1856681468662005ec3b076"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">AsyncNngConnector</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnectorD0Ev">
+<span id="_CPPv3N4O3DS17AsyncNngConnectorD0Ev"></span><span id="_CPPv2N4O3DS17AsyncNngConnectorD0Ev"></span><span id="O3DS::AsyncNngConnector::~AsyncNngConnector"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1acb76100cc3fbe4aac9912cdb6bd96b0b"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~AsyncNngConnector</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnector8setErrorEPKci">
+<span id="_CPPv3N4O3DS17AsyncNngConnector8setErrorEPKci"></span><span id="_CPPv2N4O3DS17AsyncNngConnector8setErrorEPKci"></span><span id="O3DS::AsyncNngConnector::setError__cCP.i"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1a65000921812c206abea12443afa9f7ef"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setError</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">msg</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">ret</span></span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnector5startEPKc">
+<span id="_CPPv3N4O3DS17AsyncNngConnector5startEPKc"></span><span id="_CPPv2N4O3DS17AsyncNngConnector5startEPKc"></span><span id="O3DS::AsyncNngConnector::start__cCP"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1afd54c8baebb09cdccc9eb1e5c2af429f"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">start</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">url</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><br /></dt>
+<dd><p><a class="reference internal" href="classStarts.html#classStarts"><span class="std std-ref">Starts</span></a> the server - servers will listen, clients will dial. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnector5writeEPKc6size_t">
+<span id="_CPPv3N4O3DS17AsyncNngConnector5writeEPKc6size_t"></span><span id="_CPPv2N4O3DS17AsyncNngConnector5writeEPKc6size_t"></span><span id="O3DS::AsyncNngConnector::write__cCP.s"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1a2086ffc07d3f4bde2d8bb4e963ecdc3a"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">write</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">len</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><br /></dt>
+<dd><p>Writes an nng message. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnector4readEPc6size_t">
+<span id="_CPPv3N4O3DS17AsyncNngConnector4readEPc6size_t"></span><span id="_CPPv2N4O3DS17AsyncNngConnector4readEPc6size_t"></span><span id="O3DS::AsyncNngConnector::read__cP.s"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1a9f706d647951e468013e05fbd9dcd50a"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">len</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><br /></dt>
+<dd><p>Read bytes - len is the size of data. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnector4readEPPcP6size_t">
+<span id="_CPPv3N4O3DS17AsyncNngConnector4readEPPcP6size_t"></span><span id="_CPPv2N4O3DS17AsyncNngConnector4readEPPcP6size_t"></span><span id="O3DS::AsyncNngConnector::read__cPP.sP"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1abfa9bfb69580e4f58ced32229846eb49"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">read</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">len</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><br /></dt>
+<dd><p>Read bytes, resize data if needed. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnector12asyncReadMsgEv">
+<span id="_CPPv3N4O3DS17AsyncNngConnector12asyncReadMsgEv"></span><span id="_CPPv2N4O3DS17AsyncNngConnector12asyncReadMsgEv"></span><span id="O3DS::AsyncNngConnector::asyncReadMsg"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1a2e1c510416f832c85d96190867ba4c11"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">asyncReadMsg</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd><p>handles a nng_recv_aio call. Calls nng_recv_aio again if message was okay and returns true </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnector4stopEv">
+<span id="_CPPv3N4O3DS17AsyncNngConnector4stopEv"></span><span id="_CPPv2N4O3DS17AsyncNngConnector4stopEv"></span><span id="O3DS::AsyncNngConnector::stop"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1a34c7b5c1cd13d7e3e0c11e95f4e99abc"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-protected-attributes">Protected Attributes</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnector7mDialerE">
+<span id="_CPPv3N4O3DS17AsyncNngConnector7mDialerE"></span><span id="_CPPv2N4O3DS17AsyncNngConnector7mDialerE"></span><span id="O3DS::AsyncNngConnector::mDialer__nng_dialer"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1a4e872eff8c264b7facbf14abe9caaa30"></span><span class="n"><span class="pre">nng_dialer</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mDialer</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnector3aioE">
+<span id="_CPPv3N4O3DS17AsyncNngConnector3aioE"></span><span id="_CPPv2N4O3DS17AsyncNngConnector3aioE"></span><span id="O3DS::AsyncNngConnector::aio__nng_aioP"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1a785364506b1f04f408475edddd15899e"></span><span class="n"><span class="pre">nng_aio</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">aio</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnector7mSocketE">
+<span id="_CPPv3N4O3DS17AsyncNngConnector7mSocketE"></span><span id="_CPPv2N4O3DS17AsyncNngConnector7mSocketE"></span><span id="O3DS::AsyncNngConnector::mSocket__nng_socket"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1ad18f1ac09d9e0d56700c8e6a25b5359d"></span><span class="n"><span class="pre">nng_socket</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mSocket</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnector5mutexE">
+<span id="_CPPv3N4O3DS17AsyncNngConnector5mutexE"></span><span id="_CPPv2N4O3DS17AsyncNngConnector5mutexE"></span><span id="O3DS::AsyncNngConnector::mutex__std::mutex"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1a0c6134b8177f7f94c436a94de60087ff"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">mutex</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mutex</span></span></span><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N4O3DS17AsyncNngConnector3ctxE">
+<span id="_CPPv3N4O3DS17AsyncNngConnector3ctxE"></span><span id="_CPPv2N4O3DS17AsyncNngConnector3ctxE"></span><span id="O3DS::AsyncNngConnector::ctx__nng_ctx"></span><span class="target" id="classO3DS_1_1AsyncNngConnector_1aac7cc18ba6681cfd37334c14e2642664"></span><span class="n"><span class="pre">nng_ctx</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ctx</span></span></span><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="classO3DS_1_1AsyncConnector.html" class="btn btn-neutral float-left" title="Class AsyncConnector" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="classO3DS_1_1AsyncPair.html" class="btn btn-neutral float-right" title="Class AsyncPair" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Alastair Macleod.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

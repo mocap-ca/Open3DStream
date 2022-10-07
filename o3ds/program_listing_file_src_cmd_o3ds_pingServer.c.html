@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Program Listing for File o3ds_pingServer.c &mdash; Open3DStream  documentation</title>
@@ -16,7 +16,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
         <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
         <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -44,8 +46,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../background.html">Background</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../downloads.html">Downloads</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../connectors.html">Connector Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../model.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="o3ds.html">Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../license.html">License</a></li>
 </ul>
@@ -75,18 +77,18 @@
            <div itemprop="articleBody">
              
   <section id="program-listing-for-file-o3ds-pingserver-c">
-<span id="program-listing-file-src-cmd-o3ds-pingserver-c"></span><h1>Program Listing for File o3ds_pingServer.c<a class="headerlink" href="#program-listing-for-file-o3ds-pingserver-c" title="Permalink to this headline"></a></h1>
+<span id="program-listing-file-src-cmd-o3ds-pingserver-c"></span><h1>Program Listing for File o3ds_pingServer.c<a class="headerlink" href="#program-listing-for-file-o3ds-pingserver-c" title="Permalink to this heading"></a></h1>
 <p>↰ <a class="reference internal" href="file_src_cmd_o3ds_pingServer.c.html#file-src-cmd-o3ds-pingserver-c"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">src/cmd/o3ds_pingServer.c</span></code>)</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Based mainly on https://github.com/nanomsg/nng/blob/master/demo/async/server.c</span>
 
-<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;time.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;time.h&gt;</span><span class="cp"></span>
 
-<span class="cp">#include</span> <span class="cpf">&lt;nng/nng.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;nng/protocol/reqrep0/rep.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;nng/supplemental/util/platform.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;nng/nng.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;nng/protocol/reqrep0/rep.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;nng/supplemental/util/platform.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Parallel is the maximum number of outstanding requests we can handle.</span>
 <span class="c1">// This is *NOT* the number of threads in use, but instead represents</span>
@@ -102,130 +104,130 @@
 <span class="c1">// The server keeps a list of work items, sorted by expiration time,</span>
 <span class="c1">// so that we can use this to set the timeout to the correct value for</span>
 <span class="c1">// use in poll.</span>
-<span class="k">struct</span> <span class="n">work</span> <span class="p">{</span>
-  <span class="k">enum</span> <span class="p">{</span> <span class="n">INIT</span><span class="p">,</span> <span class="n">RECV</span><span class="p">,</span> <span class="n">WAIT</span><span class="p">,</span> <span class="n">SEND</span> <span class="p">}</span> <span class="n">state</span><span class="p">;</span>
-  <span class="n">nng_aio</span> <span class="o">*</span><span class="n">aio</span><span class="p">;</span>
-  <span class="n">nng_msg</span> <span class="o">*</span><span class="n">msg</span><span class="p">;</span>
-  <span class="n">nng_ctx</span>  <span class="n">ctx</span><span class="p">;</span>
-<span class="p">};</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">work</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">INIT</span><span class="p">,</span><span class="w"> </span><span class="n">RECV</span><span class="p">,</span><span class="w"> </span><span class="n">WAIT</span><span class="p">,</span><span class="w"> </span><span class="n">SEND</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">state</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">nng_aio</span><span class="w"> </span><span class="o">*</span><span class="n">aio</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">nng_msg</span><span class="w"> </span><span class="o">*</span><span class="n">msg</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">nng_ctx</span><span class="w">  </span><span class="n">ctx</span><span class="p">;</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
-<span class="kt">void</span>
-<span class="nf">fatal</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">func</span><span class="p">,</span> <span class="kt">int</span> <span class="n">rv</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;%s: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">nng_strerror</span><span class="p">(</span><span class="n">rv</span><span class="p">));</span>
-  <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="kt">void</span><span class="w"></span>
+<span class="nf">fatal</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">func</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">rv</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;%s: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">func</span><span class="p">,</span><span class="w"> </span><span class="n">nng_strerror</span><span class="p">(</span><span class="n">rv</span><span class="p">));</span><span class="w"></span>
+<span class="w">  </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="kt">void</span>
-<span class="nf">server_cb</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">struct</span> <span class="n">work</span> <span class="o">*</span><span class="n">work</span> <span class="o">=</span> <span class="n">arg</span><span class="p">;</span>
-  <span class="n">nng_msg</span> <span class="o">*</span>    <span class="n">msg</span><span class="p">;</span>
-  <span class="kt">int</span>          <span class="n">rv</span><span class="p">;</span>
-  <span class="kt">uint32_t</span>     <span class="n">when</span><span class="p">;</span>
+<span class="kt">void</span><span class="w"></span>
+<span class="nf">server_cb</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">work</span><span class="w"> </span><span class="o">*</span><span class="n">work</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arg</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">nng_msg</span><span class="w"> </span><span class="o">*</span><span class="w">    </span><span class="n">msg</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w">          </span><span class="n">rv</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w">     </span><span class="n">when</span><span class="p">;</span><span class="w"></span>
 
-  <span class="k">switch</span> <span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">state</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">case</span> <span class="nl">INIT</span><span class="p">:</span>
-    <span class="n">work</span><span class="o">-&gt;</span><span class="n">state</span> <span class="o">=</span> <span class="n">RECV</span><span class="p">;</span>
-    <span class="n">nng_ctx_recv</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="p">,</span> <span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">);</span>
-    <span class="k">break</span><span class="p">;</span>
-  <span class="k">case</span> <span class="nl">RECV</span><span class="p">:</span>
-    <span class="k">if</span> <span class="p">((</span><span class="n">rv</span> <span class="o">=</span> <span class="n">nng_aio_result</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_ctx_recv&quot;</span><span class="p">,</span> <span class="n">rv</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="n">msg</span> <span class="o">=</span> <span class="n">nng_aio_get_msg</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">);</span>
-    <span class="n">work</span><span class="o">-&gt;</span><span class="n">msg</span>   <span class="o">=</span> <span class="n">msg</span><span class="p">;</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Message  %zu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">nng_msg_len</span><span class="p">(</span><span class="n">msg</span><span class="p">));</span>
-    <span class="n">work</span><span class="o">-&gt;</span><span class="n">state</span> <span class="o">=</span> <span class="n">WAIT</span><span class="p">;</span>
-    <span class="c1">//nng_sleep_aio(when, work-&gt;aio);</span>
-    <span class="k">break</span><span class="p">;</span>
-  <span class="k">case</span> <span class="nl">WAIT</span><span class="p">:</span>
-    <span class="c1">// We could add more data to the message here.</span>
-    <span class="n">nng_aio_set_msg</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">,</span> <span class="n">work</span><span class="o">-&gt;</span><span class="n">msg</span><span class="p">);</span>
-    <span class="n">work</span><span class="o">-&gt;</span><span class="n">msg</span>   <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-    <span class="n">work</span><span class="o">-&gt;</span><span class="n">state</span> <span class="o">=</span> <span class="n">SEND</span><span class="p">;</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Wait  %zu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">nng_msg_len</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">msg</span><span class="p">));</span>
-    <span class="n">nng_ctx_send</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="p">,</span> <span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">);</span>
-    <span class="k">break</span><span class="p">;</span>
-  <span class="k">case</span> <span class="nl">SEND</span><span class="p">:</span>
-    <span class="k">if</span> <span class="p">((</span><span class="n">rv</span> <span class="o">=</span> <span class="n">nng_aio_result</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">nng_msg_free</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">msg</span><span class="p">);</span>
-      <span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_ctx_send&quot;</span><span class="p">,</span> <span class="n">rv</span><span class="p">);</span>
-    <span class="p">}</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Send  %zu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">nng_msg_len</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">msg</span><span class="p">));</span>
-    <span class="n">work</span><span class="o">-&gt;</span><span class="n">state</span> <span class="o">=</span> <span class="n">RECV</span><span class="p">;</span>
-    <span class="n">nng_ctx_recv</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="p">,</span> <span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">);</span>
-    <span class="k">break</span><span class="p">;</span>
-  <span class="k">default</span><span class="o">:</span>
-    <span class="n">fatal</span><span class="p">(</span><span class="s">&quot;bad state!&quot;</span><span class="p">,</span> <span class="n">NNG_ESTATE</span><span class="p">);</span>
-    <span class="k">break</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">state</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">case</span><span class="w"> </span><span class="no">INIT</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">work</span><span class="o">-&gt;</span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RECV</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">nng_ctx_recv</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">case</span><span class="w"> </span><span class="no">RECV</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nng_aio_result</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_ctx_recv&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rv</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nng_aio_get_msg</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">work</span><span class="o">-&gt;</span><span class="n">msg</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">msg</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Message  %zu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">nng_msg_len</span><span class="p">(</span><span class="n">msg</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">work</span><span class="o">-&gt;</span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WAIT</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="c1">//nng_sleep_aio(when, work-&gt;aio);</span>
+<span class="w">    </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">case</span><span class="w"> </span><span class="no">WAIT</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// We could add more data to the message here.</span>
+<span class="w">    </span><span class="n">nng_aio_set_msg</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">,</span><span class="w"> </span><span class="n">work</span><span class="o">-&gt;</span><span class="n">msg</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="n">work</span><span class="o">-&gt;</span><span class="n">msg</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">work</span><span class="o">-&gt;</span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SEND</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Wait  %zu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">nng_msg_len</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">msg</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">nng_ctx_send</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">case</span><span class="w"> </span><span class="no">SEND</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nng_aio_result</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">nng_msg_free</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">msg</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_ctx_send&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rv</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Send  %zu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">nng_msg_len</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">msg</span><span class="p">));</span><span class="w"></span>
+<span class="w">    </span><span class="n">work</span><span class="o">-&gt;</span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RECV</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">nng_ctx_recv</span><span class="p">(</span><span class="n">work</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">work</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">default</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;bad state!&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NNG_ESTATE</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="k">break</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="k">struct</span> <span class="n">work</span> <span class="o">*</span>
-<span class="nf">alloc_work</span><span class="p">(</span><span class="n">nng_socket</span> <span class="n">sock</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="k">struct</span> <span class="n">work</span> <span class="o">*</span><span class="n">w</span><span class="p">;</span>
-  <span class="kt">int</span>          <span class="n">rv</span><span class="p">;</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">work</span><span class="w"> </span><span class="o">*</span><span class="w"></span>
+<span class="n">alloc_work</span><span class="p">(</span><span class="n">nng_socket</span><span class="w"> </span><span class="n">sock</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">work</span><span class="w"> </span><span class="o">*</span><span class="n">w</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w">          </span><span class="n">rv</span><span class="p">;</span><span class="w"></span>
 
-  <span class="k">if</span> <span class="p">((</span><span class="n">w</span> <span class="o">=</span> <span class="n">nng_alloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">w</span><span class="p">)))</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_alloc&quot;</span><span class="p">,</span> <span class="n">NNG_ENOMEM</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">if</span> <span class="p">((</span><span class="n">rv</span> <span class="o">=</span> <span class="n">nng_aio_alloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">,</span> <span class="n">server_cb</span><span class="p">,</span> <span class="n">w</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_aio_alloc&quot;</span><span class="p">,</span> <span class="n">rv</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">if</span> <span class="p">((</span><span class="n">rv</span> <span class="o">=</span> <span class="n">nng_ctx_open</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="p">,</span> <span class="n">sock</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_ctx_open&quot;</span><span class="p">,</span> <span class="n">rv</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="n">w</span><span class="o">-&gt;</span><span class="n">state</span> <span class="o">=</span> <span class="n">INIT</span><span class="p">;</span>
-  <span class="k">return</span> <span class="p">(</span><span class="n">w</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nng_alloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="o">*</span><span class="n">w</span><span class="p">)))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_alloc&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">NNG_ENOMEM</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nng_aio_alloc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="o">-&gt;</span><span class="n">aio</span><span class="p">,</span><span class="w"> </span><span class="n">server_cb</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_aio_alloc&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rv</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nng_ctx_open</span><span class="p">(</span><span class="o">&amp;</span><span class="n">w</span><span class="o">-&gt;</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">sock</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_ctx_open&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rv</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="n">w</span><span class="o">-&gt;</span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INIT</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">w</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
 <span class="c1">// The server runs forever.</span>
-<span class="kt">int</span>
-<span class="nf">server</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">url</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">nng_socket</span>   <span class="n">sock</span><span class="p">;</span>
-  <span class="k">struct</span> <span class="n">work</span> <span class="o">*</span><span class="n">works</span><span class="p">[</span><span class="n">PARALLEL</span><span class="p">];</span>
-  <span class="kt">int</span>          <span class="n">rv</span><span class="p">;</span>
-  <span class="kt">int</span>          <span class="n">i</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"></span>
+<span class="n">server</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">url</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">nng_socket</span><span class="w">   </span><span class="n">sock</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">work</span><span class="w"> </span><span class="o">*</span><span class="n">works</span><span class="p">[</span><span class="n">PARALLEL</span><span class="p">];</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w">          </span><span class="n">rv</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w">          </span><span class="n">i</span><span class="p">;</span><span class="w"></span>
 
-  <span class="cm">/*  Create the socket. */</span>
-  <span class="n">rv</span> <span class="o">=</span> <span class="n">nng_rep0_open</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sock</span><span class="p">);</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">rv</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_rep0_open&quot;</span><span class="p">,</span> <span class="n">rv</span><span class="p">);</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="cm">/*  Create the socket. */</span><span class="w"></span>
+<span class="w">  </span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nng_rep0_open</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sock</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rv</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_rep0_open&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rv</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">PARALLEL</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">works</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">alloc_work</span><span class="p">(</span><span class="n">sock</span><span class="p">);</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">PARALLEL</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">works</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alloc_work</span><span class="p">(</span><span class="n">sock</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="k">if</span> <span class="p">((</span><span class="n">rv</span> <span class="o">=</span> <span class="n">nng_listen</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_listen&quot;</span><span class="p">,</span> <span class="n">rv</span><span class="p">);</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nng_listen</span><span class="p">(</span><span class="n">sock</span><span class="p">,</span><span class="w"> </span><span class="n">url</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">fatal</span><span class="p">(</span><span class="s">&quot;nng_listen&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rv</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">PARALLEL</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">server_cb</span><span class="p">(</span><span class="n">works</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span> <span class="c1">// this starts them going (INIT state)</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">PARALLEL</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">server_cb</span><span class="p">(</span><span class="n">works</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span><span class="w"> </span><span class="c1">// this starts them going (INIT state)</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
 
-  <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
-    <span class="n">nng_msleep</span><span class="p">(</span><span class="mi">3600000</span><span class="p">);</span> <span class="c1">// neither pause() nor sleep() portable</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(;;)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">nng_msleep</span><span class="p">(</span><span class="mi">3600000</span><span class="p">);</span><span class="w"> </span><span class="c1">// neither pause() nor sleep() portable</span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 
-<span class="kt">int</span>
-<span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"></span>
+<span class="n">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span><span class="w"></span>
 
-  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Usage: %s &lt;url&gt;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-    <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;Example: %s tcp://127.0.0.1:5555</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-    <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="n">rc</span> <span class="o">=</span> <span class="n">server</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-  <span class="n">exit</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="nl">EXIT_SUCCESS</span> <span class="p">:</span> <span class="n">EXIT_FAILURE</span><span class="p">);</span>
-<span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Usage: %s &lt;url&gt;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span><span class="w"></span>
+<span class="w">    </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Example: %s tcp://127.0.0.1:5555</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span><span class="w"></span>
+<span class="w">    </span><span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">server</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span><span class="w"></span>
+<span class="w">  </span><span class="n">exit</span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">EXIT_SUCCESS</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">EXIT_FAILURE</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
