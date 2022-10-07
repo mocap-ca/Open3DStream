@@ -30,3 +30,8 @@ Unreal
 The unreal plugin can recive motion capture data from the motion builder
 plugin and make it available as a live link source.  The plugin is provided
 as source code and should work with all recent versions of Unreal.
+
+Test FBX Model
+--------------
+
+* `Beta Skinned <https://github.com/mocap-ca/Open3DStream/raw/master/test_data/beta_skinned.fbx>`_
