@@ -146,6 +146,8 @@ namespace O3DS
 		{}
 
 		std::string   mName;
+		std::vector<std::string> mJoints;
+
 		TransformList mTransforms;
 		void*         mReference;
 		Context       mContext;

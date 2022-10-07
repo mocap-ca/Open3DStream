@@ -210,7 +210,7 @@ void ThreadedDevice::threadHandler()
            
 	    while(!isDone() && isLive()  )
 		{
-			size_t sz = mConnector->readMsg(&buffer, &bufsz);
+			size_t sz = mConnector->read(&buffer, &bufsz);
 			if (sz == 0) passMessage(mConnector->getError().c_str());
 			if(sz > 0) passMessage(buffer, sz, 1);
         }

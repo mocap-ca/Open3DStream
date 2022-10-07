@@ -4,7 +4,7 @@
 #include <fbsdk/fbsdk.h>
 #include <vector>
 #include "mobuModel.h"
-#include "o3ds/base_server.h"
+#include "o3ds/base_connector.h"
 
 
 #define OPEN3D_DEVICE__CLASSNAME	Open3D_Device
@@ -43,7 +43,7 @@ public:
 	bool		Stop();
 	bool		Done();
 
-	void		AddItem(FBModel *model);
+	void		AddItem(FBModel* model);
 
 	void		DeviceRecordFrame( FBDeviceNotifyInfo &pDeviceNotifyInfo );
 
@@ -65,10 +65,13 @@ public:
 
 	void InData(void *, size_t);
 
+	int32_t WriteTcp(int socket, void *data, int32_t bucketSize);
+
 	O3DS::SubjectList       Items;
 	FBTCPIP                 mTcpIp;
 	O3DS::Connector*        mServer;
 	int                     mNetworkSocket;
+	std::vector<int>        mClients;
 
 private:
 	double                mSamplingRate;

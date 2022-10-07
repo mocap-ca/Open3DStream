@@ -3,7 +3,7 @@
 
 #include <nng/nng.h>
 #include <nng/protocol/reqrep0/req.h>
-#include "base_server.h"
+#include "nng_connector.h"
 
 
 namespace O3DS
@@ -12,7 +12,7 @@ namespace O3DS
 	Wraps [nng req0](https://nng.nanomsg.org/man/tip/nng_req.7.html) 
 	pattern. Provides a common Callback function to get messages. */
 	//! Base class for Request/Reply connection pattern.
-	class AsyncRequestReply : public AsyncConnector
+	class AsyncRequestReply : public AsyncNngConnector
 	{
 	public:
 		static void Callback(void *ref) { ((AsyncRequestReply*)ref)->Callback_(); }

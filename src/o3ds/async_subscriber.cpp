@@ -21,8 +21,8 @@ bool AsyncSubscriber::start(const char *url)
 	ret = nng_dialer_create(&mDialer, mSocket, url);
 	NNG_ERROR("Creating dialer")
 
-	ret = nng_pipe_notify(mSocket, nng_pipe_ev::NNG_PIPE_EV_ADD_POST,  AsyncSubscriber::pipeEvent, this);
-	NNG_ERROR("Setting pipe notify")
+	//ret = nng_pipe_notify(mSocket, nng_pipe_ev::NNG_PIPE_EV_ADD_POST,  AsyncSubscriber::pipeEvent, this);
+	//NNG_ERROR("Setting pipe notify")
 
 	// Async dial - pipe will be created on connection
 	ret = nng_dialer_start(mDialer, NNG_FLAG_NONBLOCK);
@@ -45,7 +45,7 @@ void AsyncSubscriber::pipeEvent_(nng_pipe pipe, nng_pipe_ev pipe_ev)
 	{
 		nng_socket s= nng_pipe_socket(pipe);
 
-		//ret = nng_ctx_open(&ctx, mSocket);
+		//int ret = nng_ctx_open(&ctx, mSocket);
 		//if (ret != 0) return;
 
 		//nng_ctx_recv(ctx, aio);

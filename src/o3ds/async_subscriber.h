@@ -4,13 +4,13 @@
 #include <nng/nng.h>
 #include <nng/protocol/pubsub0/sub.h>
 #include <nng/supplemental/util/platform.h>
-#include "base_server.h"
+#include "nng_connector.h"
 #include <string>
 
 namespace O3DS
 {
 	// The client pulls data down from a listen server
-	class AsyncSubscriber : public AsyncConnector
+	class AsyncSubscriber : public AsyncNngConnector
 	{
 	public:
 
@@ -18,7 +18,7 @@ namespace O3DS
 
 		void callback_()
 		{
-			AsyncConnector::asyncReadMsg();
+			AsyncNngConnector::asyncReadMsg();
 		}
 		static void callback(void *ref)
 		{

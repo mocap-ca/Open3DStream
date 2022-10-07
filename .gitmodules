@@ -7,3 +7,6 @@
 [submodule "thirdparty/cml"]
 	path = thirdparty/cml
 	url = https://github.com/demianmnave/CML.git
+[submodule "thirdparty/websocketpp"]
+	path = thirdparty/websocketpp
+	url = https://github.com/zaphoyd/websocketpp.git

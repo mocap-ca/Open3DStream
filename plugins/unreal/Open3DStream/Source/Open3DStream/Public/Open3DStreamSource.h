@@ -6,7 +6,7 @@
 #include "Containers/Ticker.h"
 
 #include "Open3DStreamSourceSettings.h"
-#include "Open3DServer.h"
+#include "UOpen3DServer.h"
 #include "o3ds/model.h"
 
 #include "LiveLinkRole.h"
@@ -38,6 +38,7 @@ public:
 	FText SourceMachineName;
 	FText SourceStatus;
 
+
 	virtual FText GetSourceType() const override { return SourceType; };
 	virtual FText GetSourceMachineName() const override { return SourceMachineName; }
 	virtual FText GetSourceStatus() const override { return SourceStatus; }
@@ -60,15 +61,21 @@ public:
 
 	FThreadSafeBool  bIsValid;
 
-	UServer server;
+	O3DSServer server;
+	uint8*  mBuffer;
+	size_t  mBufferSize;
+	uint8   mHeader[8];
+	size_t  mRemainder;
+	size_t  mPtr;
+
+	TSharedRef<FInternetAddr> mAddr;
+
 	std::vector<char> buffer;
+
 
 	O3DS::SubjectList mSubjects;
 
-
-	void OnNnpData();
-
-	void OnPackage(uint8 *data, size_t sz);
+	void OnPackage(const TArray<uint8>&);
 
 	FORCEINLINE void UpdateConnectionLastActive();
 	FCriticalSection ConnectionLastActiveSection;

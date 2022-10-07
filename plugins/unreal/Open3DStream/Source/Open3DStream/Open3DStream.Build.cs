@@ -2,6 +2,7 @@
 
 using UnrealBuildTool;
 using System.IO;
+using Tools.DotNETCommon;
 
 public class Open3DStream : ModuleRules
 {
@@ -15,7 +16,7 @@ public class Open3DStream : ModuleRules
 	
 		PrivateIncludePaths.AddRange( new string[] 
         { LibDir + "include" } );
-		
+
 		PublicDependencyModuleNames.AddRange( new string[] { "Core" } );
 
         PublicAdditionalLibraries.Add(LibDir + "nng.lib");

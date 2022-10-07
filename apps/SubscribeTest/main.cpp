@@ -4,6 +4,7 @@
 //#include "o3ds/async_pipeline.h"
 #include "o3ds/async_subscriber.h"
 #include "o3ds/async_pair.h"
+#include "o3ds/websocket.h"
 #include <nng/nng.h>
 #include <chrono>
 #include <thread>
@@ -15,6 +16,10 @@ void ReadFunc(void *ptr, void *buf, size_t len)
 	O3DS::SubjectList subjects;
 	subjects.Parse((const char*)buf, len);
 	printf("%zd\n", len);
+	for (auto i : subjects)
+	{
+		printf("   %s\n", i->mName.c_str());
+	}
 }
 
 int main(int argc, char *argv[])	
@@ -45,6 +50,12 @@ int main(int argc, char *argv[])
 		printf("Connecting to: %s\n", argv[2]);
 		connector = new O3DS::AsyncPairServer();
 	}
+	
+	if (strcmp(argv[1], "ws") == 0)
+	{
+		printf("Connecting to: %s\n", argv[2]);
+		connector = new O3DS::WebsocketClient();
+	}
 
 	if (!connector)
 	{
@@ -56,14 +67,21 @@ int main(int argc, char *argv[])
 
 	if (!connector->start(argv[2]))
 	{
-		fprintf(stderr, "Could not start server: %s\n", connector->err().c_str());
+		fprintf(stderr, "Could not start server: %s\n", connector->getError().c_str());
 		return 3;
 	}
 
-	using namespace std::chrono_literals;
+	using namespace std::literals::chrono_literals;
+
+	char buf[1024 * 60];
 
 	while (1)
 	{
+		/*size_t ret = connector->read(buf, 1024 * 60);
+		if(ret)
+		{
+			printf("%ld\n", ret);
+		}*/
 		nng_msleep(1000);
 		printf(".");
 		continue;

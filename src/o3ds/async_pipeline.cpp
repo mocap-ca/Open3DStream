@@ -50,7 +50,7 @@ namespace O3DS
 		ret = nng_recv(mSocket, &buf, &sz, NNG_FLAG_ALLOC);
 		if (ret != 0) return;
 
-		if (fnRef) fnRef(fnContext, (void*)buf, sz);
+		if (mInDataFunc) mInDataFunc(mContext, (void*)buf, sz);
 
 		nng_free(buf, sz);
 

@@ -4,7 +4,7 @@
 #include <maya/MPxThreadedDeviceNode.h>
 #include <maya/MStatus.h>
 #include <maya/MStringArray.h>
-#include "o3ds/base_server.h"
+#include "o3ds/nng_connector.h"
 #include "o3ds/model.h"
 
 
@@ -48,7 +48,7 @@ public:
 
 	static MTypeId id;
 
-	O3DS::BlockingConnector *mConnector;
+	O3DS::BlockingNngConnector*mConnector;
 	O3DS::SubjectList mSubjectList;
 
     MStringArray  mNames;

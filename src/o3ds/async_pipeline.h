@@ -3,14 +3,14 @@
 
 #include <nng/nng.h>
 #include <nng/protocol/pair1/pair.h>
-#include "base_server.h"
+#include "nng_connector.h"
 #include <string>
 
 namespace O3DS
 {
 	/*! \class AsyncPipeline async_pipeline.h o3ds/async_pipeline.h */
 	//! Wrapper for nng pipeline pattern with asynchronous calls
-	class AsyncPipeline : public AsyncConnector
+	class AsyncPipeline : public AsyncNngConnector
 	{
 	public:
 		static void Callback(void *ref) { ((AsyncPipeline*)ref)->Callback_(); }
