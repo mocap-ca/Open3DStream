@@ -6,9 +6,6 @@ Alastair Macleod, 2022
 Open3DStream provides a simple and unified way to stream realtime
 animation for 3d content between devices, applications and locations.
 
-.. doxygenindex::
-    :allow-dot-graphs:
-
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
