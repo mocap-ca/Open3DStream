@@ -13,6 +13,7 @@
 
 void ReadFunc(void *ptr, void *buf, size_t len)
 {
+	printf("DATA: %ld\n", len);
 	O3DS::SubjectList subjects;
 	subjects.Parse((const char*)buf, len);
 	printf("%zd\n", len);
@@ -77,11 +78,7 @@ int main(int argc, char *argv[])
 
 	while (1)
 	{
-		/*size_t ret = connector->read(buf, 1024 * 60);
-		if(ret)
-		{
-			printf("%ld\n", ret);
-		}*/
+		size_t ret = connector->read(buf, 1024 * 60);
 		nng_msleep(1000);
 		printf(".");
 		continue;
