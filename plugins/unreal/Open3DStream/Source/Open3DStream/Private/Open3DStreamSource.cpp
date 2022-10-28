@@ -71,44 +71,22 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 	SourceStatus = FText::Format(LOCTEXT("ConnectingString", "Connecting {0}"), Protocol);
 
 	server.OnData.BindRaw(this, &FOpen3DStreamSource::OnPackage);
-	server.start(TCHAR_TO_ANSI(*Url.ToString()), TCHAR_TO_ANSI(*Protocol.ToString()));
+	if (!server.start(TCHAR_TO_ANSI(*Url.ToString()), TCHAR_TO_ANSI(*Protocol.ToString())))
+	{
+		bIsValid = false;
+		SourceStatus = server.error;
+
+	}
 	UpdateConnectionLastActive();
 }
 
-/*
 void FOpen3DStreamSource::Tick(float DeltaTime)
 {
-	 NOW HANDLED BY LAMBDA/THREAD
-	if (this->server.mUdp)
-	{
-		if (mBuffer == nullptr)
-		{
-			mBuffer = (uint8*)malloc(65507u);
-			mBufferSize = 65507u;
-		}
-		if (mBufferSize < 65507u)
-		{
-			mBuffer = (uint8*)realloc(mBuffer, 65507u);
-		}
+	// UDP is handlded by a lamda.
 
-		if (mBuffer)
-		{
-			uint32 Size;
-			while (this->server.mUdp->HasPendingData(Size))
-			{
-				int32 read;
-				this->server.mUdp->RecvFrom(mBuffer, FMath::Min(Size, 65507u), read, *this->mAddr);
-				if(read > 0)
-					OnPackage((uint8*)mBuffer, read);
-			}
-		}
-	}
-
-	if (!Client) return;
-
+	// Handle tcp - TODO: thread?
 	if (this->server.mTcp)
 	{
-
 		while(1)
 		{
 			int32 read = 0;
@@ -189,8 +167,8 @@ void FOpen3DStreamSource::Tick(float DeltaTime)
 
 bool FOpen3DStreamSource::IsTickable() const
 {
-	return this->server.mTcp != nullptr || this->server.mUdp != nullptr;
-}*/
+	return this->server.mTcp != nullptr;
+}
 
 void operator >>(const O3DS::Matrixd& src, FMatrix& dst)
 {

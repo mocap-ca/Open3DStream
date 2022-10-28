@@ -37,5 +37,7 @@ public:
 
 	TArray<uint8> buffer;
 
+	FText error;
+
 };
 

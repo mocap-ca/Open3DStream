@@ -313,6 +313,9 @@ void Open3D_Device_Layout::UIConfigure()
 	PopulateSubjectList();
 	PopulateSubjectFields();
 
+	mMemoLog.Enabled = false;
+
+
 	mEditSamplingRate.Value = mDevice->GetSamplingRate();
 	mEditDestIp.Text = mDevice->GetNetworkAddress();
 	mEditKey.Text = mDevice->GetKey();
@@ -339,6 +342,7 @@ void Open3D_Device_Layout::PopulateSubjectList()
 void Open3D_Device_Layout::UIRefresh()
 {
 	// Update realtime values
+
 }
 
 void Open3D_Device_Layout::UIReset()
@@ -368,6 +372,18 @@ void Open3D_Device_Layout::EventDeviceStatusChange( HISender pSender, HKEvent pE
 
 void Open3D_Device_Layout::EventUIIdle( HISender pSender, HKEvent pEvent )
 {
+	bool active = mDevice->Online;
+	mEditSource.Enabled = !active;
+	mEditSubject.Enabled = !active;
+	mEditDestIp.Enabled = !active;
+	mEditDestPort.Enabled = !active;
+	mListProtocol.Enabled = !active;
+	mEditKey.Enabled = !active;
+	mEditSamplingRate.Enabled = !active;
+	//mMemoJoints.Enabled = !active;
+	mButtonAdd.Enabled = !active;
+	mButtonDel.Enabled = !active;
+
 	if( mDevice->Online && mDevice->Live )
 	{
 		UIRefresh();

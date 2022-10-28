@@ -12,11 +12,11 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 	//LastTickTime = 0.0;
 	OnSelectedEvent = Args._OnSelectedEvent;
 
-	Options.Add(MakeShareable(new FString("Subscribe")));
-	Options.Add(MakeShareable(new FString("Client")));
-	Options.Add(MakeShareable(new FString("Server")));
-	Options.Add(MakeShareable(new FString("TCP")));
-	Options.Add(MakeShareable(new FString("UDP")));
+	Options.Add(MakeShareable(new FString("NNG Subscribe (to NNG Publish)")));
+	Options.Add(MakeShareable(new FString("NNG Client (to NNG Server)")));
+	Options.Add(MakeShareable(new FString("NNG Server (to NNG Client)")));
+	Options.Add(MakeShareable(new FString("TCP Client")));
+	Options.Add(MakeShareable(new FString("UDP Server")));
 	CurrentProtocol = Options[0];
 
 	const char* version = O3DS::getVersion();

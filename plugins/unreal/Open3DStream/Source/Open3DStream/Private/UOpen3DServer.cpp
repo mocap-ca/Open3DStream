@@ -30,15 +30,15 @@ bool O3DSServer::start(const char* url, const char* protocol)
 
 	// NNG
 
-	if (strcmp(protocol, "Subscribe") == 0)
+	if (strncmp(protocol, "NNG Subscribe", 13) == 0)
 	{
 		mServer = new O3DS::AsyncSubscriber();
 	}
-	if (strcmp(protocol, "Client") == 0)
+	if (strncmp(protocol, "NNG Client", 10) == 0)
 	{
 		mServer = new O3DS::AsyncPairClient();
 	}
-	if (strcmp(protocol, "Server") == 0)
+	if (strncmp(protocol, "NNG Server", 10) == 0)
 	{
 		mServer = new O3DS::AsyncPairServer();
 	}
@@ -50,6 +50,8 @@ bool O3DSServer::start(const char* url, const char* protocol)
 			return true;
 		}
 		else {
+			std::string err = mServer->getError();
+			this->error = FText::FromString(ANSI_TO_TCHAR(err.c_str()));
 			stop();
 			return false;
 		}
@@ -57,7 +59,7 @@ bool O3DSServer::start(const char* url, const char* protocol)
 
 	// TCP
 
-	if (strcmp(protocol, "UDP") == 0)
+	if (strcmp(protocol, "UDP Server") == 0)
 	{
 		TSharedRef<FInternetAddr> addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
 		addr->SetAnyAddress();
@@ -107,7 +109,7 @@ bool O3DSServer::start(const char* url, const char* protocol)
 		}
 	}
 
-	if (strcmp(protocol, "TCP") == 0)
+	if (strcmp(protocol, "TCP Client") == 0)
 	{
 		mTcp = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("default"), false);
 

@@ -22,7 +22,7 @@ E:\Unreal\UE_4.25\Engine\Plugins\Animation\LiveLink\Source\LiveLink\Private\
     LiveLinkMessageBusSource.h
 */
 
-class OPEN3DSTREAM_API FOpen3DStreamSource : public ILiveLinkSource, public TSharedFromThis<FOpen3DStreamSource>
+class OPEN3DSTREAM_API FOpen3DStreamSource : public ILiveLinkSource, public TSharedFromThis<FOpen3DStreamSource>, public FTickableGameObject
 {
 public:
 	FOpen3DStreamSource();
@@ -42,6 +42,13 @@ public:
 	virtual FText GetSourceType() const override { return SourceType; };
 	virtual FText GetSourceMachineName() const override { return SourceMachineName; }
 	virtual FText GetSourceStatus() const override { return SourceStatus; }
+
+	// FTickableGameObject interface
+	virtual void    Tick(float DeltaTime) override;
+	virtual bool    IsTickable() const override;
+	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(FOpen3DStreamSource, STATGROUP_Tickables); }
+	virtual bool    IsTickableInEditor() const override { return true; }
+	virtual bool    IsTickableWhenPaused() const override { return true; }
 
 	// Settings
 	virtual void InitializeSettings(ULiveLinkSourceSettings* Settings);

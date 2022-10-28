@@ -233,12 +233,21 @@ bool Open3D_Device::Start()
 		else
 		{
 			Status = mServer->getError().c_str();
+			delete mServer;
+			mServer = nullptr;
 			return false;
 		}
 	}
 
 	Status = "INVALID";
 	return true;
+}
+
+bool Open3D_Device::IsActive()
+{
+	if (mNetworkSocket != -1) return true;
+	if (mServer != nullptr) return true;
+	return false;
 }
 
 void Open3D_Device::InData(void *data, size_t len)

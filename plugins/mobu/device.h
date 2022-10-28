@@ -63,6 +63,8 @@ public:
 	FBDeviceSamplingMode	GetSamplingType()								{ return mSamplingType;			}
 	void					SetSamplingType( FBDeviceSamplingMode pType )	{ mSamplingType = pType;		}
 
+	bool  IsActive();
+
 	void InData(void *, size_t);
 
 	int32_t WriteTcp(int socket, void *data, int32_t bucketSize);
