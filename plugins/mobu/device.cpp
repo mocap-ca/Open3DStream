@@ -295,12 +295,15 @@ bool Open3D_Device::Stop()
 int32_t Open3D_Device::WriteTcp(int socket, void *data, int32_t bucketSize)
 {
 	// Write a header first 
+	char buf[1024];
 	int32_t header = 0x0203;
 	int written = 0;
 	int total = 0;
-	if (!mTcpIp.Write(socket, &header, sizeof(int32_t), &written))
+	if (!mTcpIp.WriteBlocking(socket, &header, sizeof(int32_t), &written))
 	{
-		Status = "Error";
+		int err = WSAGetLastError();
+		snprintf(buf, 1024, "Error A: %d", err);
+		Status = buf;
 		//mTcpIp.CloseSocket(mNetworkSocket);
 		//mNetworkSocket = -1;
 		return 0;
@@ -308,16 +311,22 @@ int32_t Open3D_Device::WriteTcp(int socket, void *data, int32_t bucketSize)
 	total += written;
 
 	// Write the size of this bucket
-	if (!mTcpIp.Write(socket, &bucketSize, sizeof(int32_t), &written))
+	if (!mTcpIp.WriteBlocking(socket, &bucketSize, sizeof(int32_t), &written))
 	{
-		Status = "Error";
+		int err = WSAGetLastError();
+		snprintf(buf, 1024, "Error A: %d", err);
+		Status = buf;
+		Status = "Error 2";
 	}
 	total += written;
 
 	// Write the bucket
-	if (!mTcpIp.Write(socket, data, bucketSize, &written))
+	if (!mTcpIp.WriteBlocking(socket, data, bucketSize, &written))
 	{
-		Status = "Error";
+		int err = WSAGetLastError();
+		snprintf(buf, 1024, "Error A: %d", err);
+		Status = buf;
+		Status = "Error 3";
 	}
 	total += written;
 	return total;

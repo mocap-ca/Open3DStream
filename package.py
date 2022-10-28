@@ -3,16 +3,27 @@ import os.path
 import os
 import sys
 import json
+import re
 
 """ creats a zip file release """
 
-if len(sys.argv) == 1 :
-    print("Usage: package.py version")
-    exit()
+def get_version():
+    exp = re.compile('#define\s+O3DS_VERSION\s+"([0-9.]+)"')
+    with open('src/o3ds/o3ds.h') as fp:
+        for line in fp:
+            ret = exp.match(line)
+            if ret:
+                return ret.group(1)
+    return None
+    
+    
+version_input = get_version()
+if version_input is None:
+    raise RuntimeError("Could not determine version")
+    
+    
 
-version_input = sys.argv[1]
-
-version = "Open3DStream_" + sys.argv[1]
+version = "Open3DStream_0." + version_input
 
 cwd = os.path.abspath('')
 
