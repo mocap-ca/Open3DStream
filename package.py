@@ -35,6 +35,21 @@ fp = zipfile.ZipFile(outzip, "w", zipfile.ZIP_DEFLATED)
 
 release = os.path.abspath('build_release')
 
+
+mobu = os.path.join(release, "plugins", "mobu")
+for i in os.listdir(mobu):
+    if i.endswith(".dll") or i.endswith(".pdb"):
+        out = os.path.join("plugins", "mobu", i)
+        print(out)
+        fp.write(os.path.join(mobu, i), out)
+
+maya = os.path.join(release, "plugins", "maya")
+for i in os.listdir(maya):
+    if i.endswith(".mll") or i.endswith(".pdb"):
+        out = os.path.join("plugins", "maya", i)
+        print(out)
+        fp.write(os.path.join(maya, i), out)
+
 root = "usr"
 for base, _, files in os.walk(root):
     sub = base[len(root)+1:]
@@ -45,8 +60,8 @@ for base, _, files in os.walk(root):
         print(dst)
         fp.write(src, dst)
         
-fp.write("lib/flatbuffers.lib", "lib/flatbuffers.lib")
-fp.write("lib/nng.lib", "lib/nng.lib")
+fp.write(os.path.join(cwd, "lib", "flatbuffers.lib"), "lib/flatbuffers.lib")
+fp.write(os.path.join(cwd, "lib", "nng.lib"), "lib/nng.lib")
 
 # Unreal    
 unreal_src_base = os.path.abspath("plugins/unreal/Open3DStream")
@@ -70,7 +85,7 @@ for base, _, files in os.walk(unreal_src_base):
     
 fp.write("lib/nng.lib", unreal_dst_base + "/lib/nng.lib")
 fp.write("lib/flatbuffers.lib", unreal_dst_base + "/lib/flatbuffers.lib")
-fp.write("usr/lib/open3dstreamstatic.lib", unreal_dst_base + "/lib/open3dstreamstatic.lib")
+fp.write("build_release/src/open3dstreamstatic.lib", unreal_dst_base + "/lib/open3dstreamstatic.lib")
 
 for i in os.listdir("src/o3ds"):
     if i.endswith(".h"):

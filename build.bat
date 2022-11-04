@@ -15,10 +15,13 @@ cd %~DP0
 if NOT EXIST build_release MKDIR build_release
 cd build_release
 
-cmake -H.. -B. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo
+cmake -H.. -B. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=../usr
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 nmake
+if %errorlevel% neq 0 exit /b %errorlevel%
+
+nmake install
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 cd %~DP0

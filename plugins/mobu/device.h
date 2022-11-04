@@ -5,7 +5,7 @@
 #include <vector>
 #include "mobuModel.h"
 #include "o3ds/base_connector.h"
-
+#include "o3ds/tcp.h"
 
 #define OPEN3D_DEVICE__CLASSNAME	Open3D_Device
 #define OPEN3D_DEVICE__CLASSSTR		"Open3D_Device"
@@ -70,9 +70,9 @@ public:
 	int32_t WriteTcp(int socket, void *data, int32_t bucketSize);
 
 	O3DS::SubjectList       Items;
-	FBTCPIP                 mTcpIp;
+	O3DS::TcpSocket         mTcpIp;
 	O3DS::Connector*        mServer;
-	int                     mNetworkSocket;
+	SOCKET                  mNetworkSocket;
 	std::vector<int>        mClients;
 
 private:

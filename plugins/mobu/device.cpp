@@ -144,7 +144,7 @@ bool Open3D_Device::Start()
 	lProgress.Caption	= "Starting up device";
 	lProgress.Text	    = "Opening device communications";
 	Status			    = "Opening device communications";
-
+	
 	if (mServer)
 	{
 		delete mServer;
@@ -159,20 +159,25 @@ bool Open3D_Device::Start()
 
 	if (mProtocol == Open3D_Device::kTCPClient || mProtocol == Open3D_Device::kTCPServer)
 	{
-		if (!mTcpIp.CreateSocket(mNetworkSocket, kFBTCPIP_Stream))
+		try
 		{
-			Status = "TCP Socket Error";
-			mNetworkSocket = -1;
+			mTcpIp.CreateSocket();
+		}
+		catch(O3DS::SocketException e)
+		{
+			Status = e.msg().c_str();
 			return false;
 		}
 
 		if (mProtocol == Open3D_Device::kTCPClient)
 		{
-			if (!mTcpIp.Connect(mNetworkSocket, mNetworkAddress, mNetworkPort))
+			try
 			{
-				mTcpIp.CloseSocket(mNetworkSocket);
-				mNetworkSocket = -1;
-				Status = "Connect Error";
+				mTcpIp.Connect(mNetworkAddress, mNetworkPort);
+			}
+			catch (O3DS::SocketException e)
+			{
+				Status = e.msg().c_str();
 				return false;
 			}
 
@@ -182,21 +187,17 @@ bool Open3D_Device::Start()
 
 		if (mProtocol == Open3D_Device::kTCPServer)
 		{
-			if (!mTcpIp.Bind(mNetworkSocket, INADDR_ANY, mNetworkPort))
+			try
 			{
-				mTcpIp.CloseSocket(mNetworkSocket);
-				mNetworkSocket = -1;
-				Status = "TCP Bind Error";
+				mTcpIp.Bind(mNetworkPort);
+				mTcpIp.Listen(mNetworkPort, false, 10);
+			}
+			catch (O3DS::SocketException e)
+			{
+				Status = e.msg().c_str();
 				return false;
 			}
 
-			if (mTcpIp.Listen(mNetworkSocket) != 0)
-			{
-				mTcpIp.CloseSocket(mNetworkSocket);
-				mNetworkSocket = -1;
-				Status = "TCP Listen Error";
-				return false;
-			}
 			Status = "TCP Server Started";
 			return true;
 
@@ -206,15 +207,17 @@ bool Open3D_Device::Start()
 
 	if (mProtocol == Open3D_Device::kUDP)
 	{
-		if (mTcpIp.CreateSocket(mNetworkSocket, kFBTCPIP_DGRAM))
+		mNetworkSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+		if (mNetworkSocket == SOCKET_NULL || mNetworkSocket == INVALID_SOCKET)
 		{
-			Status = "UDP OK";
-			return true;
+			mNetworkSocket = -1;
+			Status = "UDP Error";
+			return false;
 		}
 
-		mNetworkSocket = -1;
-		Status = "UDP Error";
-		return false;
+		Status = "UDP OK";
+		return true;
+
 	}
 
 	if (mProtocol == Open3D_Device::kNNGServer ||
@@ -268,13 +271,14 @@ bool Open3D_Device::Stop()
 
 	if (mNetworkSocket > 0)
 	{
-		if (mTcpIp.CloseSocket(mNetworkSocket))
+		try
 		{
-			Status = "";
+			mTcpIp.DestroySocket();
+			Status = "OFFLINE";
 		}
-		else
+		catch (O3DS::SocketException e)
 		{
-			Status = "Error Closing";
+			Status = e.msg().c_str();
 		}
 	}
 
@@ -295,47 +299,30 @@ bool Open3D_Device::Stop()
 int32_t Open3D_Device::WriteTcp(int socket, void *data, int32_t bucketSize)
 {
 	// Write a header first 
-	char buf[1024];
 	int32_t header = 0x0203;
 	int written = 0;
 	int total = 0;
-	if (!mTcpIp.WriteBlocking(socket, &header, sizeof(int32_t), &written))
+	try
 	{
-		int err = WSAGetLastError();
-		snprintf(buf, 1024, "Error A: %d", err);
-		Status = buf;
-		//mTcpIp.CloseSocket(mNetworkSocket);
-		//mNetworkSocket = -1;
+		mTcpIp.Send(&header, sizeof(int32_t));
+		total += sizeof(int32_t);
+		mTcpIp.Send(&bucketSize, sizeof(int32_t));
+		total += sizeof(int32_t);
+		mTcpIp.Send(data, bucketSize);
+		total += bucketSize;
+		return total;
+	}
+	catch (O3DS::SocketException e)
+	{
+		Status = e.msg().c_str();
 		return 0;
-	}
-	total += written;
-
-	// Write the size of this bucket
-	if (!mTcpIp.WriteBlocking(socket, &bucketSize, sizeof(int32_t), &written))
-	{
-		int err = WSAGetLastError();
-		snprintf(buf, 1024, "Error A: %d", err);
-		Status = buf;
-		Status = "Error 2";
-	}
-	total += written;
-
-	// Write the bucket
-	if (!mTcpIp.WriteBlocking(socket, data, bucketSize, &written))
-	{
-		int err = WSAGetLastError();
-		snprintf(buf, 1024, "Error A: %d", err);
-		Status = buf;
-		Status = "Error 3";
-	}
-	total += written;
-	return total;
+	}	
+	
 }
 
 void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDeviceNotifyInfo)
 {
 	std::vector<char> buf;
-	int written;
 
 	uint32_t total = 0;
 
@@ -360,8 +347,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 
 			if (mProtocol == Open3D_Device::kTCPServer)
 			{
-				kULong addr = 0;
-				int newSocket = mTcpIp.Accept(mNetworkSocket, &addr);
+				int newSocket = mTcpIp.Accept(mNetworkSocket);
 				if (newSocket > 0)
 					mClients.push_back(newSocket);
 
@@ -386,11 +372,22 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				if (!inet_pton_alt(AF_INET, mNetworkAddress.operator char *(), &ret))		
 				{
 					Status = "UDP ERROR";
+					return;
 				}
-				if (mTcpIp.WriteDatagram(mNetworkSocket, &buf[0], bucketSize, &written, ret.S_un.S_addr, mNetworkPort))
+
+				struct sockaddr_in dest_addr;
+				dest_addr.sin_family = AF_INET;
+				dest_addr.sin_addr.s_addr = ret.S_un.S_addr;
+				dest_addr.sin_port = htons(mNetworkPort);
+
+				size_t sentSz = sendto(mNetworkSocket, (const char*)&buf[0], (int)bucketSize, 0,
+					(struct sockaddr*)&dest_addr,
+					(int)sizeof(struct sockaddr_in));
+
+				if(sentSz == bucketSize)
 				{
 					std::ostringstream oss;
-					oss << written << " bytes";
+					oss << sentSz << " bytes";
 					Status = oss.str().c_str();
 				}
 				else

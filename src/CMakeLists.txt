@@ -42,6 +42,9 @@ set(SOURCES
 	o3ds/o3ds.h
 	o3ds/websocket.h
 	o3ds/websocket.cpp
+	o3ds/tcp.h
+	o3ds/tcp.cpp
+
 	)
 	
 
