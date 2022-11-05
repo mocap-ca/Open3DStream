@@ -56,17 +56,20 @@ std::string SocketException::str()
 
 TcpSocket::TcpSocket()
 	: m_socket(SOCKET_NULL)
+	, deleteOnClose(true)
 {
-	CreateSocket();
+	CreateSocket();	
 }
 
 TcpSocket::TcpSocket(SOCKET s)
 	: m_socket(s)
+	, deleteOnClose(false)
 {
 }
 
 TcpSocket::~TcpSocket()
 {
+	if (!deleteOnClose) return;
 	try
 	{
 		if (m_socket != SOCKET_NULL && m_socket != INVALID_SOCKET) DestroySocket();
@@ -308,22 +311,25 @@ void TcpSocket::Listen(int port, bool nonBlocking, int maxConnections)
 }
 
 
-bool TcpSocket::Accept(SOCKET& new_sock)
+bool TcpSocket::Accept(SOCKET& new_sock, int timeout)
 {
 	fd_set fd;
 	struct timeval tv;
 	int retval;
 
-	FD_ZERO(&fd);
-	FD_SET(m_socket, &fd);
+	if (timeout > 0)
+	{
+		FD_ZERO(&fd);
+		FD_SET(m_socket, &fd);
 
-	tv.tv_sec = 1;
-	tv.tv_usec = 0;
-	retval = select(m_socket + 1, &fd, NULL, NULL, &tv);
+		tv.tv_sec = timeout;
+		tv.tv_usec = 0;
+		retval = select(m_socket + 1, &fd, NULL, NULL, &tv);
 
-	if (retval != 1) return false;
+		if (retval != 1) return false;
+	}
+
 	new_sock = accept(m_socket, 0, 0);
-
 	if (new_sock == INVALID_SOCKET)
 	{
 		if (GetError() == SOCKET_WOULDBLOCK) return false;

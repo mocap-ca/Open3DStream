@@ -2,7 +2,6 @@
 
 using UnrealBuildTool;
 using System.IO;
-using Tools.DotNETCommon;
 
 public class Open3DStream : ModuleRules
 {

@@ -30,8 +30,8 @@ function(build_maya version)
 	install(TARGETS ${mayatarget} DESTINATION "$ENV{USERPROFILE}/Documents/maya/2020/plug-ins")
 	endif()
 	
-	install(TARGETS ${mayatarget} DESTINATION plugins/maya)
-	install(FILES $<TARGET_PDB_FILE:${mayatarget}> DESTINATION plugins/maya OPTIONAL)
+	#install(TARGETS ${mayatarget} DESTINATION plugins/maya)
+	#install(FILES $<TARGET_PDB_FILE:${mayatarget}> DESTINATION plugins/maya OPTIONAL)
 
 
 endfunction()

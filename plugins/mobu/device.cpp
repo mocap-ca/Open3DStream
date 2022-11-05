@@ -165,7 +165,7 @@ bool Open3D_Device::Start()
 		}
 		catch(O3DS::SocketException e)
 		{
-			Status = e.msg().c_str();
+			Status = e.str().c_str();
 			return false;
 		}
 
@@ -177,7 +177,7 @@ bool Open3D_Device::Start()
 			}
 			catch (O3DS::SocketException e)
 			{
-				Status = e.msg().c_str();
+				Status = e.str().c_str();
 				return false;
 			}
 
@@ -189,12 +189,12 @@ bool Open3D_Device::Start()
 		{
 			try
 			{
-				mTcpIp.Bind(mNetworkPort);
+				mTcpIp.SetBlocking(false);
 				mTcpIp.Listen(mNetworkPort, false, 10);
 			}
 			catch (O3DS::SocketException e)
 			{
-				Status = e.msg().c_str();
+				Status = e.str().c_str();
 				return false;
 			}
 
@@ -278,7 +278,7 @@ bool Open3D_Device::Stop()
 		}
 		catch (O3DS::SocketException e)
 		{
-			Status = e.msg().c_str();
+			Status = e.str().c_str();
 		}
 	}
 
@@ -302,19 +302,25 @@ int32_t Open3D_Device::WriteTcp(int socket, void *data, int32_t bucketSize)
 	int32_t header = 0x0203;
 	int written = 0;
 	int total = 0;
+
+	O3DS::TcpSocket client(socket);
+
 	try
 	{
-		mTcpIp.Send(&header, sizeof(int32_t));
+		client.Send(&header, sizeof(int32_t));
 		total += sizeof(int32_t);
-		mTcpIp.Send(&bucketSize, sizeof(int32_t));
+		client.Send(&bucketSize, sizeof(int32_t));
 		total += sizeof(int32_t);
-		mTcpIp.Send(data, bucketSize);
+		client.Send(data, bucketSize);
 		total += bucketSize;
 		return total;
 	}
 	catch (O3DS::SocketException e)
 	{
-		Status = e.msg().c_str();
+		try { client.DestroySocket(); }
+		catch (O3DS::SocketException e) {};
+
+		Status = e.str().c_str();
 		return 0;
 	}	
 	
@@ -347,8 +353,8 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 
 			if (mProtocol == Open3D_Device::kTCPServer)
 			{
-				int newSocket = mTcpIp.Accept(mNetworkSocket);
-				if (newSocket > 0)
+				SOCKET newSocket = INVALID_SOCKET;
+				if (mTcpIp.Accept(newSocket))
 					mClients.push_back(newSocket);
 
 				for (std::vector<int>::iterator client = mClients.begin(); client != mClients.end();)

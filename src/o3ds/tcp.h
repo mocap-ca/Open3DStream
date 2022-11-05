@@ -115,7 +115,7 @@ namespace O3DS
 		*/
 		//! \retval true if a connection was made
 
-		bool     Accept(SOCKET& s);
+		bool     Accept(SOCKET& s, int timeout = 0);
 
 
 		void     Send(std::vector<char>& data);  //!< Puts data on the wire.
@@ -137,6 +137,8 @@ namespace O3DS
 
 		//! The platform socket object
 		SOCKET       m_socket;
+
+		bool deleteOnClose;
 
 #ifdef WIN32
 		inline static bool wsok = false;
