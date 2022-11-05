@@ -77,6 +77,8 @@ namespace O3DS
 		TcpSocket(SOCKET s);
 		~TcpSocket();
 
+		bool Valid() { return m_socket != SOCKET_NULL && m_socket != INVALID_SOCKET; }
+
 		// Socket Creation/Destruction
 		void CreateSocket();    //!< Calls socket() - throws SocketException
 		void DestroySocket();           //!< Calls closesocket() - throws SocketException

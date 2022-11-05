@@ -96,6 +96,7 @@ void FOpen3DStreamSource::Tick(float DeltaTime)
 				// Finish a fragment
 				if (!this->server.mTcp->Recv(mBuffer + mPtr, mRemainder, read))
 				{
+					SourceStatus = LOCTEXT("Disconnected", "Disconnected");
 					return;			
 				}
 
@@ -118,6 +119,13 @@ void FOpen3DStreamSource::Tick(float DeltaTime)
 				uint32_t heading = ((uint32_t*)mHeader)[0];
 				uint32_t bucketSize = ((uint32_t*)mHeader)[1];
 
+				if (heading != 0x0203)
+				{
+					this->server.mTcp->Close();
+					this->server.mTcp = nullptr;
+					return;
+				}
+
 				if (mBuffer == nullptr)
 				{
 					mBuffer = (uint8*)malloc(bucketSize);
@@ -134,6 +142,7 @@ void FOpen3DStreamSource::Tick(float DeltaTime)
 
 				if (!this->server.mTcp->Recv(mBuffer, bucketSize, read))
 				{
+					SourceStatus = LOCTEXT("Disconnected", "Disconnected");
 					return;
 				}
 
@@ -144,18 +153,11 @@ void FOpen3DStreamSource::Tick(float DeltaTime)
 					return;
 				}
 
-
-				if (heading != 0x0203)
-				{
-					this->server.mTcp->Close();
-					this->server.mTcp = nullptr;
-					return;
-				}
-
 				// Process
 				TArray<uint8> Data;
 				Data.Append((uint8*)mBuffer, bucketSize);
 				OnPackage(Data);
+				SourceStatus = LOCTEXT("Receiving Data", "Receiving Data");
 
 			}
 		}

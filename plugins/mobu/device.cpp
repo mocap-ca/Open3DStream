@@ -296,28 +296,26 @@ bool Open3D_Device::Stop()
 
 #define BUFSZ 1024*60
 
-int32_t Open3D_Device::WriteTcp(int socket, void *data, int32_t bucketSize)
+int32_t Open3D_Device::WriteTcp(O3DS::TcpSocket &socket, void *data, int32_t bucketSize)
 {
 	// Write a header first 
 	int32_t header = 0x0203;
 	int written = 0;
 	int total = 0;
 
-	O3DS::TcpSocket client(socket);
-
 	try
 	{
-		client.Send(&header, sizeof(int32_t));
+		socket.Send(&header, sizeof(int32_t));
 		total += sizeof(int32_t);
-		client.Send(&bucketSize, sizeof(int32_t));
+		socket.Send(&bucketSize, sizeof(int32_t));
 		total += sizeof(int32_t);
-		client.Send(data, bucketSize);
+		socket.Send(data, bucketSize);
 		total += bucketSize;
 		return total;
 	}
 	catch (O3DS::SocketException e)
 	{
-		try { client.DestroySocket(); }
+		try { socket.DestroySocket(); }
 		catch (O3DS::SocketException e) {};
 
 		Status = e.str().c_str();
@@ -359,7 +357,8 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 
 				for (std::vector<int>::iterator client = mClients.begin(); client != mClients.end();)
 				{
-					if (WriteTcp(*client, &buf[0], bucketSize)) {
+					O3DS::TcpSocket s(*client);
+					if (WriteTcp(s, &buf[0], bucketSize)) {
 						client++;
 					}
 					else {
@@ -369,7 +368,13 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			}
 
 			if (mProtocol == Open3D_Device::kTCPClient) {
-				WriteTcp(mNetworkSocket, &buf[0], bucketSize);
+				if(mTcpIp.Valid())
+				{
+					if (WriteTcp(mTcpIp, &buf[0], bucketSize) == 0)
+					{
+						Status = "Disconnected";
+					}
+				}
 			}
 
 			if (mProtocol == Open3D_Device::kUDP)

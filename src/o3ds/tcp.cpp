@@ -89,7 +89,7 @@ void TcpSocket::CreateSocket()
 	}
 #endif
 
-	if (m_socket != SOCKET_NULL && m_socket != INVALID_SOCKET) DestroySocket();
+	if (m_socket != SOCKET_NULL && m_socket != INVALID_SOCKET)  DestroySocket();
 	m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	if (m_socket == SOCKET_NULL || m_socket == INVALID_SOCKET)
@@ -364,8 +364,7 @@ void TcpSocket::Send(void* data, int len)
 		if (err == SOCKET_WOULDBLOCK)
 			return;
 
-		ss << "Error sending data";
-		throw SocketException(ss.str(), err);
+		throw SocketException("Sending", err);
 	}
 
 	if (bytesSent != len)
@@ -389,7 +388,7 @@ void TcpSocket::Receive(void* buf, int len, int* recd)
 	{
 		int err = GetError();
 		if (err == SOCKET_WOULDBLOCK) return;
-		throw SocketException("Error Reading", err);
+		throw SocketException("Reading", err);
 	}
 
 	if (recd != NULL) *recd = bytesRecv;
