@@ -77,7 +77,7 @@ public:
 	O3DS::SubjectList mSubjects;
 
 	void OnPackage(const TArray<uint8>&);
-	void OnStatus(FText);
+	void OnStatus(FText, bool);
 
 	FORCEINLINE void UpdateConnectionLastActive();
 	FCriticalSection ConnectionLastActiveSection;

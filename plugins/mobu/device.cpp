@@ -183,7 +183,7 @@ bool Open3D_Device::Start()
 				return false;
 			}
 
-			Status = "TCP Client Started";
+			Status = "TCP Connected";
 			return true;
 		}
 
@@ -373,7 +373,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				{
 					if (WriteTcp(mTcpIp, &buf[0], bucketSize) == 0)
 					{
-						Status = "Disconnected";
+						Status = "TCP Disconnected";
 					}
 				}
 			}

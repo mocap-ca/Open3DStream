@@ -8,7 +8,7 @@
 
 
 DECLARE_DELEGATE_OneParam(FOnO3dsData, const TArray<uint8>&);
-DECLARE_DELEGATE_OneParam(FOnState, const FText);
+DECLARE_DELEGATE_TwoParams(FOnState, const FText, bool warning);
 
 
 // NNG Async Callback
@@ -21,7 +21,7 @@ public:
 	O3DSServer();
 	~O3DSServer();
 
-	bool start(const char *url, const char *protocol);
+	bool start(FText Url, FText Protocol);
 	void stop();
 	bool write(const char *data, size_t len);
 
@@ -42,17 +42,15 @@ public:
 
 	TArray<uint8> buffer;
 
-	FText error;
-
 	uint8*  mBuffer;
 	size_t  mBufferSize;
 	uint8   mHeader[10];
-	size_t  mBytesToGet;
 	size_t  mPtr;
-	bool    mTcpHasSync;
 	float   mGoodTime;
 	bool    mNoDataFlag;
 
+
+	enum class eState { SYNC, HEADER, DATA } mState;
 
 };
 

@@ -59,8 +59,15 @@ TSubclassOf < ULiveLinkSourceSettings > FOpen3DStreamSource::GetSettingsClass() 
 	return UOpen3DStreamSourceSettings::StaticClass();
 }
 
-void FOpen3DStreamSource::OnStatus(FText msg)
+void FOpen3DStreamSource::OnStatus(FText msg, bool IsError)
 {
+	FString smsg = msg.ToString();
+	if (IsError) {
+		UE_LOG(LogTemp, Warning, TEXT("O3DS: %s"), *smsg);
+	}
+	else {
+		UE_LOG(LogTemp, Log, TEXT("O3DS: %s"), *smsg);
+	}
 	SourceStatus = msg;
 }
 
@@ -71,13 +78,9 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 	SourceGuid = InSourceGuid;
 	bIsValid = true;
 
-	SourceStatus = FText::Format(LOCTEXT("ConnectingString", "Connecting {0}"), Protocol);
-
-	if (!server.start(TCHAR_TO_ANSI(*Url.ToString()), TCHAR_TO_ANSI(*Protocol.ToString())))
+	if (!server.start(Url, Protocol))
 	{
 		bIsValid = false;
-		SourceStatus = server.error;
-
 	}
 	UpdateConnectionLastActive();
 }

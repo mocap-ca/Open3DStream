@@ -48,5 +48,6 @@ private:
 	FComboItemType CurrentProtocol;
 
 	static FText LastUrl;
+	static int LastComboId;
 
 };

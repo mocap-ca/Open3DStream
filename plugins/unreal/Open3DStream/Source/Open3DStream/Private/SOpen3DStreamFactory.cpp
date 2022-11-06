@@ -6,6 +6,7 @@
 #define LOCTEXT_NAMESPACE "Open3DStream"
 
 FText SOpen3DStreamFactory::LastUrl;
+int SOpen3DStreamFactory::LastComboId = 0;
 
 void SOpen3DStreamFactory::Construct(const FArguments& Args)
 {
@@ -17,7 +18,6 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 	Options.Add(MakeShareable(new FString("NNG Server (to NNG Client)")));
 	Options.Add(MakeShareable(new FString("TCP Client")));
 	Options.Add(MakeShareable(new FString("UDP Server")));
-	CurrentProtocol = Options[0];
 
 	const char* version = O3DS::getVersion();
 
@@ -25,6 +25,8 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 	{
 		LastUrl = LOCTEXT("Open3DStreamUrlValue", "127.0.0.1:3001");
 	}
+
+	CurrentProtocol = Options[LastComboId];
 
 	mUrl = LastUrl;
 
@@ -140,6 +142,14 @@ TSharedRef<SWidget> SOpen3DStreamFactory::MakeWidgetForOption(FComboItemType InO
 void SOpen3DStreamFactory::OnProtocolChanged(FComboItemType NewValue, ESelectInfo::Type)
 {
 	CurrentProtocol = NewValue;
+	for (int i = 0; i < Options.Num(); i++)
+	{
+		if (Options[i] == NewValue)
+		{
+			LastComboId = i; 
+			break;
+		}
+	}
 }
 
 FText SOpen3DStreamFactory::GetCurrentProtocol() const
