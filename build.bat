@@ -37,6 +37,8 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 devenv Open3DStream.sln /Build RelWithDebInfo
 if %errorlevel% neq 0 exit /b %errorlevel%
 
+python package.py
+
 cd %~DP0
 
 

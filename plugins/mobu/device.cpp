@@ -74,6 +74,8 @@ bool Open3D_Device::FBCreate()
 	mKey = nullptr;
 	mServer = nullptr;
 
+	mJumboHeader = 0;
+
 	FBTime	lPeriod;
 	lPeriod.SetSecondDouble(1.0/60.0);
 	SamplingPeriod	= lPeriod;
@@ -296,19 +298,18 @@ bool Open3D_Device::Stop()
 
 #define BUFSZ 1024*60
 
-int32_t Open3D_Device::WriteTcp(O3DS::TcpSocket &socket, void *data, int32_t bucketSize)
+uint32_t Open3D_Device::WriteTcp(O3DS::TcpSocket &socket, void *data, uint32_t bucketSize)
 {
 	// Write a header first 
-	int32_t header = 0x0203;
 	int written = 0;
 	int total = 0;
 
 	try
 	{
-		socket.Send(&header, sizeof(int32_t));
-		total += sizeof(int32_t);
-		socket.Send(&bucketSize, sizeof(int32_t));
-		total += sizeof(int32_t);
+		socket.Send("\x00\xff\x03\xfeO3DS-START", 14);
+		total += 14;
+		socket.Send(&bucketSize, sizeof(uint32_t));
+		total += sizeof(uint32_t);
 		socket.Send(data, bucketSize);
 		total += bucketSize;
 		return total;

@@ -69,20 +69,15 @@ public:
 	FThreadSafeBool  bIsValid;
 
 	O3DSServer server;
-	uint8*  mBuffer;
-	size_t  mBufferSize;
-	uint8   mHeader[8];
-	size_t  mRemainder;
-	size_t  mPtr;
 
 	TSharedRef<FInternetAddr> mAddr;
 
 	std::vector<char> buffer;
 
-
 	O3DS::SubjectList mSubjects;
 
 	void OnPackage(const TArray<uint8>&);
+	void OnStatus(FText);
 
 	FORCEINLINE void UpdateConnectionLastActive();
 	FCriticalSection ConnectionLastActiveSection;

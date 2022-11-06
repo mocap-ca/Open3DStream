@@ -8,7 +8,7 @@
 
 
 DECLARE_DELEGATE_OneParam(FOnO3dsData, const TArray<uint8>&);
-
+DECLARE_DELEGATE_OneParam(FOnState, const FText);
 
 
 // NNG Async Callback
@@ -27,6 +27,10 @@ public:
 
 	void inData(const uint8 *msg, size_t len);
 
+	bool ReadTcp(size_t len);
+
+	void tick();
+
 	O3DS::AsyncConnector* mServer;
 	FSocket* mTcp;
 	FSocket* mUdp;
@@ -34,10 +38,21 @@ public:
 	FUdpSocketReceiver* mUdpReceiver;
 
 	FOnO3dsData OnData;
+	FOnState    OnState;
 
 	TArray<uint8> buffer;
 
 	FText error;
+
+	uint8*  mBuffer;
+	size_t  mBufferSize;
+	uint8   mHeader[10];
+	size_t  mBytesToGet;
+	size_t  mPtr;
+	bool    mTcpHasSync;
+	float   mGoodTime;
+	bool    mNoDataFlag;
+
 
 };
 

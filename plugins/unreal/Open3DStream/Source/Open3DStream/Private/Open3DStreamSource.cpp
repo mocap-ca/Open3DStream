@@ -34,10 +34,7 @@ FOpen3DStreamSource::FOpen3DStreamSource(const FOpen3DStreamSettings& Settings)
 	, ArrivalTimeOffset(0.0)
 	, Frame(0)
 	, bIsValid(true)
-	, mBuffer(nullptr)
-	, mBufferSize(0)
-	, mRemainder(0)
-	, mPtr(0)
+
 	, mAddr(ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr())
 {
 	Url        = Settings.Url;
@@ -45,7 +42,9 @@ FOpen3DStreamSource::FOpen3DStreamSource(const FOpen3DStreamSettings& Settings)
 	Key        = Settings.Key;
 	TimeOffset = Settings.TimeOffset;
 
-	
+	server.OnData.BindRaw(this, &FOpen3DStreamSource::OnPackage);
+	server.OnState.BindRaw(this, &FOpen3DStreamSource::OnStatus);
+
 }
 
 FOpen3DStreamSource::~FOpen3DStreamSource()
@@ -60,6 +59,10 @@ TSubclassOf < ULiveLinkSourceSettings > FOpen3DStreamSource::GetSettingsClass() 
 	return UOpen3DStreamSourceSettings::StaticClass();
 }
 
+void FOpen3DStreamSource::OnStatus(FText msg)
+{
+	SourceStatus = msg;
+}
 
 void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourceGuid)
 {
@@ -70,7 +73,6 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 
 	SourceStatus = FText::Format(LOCTEXT("ConnectingString", "Connecting {0}"), Protocol);
 
-	server.OnData.BindRaw(this, &FOpen3DStreamSource::OnPackage);
 	if (!server.start(TCHAR_TO_ANSI(*Url.ToString()), TCHAR_TO_ANSI(*Protocol.ToString())))
 	{
 		bIsValid = false;
@@ -80,92 +82,14 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 	UpdateConnectionLastActive();
 }
 
+
+#pragma optimize( "", off )
 void FOpen3DStreamSource::Tick(float DeltaTime)
 {
-	// UDP is handlded by a lamda.
-
-	// Handle tcp - TODO: thread?
-	if (this->server.mTcp)
-	{
-		while(1)
-		{
-			int32 read = 0;
-
-			if (mRemainder)
-			{
-				// Finish a fragment
-				if (!this->server.mTcp->Recv(mBuffer + mPtr, mRemainder, read))
-				{
-					SourceStatus = LOCTEXT("Disconnected", "Disconnected");
-					return;			
-				}
-
-				if (read < mRemainder)
-				{
-					mRemainder-= read;
-					mPtr += read;
-					return;
-				}
-
-				mRemainder = 0;
-			}
-			else
-			{
-				// Get a header
-				this->server.mTcp->Recv(mHeader, 8, read, ESocketReceiveFlags::Peek);
-				if (read != 8) return;
-
-				this->server.mTcp->Recv(mHeader, 8, read);
-				uint32_t heading = ((uint32_t*)mHeader)[0];
-				uint32_t bucketSize = ((uint32_t*)mHeader)[1];
-
-				if (heading != 0x0203)
-				{
-					this->server.mTcp->Close();
-					this->server.mTcp = nullptr;
-					return;
-				}
-
-				if (mBuffer == nullptr)
-				{
-					mBuffer = (uint8*)malloc(bucketSize);
-					mBufferSize = bucketSize;
-				}
-				else
-				{
-					if (mBufferSize < bucketSize)
-					{
-						mBuffer = (uint8*)realloc(mBuffer, bucketSize);
-						mBufferSize = bucketSize;
-					}
-				}
-
-				if (!this->server.mTcp->Recv(mBuffer, bucketSize, read))
-				{
-					SourceStatus = LOCTEXT("Disconnected", "Disconnected");
-					return;
-				}
-
-				if (read < (int32)bucketSize)
-				{
-					mRemainder = bucketSize - read;
-					mPtr = read;
-					return;
-				}
-
-				// Process
-				TArray<uint8> Data;
-				Data.Append((uint8*)mBuffer, bucketSize);
-				OnPackage(Data);
-				SourceStatus = LOCTEXT("Receiving Data", "Receiving Data");
-
-			}
-		}
-	}
-		
-
+	this->server.tick();
 }
 
+#pragma optimize( "", on )
 
 bool FOpen3DStreamSource::IsTickable() const
 {

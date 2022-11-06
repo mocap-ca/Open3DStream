@@ -5,6 +5,7 @@
 #include "Interfaces/IPv4/IPv4Address.h"
 #include "Common/UdpSocketBuilder.h"
 
+#define LOCTEXT_NAMESPACE "Open3DStream"
 
 void InDataFunc(void* ptr, void* data, size_t msg)
 {
@@ -12,11 +13,18 @@ void InDataFunc(void* ptr, void* data, size_t msg)
 }
 
 O3DSServer::O3DSServer()
+	: mServer(nullptr)
+	, mTcp(nullptr)
+	, mUdp(nullptr)
+	, mUdpReceiver(nullptr)
+	, mBuffer(nullptr)
+	, mBufferSize(0)
+	, mBytesToGet(0)
+	, mPtr(0)
+	, mTcpHasSync(false)
+	, mGoodTime(0.0f)
+	, mNoDataFlag(false)
 {
-	mServer = nullptr;
-	mTcp = nullptr;
-	mUdp = nullptr;
-	mUdpReceiver = nullptr;
 }
 
 O3DSServer::~O3DSServer()
@@ -57,7 +65,7 @@ bool O3DSServer::start(const char* url, const char* protocol)
 		}
 	}
 
-	// TCP
+	// UDP
 
 	if (strcmp(protocol, "UDP Server") == 0)
 	{
@@ -109,8 +117,12 @@ bool O3DSServer::start(const char* url, const char* protocol)
 		}
 	}
 
+	// TCP
+
 	if (strcmp(protocol, "TCP Client") == 0)
 	{
+		mTcpHasSync = false;
+
 		mTcp = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("default"), false);
 
 		FString parseme(url);
@@ -155,7 +167,6 @@ bool O3DSServer::start(const char* url, const char* protocol)
 
 	return true;
 }
-
 void O3DSServer::stop()
 {
 	if (mServer)
@@ -198,3 +209,129 @@ void O3DSServer::inData(const uint8 *msg, size_t len)
 	if (OnData.IsBound()) { OnData.Execute(Data); }
 }
 
+void O3DSServer::tick()
+{
+	uint32_t bucketSize;
+
+	const unsigned char header[] = "\x00\xff\x03\xfeO3DS-START";
+
+	if (!mNoDataFlag && FPlatformTime::Seconds() - mGoodTime > 1)
+	{
+		OnState.ExecuteIfBound(LOCTEXT("NoData", "No Data"));
+		mNoDataFlag = true;
+	}
+
+	// Handle tcp - TODO: thread?
+	if (mTcp)
+	{
+		while (1)
+		{
+			int32 read = 0;
+
+			if (!mTcpHasSync)
+			{
+				mPtr = 0;
+				mBytesToGet = 0;
+
+				if (!ReadTcp(1))
+					return;
+
+				if (mBuffer[0] != 0x00) continue;
+
+				bool ok = true;
+				for (int i = 1; i < 14; i++)
+				{
+					if (!ReadTcp(1))
+						return;
+					if (mBuffer[i] != header[i]) {
+						ok = false;  break;
+					}
+				}
+				if (!ok) break;
+
+				mTcpHasSync = true;
+
+				if (!ReadTcp(4))
+					return;
+
+			}
+			
+			// Fill the buffer
+			if (mBytesToGet)
+			{
+				if (!ReadTcp(0))
+					return;
+			}
+
+			if (mPtr < 18)
+			{
+				return;
+			}
+
+			bucketSize = *(uint32_t*)(mBuffer + 14);
+
+			if (mPtr == 18)
+			{
+				if (strncmp((char*)mBuffer, (char*)header, 14) != 0)
+				{
+					OnState.ExecuteIfBound(LOCTEXT("MalformedData", "Malformed Data"));
+					mTcpHasSync = false;
+				}
+				// We have the header only, need to get the bucket
+				if (!ReadTcp(bucketSize))
+					return;
+			}
+
+
+			// Process
+			TArray<uint8> Data;
+			Data.Append((uint8*)(mBuffer+18), bucketSize);
+			OnData.Execute(Data);
+			OnState.ExecuteIfBound(LOCTEXT("Receiving Data", "Receiving Data"));
+
+			mPtr = 0;
+
+			ReadTcp(18);
+		
+		}
+	}
+}
+
+
+bool O3DSServer::ReadTcp(size_t len)
+{
+	mBytesToGet += len;
+
+	if (mBuffer == nullptr)
+	{
+		size_t sz = mBytesToGet < 4096 ? 4096 : mBytesToGet;
+		mBuffer = (uint8*)malloc(mBytesToGet);
+		mBufferSize = sz;
+		mPtr = 0;
+	}
+	else
+	{
+		if (len + mPtr > mBufferSize)
+		{
+			mBuffer = (uint8*)realloc(mBuffer, mBytesToGet + mPtr);
+			mBufferSize = mBytesToGet + mPtr;
+		}		
+	}
+
+	int32 read = 0;
+	if (!mTcp->Recv(mBuffer + mPtr, mBytesToGet, read))
+	{
+		OnState.ExecuteIfBound(LOCTEXT("Disconnected", "Disconnected"));
+		return false;
+	}
+
+	if (read > 0)
+	{
+		mGoodTime = FPlatformTime::Seconds();
+		mNoDataFlag = false;
+	}
+
+	mBytesToGet -= read;
+	mPtr += read;
+	return mBytesToGet == 0;
+}

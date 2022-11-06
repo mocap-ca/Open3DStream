@@ -67,13 +67,14 @@ public:
 
 	void InData(void *, size_t);
 
-	int32_t WriteTcp(O3DS::TcpSocket& socket, void *data, int32_t bucketSize);
+	uint32_t WriteTcp(O3DS::TcpSocket& socket, void *data, uint32_t bucketSize);
 
 	O3DS::SubjectList       Items;
 	O3DS::TcpSocket         mTcpIp;
 	O3DS::Connector*        mServer;
 	SOCKET                  mNetworkSocket;
 	std::vector<int>        mClients;
+	int                     mJumboHeader;
 
 private:
 	double                mSamplingRate;
