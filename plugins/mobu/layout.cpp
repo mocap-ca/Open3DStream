@@ -435,7 +435,7 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 			FBModel *model = static_cast<FBModel*>(subject->mReference);
 
 			mEditSubject.Text = mDevice->Items[id]->mName.c_str();
-			mEditSource.Text = model->LongName;
+			mEditSource.Text = model->GetFullName();
 
 			std::ostringstream imploded, oss;
 			std::copy(mDevice->Items[id]->mJoints.begin(), mDevice->Items[id]->mJoints.end(),

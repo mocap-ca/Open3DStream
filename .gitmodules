@@ -10,3 +10,6 @@
 [submodule "thirdparty/websocketpp"]
 	path = thirdparty/websocketpp
 	url = https://github.com/zaphoyd/websocketpp.git
+[submodule "thirdparty/crccpp"]
+	path = thirdparty/crccpp
+	url = https://github.com/d-bahr/CRCpp.git

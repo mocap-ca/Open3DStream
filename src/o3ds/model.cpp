@@ -24,6 +24,7 @@ SOFTWARE.
 
 #include "model.h"
 #include "getTime.h"
+#include "CRC.h"
 #include <algorithm>
 #include <iterator>
 
@@ -331,9 +332,16 @@ namespace O3DS
 		int size = builder.GetSize();
 
 		outbuf.resize(0);
+
+		// Checksum
+		std::uint32_t crc = CRC::Calculate(buf, size, CRC::CRC_32());
+		const char* crcptr = (const char*)&crc;
+		std::copy(crcptr, crcptr + 4, back_inserter(outbuf));
+
+		// Data
 		std::copy(buf, buf + size, back_inserter(outbuf));
 
-		return size;
+		return outbuf.size();
 	}
 
 	int SubjectList::SerializeUpdate(std::vector<char> &outbuf, double timestamp)
@@ -408,14 +416,28 @@ namespace O3DS
 		int size = builder.GetSize();
 
 		outbuf.resize(0);
+
+		// Checksum
+		std::uint32_t crc = CRC::Calculate(buf, size, CRC::CRC_32());
+		const char* crcptr = (const char*)&crc;
+		std::copy(crcptr, crcptr + 4, back_inserter(outbuf));
+
+		// Data
 		std::copy(buf, buf + size, back_inserter(outbuf));
 
-		return size;
+		return outbuf.size();
 	}
 
 	void SubjectList::Parse(const char *data, size_t len, TransformBuilder *builder)
 	{
-		auto root = GetSubjectList(data);
+		std::uint32_t crc = CRC::Calculate(data+4, len-4, CRC::CRC_32());
+
+		std::uint32_t* check = (std::uint32_t*)data;
+
+		if (crc != *check)
+			return;
+
+		auto root = GetSubjectList(data + 4);
 
 		this->mTime = root->time();
 
