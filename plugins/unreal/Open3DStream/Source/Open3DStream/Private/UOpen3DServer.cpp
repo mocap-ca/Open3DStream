@@ -103,12 +103,19 @@ bool O3DSServer::start(FText Url, FText Protocol )
 			if (mUdpReceiver) delete mUdpReceiver;
 			mUdpReceiver = new FUdpSocketReceiver(mUdp, ThreadWaitTime, *ThreadName);
 
+
 			mUdpReceiver->OnDataReceived().BindLambda([this](const FArrayReaderPtr& DataPtr, const FIPv4Endpoint& Endpoint)
 				{
+
 					TArray<uint8> Data;
 					Data.AddUninitialized(DataPtr->TotalSize());
 					DataPtr->Serialize(Data.GetData(), DataPtr->TotalSize());
-					if (OnData.IsBound()) { OnData.Execute(Data); }
+					mUdpMapper.addFragment((const char*)Data.GetData(), Data.Num());
+					std::vector<char> buf;
+					if (mUdpMapper.getFrame(buf))
+					{
+						if (OnData.IsBound()) { OnData.Execute(TArray<uint8>((uint8*)buf.data(), buf.size())); }
+					}
 				});
 
 			mUdpReceiver->Start();

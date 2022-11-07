@@ -2,6 +2,7 @@
 #include "o3ds/math.h"
 #include "o3ds/publisher.h"
 #include "o3ds/async_pair.h"
+#include "o3ds/udp_fragment.h"
 
 #define OPEN3D_DEVICE__CLASS	OPEN3D_DEVICE__CLASSNAME
 #define OPEN3D_DEVICE__NAME	OPEN3D_DEVICE__CLASSSTR
@@ -392,20 +393,21 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				dest_addr.sin_addr.s_addr = ret.S_un.S_addr;
 				dest_addr.sin_port = htons(mNetworkPort);
 
-				size_t sentSz = sendto(mNetworkSocket, (const char*)&buf[0], (int)bucketSize, 0,
-					(struct sockaddr*)&dest_addr,
-					(int)sizeof(struct sockaddr_in));
+				size_t sentSz = 0;
 
-				if(sentSz == bucketSize)
+				std::vector<char> fragData;
+				UdpFragmenter frag(buf.data(), bucketSize, 2048);
+				for (int i = 0; i < frag.mFrames; i++)
 				{
-					std::ostringstream oss;
-					oss << sentSz << " bytes";
-					Status = oss.str().c_str();
+					frag.makeFragment(0, i, fragData);
+					sentSz+= sendto(mNetworkSocket, fragData.data(), fragData.size(), 0,
+						(struct sockaddr*)&dest_addr,
+						(int)sizeof(struct sockaddr_in));
 				}
-				else
-				{
-					Status = "UDP SEND ERROR";
-				}
+
+				std::ostringstream oss;
+				oss << frag.mFrames << "/" << sentSz << " bytes";
+				Status = oss.str().c_str();
 
 			}
 

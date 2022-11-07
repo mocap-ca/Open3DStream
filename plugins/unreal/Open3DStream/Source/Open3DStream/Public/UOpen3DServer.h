@@ -4,6 +4,7 @@
 
 #include "Common/UdpSocketReceiver.h"
 #include "o3ds/base_connector.h"
+#include "o3ds/udp_fragment.h"
 #include "Sockets.h"
 
 
@@ -36,6 +37,7 @@ public:
 	FSocket* mUdp;
 
 	FUdpSocketReceiver* mUdpReceiver;
+	UdpMapper mUdpMapper;
 
 	FOnO3dsData OnData;
 	FOnState    OnState;
@@ -48,7 +50,6 @@ public:
 	size_t  mPtr;
 	float   mGoodTime;
 	bool    mNoDataFlag;
-
 
 	enum class eState { SYNC, HEADER, DATA } mState;
 

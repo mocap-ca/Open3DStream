@@ -38,14 +38,14 @@ release = os.path.abspath('build_release')
 
 mobu = os.path.join(release, "plugins", "mobu")
 for i in os.listdir(mobu):
-    if i.endswith(".dll") or i.endswith(".pdb"):
+    if i.endswith(".dll"):
         out = os.path.join("plugins", "mobu", i)
         print(out)
         fp.write(os.path.join(mobu, i), out)
 
 maya = os.path.join(release, "plugins", "maya")
 for i in os.listdir(maya):
-    if i.endswith(".mll") or i.endswith(".pdb"):
+    if i.endswith(".mll"):
         out = os.path.join("plugins", "maya", i)
         print(out)
         fp.write(os.path.join(maya, i), out)

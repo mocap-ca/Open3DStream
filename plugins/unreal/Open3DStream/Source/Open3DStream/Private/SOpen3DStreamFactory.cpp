@@ -26,7 +26,7 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 		LastUrl = LOCTEXT("Open3DStreamUrlValue", "127.0.0.1:3001");
 	}
 
-	CurrentProtocol = Options[LastComboId];
+		CurrentProtocol = Options[LastComboId];
 
 	mUrl = LastUrl;
 

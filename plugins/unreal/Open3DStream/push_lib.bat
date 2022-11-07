@@ -1,5 +1,10 @@
 @ECHO OFF
-SET DST=D:\Unreal Projects\O3DS_UE5\Plugins\Open3DStream
+
+SET SRC_PROJECT=M:\CLIENTS\Shocap\2022_10_28-TcpIssues\LiveSwitch-O3DS-TCPRelay-Test
+
+REM SET DST=D:\Unreal Projects\O3DS_UE5\Plugins\Open3DStream
+SET DST=%SRC_PROJECT%\Plugins\Open3DStream
+
 SET BLD=%~DP0..\..\..\vsbuild
 
 IF EXIST "%DST%\Open3DStream.uplugin" GOTO POK

@@ -44,6 +44,8 @@ set(SOURCES
 	o3ds/websocket.cpp
 	o3ds/tcp.h
 	o3ds/tcp.cpp
+	o3ds/udp_fragment.cpp
+	o3ds/udp_fragment.h
 
 	)
 	
