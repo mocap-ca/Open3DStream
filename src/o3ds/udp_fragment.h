@@ -10,6 +10,7 @@ class UdpFragmenter
 public:
 
 	UdpFragmenter(const char* data, size_t sz, size_t inFragSize);
+	~UdpFragmenter();
 
 	void makeFragment(uint32_t id, uint32_t seq, std::vector<char> &out);
 
@@ -25,6 +26,7 @@ class UdpCombiner
 {
 public:
 	UdpCombiner();
+	~UdpCombiner();
 
 	bool addFragment(const char* data, size_t sz);
 

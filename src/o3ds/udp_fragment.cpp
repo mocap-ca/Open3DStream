@@ -17,6 +17,11 @@ UdpFragmenter::UdpFragmenter(const char* data, size_t sz, size_t inFragSize)
 		mBufferSize = 0;
 }
 
+UdpFragmenter::~UdpFragmenter()
+{
+	if (mBuffer) free(mBuffer);
+}
+
 void UdpFragmenter::makeFragment(
 	uint32_t inId,
 	uint32_t inSeq,
@@ -53,7 +58,11 @@ UdpCombiner::UdpCombiner()
 	, mBufferSize(0)
 	, mFrames(0)
 {
+}
 
+UdpCombiner::~UdpCombiner()
+{
+	if (mBuffer) free(mBuffer);
 }
 
 bool UdpCombiner::addFragment(const char* data, size_t sz)
@@ -106,7 +115,7 @@ bool UdpCombiner::addFragment(const char* data, size_t sz)
 
 bool UdpCombiner::isComplete()
 {
-	for (auto i : mFound)
+	for (auto& i : mFound)
 	{
 		if (!i) return false;
 	}
@@ -143,13 +152,13 @@ bool UdpMapper::addFragment(const char* data, size_t sz)
 
 bool UdpMapper::getFrame(std::vector<char> &out)
 {
-	for (auto i : items)
+	for (auto &i : items)
 	{
 		if (i.second.isComplete())
 		{
 			out.insert(out.end(), i.second.mBuffer, i.second.mBuffer + i.second.mBufferSize);
 
-			for(auto j = items.begin(); j != items.end();)
+			for(auto &j = items.begin(); j != items.end();)
 			{ 
 				if (j->first <= i.first) {
 					j = items.erase(j);

@@ -396,7 +396,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				size_t sentSz = 0;
 
 				std::vector<char> fragData;
-				UdpFragmenter frag(buf.data(), bucketSize, 2048);
+				UdpFragmenter frag(buf.data(), bucketSize, 512);
 				for (int i = 0; i < frag.mFrames; i++)
 				{
 					frag.makeFragment(0, i, fragData);
