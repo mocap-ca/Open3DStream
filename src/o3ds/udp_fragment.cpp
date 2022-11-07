@@ -142,12 +142,13 @@ bool UdpMapper::addFragment(const char* data, size_t sz)
 
 	uint32_t* heading = (uint32_t*)data;
 
-	uint32_t id = heading[0];
+	uint32_t frameId = heading[0];
+	uint32_t fragmentId = heading[1];
 
-	if (id > 40)
-		return false;
+	//if (fragmentId > 40)
+    // return false;
 
-	this->getCombiner(id).addFragment(data, sz);
+	this->getCombiner(frameId).addFragment(data, sz);
 }
 
 bool UdpMapper::getFrame(std::vector<char> &out)

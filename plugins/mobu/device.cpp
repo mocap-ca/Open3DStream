@@ -413,11 +413,13 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 
 				size_t sentSz = 0;
 
+				mIdSeq++;
+
 				std::vector<char> fragData;
 				UdpFragmenter frag(buf.data(), bucketSize, 512);
 				for (int i = 0; i < frag.mFrames; i++)
 				{
-					frag.makeFragment(mIdSeq++, i, fragData);
+					frag.makeFragment(mIdSeq, i, fragData);
 					sentSz+= sendto(mNetworkSocket, fragData.data(), fragData.size(), 0,
 						(struct sockaddr*)&dest_addr,
 						(int)sizeof(struct sockaddr_in));
