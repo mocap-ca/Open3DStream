@@ -251,7 +251,7 @@ namespace O3DS
 		int SerializeUpdate(std::vector<char>& outbuf, double timestamp = 0.0);
 
 		//! Populate or update the subject list with the binary data provided (created by Serialize)
-		void Parse(const char *data, size_t len, TransformBuilder* = nullptr);
+		bool Parse(const char *data, size_t len, TransformBuilder* = nullptr);
 
 		void ParseSubject(const O3DS::Data::Subject*, TransformBuilder* = nullptr);
 

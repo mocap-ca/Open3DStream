@@ -82,6 +82,7 @@ bool Open3D_Device::FBCreate()
 	mSamplingRate = lPeriod.GetFrame();
 
 	mFrameCounter = 0;
+	mIdSeq = 0;
 	return true;
 }
 
@@ -416,7 +417,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				UdpFragmenter frag(buf.data(), bucketSize, 512);
 				for (int i = 0; i < frag.mFrames; i++)
 				{
-					frag.makeFragment(0, i, fragData);
+					frag.makeFragment(mIdSeq++, i, fragData);
 					sentSz+= sendto(mNetworkSocket, fragData.data(), fragData.size(), 0,
 						(struct sockaddr*)&dest_addr,
 						(int)sizeof(struct sockaddr_in));

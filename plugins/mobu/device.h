@@ -89,6 +89,7 @@ private:
 	int				mNetworkPort;
 	bool			mStreaming;
 	int             mFrameCounter;
+	uint32_t        mIdSeq;
 
 };
 

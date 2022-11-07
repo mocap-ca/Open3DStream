@@ -428,14 +428,14 @@ namespace O3DS
 		return outbuf.size();
 	}
 
-	void SubjectList::Parse(const char *data, size_t len, TransformBuilder *builder)
+	bool SubjectList::Parse(const char *data, size_t len, TransformBuilder *builder)
 	{
 		std::uint32_t crc = CRC::Calculate(data+4, len-4, CRC::CRC_32());
 
 		std::uint32_t* check = (std::uint32_t*)data;
 
 		if (crc != *check)
-			return;
+			return false;
 
 		auto root = GetSubjectList(data + 4);
 
@@ -466,6 +466,8 @@ namespace O3DS
 
 		for (auto subject : this->mItems)
 			subject->CalcMatrices();
+
+		return true;
 	}
 
 	void SubjectList::ParseSubject(const O3DS::Data::Subject *inSubject, TransformBuilder *builder)
