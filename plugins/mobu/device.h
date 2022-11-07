@@ -60,6 +60,9 @@ public:
 	const char* GetKey()                                { return mKey; }
 	void        SetKey(const char *value)               { mKey = value; }
 
+	void        SetDeltaThreshold(double value) { Items.mDeltaThreshold = value;  }
+	double      GetDeltaThreshold() { return Items.mDeltaThreshold; }
+
 	FBDeviceSamplingMode	GetSamplingType()								{ return mSamplingType;			}
 	void					SetSamplingType( FBDeviceSamplingMode pType )	{ mSamplingType = pType;		}
 

@@ -31,6 +31,7 @@ public:
 	void	EventEditProtocol(HISender pSender, HKEvent pEvent);
 	void	EventEditSampleRate(HISender pSender, HKEvent pEvent);
 	void	EventEditKey(HISender pSender, HKEvent pEvent);
+	void	EventEditDelta(HISender pSender, HKEvent pEvent);
 
 private:
 	FBLayout      mLayoutLeft;
@@ -59,10 +60,13 @@ private:
 	FBLabel       mLabelPluginVersion;
 	FBLabel       mLabelJoints;
 	FBEdit        mMemoJoints;
+	FBLabel       mLabelDelta;
+	FBEdit        mEditDelta;
 	FBMemo        mMemoLog;
 
 	FBSystem    mSystem;
 	Open3D_Device*	mDevice;
+
 };
 
 #endif

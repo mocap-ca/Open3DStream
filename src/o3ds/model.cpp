@@ -359,25 +359,26 @@ namespace O3DS
 
 			for (auto& t : subject->mTransforms)
 			{
-				//if (t->translation.delta() > 0.001)
-				//{
+				if (t->translation.delta() > mDeltaThreshold)
+				{
 					translations.push_back(O3DS::Data::TranslationUpdate(
 						(float)t->translation.value.v[0],
 						(float)t->translation.value.v[1],
 						(float)t->translation.value.v[2], transformId));
 					t->translation.sent();
-				//}
+				}
 
-				//if (t->rotation.delta() > 0.001)
-				//{
+				if (t->rotation.delta() > mDeltaThreshold)
+				{
 					rotations.push_back(O3DS::Data::RotationUpdate(
 						(float)t->rotation.value.v[0],
 						(float)t->rotation.value.v[1],
 						(float)t->rotation.value.v[2],
 						(float)t->rotation.value.v[3], transformId));
 					t->rotation.sent();
-				//}
+				}
 
+					/*
 				if (t->scale.delta() > 0.001)
 				{
 					scales.push_back(O3DS::Data::ScaleUpdate(
@@ -385,7 +386,7 @@ namespace O3DS
 						(float)t->scale.value.v[1],
 						(float)t->scale.value.v[2], transformId));
 					t->scale.sent();
-				}
+				}*/
 
 				transformId++;
 			}

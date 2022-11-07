@@ -159,10 +159,28 @@ void Open3D_Device_Layout::UICreate()
 	mLayoutLeft.SetControl("EditSubject", mEditSubject);
 	mEditSubject.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditSubject);
 
-	// Joints label - under EditSubject
-	mLayoutLeft.AddRegion("LabelJoints", "LabelJoints",
+	// Delta label - under EditSubject
+	mLayoutLeft.AddRegion("LabelDelta", "LabelDelta",
 		lS, kFBAttachRight, "SourcesList", 1.00,
 		2, kFBAttachBottom, "EditSubject", 1.00,
+		155, kFBAttachNone, "", 1.00,
+		lH, kFBAttachNone, NULL, 1.00);
+	mLayoutLeft.SetControl("LabelDelta", mLabelDelta);
+	mLabelDelta.Caption = "Delta Threshold:";
+
+	// Delta list - Under Delta Label
+	mLayoutLeft.AddRegion("EditDelta", "EditDelta",
+		lS, kFBAttachRight, "SourcesList", 1.00,
+		2, kFBAttachBottom, "LabelDelta", 1.00,
+		155, kFBAttachNone, "", 1.00,
+		lH, kFBAttachNone, NULL, 1.00);
+	mLayoutLeft.SetControl("EditDelta", mEditDelta);
+	mEditDelta.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditDelta);
+
+	// Joints label - under EditDelta
+	mLayoutLeft.AddRegion("LabelJoints", "LabelJoints",
+		lS, kFBAttachRight, "SourcesList", 1.00,
+		2, kFBAttachBottom, "EditDelta", 1.00,
 		155, kFBAttachNone, "", 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
 	mLayoutLeft.SetControl("LabelJoints", mLabelJoints);
@@ -325,6 +343,9 @@ void Open3D_Device_Layout::UIConfigure()
 	mEditDestPort.Text = buffer;
 	mEditDestPort.Enabled = false; // enabed by the combo changing
 
+	sprintf_s(buffer, 40, "%.4f", mDevice->GetDeltaThreshold());
+	mEditDelta.Text = buffer;
+
 	mLabelPluginVersion.Caption = FBString("Version: ") + FBString(O3DS::getVersion());
 }
 
@@ -365,6 +386,13 @@ void Open3D_Device_Layout::EventEditSubject(HISender pSender, HKEvent pEvent)
 	mSourcesList.Selected(id, true);
 }
 
+void Open3D_Device_Layout::EventEditDelta(HISender pSender, HKEvent pEvent)
+{
+	FBString newValue = mEditDelta.Text.AsString();
+	float value = atof(newValue);
+	mDevice->SetDeltaThreshold(value);
+}
+
 void Open3D_Device_Layout::EventDeviceStatusChange( HISender pSender, HKEvent pEvent )
 {
 	UIReset();
@@ -380,7 +408,7 @@ void Open3D_Device_Layout::EventUIIdle( HISender pSender, HKEvent pEvent )
 	mListProtocol.Enabled = !active;
 	mEditKey.Enabled = !active;
 	mEditSamplingRate.Enabled = !active;
-	//mMemoJoints.Enabled = !active;
+	mMemoJoints.Enabled = !active;
 	mButtonAdd.Enabled = !active;
 	mButtonDel.Enabled = !active;
 
@@ -409,9 +437,13 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 			mEditSubject.Text = mDevice->Items[id]->mName.c_str();
 			mEditSource.Text = model->LongName;
 
-			O3DS::Mobu::TraverseSubject(subject, model);
+			std::ostringstream imploded, oss;
+			std::copy(mDevice->Items[id]->mJoints.begin(), mDevice->Items[id]->mJoints.end(),
+				std::ostream_iterator<std::string>(imploded, " "));
 
-			std::ostringstream oss;
+			mMemoJoints.Text = imploded.str().c_str();
+
+			O3DS::Mobu::TraverseSubject(subject, model);
 
 			if (model->Is(FBModelNull::TypeInfo))
 				oss << "Null" << std::endl;
@@ -422,7 +454,16 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 			if (model->Is(FBModelSkeleton::TypeInfo))
 				oss << "Joint" << std::endl;
 
-			oss << "Items: " << mDevice->Items[id]->mTransforms.size();
+			oss << "Items: " << mDevice->Items[id]->mTransforms.size() << std::endl;
+
+			oss << "Joints: " << mDevice->Items[id]->mJoints.size() << std::endl;
+
+			std::vector<char> buf;
+			mDevice->Items.Serialize(buf, 0);
+			oss << "Packet1: " << buf.size() << std::endl;
+
+			mDevice->Items.SerializeUpdate(buf, 0);
+			oss << "Packet2: " << buf.size() << std::endl;
 
 			mMemoLog.Text = oss.str().c_str();
 		}

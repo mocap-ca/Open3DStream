@@ -22,6 +22,7 @@
 #define FBX_NETWORK_PORT    "NetworkPort"
 #define FBX_NETWORK_PROTO   "NetworkProtocol"
 #define FBX_KEY             "Key"
+#define FBX_DELTA           "DeltaThreshold"
 
 #include <ws2tcpip.h>
 #include <sstream>
@@ -536,6 +537,7 @@ bool Open3D_Device::FbxStore(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWhat)
 		pFbxObject->FieldWriteI(FBX_NETWORK_PORT, GetNetworkPort());
 		pFbxObject->FieldWriteI(FBX_NETWORK_PROTO, (int)GetProtocol());
 		pFbxObject->FieldWriteC(FBX_KEY, GetKey());
+		pFbxObject->FieldWriteD(FBX_DELTA, GetDeltaThreshold());
 
 	}
 	return true;
@@ -593,12 +595,13 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 		SetNetworkPort(pFbxObject->FieldReadI(FBX_NETWORK_PORT));
 		SetProtocol(static_cast<TProtocol>(pFbxObject->FieldReadI(FBX_NETWORK_PROTO)));
 		SetKey(pFbxObject->FieldReadC(FBX_KEY));
+		SetDeltaThreshold(pFbxObject->FieldReadD(FBX_DELTA));
 #else
 		SetNetworkAddress(pFbxObject->FieldReadC(FBX_NETWORK_IP, GetNetworkAddress()));
 		SetNetworkPort(pFbxObject->FieldReadI(FBX_NETWORK_PORT, GetNetworkPort()));
 		SetProtocol(static_cast<TProtocol>(pFbxObject->FieldReadI(FBX_NETWORK_PROTO)));
 		SetKey(pFbxObject->FieldReadC(FBX_KEY, GetKey()));
-#endif		SetKey(pFbxObject->FieldReadC(FBX_KEY, GetKey()));
+#endif		
 	}
 
 	return true;

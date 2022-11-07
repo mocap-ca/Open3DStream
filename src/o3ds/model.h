@@ -192,9 +192,13 @@ namespace O3DS
 	public:
 
 		SubjectList()
+			: mTime(0.0)
+			, mDeltaThreshold(0.0001)
 		{}
 
 		SubjectList(const SubjectList &other)
+			: mTime(0.0)
+			, mDeltaThreshold(0.0001)
 		{}
 
 		virtual ~SubjectList()
@@ -238,6 +242,7 @@ namespace O3DS
 		Subject* operator [] (int ref) { return mItems.operator[](ref); }
 
 		double mTime;
+		double mDeltaThreshold;
 
 
 		//! Encode all of the items in the subject list as binary data
