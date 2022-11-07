@@ -39,7 +39,7 @@ void Open3D_Device_Layout::UICreate()
 	int labelWidth = 80;
 	int fieldWidth = 150;
 	int listWidth = 90;
-	int leftWidth = 220;
+	int leftWidth = 260;
 	int buttonWidth = listWidth / 2 - 3;
 
 	// Left Panel
@@ -173,7 +173,7 @@ void Open3D_Device_Layout::UICreate()
 		lS, kFBAttachRight, "SourcesList", 1.00,
 		2, kFBAttachBottom, "LabelJoints", 1.00,
 		155, kFBAttachNone, "", 1.00,
-		0, kFBAttachTop, "VersionInfo", 1.00);
+		lH, kFBAttachNone, NULL, 1.00);
 	mLayoutLeft.SetControl("JointsList", mMemoJoints);
 	mMemoJoints.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditJoints);
 
@@ -521,7 +521,7 @@ void Open3D_Device_Layout::EventEditJoints(HISender pSender, HKEvent pEvent)
 {
 	// The subject name has been changed, updae the device list and mSourcesList
 	int id = mSourcesList.ItemIndex;
-	if (id < 0) return;
+	if (id < 0) return	;
 
 	std::string s(mMemoJoints.Text.AsString());
 	std::stringstream ss(s);

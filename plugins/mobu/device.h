@@ -74,7 +74,6 @@ public:
 	O3DS::Connector*        mServer;
 	SOCKET                  mNetworkSocket;
 	std::vector<int>        mClients;
-	int                     mJumboHeader;
 
 private:
 	double                mSamplingRate;
@@ -86,6 +85,7 @@ private:
 	FBString        mKey;
 	int				mNetworkPort;
 	bool			mStreaming;
+	int             mFrameCounter;
 
 };
 

@@ -75,12 +75,12 @@ bool Open3D_Device::FBCreate()
 	mKey = nullptr;
 	mServer = nullptr;
 
-	mJumboHeader = 0;
-
 	FBTime	lPeriod;
 	lPeriod.SetSecondDouble(1.0/60.0);
 	SamplingPeriod	= lPeriod;
 	mSamplingRate = lPeriod.GetFrame();
+
+	mFrameCounter = 0;
 	return true;
 }
 
@@ -329,6 +329,7 @@ uint32_t Open3D_Device::WriteTcp(O3DS::TcpSocket &socket, void *data, uint32_t b
 void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDeviceNotifyInfo)
 {
 	std::vector<char> buf;
+	std::vector<char> buf2;
 
 	uint32_t total = 0;
 
@@ -344,12 +345,27 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			Items.update();
 
 			FBTime MobuTime = FBSystem().LocalTime;
-			int32_t bucketSize = Items.Serialize(buf, MobuTime.GetSecondDouble());
+			int32_t bucketSize;
+			
+			if (mFrameCounter++ == 0)
+			{
+				bucketSize = Items.Serialize(buf, MobuTime.GetSecondDouble());
+			}
+			else
+			{
+				bucketSize = Items.SerializeUpdate(buf, MobuTime.GetSecondDouble());
+			}
+
+			if (mFrameCounter > 100) {
+				mFrameCounter = 0;
+			}
+
 			if (bucketSize == 0)
 			{
 				Status = "Buffer Error";
 				return;
 			}
+
 
 			if (mProtocol == Open3D_Device::kTCPServer)
 			{

@@ -58,7 +58,7 @@ private:
 	FBEditNumber  mEditSamplingRate;
 	FBLabel       mLabelPluginVersion;
 	FBLabel       mLabelJoints;
-	FBMemo        mMemoJoints;
+	FBEdit        mMemoJoints;
 	FBMemo        mMemoLog;
 
 	FBSystem    mSystem;
