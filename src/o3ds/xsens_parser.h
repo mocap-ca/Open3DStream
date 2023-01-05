@@ -61,6 +61,8 @@ namespace O3DS
 		public:
 			Parser();
 
+			bool parse(const char* data, size_t sz);
+
 			O3DS::Subject* getSubject();
 
 			O3DS::SubjectList subjects;
@@ -78,6 +80,8 @@ namespace O3DS
 			struct header head;
 
 			std::map<int, SubjectInfo > info;
+
+			std::string system_name;
 
 
 		};

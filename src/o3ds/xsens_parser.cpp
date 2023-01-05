@@ -263,6 +263,37 @@ void O3DS::XSENS::Parser::get_quaternion_pose(uint8_t* payload, size_t len)
 O3DS::XSENS::Parser::Parser() 
 {}
 
+bool O3DS::XSENS::Parser::parse(const char* data, size_t sz)
+{
+	if (strncmp(data, "MXTP", 4) != 0)
+		return false;
+
+	uint8_t* payload = (uint8_t*)(data + 24);
+	size_t len = sz - 24;
+	enum class O3DS::XSENS::ProtocolID protocolId = O3DS::XSENS::get_protocol_id((uint8_t*)(data + 4));
+
+	std::string name = O3DS::XSENS::protocol_name(protocolId);
+
+	this->get_header((uint8_t*)data + 6, sz - 6);
+
+	switch (protocolId)
+	{
+	case O3DS::XSENS::ProtocolID::PoseQuaternion:
+		this->get_quaternion_pose(payload, len);
+		return true;
+
+	case O3DS::XSENS::ProtocolID::Scale:
+		this->get_scale(payload, len);
+		break;
+
+	case O3DS::XSENS::ProtocolID::Meta:
+		this->get_meta(payload, len, system_name);
+		break;
+	}
+
+	return false;
+
+}
 
 void O3DS::XSENS::Parser::get_scale(uint8_t* payload, size_t len)
 {
@@ -358,8 +389,6 @@ void O3DS::XSENS::Parser::get_meta(uint8_t* payload, size_t len, std::string &na
 
 	stream.get(buf, sz);
 	buf[sz] = 0;
-
-	printf("Meta: %s\n", buf);
 
 	std::stringstream ss(buf);
 	std::string line;
