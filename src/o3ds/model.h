@@ -36,8 +36,6 @@ SOFTWARE.
 
 namespace O3DS
 {
-
-
 	/*! \class Transform model.h o3ds/model.h */
 	//! Defines a single transform with name and parent id reference
 	class Transform
@@ -72,6 +70,7 @@ namespace O3DS
 
 	};
 
+	//! Platform specific builder to make a transform object
 	class TransformBuilder
 	{
 	public:

@@ -149,6 +149,8 @@ bool UdpMapper::addFragment(const char* data, size_t sz)
     // return false;
 
 	this->getCombiner(frameId).addFragment(data, sz);
+
+	return true;
 }
 
 bool UdpMapper::getFrame(std::vector<char> &out)

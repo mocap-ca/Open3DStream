@@ -46,6 +46,18 @@ set(SOURCES
 	o3ds/tcp.cpp
 	o3ds/udp_fragment.cpp
 	o3ds/udp_fragment.h
+	o3ds/socket_exception.h
+	o3ds/socket_exception.cpp
+	o3ds/socket_util.h
+	o3ds/socket_util.cpp
+	o3ds/udp.h
+	o3ds/udp.cpp
+	o3ds/socket_address.h
+	o3ds/socket_address.cpp
+	o3ds/binary_stream.h
+	o3ds/binary_stream.cpp
+	o3ds/xsens_parser.h
+	o3ds/xsens_parser.cpp
 
 	)
 	

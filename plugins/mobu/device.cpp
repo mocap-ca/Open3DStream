@@ -3,6 +3,7 @@
 #include "o3ds/publisher.h"
 #include "o3ds/async_pair.h"
 #include "o3ds/udp_fragment.h"
+#include "o3ds/socket_exception.h"
 
 #define OPEN3D_DEVICE__CLASS	OPEN3D_DEVICE__CLASSNAME
 #define OPEN3D_DEVICE__NAME	OPEN3D_DEVICE__CLASSSTR

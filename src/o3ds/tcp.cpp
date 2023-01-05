@@ -1,11 +1,10 @@
 #include "tcp.h"
 
-#include <sstream>
 
+#include <sstream>
 
 #ifdef _WIN32
 #include <Ws2tcpip.h>
-WSADATA O3DS::TcpSocket::ws;
 #else
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -15,81 +14,25 @@ WSADATA O3DS::TcpSocket::ws;
 using namespace O3DS;
 
 
-
-SocketException::SocketException(std::string s) : m_str(s), m_err(0)
-{
-};
-
-SocketException::SocketException(std::string s, int err) : m_str(s), m_err(err)
-{
-};
-
-SocketException::SocketException(std::string s, int err, std::string host, int port)
-{
-	std::ostringstream ss;
-	ss << s << " host: " << host << ":" << port;
-	m_str = ss.str();
-	m_err = err;
-};
-
-std::string SocketException::str()
-{
-	std::ostringstream ss;
-	ss << m_str;
-
-	if (m_err != 0)
-	{
-#ifdef _WIN32	
-		char buf[1024];
-		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 0, m_err, 0, buf, 1024, 0);
-		ss << " - " << buf;
-#else
-		ss << " - " << strerror(m_err);
-#endif
-	}
-	return ss.str();
-}
-
-
-
-
-
 TcpSocket::TcpSocket()
-	: m_socket(SOCKET_NULL)
-	, deleteOnClose(true)
+	: Socket()
 {
 	CreateSocket();	
 }
 
 TcpSocket::TcpSocket(SOCKET s)
-	: m_socket(s)
-	, deleteOnClose(false)
+	: Socket(s)
 {
 }
 
 TcpSocket::~TcpSocket()
 {
-	if (!deleteOnClose) return;
-	try
-	{
-		if (m_socket != SOCKET_NULL && m_socket != INVALID_SOCKET) DestroySocket();
-	}
-	catch (SocketException e)
-	{
-	}
 }
 
 void TcpSocket::CreateSocket()
 {
-#ifdef _WIN32
-	if (!wsok)
-	{
-		WSAStartup(MAKEWORD(2, 2), &TcpSocket::ws);
-		wsok = true;
-	}
-#endif
+	Socket::CreateSocket();
 
-	if (m_socket != SOCKET_NULL && m_socket != INVALID_SOCKET)  DestroySocket();
 	m_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	if (m_socket == SOCKET_NULL || m_socket == INVALID_SOCKET)
@@ -101,49 +44,6 @@ void TcpSocket::CreateSocket()
 #endif
 }
 
-void TcpSocket::DestroySocket()
-{
-	if (m_socket == SOCKET_NULL)     throw SocketException("Attempting to close null socket");
-	if (m_socket == INVALID_SOCKET)  throw SocketException("Attempting to close invalid socket");
-	if (CLOSESOCKET(m_socket) != 0)  throw SocketException("Could not close socket", GetError());
-	m_socket = SOCKET_NULL;
-}
-
-
-int TcpSocket::GetError()
-{
-#ifdef _WIN32
-	return WSAGetLastError();
-#else
-	return errno;
-#endif
-}
-
-
-void TcpSocket::SetBlocking(bool block)
-{
-#ifdef _WIN32
-	u_long arg;
-	if (block)
-		arg = 0;
-	else
-		arg = 1;
-	ioctlsocket(m_socket, FIONBIO, &arg);
-#else
-	int x;
-	x = fcntl(m_socket, F_GETFL, 0);
-	if (block)
-		fcntl(m_socket, F_SETFL, x &= ~O_NONBLOCK);
-	else
-		fcntl(m_socket, F_SETFL, x | O_NONBLOCK);
-#endif
-	/*
-		int nonblocking = block ? 0 : 1;
-		if (ioctl(s, FIONBIO, &on) < 0) {
-			throw SocketException("Could not set socket blocking mode");
-	*/
-
-}
 
 
 #if defined(_WIN32) 
@@ -218,6 +118,9 @@ void TcpSocket::Connect(sockaddr_in* host, unsigned short port)
 	return;
 }
 
+
+
+
 void TcpSocket::DisconnectSend()
 {
 	if (m_socket == SOCKET_NULL) return;
@@ -270,20 +173,6 @@ void TcpSocket::Disconnect()
 }
 
 
-void TcpSocket::Bind(unsigned short port)
-{
-	struct sockaddr_in service;
-	memset(&service, 0, sizeof(sockaddr_in));
-	service.sin_family = AF_INET;
-	service.sin_addr.s_addr = INADDR_ANY;
-	service.sin_port = htons(port);
-
-	// bind the socket to the port
-	if (bind(m_socket, (SOCKADDR*)&service, sizeof(service)) == SOCKET_ERROR)
-	{
-		throw SocketException("Bind to port failed.", GetError(), "inaddr_any", port);
-	}
-}
 
 void TcpSocket::Listen(int port, bool nonBlocking, int maxConnections)
 {

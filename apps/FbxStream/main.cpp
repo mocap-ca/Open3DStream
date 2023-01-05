@@ -124,7 +124,6 @@ redo:
 			// Introduce random delays to simulate packet buffering
 			if (rand() < RAND_MAX / 10)
 				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
 		}
 
 

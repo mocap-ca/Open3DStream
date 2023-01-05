@@ -157,7 +157,6 @@ enum O3DS::Direction dir(O3DS::Data::Direction d)
 
 namespace O3DS
 {
-
 	Transform::Transform(std::string& name, int parentId, void *ref)
 		: mName(name)
 		, mParentId(parentId)
@@ -177,8 +176,7 @@ namespace O3DS
 	{}
 
 	Transform::~Transform()
-	{
-	};
+	{};
 
 	void Subject::CalcMatrices()
 	{
@@ -209,9 +207,7 @@ namespace O3DS
 					m = transform->matrices[matrixId++].value * m;
 				}
 			}
-
 		}
-
 
 		// Calculate world matrix
 		bool done = false;
@@ -250,14 +246,12 @@ namespace O3DS
 		}
 	}
 
-
 	int SubjectList::Serialize(std::vector<char> &outbuf, double timestamp)
 	{
 		O3DS::Data::Translation translation;
 		O3DS::Data::Rotation rotation;
 		O3DS::Data::Scale scale;
 		
-
 		if(timestamp == 0.0) timestamp = GetTime();
 
 		flatbuffers::FlatBufferBuilder builder;
@@ -428,13 +422,14 @@ namespace O3DS
 		return outbuf.size();
 	}
 
+	#pragma optimize("", off)
 	bool SubjectList::Parse(const char *data, size_t len, TransformBuilder *builder)
 	{
 		std::uint32_t crc = CRC::Calculate(data+4, len-4, CRC::CRC_32());
 
-		std::uint32_t* check = (std::uint32_t*)data;
+		std::uint32_t check = *(std::uint32_t*)data;
 
-		if (crc != *check)
+		if (crc != check)
 			return false;
 
 		auto root = GetSubjectList(data + 4);
@@ -469,6 +464,7 @@ namespace O3DS
 
 		return true;
 	}
+#pragma optimize("", on)
 
 	void SubjectList::ParseSubject(const O3DS::Data::Subject *inSubject, TransformBuilder *builder)
 	{
