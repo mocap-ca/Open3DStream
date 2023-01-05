@@ -24,7 +24,7 @@ Links
 =====
 * `Builds <https://github.com/mocap-ca/Open3DStream/releases/latest>`_
 * `GitHub <https://github.com/mocap-ca/Open3DStream>`_
-* `Discord <https://discord.gg/GndFxeM]>`_
+* `Discord <https://discord.gg/UdEbyFM9wD>`_
  
 
 Indices and tables
