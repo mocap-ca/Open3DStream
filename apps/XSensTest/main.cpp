@@ -73,11 +73,11 @@ int main(int argc, char *argv[])
 
 		std::string system_name;
 
-		std::vector<char> buffer;
-
 		int ret;
 
 		O3DS::XSENS::Parser parser;
+
+		std::vector<char> buffer;
 
 		while (running)
 		{

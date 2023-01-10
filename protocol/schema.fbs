@@ -81,6 +81,7 @@ table Subject {
   x_axis:Direction;
   y_axis:Direction;
   z_axis:Direction;
+  world_space:bool;
 }
 
 table SubjectUpdate {

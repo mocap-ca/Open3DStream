@@ -5,7 +5,7 @@ namespace O3DS
 {
 
 
-	enum Direction { None = 0, Left, Right, Forward, Back, Up, Down, Last };
+	enum class Direction { None = 0, Left, Right, Forward, Back, Up, Down, Last };
 
 
 	//! Describes the axis alignment of the coordinate system
@@ -16,9 +16,10 @@ namespace O3DS
 	public:
 		//! All axis set to None
 		Context()
-			: mX(None)
-			, mY(None)
-			, mZ(None)
+			: mX(Direction::None)
+			, mY(Direction::None)
+			, mZ(Direction::None)
+			, mWorldSpace(false)
 		{};
 
 		//! Copy constructor
@@ -26,6 +27,7 @@ namespace O3DS
 			: mX(other.mX)
 			, mY(other.mY)
 			, mZ(other.mZ)
+			, mWorldSpace(false)
 		{}
 
 		//! Returns true if all the axis are defined and orthogonal 
@@ -43,9 +45,9 @@ namespace O3DS
 		//! Numerical representation for each axis Left/Right =1, Up/Down=2, Forward/Back = 3
 		int axisId(enum Direction d)
 		{
-			if (d == Left || d == Right) return 1;
-			if (d == Up || d == Down)  return 2;
-			if (d == Forward || d == Back) return 3;
+			if (d == Direction::Left || d == Direction::Right) return 1;
+			if (d == Direction::Up || d == Direction::Down)  return 2;
+			if (d == Direction::Forward || d == Direction::Back) return 3;
 			return 0;
 		}
 
@@ -57,18 +59,20 @@ namespace O3DS
 		//! X = Right, Y = Up, Z = Back
 		Context Mobu()
 		{
-			return Context(Right, Up, Back);
+			return Context(Direction::Right, Direction::Up, Direction::Back);
 		}
 
 		//! X  = Forward, Y = Right, Z = Up
 		Context Unreal()
 		{
-			return Context(Forward, Right, Up);
+			return Context(Direction::Forward, Direction::Right, Direction::Up);
 		}
 
 		enum Direction mX;
 		enum Direction mY;
 		enum Direction mZ;
+
+		bool mWorldSpace;
 
 	};
 

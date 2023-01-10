@@ -137,11 +137,15 @@ namespace O3DS
 	class Subject
 	{
 	public:
-		Subject(void *info = nullptr) : mReference(info) {}
+		Subject(void *info = nullptr) 
+			: mReference(info)
+			, mWorldSpace(false)
+		{}
 
 		Subject(std::string name, void *info = nullptr)
 			: mName(name)
 			, mReference(info) 
+			, mWorldSpace(false)
 		{}
 
 		std::string   mName;
@@ -150,6 +154,7 @@ namespace O3DS
 		TransformList mTransforms;
 		void*         mReference;
 		Context       mContext;
+		bool          mWorldSpace;
 
 		Transform* addTransform(std::string &name, int parentId, TransformBuilder *builder = nullptr)
 		{
