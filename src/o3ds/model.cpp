@@ -131,12 +131,12 @@ O3DS::Data::Direction dir(enum O3DS::Direction d)
 {
 	switch (d)
 	{
-	case O3DS::Up: return O3DS::Data::Direction_Up;
-	case O3DS::Down: return O3DS::Data::Direction_Down;
-	case O3DS::Left: return O3DS::Data::Direction_Left;
-	case O3DS::Right: return O3DS::Data::Direction_Right;
-	case O3DS::Forward: return O3DS::Data::Direction_Forward;
-	case O3DS::Back: return O3DS::Data::Direction_Back;
+	case O3DS::Direction::Up: return O3DS::Data::Direction_Up;
+	case O3DS::Direction::Down: return O3DS::Data::Direction_Down;
+	case O3DS::Direction::Left: return O3DS::Data::Direction_Left;
+	case O3DS::Direction::Right: return O3DS::Data::Direction_Right;
+	case O3DS::Direction::Forward: return O3DS::Data::Direction_Forward;
+	case O3DS::Direction::Back: return O3DS::Data::Direction_Back;
 	}
 	return O3DS::Data::Direction_None;
 }
@@ -145,32 +145,35 @@ enum O3DS::Direction dir(O3DS::Data::Direction d)
 {
 	switch (d)
 	{
-	case O3DS::Data::Direction_Up: return O3DS::Up;
-	case O3DS::Data::Direction_Down: return O3DS::Down;
-	case O3DS::Data::Direction_Left: return O3DS::Left;
-	case O3DS::Data::Direction_Right: return O3DS::Right;
-	case O3DS::Data::Direction_Forward: return O3DS::Forward;
-	case O3DS::Data::Direction_Back: return O3DS::Back;
+	case O3DS::Data::Direction_Up: return O3DS::Direction::Up;
+	case O3DS::Data::Direction_Down: return O3DS::Direction::Down;
+	case O3DS::Data::Direction_Left: return O3DS::Direction::Left;
+	case O3DS::Data::Direction_Right: return O3DS::Direction::Right;
+	case O3DS::Data::Direction_Forward: return O3DS::Direction::Forward;
+	case O3DS::Data::Direction_Back: return O3DS::Direction::Back;
 	}
-	return O3DS::None;
+	return O3DS::Direction::None;
 }
 
 namespace O3DS
 {
 	Transform::Transform(std::string& name, int parentId, void *ref)
-		: mName(name)
+		: bWorldMatrix(false)
+		, mName(name)
 		, mParentId(parentId)
-		, mReference(ref)
+		, mReference(ref)	
 	{}
 
 	Transform::Transform(int parentId)
-		: mName()
+		: bWorldMatrix(false)
+		, mName()
 		, mParentId(parentId)
 		, mReference(nullptr)
 	{}
 
 	Transform::Transform()
-		: mName()
+		: bWorldMatrix(false)
+		, mName()
 		, mParentId(-1)
 		, mReference(nullptr)
 	{}
@@ -308,10 +311,13 @@ namespace O3DS
 			}
 
 			auto transforms = builder.CreateVector(ovSkeleton);
-			auto s = CreateSubject(builder, transforms, oSubjectName,
+			auto s = CreateSubject(builder, 
+				transforms, 
+				oSubjectName,
 				dir(subject->mContext.mX),
 				dir(subject->mContext.mY),
-				dir(subject->mContext.mZ));
+				dir(subject->mContext.mZ),
+				subject->mWorldSpace);
 
 			subjects.push_back(s);
 		}
