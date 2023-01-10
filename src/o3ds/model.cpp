@@ -422,7 +422,6 @@ namespace O3DS
 		return outbuf.size();
 	}
 
-	#pragma optimize("", off)
 	bool SubjectList::Parse(const char *data, size_t len, TransformBuilder *builder)
 	{
 		std::uint32_t crc = CRC::Calculate(data+4, len-4, CRC::CRC_32());
@@ -464,7 +463,6 @@ namespace O3DS
 
 		return true;
 	}
-#pragma optimize("", on)
 
 	void SubjectList::ParseSubject(const O3DS::Data::Subject *inSubject, TransformBuilder *builder)
 	{

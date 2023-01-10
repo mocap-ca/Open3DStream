@@ -18,7 +18,7 @@ function(build_mobu version path)
   foreach(mbdir "C:/Program Files/Autodesk/MotionBuilder ${version}/bin/x64"
 	            "D:/Programs/Autodesk/MotionBuilder ${version}/bin/x64")
     if(EXISTS ${mbdir})
-      install(TARGETS ${mobu_target} DESTINATION "${mbdir}/plugins")
+      #install(TARGETS ${mobu_target} DESTINATION "${mbdir}/plugins")
       set_target_properties(${mobu_target} PROPERTIES VS_DEBUGGER_COMMAND "${mbdir}/motionbuilder.exe")
 	  break()
     endif()

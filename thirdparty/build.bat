@@ -5,7 +5,7 @@ if NOT EXIST flatbuffers\CMakeLists.txt git submodule init
 if NOT EXIST nng\CMakeLists.txt git submodule init
 if NOT EXIST websocketpp\CMakeLists.txt git submodule init
 
-git submodule update --recursive
+REM git submodule update --recursive
 
 if NOT EXIST build mkdir build
 cd build
