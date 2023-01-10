@@ -317,7 +317,7 @@ namespace O3DS
 				dir(subject->mContext.mX),
 				dir(subject->mContext.mY),
 				dir(subject->mContext.mZ),
-				subject->mWorldSpace);
+				subject->mContext.mWorldSpace);
 
 			subjects.push_back(s);
 		}
