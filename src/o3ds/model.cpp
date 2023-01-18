@@ -333,6 +333,11 @@ namespace O3DS
 
 		outbuf.resize(0);
 
+		// Flags
+		std::uint32_t flags = 0x0001;
+		const char* flagptr = (const char*)&flags;
+		std::copy(flagptr, flagptr + 4, back_inserter(outbuf));
+
 		// Checksum
 		std::uint32_t crc = CRC::Calculate(buf, size, CRC::CRC_32());
 		const char* crcptr = (const char*)&crc;
@@ -417,11 +422,15 @@ namespace O3DS
 
 		outbuf.resize(0);
 
+		// Flags 
+		std::uint32_t flags = 0x0001;
+		const char* flagptr = (const char*)&flags;
+	    std::copy(flagptr, flagptr + 4, back_inserter(outbuf));
+
 		// Checksum
 		std::uint32_t crc = CRC::Calculate(buf, size, CRC::CRC_32());
 		const char* crcptr = (const char*)&crc;
 		std::copy(crcptr, crcptr + 4, back_inserter(outbuf));
-
 		// Data
 		std::copy(buf, buf + size, back_inserter(outbuf));
 
@@ -430,14 +439,18 @@ namespace O3DS
 
 	bool SubjectList::Parse(const char *data, size_t len, TransformBuilder *builder)
 	{
-		std::uint32_t crc = CRC::Calculate(data+4, len-4, CRC::CRC_32());
+        std::uint32_t crc = CRC::Calculate(data + 8, len - 8, CRC::CRC_32());
 
-		std::uint32_t check = *(std::uint32_t*)data;
+		std::uint32_t flags = *(std::uint32_t*)data;
+        std::uint32_t check = *(std::uint32_t*)(data + 4);
+
+		if (flags != 0x0001)
+			return false;
 
 		if (crc != check)
 			return false;
 
-		auto root = GetSubjectList(data + 4);
+		auto root = GetSubjectList(data+8);
 
 		this->mTime = root->time();
 

@@ -9,13 +9,14 @@ using namespace O3DS::Data;
 
 
 #include "fbxloader.h"
+#include "o3ds/o3ds.h"
 #include "o3ds/model.h"
 #include "o3ds/getTime.h"
 
 #include "o3ds/async_publisher.h"
 #include "o3ds/async_pair.h"
 #include "o3ds/pair.h"
-#include "o3ds/websocket.h"
+//#include "o3ds/websocket.h"
 #include "o3ds/publisher.h"
 //#include "o3ds/request.h"
 //#include "o3ds/pipeline.h"
@@ -27,6 +28,8 @@ using namespace O3DS::Data;
 
 int main(int argc, char *argv[])
 {
+  printf("Open3DStream v%s\n", O3DS::version);
+
 	if(argc != 4)
 	{
 		fprintf(stderr, "%s file.fbx protocol url\n", argv[0]);
@@ -41,6 +44,7 @@ int main(int argc, char *argv[])
 		printf("Publishing on: %s\n", argv[3]);
 		connector = new O3DS::AsyncPublisher();
 	}
+#if 0
 	if (strcmp(argv[2], "client") == 0)
 	{
 		printf("Conecting to on: %s\n", argv[3]);
@@ -52,6 +56,7 @@ int main(int argc, char *argv[])
 		O3DS::WebsocketBroadcastServer* ws = new O3DS::WebsocketBroadcastServer();
 		connector =ws;
 	}
+#endif
 
 	if (!connector)
 	{
@@ -101,6 +106,9 @@ redo:
 	printf("**************   Loop\n");
 
 	int frame = 0;
+
+	O3DS::SubjectList subjectTest;
+
 
 	for (FbxTime t = time_info.Start; t < time_info.End; t += time_info.Inc, frame++)
 	{
@@ -156,14 +164,19 @@ redo:
 
 		if (ret > 0)
 		{
-			if (!connector->write((const char*)&buffer[0], ret))
+			auto ptr = (const char*)&buffer[0];
+			if (!connector->write(ptr, ret))
 			{
 				printf("Could not send: %s\n", connector->getError().c_str());
 			}
+
+			if(!subjectTest.Parse(ptr, ret)) {
+				printf("Could not parse\n");
+				return 1;
+			}
+
 		}
 
-		// O3DS::SubjectList s;
-		// s.Parse((const char*)buffer, ret);
 
 		// printf("%f    %f   %f   %f    %d  %d\n", GetTime(), tick, t.GetSecondDouble(), fdelay, skips, ret);
 

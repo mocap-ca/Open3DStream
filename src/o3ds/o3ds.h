@@ -1,16 +1,16 @@
 #ifndef O3DS_HEADER
 #define O3DS_HEADER
 
+#define PQ(x) #x
+#define PQUOTE(x) PQ(x)
 
-#define O3DS_VERSION_MAJOR 0
-#define O3DS_VERSION_MINOR 21
-#define O3DS_VERSION       "0.21"
 
 namespace O3DS
 {
-	static const char* version = O3DS_VERSION;
+	static const char* version = PQUOTE(O3DS_VERSION);
 	static const int   version_major = O3DS_VERSION_MAJOR;
 	static const int   version_minor = O3DS_VERSION_MINOR;
+    static const int   version_patch = O3DS_VERSION_PATCH;
 
 	const char* getVersion() { return version; }
 }

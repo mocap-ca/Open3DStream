@@ -2,7 +2,7 @@
 
 namespace O3DS
 {
-
+	
 	bool AsyncPublisher::start(const char *url)
 	{
 		int ret;
