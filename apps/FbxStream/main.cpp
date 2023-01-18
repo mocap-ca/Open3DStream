@@ -16,53 +16,23 @@ using namespace O3DS::Data;
 #include "o3ds/async_publisher.h"
 #include "o3ds/async_pair.h"
 #include "o3ds/pair.h"
-//#include "o3ds/websocket.h"
 #include "o3ds/publisher.h"
-//#include "o3ds/request.h"
-//#include "o3ds/pipeline.h"
-//
+#include "o3ds/request.h"
+#include "o3ds/pipeline.h"
 
 #define BUFSZ 1024 * 80
-
-// C:\cpp\git\github\Open3DStream\test_data\beta_fight.fbx tcp://127.0.0.1:6001  
 
 int main(int argc, char *argv[])
 {
   printf("Open3DStream v%s\n", O3DS::version);
 
-	if(argc != 4)
+	if(argc != 3)
 	{
-		fprintf(stderr, "%s file.fbx protocol url\n", argv[0]);
-		fprintf(stderr, "Protocols: pub client server\n");
+		fprintf(stderr, "%s file.fbx url\n", argv[0]);
 		return 1;
 	}
 
-	O3DS::Connector* connector = nullptr;
-
-	if (strcmp(argv[2], "pub") == 0)
-	{
-		printf("Publishing on: %s\n", argv[3]);
-		connector = new O3DS::AsyncPublisher();
-	}
-#if 0
-	if (strcmp(argv[2], "client") == 0)
-	{
-		printf("Conecting to on: %s\n", argv[3]);
-		connector = new O3DS::WebsocketClient();
-	}
-	if (strcmp(argv[2], "server") == 0)
-	{
-		printf("Listening on: %s\n", argv[3]);
-		O3DS::WebsocketBroadcastServer* ws = new O3DS::WebsocketBroadcastServer();
-		connector =ws;
-	}
-#endif
-
-	if (!connector)
-	{
-		fprintf(stderr, "Invalid Protocol: %s\n", argv[2]);
-		return 2;
-	}
+	O3DS::Connector* connector = new O3DS::AsyncPublisher();
 
 	O3DS::SubjectList subjects;
 
@@ -88,10 +58,6 @@ int main(int argc, char *argv[])
 	}
 
 	// Run
-
-
-
-	// Serialize
 
 	std::vector<char> buffer;
 
@@ -174,9 +140,7 @@ redo:
 				printf("Could not parse\n");
 				return 1;
 			}
-
 		}
-
 
 		// printf("%f    %f   %f   %f    %d  %d\n", GetTime(), tick, t.GetSecondDouble(), fdelay, skips, ret);
 

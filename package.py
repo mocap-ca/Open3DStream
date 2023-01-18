@@ -21,19 +21,15 @@ version_input = get_version()
 if version_input is None:
     raise RuntimeError("Could not determine version")
     
-print(version_input)
+print("Packacging version: " + version_input)
 
-version = "Open3DStream_" + version_input
-
-cwd = os.path.abspath('')
-
+version  = "Open3DStream_" + version_input
+cwd      = os.path.abspath('')
 out_root = "Open3DStream"
-
-outzip = os.path.join(cwd, version + ".zip")
+outzip   = os.path.join(cwd, version + ".zip")
+out_dir  = os.path.abspath('usr')
 
 fp = zipfile.ZipFile(outzip, "w", zipfile.ZIP_DEFLATED)
-
-out_dir = os.path.abspath('out')
 
 for d, _, f in os.walk(out_dir):
     base = d[len(out_dir)+1:]
@@ -42,10 +38,6 @@ for d, _, f in os.walk(out_dir):
         out = os.path.join(base, each_file)
         print(out)
         fp.write(src, out)
-
-
-fp.write(os.path.join(cwd, "usr", "lib", "flatbuffers.lib"), "lib/flatbuffers.lib")
-fp.write(os.path.join(cwd, "usr", "lib", "nng.lib"), "lib/nng.lib")
 
 # Unreal    
 unreal_src_base = os.path.abspath("plugins/unreal/Open3DStream")
@@ -69,9 +61,9 @@ for base, _, files in os.walk(unreal_src_base):
     
 fp.write("usr/lib/nng.lib", unreal_dst_base + "/lib/nng.lib")
 fp.write("usr/lib/flatbuffers.lib", unreal_dst_base + "/lib/flatbuffers.lib")
-fp.write("out/lib/open3dstreamstatic.lib", unreal_dst_base + "/lib/open3dstreamstatic.lib")
+fp.write("usr/lib/open3dstreamstatic.lib", unreal_dst_base + "/lib/open3dstreamstatic.lib")
 
-for i in os.listdir("out/include/o3ds"):
+for i in os.listdir("usr/include/o3ds"):
     if i.endswith(".h"):
         dst = unreal_dst_base + "/lib/include/o3ds/" + i
         print(dst)
