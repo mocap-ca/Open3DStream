@@ -23,9 +23,7 @@ if version_input is None:
     
 print(version_input)
 
-exit()
-
-version = "Open3DStream_0." + version_input
+version = "Open3DStream_" + version_input
 
 cwd = os.path.abspath('')
 

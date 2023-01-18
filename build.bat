@@ -15,7 +15,7 @@ cd %~DP0
 IF NOT EXIST vsbuild mkdir vsbuild
 cd vsbuild
 
-cmake -H.. -B. -G %CMAKE_VS_VERSION% -A x64 -DCMAKE_PREFIX_PATH=%~DP0usr -DCMAKE_INSTALL_PREFIX=%~DP0out
+cmake -H.. -B. -G %CMAKE_VS_VERSION% -A x64 -DCMAKE_PREFIX_PATH=%~DP0usr -DCMAKE_INSTALL_PREFIX=%~DP0usr
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 devenv Open3DStream.sln /Build Debug /Project INSTALL 

@@ -5,5 +5,4 @@ set(CMAKE_DEBUG_POSTFIX d)
 
 add_subdirectory(flatbuffers)
 add_subdirectory(nng)
-add_subdirectory(websocketpp)
 add_subdirectory(crccpp)
