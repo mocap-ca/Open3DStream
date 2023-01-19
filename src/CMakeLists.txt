@@ -5,11 +5,10 @@ project(Open3DStreamLib)
 add_custom_command(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/_generated/o3ds_generated.h
     COMMAND flatbuffers::flatc -o ${CMAKE_CURRENT_BINARY_DIR}/_generated --cpp ${CMAKE_CURRENT_LIST_DIR}/o3ds.fbs
-    DEPENDS ${CMAKE_CURRENT_LIST_DIR}/o3ds.fbs
-)
+    DEPENDS ${CMAKE_CURRENT_LIST_DIR}/o3ds.fbs )
 
 add_custom_target(protocol DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/_generated/o3ds_generated.h)
-            
+
 set(pub_headers			
 	o3ds/o3ds.h
 	o3ds/getTime.h
@@ -38,8 +37,7 @@ set(pub_headers
 	o3ds/binary_stream.h
 	o3ds/xsens_parser.h
 )	
-	
-			
+
 set(SOURCES 
 	o3ds/o3ds.cpp
 	o3ds/getTime.cpp
@@ -66,23 +64,21 @@ set(SOURCES
 	o3ds/socket_address.cpp
 	o3ds/binary_stream.cpp
 	o3ds/xsens_parser.cpp	
-	)
+)
 	
-
 if(WIN32)
 set(xtralibs wsock32 ws2_32)
 endif()
 
 # Shared library
 # add_library(open3dstream SHARED ${SOURCES})
-#target_link_libraries(open3dstream PRIVATE ${libs}  )
+# target_link_libraries(open3dstream PRIVATE ${libs}  )
 # add_dependencies(open3dstream protocol)
-
 
 # Static linkable library
 add_library(open3dstreamstatic STATIC ${SOURCES} ${pub_headers})
 target_include_directories(open3dstreamstatic PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/_generated ${CMAKE_CURRENT_LIST_DIR})
-#target_link_libraries(open3dstreamstatic PRIVATE ${NNG_LIBRARIES} ${FLATBUFFERS_LIBRARIES} ${xtralibs})        
+# target_link_libraries(open3dstreamstatic PRIVATE ${NNG_LIBRARIES} ${FLATBUFFERS_LIBRARIES} ${xtralibs})        
 add_dependencies(open3dstreamstatic protocol)
 
 list(JOIN pub_headers ";" pub_headers_str)
