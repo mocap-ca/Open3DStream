@@ -63,20 +63,14 @@ fp.write("usr/lib/nng.lib", unreal_dst_base + "/lib/nng.lib")
 fp.write("usr/lib/flatbuffers.lib", unreal_dst_base + "/lib/flatbuffers.lib")
 fp.write("usr/lib/open3dstreamstatic.lib", unreal_dst_base + "/lib/open3dstreamstatic.lib")
 
-for i in os.listdir("usr/include/o3ds"):
-    if i.endswith(".h"):
-        dst = unreal_dst_base + "/lib/include/o3ds/" + i
+root = "usr/include"
+for base, _, files in os.walk(root):
+    for file in files:
+        sub = base[len(root)+1:]
+        src = os.path.join(base, file)
+        dst = os.path.join(unreal_dst_base, "lib", "include", sub, file)
         print(dst)
-        fp.write("src/o3ds/" + i, dst)
-
-#root = "usr/include"
-#for base, _, files in os.walk(root):
-#    for file in files:
-#        sub = base[len(root)+1:]
-#        src = os.path.join(base, file)
-#        dst = os.path.join(unreal_dst_base, "lib", "include", sub, file)
-#        print(dst)
-#        fp.write(src, dst)
+        fp.write(src, dst)
 
 fp.close()    
         

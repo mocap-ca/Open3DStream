@@ -1,4 +1,4 @@
-REM @ECHO OFF
+@ECHO OFF
 
 CALL build_env.bat
 if %errorlevel% neq 0 exit /b %errorlevel%
@@ -8,6 +8,15 @@ ECHO "ERROR: Visual studio version was not set."
 EXIT /B 1
 
 :VSCHECKED
+
+IF EXIST %~DP0usr GOTO USROK
+
+cd thirdparty
+build.bat
+if %errorlevel% neq 0 exit /b %errorlevel%
+cd %~DP0
+
+:USROK
 
 ECHO ON
 
@@ -26,5 +35,5 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 
 cd %~DP0
 
-REM python package.py
+python package.py
 

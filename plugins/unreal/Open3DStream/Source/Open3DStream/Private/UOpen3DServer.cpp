@@ -38,7 +38,6 @@ bool O3DSServer::start(FText Url, FText Protocol )
 	const char* surl = TCHAR_TO_ANSI(*Url.ToString());
 	const char* sprotocol = TCHAR_TO_ANSI(*Protocol.ToString());
 
-
 	FText::Format(LOCTEXT("ConnectingString", "Connecting {0}"), Protocol);
 
 	// NNG
@@ -96,17 +95,14 @@ bool O3DSServer::start(FText Url, FText Protocol )
 				.BoundToEndpoint(Endpoint)
 				.WithReceiveBufferSize(65507u);
 
-
 			FTimespan ThreadWaitTime = FTimespan::FromMilliseconds(100);
 			FString ThreadName = FString::Printf(TEXT("O3DS UDP Receiver"));
 
 			if (mUdpReceiver) delete mUdpReceiver;
 			mUdpReceiver = new FUdpSocketReceiver(mUdp, ThreadWaitTime, *ThreadName);
 
-
 			mUdpReceiver->OnDataReceived().BindLambda([this](const FArrayReaderPtr& DataPtr, const FIPv4Endpoint& Endpoint)
 				{
-
 					TArray<uint8> Data;
 					Data.AddUninitialized(DataPtr->TotalSize());
 					DataPtr->Serialize(Data.GetData(), DataPtr->TotalSize());
@@ -215,8 +211,6 @@ void O3DSServer::inData(const uint8 *msg, size_t len)
 	Data.Append((uint8*)msg, len);
 	if (OnData.IsBound()) { OnData.Execute(Data); }
 }
-
-#pragma optimize("", off)
 
 void O3DSServer::tick()
 {
@@ -350,5 +344,3 @@ bool O3DSServer::ReadTcp(size_t len)
 	mPtr += read;
 	return read != 0;
 }
-
-#pragma optimize("", on)

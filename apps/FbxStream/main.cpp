@@ -1,12 +1,6 @@
-
-
-#include "schema_generated.h"
-using namespace O3DS::Data;
-
 #include <iostream>
 #include <chrono>
 #include <thread>
-
 
 #include "fbxloader.h"
 #include "o3ds/o3ds.h"
@@ -24,7 +18,7 @@ using namespace O3DS::Data;
 
 int main(int argc, char *argv[])
 {
-  printf("Open3DStream v%s\n", O3DS::version);
+	printf("Open3DStream v%s\n", O3DS::version);
 
 	if(argc != 3)
 	{
@@ -38,7 +32,11 @@ int main(int argc, char *argv[])
 
 	O3DS::Fb::TimeInfo time_info;
 
-	Load(argv[1], subjects, time_info);
+	if (Load(argv[1], subjects, time_info) != 0)
+	{
+		fprintf(stderr, "Unable to load fbx: %s\n", argv[1]);
+		return 1;
+	}
 
 	for (auto s : subjects)
 	{
@@ -51,7 +49,7 @@ int main(int argc, char *argv[])
 
 	// Connect 
 
-	if (!connector->start(argv[3]))
+	if (!connector->start(argv[2]))
 	{
 		printf(connector->getError().c_str());
 		return 1;
@@ -79,7 +77,7 @@ redo:
 	for (FbxTime t = time_info.Start; t < time_info.End; t += time_info.Inc, frame++)
 	{
 
-		printf("T: %f\n", t.GetSecondDouble());
+		// printf("T: %f\n", t.GetSecondDouble());
 	
 		// Sync time
 		double tick = GetTime() - zerof;
@@ -89,15 +87,15 @@ redo:
 		if (delay < 0)
 		{
 			skips++;
-			printf("Delay %f\n", fdelay);
+			//printf("Delay %f\n", fdelay);
 		}
 		else
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 
 			// Introduce random delays to simulate packet buffering
-			if (rand() < RAND_MAX / 10)
-				std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+			if (rand() < RAND_MAX / 50)
+				std::this_thread::sleep_for(std::chrono::milliseconds(900));
 		}
 
 
@@ -113,10 +111,10 @@ redo:
 
 		// Serialize
 
-		// printf("time: %f  %f   %f\n", zerof, t.GetSecondDouble(), zerof + t.GetSecondDouble());
+		printf("time: %f  %f   %f\n", zerof, t.GetSecondDouble(), zerof + t.GetSecondDouble());
 
 		int ret = 0;
-		if (frame % 100 == 0)
+		if (frame % 200 == 0)
 		{
 			ret = subjects.Serialize(buffer, zerof + t.GetSecondDouble());
 			first = false;

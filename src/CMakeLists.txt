@@ -3,14 +3,15 @@ cmake_minimum_required(VERSION  3.13)
 project(Open3DStreamLib)
 
 add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/_generated/schema_generated.h
-    COMMAND flatbuffers::flatc -o ${CMAKE_CURRENT_BINARY_DIR}/_generated --cpp ${CMAKE_CURRENT_LIST_DIR}/schema.fbs
-    DEPENDS ${CMAKE_CURRENT_LIST_DIR}/schema.fbs
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/_generated/o3ds_generated.h
+    COMMAND flatbuffers::flatc -o ${CMAKE_CURRENT_BINARY_DIR}/_generated --cpp ${CMAKE_CURRENT_LIST_DIR}/o3ds.fbs
+    DEPENDS ${CMAKE_CURRENT_LIST_DIR}/o3ds.fbs
 )
 
-add_custom_target(protocol DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/_generated/schema_generated.h)
+add_custom_target(protocol DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/_generated/o3ds_generated.h)
             
 set(pub_headers			
+	o3ds/o3ds.h
 	o3ds/getTime.h
 	o3ds/model.h
 	o3ds/base_connector.h
@@ -28,7 +29,6 @@ set(pub_headers
 	o3ds/async_pipeline.h
 	o3ds/context.h
 	o3ds/math.h
-	o3ds/o3ds.h
 	o3ds/tcp.h
 	o3ds/udp_fragment.h
 	o3ds/socket_exception.h
@@ -41,6 +41,7 @@ set(pub_headers
 	
 			
 set(SOURCES 
+	o3ds/o3ds.cpp
 	o3ds/getTime.cpp
 	o3ds/model.cpp	
 	o3ds/base_connector.cpp
@@ -64,7 +65,7 @@ set(SOURCES
 	o3ds/udp.cpp
 	o3ds/socket_address.cpp
 	o3ds/binary_stream.cpp
-	o3ds/xsens_parser.cpp
+	o3ds/xsens_parser.cpp	
 	)
 	
 
@@ -94,3 +95,5 @@ install(TARGETS open3dstreamstatic
 	PUBLIC_HEADER DESTINATION include/o3ds
 	CONFIGURATIONS RelWithDebInfo)
 
+install(FILES 	${CMAKE_CURRENT_BINARY_DIR}/_generated/o3ds_generated.h
+    DESTINATION include)

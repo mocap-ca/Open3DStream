@@ -65,6 +65,7 @@ public:
 	float            TimeOffset;
 	double           ArrivalTimeOffset;
 	int              Frame;
+	bool             LogFlag;
 
 	FThreadSafeBool  bIsValid;
 

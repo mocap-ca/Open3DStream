@@ -26,9 +26,10 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 		LastUrl = LOCTEXT("Open3DStreamUrlValue", "127.0.0.1:3001");
 	}
 
-		CurrentProtocol = Options[LastComboId];
+	CurrentProtocol = Options[LastComboId];
 
 	mUrl = LastUrl;
+	const char* verstr = O3DS::getVersion();
 
 	ChildSlot
 	[
@@ -115,15 +116,13 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 		+ SVerticalBox::Slot()
 			.Padding(5)
 			[
-				SNew(STextBlock).Text(LOCTEXT("Open3DStreamVersion", O3DS_VERSION))
+				SNew(STextBlock).Text(FText::FromString(ANSI_TO_TCHAR(verstr)))
 			]
-
 	];
 }
 
 FReply SOpen3DStreamFactory::OnSource()
-{
-	
+{	
 	FString s = mUrl.ToString();
 	const TCHAR* url = s.operator*();
 	TSharedPtr<FOpen3DStreamSettings, ESPMode::ThreadSafe> Settings = MakeShared<FOpen3DStreamSettings, ESPMode::ThreadSafe>();

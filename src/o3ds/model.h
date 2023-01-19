@@ -31,7 +31,7 @@ SOFTWARE.
 #include "math.h"
 #include "context.h"
 #include "transform_component.h"
-#include "schema_generated.h"
+#include "o3ds_generated.h"
 
 
 namespace O3DS
