@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION  3.13)
 
 project(Open3DStreamLib)
 
+find_package(flatbuffers CONFIG REQUIRED flatbuffers flatc)
+find_package(nng CONFIG REQUIRED)
+
 add_custom_command(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/_generated/o3ds_generated.h
     COMMAND flatbuffers::flatc -o ${CMAKE_CURRENT_BINARY_DIR}/_generated --cpp ${CMAKE_CURRENT_LIST_DIR}/o3ds.fbs
@@ -77,7 +80,12 @@ endif()
 
 # Static linkable library
 add_library(open3dstreamstatic STATIC ${SOURCES} ${pub_headers})
-target_include_directories(open3dstreamstatic PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/_generated ${CMAKE_CURRENT_LIST_DIR})
+
+target_include_directories(open3dstreamstatic PUBLIC 
+	${CMAKE_CURRENT_BINARY_DIR}/_generated ${CMAKE_CURRENT_LIST_DIR}
+	${FLATBUFFERS_INCLUDE_DIRS} 
+	${NNG_INCLUDE_DIRS}/..)
+
 # target_link_libraries(open3dstreamstatic PRIVATE ${NNG_LIBRARIES} ${FLATBUFFERS_LIBRARIES} ${xtralibs})        
 add_dependencies(open3dstreamstatic protocol)
 

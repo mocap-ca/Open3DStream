@@ -9,11 +9,6 @@ project(Open3DStream VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_DEBUG_POSTFIX d)
 
-find_package(flatbuffers CONFIG REQUIRED flatbuffers flatc)
-find_package(nng CONFIG REQUIRED)
-
-include_directories( ${FLATBUFFERS_INCLUDE_DIRS} ${NNG_INCLUDE_DIRS}/..)
-
 add_subdirectory(apps/FbxStream)
 add_subdirectory(apps/Repeater)
 #add_subdirectory(apps/SubscribeTest)

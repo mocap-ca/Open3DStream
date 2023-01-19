@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION ${CMAKE_MIN_REQ_VERSION})
 
 project(Repeater)
 
+find_package(nng CONFIG REQUIRED)
+
 add_executable(Repeater main.cpp)
 target_link_libraries(Repeater open3dstreamstatic)
 
