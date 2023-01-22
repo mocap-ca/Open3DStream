@@ -429,7 +429,7 @@ void O3DS::XSENS::Parser::get_meta(uint8_t* payload, size_t len, std::string &na
 			if (key == "name") {
 				O3DS::Subject* subject = getSubject();
 				subject->mName = value;
-				subject->mContext.mWorldSpace = true;
+				subject->mContext.mFormat = "XSENS";
 			}
 		}
 	}

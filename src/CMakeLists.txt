@@ -92,7 +92,7 @@ add_dependencies(open3dstreamstatic protocol)
 list(JOIN pub_headers ";" pub_headers_str)
 set_target_properties(open3dstreamstatic PROPERTIES PUBLIC_HEADER "${pub_headers_str}")
 
-target_compile_definitions(open3dstreamstatic PUBLIC NNG_STATIC_LIB)
+target_compile_definitions(open3dstreamstatic PUBLIC NNG_STATIC_LIB CRCPP_USE_NAMESPACE)
 
 install(TARGETS open3dstreamstatic 
     LIBRARY DESTINATION lib

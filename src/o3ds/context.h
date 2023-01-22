@@ -41,7 +41,6 @@ namespace O3DS
 			: mX(Direction::None)
 			, mY(Direction::None)
 			, mZ(Direction::None)
-			, mWorldSpace(false)
 		{};
 
 		//! Copy constructor
@@ -49,7 +48,6 @@ namespace O3DS
 			: mX(other.mX)
 			, mY(other.mY)
 			, mZ(other.mZ)
-			, mWorldSpace(false)
 		{}
 
 		//! Returns true if all the axis are defined and orthogonal 
@@ -93,8 +91,7 @@ namespace O3DS
 		enum Direction mX;
 		enum Direction mY;
 		enum Direction mZ;
-
-		bool mWorldSpace;
+		std::string mFormat;
 
 	};
 

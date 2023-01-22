@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 3.13)
 project(MayaStreamDevice)
 
+find_package(nng CONFIG REQUIRED)
+
 set(SRCS 
 	pingCommand.cpp
 	plugin.cpp

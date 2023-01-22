@@ -264,6 +264,7 @@ namespace O3DS
 		for (auto& subject : this->mItems)
 		{
 			auto oSubjectName = builder.CreateString(subject->mName);
+			auto oFormat = builder.CreateString(subject->mContext.mFormat);
 			std::vector<flatbuffers::Offset<O3DS::Data::Transform>> ovSkeleton;
 
 			for (auto& t : subject->mTransforms)
@@ -317,7 +318,7 @@ namespace O3DS
 				dir(subject->mContext.mX),
 				dir(subject->mContext.mY),
 				dir(subject->mContext.mZ),
-				subject->mContext.mWorldSpace);
+				oFormat);
 
 			subjects.push_back(s);
 		}
@@ -339,7 +340,7 @@ namespace O3DS
 		std::copy(flagptr, flagptr + 4, back_inserter(outbuf));
 
 		// Checksum
-		std::uint32_t crc = CRC::Calculate(buf, size, CRC::CRC_32());
+		std::uint32_t crc = CRCPP::CRC::Calculate(buf, size, CRCPP::CRC::CRC_32());
 		const char* crcptr = (const char*)&crc;
 		std::copy(crcptr, crcptr + 4, back_inserter(outbuf));
 
@@ -428,7 +429,7 @@ namespace O3DS
 	    std::copy(flagptr, flagptr + 4, back_inserter(outbuf));
 
 		// Checksum
-		std::uint32_t crc = CRC::Calculate(buf, size, CRC::CRC_32());
+		std::uint32_t crc = CRCPP::CRC::Calculate(buf, size, CRCPP::CRC::CRC_32());
 		const char* crcptr = (const char*)&crc;
 		std::copy(crcptr, crcptr + 4, back_inserter(outbuf));
 		// Data
@@ -439,7 +440,7 @@ namespace O3DS
 
 	bool SubjectList::Parse(const char *data, size_t len, TransformBuilder *builder)
 	{
-        std::uint32_t crc = CRC::Calculate(data + 8, len - 8, CRC::CRC_32());
+        std::uint32_t crc = CRCPP::CRC::Calculate(data + 8, len - 8, CRCPP::CRC::CRC_32());
 
 		std::uint32_t flags = *(std::uint32_t*)data;
         std::uint32_t check = *(std::uint32_t*)(data + 4);
