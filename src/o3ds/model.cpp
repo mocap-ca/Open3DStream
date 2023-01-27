@@ -499,6 +499,7 @@ namespace O3DS
 		outSubject->mContext.mX = dir(inSubject->x_axis());
 		outSubject->mContext.mY = dir(inSubject->y_axis());
 		outSubject->mContext.mZ = dir(inSubject->z_axis());
+		outSubject->mContext.mFormat = inSubject->format()->str();
 
 		// Get the nodes (transforms) for this subject
 		auto ovNodes = inSubject->nodes();

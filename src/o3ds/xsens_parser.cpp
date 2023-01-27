@@ -215,7 +215,8 @@ void O3DS::XSENS::Parser::get_quaternion_pose(uint8_t* payload, size_t len)
 
 	O3DS::Transform* transform = nullptr;
 
-	transform = subject->addTransform(std::string("Root"), -1);
+	std::string name("Root");
+	transform = subject->addTransform(name,  -1);
 
 	auto ref = this->info.find(head.characterId);
 	if (ref == this->info.end())
@@ -429,7 +430,6 @@ void O3DS::XSENS::Parser::get_meta(uint8_t* payload, size_t len, std::string &na
 			if (key == "name") {
 				O3DS::Subject* subject = getSubject();
 				subject->mName = value;
-				subject->mContext.mFormat = "XSENS";
 			}
 		}
 	}
@@ -441,6 +441,7 @@ O3DS::Subject* O3DS::XSENS::Parser::getSubject()
 	while (subjects.mItems.size() <= head.characterId)
 	{
 		subjects.addSubject("");
+		subjects.mItems[head.characterId]->mContext.mFormat = "XSENS";
 	}
 
 	return subjects.mItems[head.characterId];

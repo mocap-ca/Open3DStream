@@ -68,7 +68,7 @@ namespace O3DS
 			if (msg) oss << " while getting " << msg;
 			ptr = this->size();
 			memset(buf, 0, len);
-			throw StreamException(oss.str());
+			throw StreamException(oss.str().c_str());
 		}
 		memcpy(buf, &this->at(ptr), len);
 		ptr += len;
