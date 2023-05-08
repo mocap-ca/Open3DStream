@@ -24,6 +24,8 @@ SOFTWARE.
 
 #include "udp_fragment.h"
 
+#include <cstdlib>
+#include <cstring>
 #include <vector>
 
 #define HEADERSIZE 16

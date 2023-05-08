@@ -23,6 +23,7 @@ SOFTWARE.
 */
 
 #include "socket_util.h"
+#include <cstring>
 
 WSADATA gWS;
 
