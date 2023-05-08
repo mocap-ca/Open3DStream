@@ -25,7 +25,9 @@ SOFTWARE.
 #include "socket_util.h"
 #include <cstring>
 
+#ifdef _WIN32
 WSADATA gWS;
+#endif
 
 #include "socket_exception.h"
 
