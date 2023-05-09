@@ -9,7 +9,7 @@ if (UNIX)
 	if(NOT DEFINED fbxroot)
 	set(fbxroot /home/ec2-user/fbxsdk)
 	endif()
-	set(xtralibs xml2 fbxsdk)
+	set(xtralibs fbxsdk xml2)
 	if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE STREQUAL "")
 	link_directories(${fbxroot}/lib/gcc/x64/release/)
 	#install(FILES
