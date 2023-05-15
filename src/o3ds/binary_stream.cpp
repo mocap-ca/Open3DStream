@@ -27,7 +27,7 @@ SOFTWARE.
 #include <algorithm>
 #include <iostream>
 #include <istream>
-#include <string>
+#include <cstring>
 #include <iterator>
 
 namespace O3DS

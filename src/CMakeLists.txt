@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION  3.13)
 
 project(Open3DStreamLib)
 
-find_package(flatbuffers CONFIG REQUIRED flatbuffers flatc)
+find_package(Flatbuffers CONFIG REQUIRED flatbuffers flatc)
 find_package(nng CONFIG REQUIRED)
 
 add_custom_command(

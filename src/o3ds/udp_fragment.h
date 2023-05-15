@@ -26,7 +26,8 @@ SOFTWARE.
 #define O3DS_UDP_FRAGMENT_H
 
 #include <vector>
-#include <stdint.h>
+#include <cstdint>
+#include <cstddef>
 #include <map>
 
 class UdpFragmenter
