@@ -249,77 +249,170 @@ namespace O3DS
 		}
 	}
 
-	int SubjectList::Serialize(std::vector<char> &outbuf, double timestamp)
+	flatbuffers::Offset<O3DS::Data::Subject> Subject::Serialize(flatbuffers::FlatBufferBuilder& builder)
 	{
+		
+		auto oSubjectName = builder.CreateString(this->mName);
+		auto oFormat = builder.CreateString(this->mContext.mFormat);
+		std::vector<flatbuffers::Offset<O3DS::Data::Transform>> ovSkeleton;
+
 		O3DS::Data::Translation translation;
 		O3DS::Data::Rotation rotation;
 		O3DS::Data::Scale scale;
+
+		for (auto& t : this->mTransforms) {
+			int matrixId = 0;
+
+			std::vector<O3DS::Data::Matrix> matrices;
+			std::vector<int8_t> components;
+
+			t->translation >> translation;
+			t->rotation >> rotation;
+			t->scale >> scale;
+
+			for (auto component : t->transformOrder) {
+				if (component == O3DS::TTranslation)
+				components.push_back(O3DS::Data::Component::Component_Translation);
+
+				if (component == O3DS::TRotation)
+				components.push_back(O3DS::Data::Component::Component_Rotation);
+
+				if (component == O3DS::TScale)
+				components.push_back(O3DS::Data::Component::Component_Scale);
+
+				if (component == O3DS::TMatrix) {
+					components.push_back(O3DS::Data::Component::Component_Matrix);
+					O3DS::Data::Matrix matrix;
+					t->matrices[matrixId++] >> matrix;
+					matrices.push_back(matrix);
+				}
+			}
+
+			auto oTransformName = builder.CreateString(t->mName);
+
+			// flatbuffers::Offset<flatbuffers::Vector<const O3DS::Data::Matrix *>> oatrices;
+			auto ovMatrices = builder.CreateVectorOfStructs(matrices);
+
+			auto ovComponents = builder.CreateVector(components);
+
+			ovSkeleton.push_back(CreateTransform(builder, t->mParentId, oTransformName,
+											&translation, &rotation, &scale,
+											ovMatrices, ovComponents));
+		}
+
+		auto transforms = builder.CreateVector(ovSkeleton);
+		return CreateSubject(builder, transforms, oSubjectName,
+						dir(this->mContext.mX), dir(this->mContext.mY),
+						dir(this->mContext.mZ), oFormat);
+	}
+
+	flatbuffers::Offset<O3DS::Data::SubjectUpdate> Subject::SerializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t &count, double deltaThreshold)
+	{
+		auto oSubjectName = builder.CreateString(this->mName);
+
+		std::vector<O3DS::Data::TranslationUpdate> translations;
+		std::vector<O3DS::Data::RotationUpdate> rotations;
+		std::vector<O3DS::Data::ScaleUpdate> scales;
+
+		int transformId = 0;
+
+		for (auto& t : this->mTransforms)
+		{
+			if (t->translation.delta() != 0)
+			{
+				translations.push_back(O3DS::Data::TranslationUpdate(
+					(float)t->translation.value.v[0],
+					(float)t->translation.value.v[1],
+					(float)t->translation.value.v[2], transformId));
+				t->translation.sent();
+				count++;
+			}
+
+			if (t->rotation.delta() != 0)
+			{
+				rotations.push_back(O3DS::Data::RotationUpdate(
+					(float)t->rotation.value.v[0],
+					(float)t->rotation.value.v[1],
+					(float)t->rotation.value.v[2],
+					(float)t->rotation.value.v[3], transformId));
+				t->rotation.sent();
+				count++;
+			}
+
+			/*
+		if (t->scale.delta() > 0.001)
+		{
+			scales.push_back(O3DS::Data::ScaleUpdate(
+				(float)t->scale.value.v[0],
+				(float)t->scale.value.v[1],
+				(float)t->scale.value.v[2], transformId));
+			t->scale.sent();
+		}*/
+
+			transformId++;
+		}
+
+		auto tr = builder.CreateVectorOfStructs(translations);
+		auto ro = builder.CreateVectorOfStructs(rotations);
+		auto sc = builder.CreateVectorOfStructs(scales);
+		return CreateSubjectUpdate(builder, oSubjectName, tr, ro, sc);
+	}
+
+	int Subject::Serialize(std::vector<char> &outbuf, double timestamp)
+	{
+		if (timestamp == 0.0) timestamp = GetTime();
+		flatbuffers::FlatBufferBuilder builder;
+
+		std::vector<flatbuffers::Offset<O3DS::Data::Subject> > subjects;
 		
+		flatbuffers::Offset<O3DS::Data::Subject> s = this->Serialize(builder);
+		subjects.push_back(s);
+
+		auto ovSubjects = builder.CreateVector(subjects);
+
+		auto root = CreateSubjectList(builder, ovSubjects, 0, timestamp);
+
+		builder.Finish(root);
+
+		finalize(builder, outbuf, 1);
+
+		return outbuf.size();
+	}
+
+	int Subject::SerializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp)
+	{
+		if (timestamp == 0.0)
+		{
+			timestamp = GetTime();
+		}
+
+		flatbuffers::FlatBufferBuilder builder;
+
+		std::vector<flatbuffers::Offset<O3DS::Data::SubjectUpdate>> outSubjectUpdates;
+		outSubjectUpdates.push_back(this->SerializeUpdate(builder, count, 0.00001));
+
+		auto ovSubjectUpdates = builder.CreateVector(outSubjectUpdates);
+
+		auto root = CreateSubjectList(builder, 0, ovSubjectUpdates, timestamp);
+
+		builder.Finish(root);
+
+		finalize(builder, outbuf, 1);
+
+		return outbuf.size();
+	}
+
+	int SubjectList::Serialize(std::vector<char> &outbuf, double timestamp)
+	{	
 		if(timestamp == 0.0) timestamp = GetTime();
 
 		flatbuffers::FlatBufferBuilder builder;
 
-		std::vector<flatbuffers::Offset<O3DS::Data::Subject>> subjects;
+		std::vector<flatbuffers::Offset<O3DS::Data::Subject> > subjects;
 
-		for (auto& subject : this->mItems)
+		for (O3DS::Subject* subject : this->mItems)
 		{
-			auto oSubjectName = builder.CreateString(subject->mName);
-			auto oFormat = builder.CreateString(subject->mContext.mFormat);
-			std::vector<flatbuffers::Offset<O3DS::Data::Transform>> ovSkeleton;
-
-			for (auto& t : subject->mTransforms)
-			{
-				int matrixId = 0;
-
-				std::vector<O3DS::Data::Matrix> matrices;
-				std::vector<int8_t> components;
-
-				t->translation >> translation;
-				t->rotation >> rotation;
-				t->scale >> scale;
-
-				for (auto component : t->transformOrder)
-				{
-					if (component == O3DS::TTranslation)
-						components.push_back(O3DS::Data::Component::Component_Translation);
-
-					if (component == O3DS::TRotation)
-						components.push_back(O3DS::Data::Component::Component_Rotation);
-
-					if (component == O3DS::TScale)
-						components.push_back(O3DS::Data::Component::Component_Scale);
-
-					if (component == O3DS::TMatrix)
-					{
-						components.push_back(O3DS::Data::Component::Component_Matrix);
-						O3DS::Data::Matrix matrix;
-						t->matrices[matrixId++] >> matrix;
-						matrices.push_back(matrix);
-					}
-				}
-
-				auto oTransformName = builder.CreateString(t->mName);
-
-				//flatbuffers::Offset<flatbuffers::Vector<const O3DS::Data::Matrix *>> oatrices;
-				auto ovMatrices = builder.CreateVectorOfStructs(matrices);
-
-				auto ovComponents = builder.CreateVector(components);
-
-				ovSkeleton.push_back(CreateTransform(builder,
-					t->mParentId, oTransformName,
-					&translation, &rotation, &scale,
-					ovMatrices, ovComponents));
-			}
-
-			auto transforms = builder.CreateVector(ovSkeleton);
-			auto s = CreateSubject(builder, 
-				transforms, 
-				oSubjectName,
-				dir(subject->mContext.mX),
-				dir(subject->mContext.mY),
-				dir(subject->mContext.mZ),
-				oFormat);
-
+			flatbuffers::Offset<O3DS::Data::Subject> s = subject->Serialize(builder);
 			subjects.push_back(s);
 		}
 
@@ -329,13 +422,20 @@ namespace O3DS
 
 		builder.Finish(root);
 
-		uint8_t *buf = builder.GetBufferPointer();
-		int size = builder.GetSize();
+		finalize(builder, outbuf, 1);
 
+		return outbuf.size();
+	}
+
+	void finalize(flatbuffers::FlatBufferBuilder& builder, std::vector<char>& outbuf, std::uint32_t flags)
+	{
 		outbuf.resize(0);
 
+		uint8_t* buf = builder.GetBufferPointer();
+		int size = builder.GetSize();
+
 		// Flags
-		std::uint32_t flags = 0x0001;
+		//std::uint32_t flags = 0x0001;
 		const char* flagptr = (const char*)&flags;
 		std::copy(flagptr, flagptr + 4, back_inserter(outbuf));
 
@@ -346,11 +446,9 @@ namespace O3DS
 
 		// Data
 		std::copy(buf, buf + size, back_inserter(outbuf));
-
-		return outbuf.size();
 	}
 
-	int SubjectList::SerializeUpdate(std::vector<char> &outbuf, double timestamp)
+	int SubjectList::SerializeUpdate(std::vector<char> &outbuf, size_t& count, double timestamp)
 	{
 		if (timestamp == 0.0)
 		{
@@ -362,54 +460,8 @@ namespace O3DS
 		std::vector<flatbuffers::Offset<O3DS::Data::SubjectUpdate>> outSubjectUpdates;
 
 		for (auto& subject : this->mItems)
-		{
-			auto oSubjectName = builder.CreateString(subject->mName);
-
-			std::vector<O3DS::Data::TranslationUpdate> translations;
-			std::vector<O3DS::Data::RotationUpdate> rotations;
-			std::vector<O3DS::Data::ScaleUpdate> scales;
-
-			int transformId = 0;
-
-			for (auto& t : subject->mTransforms)
-			{
-				if (t->translation.delta() > mDeltaThreshold)
-				{
-					translations.push_back(O3DS::Data::TranslationUpdate(
-						(float)t->translation.value.v[0],
-						(float)t->translation.value.v[1],
-						(float)t->translation.value.v[2], transformId));
-					t->translation.sent();
-				}
-
-				if (t->rotation.delta() > mDeltaThreshold)
-				{
-					rotations.push_back(O3DS::Data::RotationUpdate(
-						(float)t->rotation.value.v[0],
-						(float)t->rotation.value.v[1],
-						(float)t->rotation.value.v[2],
-						(float)t->rotation.value.v[3], transformId));
-					t->rotation.sent();
-				}
-
-					/*
-				if (t->scale.delta() > 0.001)
-				{
-					scales.push_back(O3DS::Data::ScaleUpdate(
-						(float)t->scale.value.v[0],
-						(float)t->scale.value.v[1],
-						(float)t->scale.value.v[2], transformId));
-					t->scale.sent();
-				}*/
-
-				transformId++;
-			}
-
-			auto tr = builder.CreateVectorOfStructs(translations);
-			auto ro = builder.CreateVectorOfStructs(rotations);
-			auto sc = builder.CreateVectorOfStructs(scales);
-			auto subjectUpdate = CreateSubjectUpdate(builder, oSubjectName, tr, ro, sc);
-			outSubjectUpdates.push_back(subjectUpdate);
+		{			
+			outSubjectUpdates.push_back(subject->SerializeUpdate(builder, count, mDeltaThreshold));
 		}
 
 		auto ovSubjectUpdates = builder.CreateVector(outSubjectUpdates);
@@ -418,22 +470,7 @@ namespace O3DS
 
 		builder.Finish(root);
 
-		uint8_t *buf = builder.GetBufferPointer();
-		int size = builder.GetSize();
-
-		outbuf.resize(0);
-
-		// Flags 
-		std::uint32_t flags = 0x0001;
-		const char* flagptr = (const char*)&flags;
-	    std::copy(flagptr, flagptr + 4, back_inserter(outbuf));
-
-		// Checksum
-		std::uint32_t crc = CRCPP::CRC::Calculate(buf, size, CRCPP::CRC::CRC_32());
-		const char* crcptr = (const char*)&crc;
-		std::copy(crcptr, crcptr + 4, back_inserter(outbuf));
-		// Data
-		std::copy(buf, buf + size, back_inserter(outbuf));
+		finalize(builder, outbuf, 1);
 
 		return outbuf.size();
 	}
@@ -445,7 +482,7 @@ namespace O3DS
 		std::uint32_t flags = *(std::uint32_t*)data;
         std::uint32_t check = *(std::uint32_t*)(data + 4);
 
-		if (flags != 0x0001)
+		if (flags != 1)
 			return false;
 
 		if (crc != check)
