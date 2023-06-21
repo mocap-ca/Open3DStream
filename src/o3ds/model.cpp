@@ -318,7 +318,7 @@ namespace O3DS
 
 		for (auto& t : this->mTransforms)
 		{
-			if (t->translation.delta() != 0)
+			if (t->translation.delta() > deltaThreshold)
 			{
 				translations.push_back(O3DS::Data::TranslationUpdate(
 					(float)t->translation.value.v[0],
@@ -328,7 +328,7 @@ namespace O3DS
 				count++;
 			}
 
-			if (t->rotation.delta() != 0)
+			if (t->rotation.delta() > deltaThreshold)
 			{
 				rotations.push_back(O3DS::Data::RotationUpdate(
 					(float)t->rotation.value.v[0],
@@ -379,7 +379,7 @@ namespace O3DS
 		return outbuf.size();
 	}
 
-	int Subject::SerializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp)
+	int Subject::SerializeUpdate(std::vector<char>& outbuf, size_t& count, double deltaThreshold, double timestamp)
 	{
 		if (timestamp == 0.0)
 		{
@@ -389,7 +389,7 @@ namespace O3DS
 		flatbuffers::FlatBufferBuilder builder;
 
 		std::vector<flatbuffers::Offset<O3DS::Data::SubjectUpdate>> outSubjectUpdates;
-		outSubjectUpdates.push_back(this->SerializeUpdate(builder, count, 0.00001));
+		outSubjectUpdates.push_back(this->SerializeUpdate(builder, count, deltaThreshold));
 
 		auto ovSubjectUpdates = builder.CreateVector(outSubjectUpdates);
 

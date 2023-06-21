@@ -190,7 +190,7 @@ namespace O3DS
 
 		int Serialize(std::vector<char>& outbuf, double timestamp);	
 
-		int SerializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp);
+		int SerializeUpdate(std::vector<char>& outbuf, size_t& count, double deltaThreshold, double timestamp);
 
 	};
 
