@@ -202,12 +202,12 @@ namespace O3DS
 
 		SubjectList()
 			: mTime(0.0)
-			, mDeltaThreshold(0.0001)
+			, mDeltaThreshold(std::numeric_limits<double>::min())
 		{}
 
 		SubjectList(const SubjectList &other)
 			: mTime(0.0)
-			, mDeltaThreshold(0.0001)
+			, mDeltaThreshold(std::numeric_limits<double>::min())
 		{}
 
 		virtual ~SubjectList()
