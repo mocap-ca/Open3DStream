@@ -11,6 +11,10 @@ REM Check for visual studio
 CL.exe >NUL 2>NUL
 IF %ERRORLEVEL% == 0 GOTO CLOK
 
+SET CMAKE_VS_VERSION="Visual Studio 17 2022"
+SET VSPATH=C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat
+IF EXIST "%VSPATH%" GOTO VSOK
+
 SET CMAKE_VS_VERSION="Visual Studio 16 2019"
 SET VSPATH=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat
 IF EXIST "%VSPATH%" GOTO VSOK
