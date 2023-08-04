@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION  3.13)
 
-project(Open3DStream VERSION 0.1.0)
+project(Open3DStream VERSION 0.1.1)
 
 #if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 #  set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_LIST_DIR}/usr )
@@ -15,4 +15,6 @@ add_subdirectory(apps/Repeater)
 add_subdirectory(src)     
 add_subdirectory(plugins/mobu)
 add_subdirectory(plugins/maya)
+
+add_subdirectory(apps/Test1)
 

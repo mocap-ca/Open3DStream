@@ -11,6 +11,8 @@ EXIT /B 1
 
 IF EXIST %~DP0usr GOTO USROK
 
+IF EXIST D:\bin\Python310\python.exe SET PATH=%PATH%;D:\bin\Python310\
+
 cd thirdparty
 build.bat
 if %errorlevel% neq 0 exit /b %errorlevel%
