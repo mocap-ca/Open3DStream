@@ -420,6 +420,7 @@ void Open3D_Device_Layout::EventUIIdle( HISender pSender, HKEvent pEvent )
 
 void Open3D_Device_Layout::PopulateSubjectFields()
 {
+	size_t count = 0;
 	// Populate the subject name and source fields based on the current selected item
 	int id = mSourcesList.ItemIndex;
 	if (id < 0)
@@ -459,10 +460,10 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 			oss << "Joints: " << mDevice->Items[id]->mJoints.size() << std::endl;
 
 			std::vector<char> buf;
-			mDevice->Items.Serialize(buf, 0);
+			mDevice->Items.Serialize(buf, count);
 			oss << "Packet1: " << buf.size() << std::endl;
 
-			mDevice->Items.SerializeUpdate(buf, 0);
+			mDevice->Items.SerializeUpdate(buf, count);
 			oss << "Packet2: " << buf.size() << std::endl;
 
 			mMemoLog.Text = oss.str().c_str();

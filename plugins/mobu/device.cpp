@@ -336,6 +336,8 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 
 	uint32_t total = 0;
 
+	size_t count;
+
 	// Called per frame to send data
 	switch (pAction)
 	{
@@ -356,7 +358,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			}
 			else
 			{
-				bucketSize = Items.SerializeUpdate(buf, MobuTime.GetSecondDouble());
+				bucketSize = Items.SerializeUpdate(buf, count, MobuTime.GetSecondDouble());
 			}
 
 			if (mFrameCounter > 100) {
