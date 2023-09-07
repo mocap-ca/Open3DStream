@@ -24,6 +24,8 @@ SOFTWARE.
 
 #include "udp_fragment.h"
 
+#include <cstdlib>
+#include <cstring>
 #include <vector>
 
 #define HEADERSIZE 16
@@ -139,7 +141,7 @@ bool UdpCombiner::addFragment(const char* data, size_t sz)
 
 bool UdpCombiner::isComplete()
 {
-	for (auto& i : mFound)
+	for (const auto& i : mFound)
 	{
 		if (!i) return false;
 	}
@@ -185,7 +187,7 @@ bool UdpMapper::getFrame(std::vector<char> &out)
 		{
 			out.insert(out.end(), i.second.mBuffer, i.second.mBuffer + i.second.mBufferSize);
 
-			for(auto &j = items.begin(); j != items.end();)
+			for(auto j = items.begin(); j != items.end();)
 			{ 
 				if (j->first <= i.first) {
 					j = items.erase(j);

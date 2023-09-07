@@ -6,8 +6,10 @@ project(FbxStream)
 find_package(nng CONFIG REQUIRED)
 
 if (UNIX)
+	if(NOT DEFINED fbxroot)
 	set(fbxroot /home/ec2-user/fbxsdk)
-	set(xtralibs xml2 fbxsdk)
+	endif()
+	set(xtralibs fbxsdk xml2)
 	if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE STREQUAL "")
 	link_directories(${fbxroot}/lib/gcc/x64/release/)
 	#install(FILES
