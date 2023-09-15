@@ -157,6 +157,9 @@ enum O3DS::Direction dir(O3DS::Data::Direction d)
 
 namespace O3DS
 {
+
+	// Transform 
+
 	Transform::Transform(std::string& name, int parentId, void *ref)
 		: bWorldMatrix(false)
 		, mName(name)
@@ -249,6 +252,20 @@ namespace O3DS
 		}
 	}
 
+	bool Transform::nan()
+	{
+		for (int i = 0; i < 3; i++) {
+			if (std::isnan(translation.value[i])) { return true; }
+			if (std::isnan(rotation.value[i])) { return true; }
+			if (std::isnan(scale.value[i])) { return true; }
+		}
+		return false;
+	}
+
+
+
+	// Subject
+
 	flatbuffers::Offset<O3DS::Data::Subject> Subject::Serialize(flatbuffers::FlatBufferBuilder& builder)
 	{
 		
@@ -318,6 +335,10 @@ namespace O3DS
 
 		for (auto& t : this->mTransforms)
 		{
+			if (t->nan())
+			{
+				continue;
+			}
 			if (t->translation.delta() > deltaThreshold)
 			{
 				translations.push_back(O3DS::Data::TranslationUpdate(
@@ -448,6 +469,10 @@ namespace O3DS
 		std::copy(buf, buf + size, back_inserter(outbuf));
 	}
 
+
+
+	// Subject List
+
 	int SubjectList::SerializeUpdate(std::vector<char> &outbuf, size_t& count, double timestamp)
 	{
 		if (timestamp == 0.0)
@@ -540,7 +565,7 @@ namespace O3DS
 
 		// Get the nodes (transforms) for this subject
 		auto ovNodes = inSubject->nodes();
-
+			
 		// Clear the subject and add the transfoms
 		outSubject->clear();
 		for (int n = 0; n < (int)ovNodes->size(); n++)

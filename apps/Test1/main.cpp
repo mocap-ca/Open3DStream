@@ -60,6 +60,16 @@ int main(int arc, char** argv)
 {
 	O3DS::AsyncPublisher publisher;
 
+	FILE* fp = fopen("c:\\Users\\al\\Desktop\\data.86.dat", "rb");
+
+	char data[6192];
+	
+	fread(data, 1, 6193, fp);
+
+	fclose(fp);
+	
+
+
 	if (publisher.start("INVALIDTEXT")) {
 		std::cout << "Able to start invalid openStream server" << std::endl;
 		return 1;
@@ -72,6 +82,10 @@ int main(int arc, char** argv)
 	}
 
 	O3DS::SubjectList subjectList;
+
+	subjectList.Parse(data, 6192);
+
+	
 
 	O3DS::SubjectList subjectListCopy;
 	

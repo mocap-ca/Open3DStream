@@ -52,6 +52,8 @@ namespace O3DS
 		virtual void update() {}
 		virtual std::string info() { return std::string(); }
 
+		bool nan();
+
 		TransformTranslation translation;
 		TransformRotation    rotation;
 		TransformScale       scale;

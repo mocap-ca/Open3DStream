@@ -69,7 +69,6 @@ void dataFn(void *ctx, void *data, size_t len)
 
 bool Open3D_Device::FBCreate()
 {
-	//mNetworkAddress = "tcp://3.131.65.210:6001";
 	mNetworkAddress = "tcp://127.0.0.1:6001";
 	mNetworkPort = 3001;
 	mStreaming = true;
@@ -336,7 +335,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 
 	uint32_t total = 0;
 
-	size_t count;
+	size_t count = 0;
 
 	// Called per frame to send data
 	switch (pAction)

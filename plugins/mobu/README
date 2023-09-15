@@ -2,5 +2,11 @@ To build on windows:
 
 mkdir build
 cd build
-cmake .. -A x64
+cmake .. -A x64	
 devenv StreamDevice.sln /build Release /project INSTALL
+
+to get the joint list:
+
+  items = fb.FBModelList()
+  FBGetSelectedModels(items)
+  print(",".join([i.LongName for i in items]))
