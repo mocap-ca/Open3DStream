@@ -225,6 +225,12 @@ void FOpen3DStreamSource::OnPackage(const TArray<uint8>& data)
 				fTransform.SetFromMatrix(fMatrix);
 			}
 
+			if (fTransform.ContainsNaN())
+			{
+				nan = true;
+				break;
+			}
+
 			std::string name = transform->mName.c_str();
 			size_t pos = name.rfind(':');
 			if (pos != std::string::npos)
@@ -233,6 +239,11 @@ void FOpen3DStreamSource::OnPackage(const TArray<uint8>& data)
 			BoneNames.Emplace(name.c_str());
 			BoneParents.Emplace(transform->mParentId);
 			FrameData.Transforms.Add(fTransform);
+		}
+
+		if (nan)
+		{
+			continue;
 		}
 
 		// Cjeck if skeleton has not been initialized yet

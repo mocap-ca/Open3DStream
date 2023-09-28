@@ -287,7 +287,7 @@ namespace O3DS
 			t->rotation >> rotation;
 			t->scale >> scale;
 
-			for (auto component : t->transformOrder) {
+			for (const auto component : t->transformOrder) {
 				if (component == O3DS::TTranslation)
 				components.push_back(O3DS::Data::Component::Component_Translation);
 
@@ -333,7 +333,7 @@ namespace O3DS
 
 		int transformId = 0;
 
-		for (auto& t : this->mTransforms)
+		for (const auto& t : this->mTransforms)
 		{
 			if (t->nan())
 			{
