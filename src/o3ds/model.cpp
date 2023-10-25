@@ -339,7 +339,7 @@ namespace O3DS
 				count++;
 			}
 
-			/*
+			
 		if (t->scale.delta() > 0.001)
 		{
 			scales.push_back(O3DS::Data::ScaleUpdate(
@@ -347,7 +347,7 @@ namespace O3DS
 				(float)t->scale.value.v[1],
 				(float)t->scale.value.v[2], transformId));
 			t->scale.sent();
-		}*/
+		}
 
 			transformId++;
 		}
