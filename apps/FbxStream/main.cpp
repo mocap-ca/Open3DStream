@@ -121,7 +121,8 @@ redo:
 		}
 		else
 		{
-			ret = subjects.SerializeUpdate(buffer, zerof + t.GetSecondDouble());
+			size_t count = 0;
+			ret = subjects.SerializeUpdate(buffer, count, zerof + t.GetSecondDouble());
 		}
 		
 		// Send

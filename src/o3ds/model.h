@@ -185,6 +185,14 @@ namespace O3DS
 
 		bool CalcMatrices();
 
+		flatbuffers::Offset<O3DS::Data::Subject> Serialize(flatbuffers::FlatBufferBuilder& builder);
+
+		flatbuffers::Offset<O3DS::Data::SubjectUpdate> SerializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t& count, double deltaThreshold);
+
+		int Serialize(std::vector<char>& outbuf, double timestamp);	
+
+		int SerializeUpdate(std::vector<char>& outbuf, size_t& count, double deltaThreshold, double timestamp);
+
 	};
 
 	/*! \class SubjectList model.h o3ds/model.h */
@@ -195,12 +203,12 @@ namespace O3DS
 
 		SubjectList()
 			: mTime(0.0)
-			, mDeltaThreshold(0.0001)
+			, mDeltaThreshold(std::numeric_limits<double>::min())
 		{}
 
 		SubjectList(const SubjectList &other)
 			: mTime(0.0)
-			, mDeltaThreshold(0.0001)
+			, mDeltaThreshold(std::numeric_limits<double>::min())
 		{}
 
 		virtual ~SubjectList()
@@ -250,7 +258,7 @@ namespace O3DS
 		//! Encode all of the items in the subject list as binary data
 		int Serialize(std::vector<char> &outbuf, double timestamp=0.0);
 
-		int SerializeUpdate(std::vector<char>& outbuf, double timestamp = 0.0);
+		int SerializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp=0.0);
 
 		//! Populate or update the subject list with the binary data provided (created by Serialize)
 		bool Parse(const char *data, size_t len, TransformBuilder* = nullptr);
@@ -259,8 +267,12 @@ namespace O3DS
 
 		void ParseUpdate(const O3DS::Data::SubjectUpdate*, TransformBuilder* = nullptr);
 
+		//! Change distance threshold below which O3DS skips transmitting a transform update.
+		void SetDeltaThreshold(double newThreshold) { mDeltaThreshold = newThreshold; }
 
 	};
+
+	void finalize(flatbuffers::FlatBufferBuilder& builder, std::vector<char>& outbuf, std::uint32_t flags);
 
 
 } // O3DS
