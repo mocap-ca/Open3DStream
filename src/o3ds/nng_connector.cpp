@@ -64,39 +64,6 @@ namespace O3DS
 		return true;
 	}
 
-	// Read bytes - len is the fixed size of data
-	size_t BlockingNngConnector::read(char* data, size_t len)
-	{
-		int ret;
-
-		nng_msg* msg = nullptr;
-
-		ret = nng_recvmsg(mSocket, &msg, 0);
-		NNG_ERROR("Receiving message");
-
-		size_t msglen = nng_msg_len(msg);
-		if (msglen > len)
-		{
-			nng_msg_free(msg);
-			Connector::setError("Message too large");
-			return false;
-		}
-
-		void* msgBody = nng_msg_body(msg);
-		if (!msgBody)
-		{
-			Connector::setError("Invalid Message");
-			nng_msg_free(msg);
-			return false;
-		}
-
-		memcpy(data, msgBody, msglen);
-
-		nng_msg_free(msg);
-
-		return msglen;
-	}
-
 	size_t BlockingNngConnector::read(char** data, size_t* len)
 	{
 		if (data == nullptr || len == nullptr)
@@ -176,47 +143,6 @@ namespace O3DS
 		NNG_ERROR("Sending message")
 
 			return true;
-	}
-
-
-	size_t AsyncNngConnector::read(char* data, size_t len)  // Read bytes - len is the size of data
-	{
-		int ret;
-		std::lock_guard<std::mutex> guard(mutex);
-
-		nng_msg* msg;
-
-		ret = nng_recvmsg(mSocket, &msg, NNG_FLAG_NONBLOCK);
-		if (ret == NNG_EAGAIN) { return 0; }
-		NNG_ERROR("Receiving message");
-
-		if (msg == nullptr)
-		{
-			return 0;
-		}
-
-		size_t msglen = nng_msg_len(msg);
-		if (msglen > len)
-		{
-			Connector::setError("Message too large");
-			return false;
-		}
-
-		void* msgBody = nng_msg_body(msg);
-		if (!msgBody)
-		{
-			Connector::setError("Invalid Message");
-			nng_msg_free(msg);
-			return false;
-		}
-
-		memcpy(data, msgBody, len);
-
-		nng_msg_free(msg);
-
-		mState = Connector::READING;
-
-		return msglen;
 	}
 
 	size_t AsyncNngConnector::read(char** data, size_t* len)

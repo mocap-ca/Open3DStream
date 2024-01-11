@@ -43,7 +43,6 @@ namespace O3DS
 
 		// Base class for blocking connectors
 		virtual bool   write(const char* data, size_t len) override;  //!< Writes an nng message
-		virtual size_t read(char* data, size_t len) override;         //!< Read bytes - len is the size of data
 		virtual size_t read(char** data, size_t* len) override;       //!< Read bytes, resize data if needed
 
 		// Set the error with nng return code
@@ -82,7 +81,6 @@ namespace O3DS
 
 		virtual bool start(const char* url) = 0;              //!< Starts the server - servers will listen, clients will dial
 		bool         write(const char* data, size_t len) override;  //!< Writes an nng message
-		size_t       read(char* data, size_t len) override;            //!< Read bytes - len is the size of data
 		size_t       read(char** data, size_t* len) override;       //!< Read bytes, resize data if needed
 		bool         asyncReadMsg();                          //!< handles a nng_recv_aio call.  Calls nng_recv_aio again if message was okay and returns true
 		void         stop();

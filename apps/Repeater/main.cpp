@@ -39,20 +39,21 @@ int main(int argc, char *argv[])
         return 3;
     }
     
-
-    char* data = (char*)malloc(1024 * 80);
+    size_t bufsz = 1024 * 80;
+    char* data = (char*)malloc(bufsz);
 
     size_t sz;
     
     while (1)
     {
-        sz = O3DS::listener.read(data, 1024 * 80);
+        sz = O3DS::listener.read(&data, &bufsz);
         if (sz > 0)
         {
-            printf("%d\n", sz);
+            printf("%ld\n", sz);
             O3DS::broadcast.write(data, sz);
         }
     }
 
+    free(data);
     return 0;
 }
