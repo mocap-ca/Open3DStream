@@ -69,7 +69,7 @@ void dataFn(void *ctx, void *data, size_t len)
 
 bool Open3D_Device::FBCreate()
 {
-	mNetworkAddress = "tcp://127.0.0.1:6001";
+	mNetworkAddress = "tcp://meta.o3ds.net:6001";
 	mNetworkPort = 3001;
 	mStreaming = true;
 	mProtocol = kNNGServer;

@@ -193,6 +193,8 @@ void FOpen3DStreamSource::OnPackage(const TArray<uint8>& data)
 		BoneParents.Reserve(transformCount);
 		//BoneTransforms.Reserve(transformCount);
 
+		bool nan = false;
+
 		for (auto& transform : transforms)
 		{
 			//FVector tr = ftrans.GetTranslation();

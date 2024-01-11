@@ -13,10 +13,14 @@ function(build_mobu version path)
 
   set(mobu_target O3DSMobu${version}Device)
   add_library(${mobu_target} SHARED ${SRCS} )
+
+  if(${version} STREQUAL "2024")
+     target_compile_definitions(${mobu_target} PUBLIC ORSDKPRODUCT_VERSION=ORSDK2024 )
+  endif()
   
   target_link_libraries(${mobu_target} fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib open3dstreamstatic ${NNG_LIBRARY})
   target_include_directories(${mobu_target} PUBLIC "${path}/include" ${CMAKE_CURENT_LIST_DIR}../src)
-  target_link_directories(${mobu_target} PUBLIC "${path}/lib/x64")
+  target_link_directories(${mobu_target} PUBLIC "${path}/lib/x64" "${path}/lib/x64/HIK2016")
   target_compile_definitions(${mobu_target} PUBLIC NNG_STATIC_LIB)
   foreach(mbdir "C:/Program Files/Autodesk/MotionBuilder ${version}/bin/x64"
 	            "D:/Programs/Autodesk/MotionBuilder ${version}/bin/x64")
@@ -44,5 +48,9 @@ endif()
 
 if(EXISTS  "M:/code/api/windows/mobu/2023/OpenRealitySDK")
 build_mobu("2023" "M:/code/api/windows/mobu/2023/OpenRealitySDK")
+endif()
+
+if(EXISTS  "M:/code/api/windows/mobu/2024/OpenRealitySDK")
+build_mobu("2024" "M:/code/api/windows/mobu/2024/OpenRealitySDK")
 endif()
 
