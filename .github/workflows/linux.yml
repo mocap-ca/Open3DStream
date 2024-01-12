@@ -56,7 +56,7 @@ jobs:
 
     - name: Open3DStream
       run: |
-        cmake -B build -G Ninja -D NNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=$RUNNER_TEMP/usr
+        cmake -B build -G Ninja -D NNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=$RUNNER_TEMP/usr -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/out
         cmake --build build
         cmake --install build
 
