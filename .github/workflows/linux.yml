@@ -60,6 +60,11 @@ jobs:
         cmake --build build
         cmake --install build
 
+    - name: Debug $RUNNER_TEMP
+      run: |
+        echo "Contents of $RUNNER_TEMP before step 1:"
+        ls $RUNNER_TEMP
+
     - name: Package Release
       run: |
         cd $RUNNER_TEMP/out
