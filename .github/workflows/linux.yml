@@ -1,5 +1,14 @@
 name: linux
-on: [push, pull_request]
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger the workflow on tags starting with 'v'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Specify the tag for manual run'
+        required: false
+        
 jobs:
 
   build:
@@ -50,3 +59,30 @@ jobs:
         cmake -B build -G Ninja -D NNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=$RUNNER_TEMP/usr
         cmake --build build
         cmake --install build
+
+    - name: Package Release
+      run: |
+        cd $RUNNER_TEMP/out
+        tar -czvf o3ds.tar.gz .
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.event.inputs.tag || github.ref }}
+        release_name: Release ${{ secrets.GITHUB_TOKEN }}
+        draft: false
+        prerelease: false       
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: $RUNNER_TEMP/out/o3ds.tar.gz
+        asset_name: o3ds.tar.gz
+        asset_content_type: application/gzip        
