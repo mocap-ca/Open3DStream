@@ -60,14 +60,10 @@ jobs:
         cmake --build build
         cmake --install build
 
-    - name: Debug $RUNNER_TEMP
-      run: |
-        echo "Contents of $RUNNER_TEMP before step 1:"
-        ls $RUNNER_TEMP/out
-
     - name: Package Release
       run: |
-        cd $RUNNER_TEMP/out && ls && tar -czvf o3ds.tar.gz .
+        cd $RUNNER_TEMP 
+        ls && tar -czvf o3ds.tar.gz -C out .
 
     - name: Create Release
       id: create_release
