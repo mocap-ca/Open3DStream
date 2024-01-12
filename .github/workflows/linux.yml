@@ -1,0 +1,48 @@
+name: linux
+on: [push, pull_request]
+jobs:
+
+  build:
+    name: build
+    runs-on: [ ubuntu-latest ]
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+      # Ensure submodules are fetched
+      with:
+        submodules: 'recursive'
+
+    - name: Get Tools
+      run: sudo apt-get install -y cmake ninja-build libmbedtls-dev        
+
+    - name: NNG
+      working-directory: thirdparty/nng
+      run: |
+        mkdir build && cd build && cmake 
+        cmake -B build -G Ninja -D NNG_ENABLE_TLS=ON
+        cmake --build build
+        cmake --install build
+
+    - name: CML
+      working-directory: thirdparty/cml
+      run: |
+        mkdir build && cd build && cmake 
+        cmake -B build -G Ninja
+        cmake --build build
+        cmake --install build        
+
+    - name: CRC
+      working-directory: thirdparty/crccpp
+      run: |
+        mkdir build && cd build && cmake 
+        cmake -B build -G Ninja
+        cmake --build build
+        cmake --install build
+
+    - name: Open3DStream
+      run: |
+        mkdir build && cd build && cmake 
+        cmake -B build -G Ninja -D NNG_ENABLE_TLS=ON ..
+        cmake --build build
+        cmake --install build
