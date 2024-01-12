@@ -19,7 +19,6 @@ jobs:
     - name: NNG
       working-directory: thirdparty/nng
       run: |
-        mkdir build && cd build && cmake 
         cmake -B build -G Ninja -D NNG_ENABLE_TLS=ON
         cmake --build build
         cmake --install build
@@ -27,7 +26,6 @@ jobs:
     - name: CML
       working-directory: thirdparty/cml
       run: |
-        mkdir build && cd build && cmake 
         cmake -B build -G Ninja
         cmake --build build
         cmake --install build        
@@ -35,14 +33,12 @@ jobs:
     - name: CRC
       working-directory: thirdparty/crccpp
       run: |
-        mkdir build && cd build && cmake 
         cmake -B build -G Ninja
         cmake --build build
         cmake --install build
 
     - name: Open3DStream
       run: |
-        mkdir build && cd build && cmake 
         cmake -B build -G Ninja -D NNG_ENABLE_TLS=ON ..
         cmake --build build
         cmake --install build
