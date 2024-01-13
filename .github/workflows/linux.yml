@@ -29,34 +29,34 @@ jobs:
       working-directory: thirdparty/nng
       run: |
         mkdir -p usr
-        cmake -B build -G Ninja -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=usr
+        cmake -B build -G Ninja -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
         cmake --build build
         cmake --install build
 
     - name: CML
       working-directory: thirdparty/cml
       run: |
-        cmake -B build -G Ninja -DCMAKE_INSTALL_PREFIX=usr
+        cmake -B build -G Ninja -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
         cmake --build build
         cmake --install build        
 
     - name: CRC
       working-directory: thirdparty/crccpp
       run: |
-        cmake -B build -G Ninja -DCMAKE_INSTALL_PREFIX=usr
+        cmake -B build -G Ninja -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
         cmake --build build
         cmake --install build
 
     - name: FlatBuffers
       working-directory: thirdparty/flatbuffers
       run: |
-        cmake -B build -G Ninja -DCMAKE_INSTALL_PREFIX=usr
+        cmake -B build -G Ninja -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
         cmake --build build
         cmake --install build        
 
     - name: Open3DStream
       run: |
-        cmake -B build -G Ninja -D NNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=usr -DCMAKE_INSTALL_PREFIX=out
+        cmake -B build -G Ninja -D NNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=$RUNNER_TEMP/usr -DCMAKE_INSTALL_PREFIX=out
         cmake --build build
         cmake --install build
 
