@@ -95,9 +95,9 @@ set_target_properties(open3dstreamstatic PROPERTIES PUBLIC_HEADER "${pub_headers
 target_compile_definitions(open3dstreamstatic PUBLIC NNG_STATIC_LIB CRCPP_USE_NAMESPACE)
 
 install(TARGETS open3dstreamstatic 
-    LIBRARY DESTINATION lib
+	LIBRARY DESTINATION lib
 	PUBLIC_HEADER DESTINATION include/o3ds
 	CONFIGURATIONS RelWithDebInfo)
 
 install(FILES 	${CMAKE_CURRENT_BINARY_DIR}/_generated/o3ds_generated.h
-    DESTINATION include)
+	DESTINATION include)
