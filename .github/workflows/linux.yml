@@ -14,7 +14,11 @@ jobs:
   build:
     name: build
     runs-on: [ ubuntu-latest ]
+
     steps:
+    - name: Set Tag Environment Variable
+      run: echo "TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+  
     - name: Checkout code
       uses: actions/checkout@v2
 
@@ -56,7 +60,7 @@ jobs:
 
     - name: Open3DStream
       run: |
-        cmake -B build -G Ninja -D NNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=$RUNNER_TEMP/usr -DCMAKE_INSTALL_PREFIX=out
+        cmake -B build -G Ninja -DVERSION_TAG=\"${TAG}\" -DNNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=$RUNNER_TEMP/usr -DCMAKE_INSTALL_PREFIX=out
         cmake --build build
         cmake --install build
 
