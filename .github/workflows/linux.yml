@@ -29,6 +29,9 @@ jobs:
     - name: Get Tools
       run: sudo apt-get install -y cmake ninja-build libmbedtls-dev        
 
+    - name: Debug Tools
+      run: dpkg -L libmbedtls-dev
+
     - name: NNG
       working-directory: thirdparty/nng
       run: |
