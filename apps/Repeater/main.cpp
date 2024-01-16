@@ -10,6 +10,9 @@
 #include "o3ds/async_publisher.h"
 #include "o3ds/pair.h"
 
+#define QUOTE_(str) #str
+#define QUOTE(str) QUOTE_(str)
+
 namespace O3DS
 {
     ServerPair listener;
@@ -20,6 +23,10 @@ int main(int argc, char *argv[])
 {
     if (argc < 3)
     {
+        printf("O3DS Repeater");
+#ifdef VERSION_TAG
+        printf(" - %s\n", QUOTE(VERSION_TAG));
+#endif
         printf("Usage: %s listen-addr broadcast-addr\n", argv[0]);
         return 1;
     }
