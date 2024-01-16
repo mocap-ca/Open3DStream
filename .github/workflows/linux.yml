@@ -27,10 +27,7 @@ jobs:
         submodules: 'recursive'
 
     - name: Get Tools
-      run: sudo apt-get install -y cmake ninja-build libmbedtls-dev        
-
-    - name: Debug Tools
-      run: dpkg -L libmbedtls-dev
+      run: sudo apt-get install -y cmake ninja-build libmbedtls-dev
 
     - name: NNG
       working-directory: thirdparty/nng
@@ -69,6 +66,7 @@ jobs:
 
     - name: Package Release
       run: |
+        cp /usr/lib/x86_64-linux-gnu/libmbed*.so ./out/bin/
         tar -czvf o3ds.tgz -C out .
 
     - name: Create Release
