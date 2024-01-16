@@ -39,6 +39,8 @@ set(pub_headers
 	o3ds/socket_address.h
 	o3ds/binary_stream.h
 	o3ds/xsens_parser.h
+	o3ds/o3ds_version.h
+	o3ds/o3ds_version.h
 )	
 
 set(SOURCES 
@@ -67,6 +69,7 @@ set(SOURCES
 	o3ds/socket_address.cpp
 	o3ds/binary_stream.cpp
 	o3ds/xsens_parser.cpp	
+	o3ds/o3ds_version.cpp	
 )
 	
 if(WIN32)
