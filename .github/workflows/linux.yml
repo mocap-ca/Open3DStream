@@ -16,11 +16,8 @@ jobs:
     runs-on: [ ubuntu-latest ]
 
     steps:
-    - name: GetVersion
-      uses: battila7/get-version-action@v2      
-    - run: |
-        echo ${{ steps.get_version.outputs.version }}
-        echo ${{ steps.get_version.outputs.version-without-v }}
+    - id: get_version
+      uses: dhkatz/get-version-action@v3   
   
     - name: Checkout code
       uses: actions/checkout@v2
@@ -63,7 +60,7 @@ jobs:
 
     - name: Open3DStream
       run: |
-        cmake -B build -G Ninja -DVERSION_TAG=\"${{ steps.GetVersion.outputs.version }}\" -DNNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=$RUNNER_TEMP/usr -DCMAKE_INSTALL_PREFIX=out
+        cmake -B build -G Ninja -DVERSION_TAG=\"${{ steps.get_version.outputs.version }}\" -DNNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=$RUNNER_TEMP/usr -DCMAKE_INSTALL_PREFIX=out
         cmake --build build
         cmake --install build
 
