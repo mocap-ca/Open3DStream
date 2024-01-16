@@ -462,7 +462,8 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 			mDevice->Items.Serialize(buf, 0);
 			oss << "Packet1: " << buf.size() << std::endl;
 
-			mDevice->Items.SerializeUpdate(buf, 0);
+			size_t count = 0;
+			mDevice->Items.SerializeUpdate(buf, count);
 			oss << "Packet2: " << buf.size() << std::endl;
 
 			mMemoLog.Text = oss.str().c_str();

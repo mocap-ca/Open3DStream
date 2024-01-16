@@ -4,6 +4,7 @@ import os
 import sys
 import json
 import re
+import subprocess
 
 """ creats a zip file release """
 
@@ -74,3 +75,20 @@ for base, _, files in os.walk(root):
 
 fp.close()    
         
+#installer
+
+nsis = "C:/Program Files (x86)/NSIS/makensis.exe"
+if not os.path.isfile(nsis):
+    raise RuntimeError("Could not find NSIS: " + str(nsis))
+    
+nsis = '"' + nsis.replace("/", "\\") + '"'
+nsi_script = os.path.join(os.path.split(__file__)[0], 'o3ds.nsi')
+
+cmd = nsis + ' /DOUT_FILE=' + version + '.exe /DFILE_VERSION=' + version + ' ' + nsi_script
+
+if subprocess.run(cmd).returncode != 0:
+    raise RuntimeError("NSI Error")
+    
+if not os.path.isfile(version + ".exe"):
+    raise RuntimeError("NISI did not produce: " + version + ".exe")
+    

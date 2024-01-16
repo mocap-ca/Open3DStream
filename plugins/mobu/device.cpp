@@ -349,6 +349,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 
 			FBTime MobuTime = FBSystem().LocalTime;
 			int32_t bucketSize;
+			size_t count = 0;
 			
 			if (mFrameCounter++ == 0)
 			{
@@ -356,7 +357,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			}
 			else
 			{
-				bucketSize = Items.SerializeUpdate(buf, MobuTime.GetSecondDouble());
+				bucketSize = Items.SerializeUpdate(buf, count, MobuTime.GetSecondDouble());
 			}
 
 			if (mFrameCounter > 100) {
