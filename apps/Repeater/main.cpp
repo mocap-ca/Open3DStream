@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 3)
     {
-        printf("O3DS Repeater - %s", O3DS::getVersion().c_str());
+        printf("O3DS Repeater - %s\n", O3DS::getVersion().c_str());
         printf("Usage: %s listen-addr broadcast-addr\n", argv[0]);
         return 1;
     }
