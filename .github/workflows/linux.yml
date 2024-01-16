@@ -17,7 +17,7 @@ jobs:
 
     steps:
     - id: get_version
-      uses: dhkatz/get-version-action@v2
+      uses: dhkatz/get-version-action@v1
 
     - run: echo ${{ steps.get_version.outputs.version-without-v }}      
     
