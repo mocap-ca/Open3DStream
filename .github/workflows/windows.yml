@@ -17,12 +17,6 @@ jobs:
       - id: get_version
         uses: dhkatz/get-version-action@v3.0.0
 
-      - name: Set env vars
-        run: |
-          echo "CMAKE_INSTALL_PREFIX=${{ env.GITHUB_WORKSPACE }}/usr" >> $GITHUB_ENV  
-          echo "CMAKE_PREFIX_PATH=${{ env.GITHUB_WORKSPACE }}/usr" >> $GITHUB_ENV 
-          echo Prefix is: ${{ env.GITHUB_WORKSPACE }}/usr
-
       - name: Checkout code
         uses: actions/checkout@v2
         with:
@@ -51,43 +45,40 @@ jobs:
         working-directory: thirdparty/mbedtls
         run: |
           mkdir build
-          cmake -S . -B build -DGEN_FILES=ON -DENABLE_TESTING=Off
-          cmake --build build --config Release
-          cmake --install build
+          cmake -S . -B build -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr
+          cmake --build build --config Release && cmake --install build
         shell: cmd
 
       - name: NNG
         working-directory: thirdparty/nng
         run: |
-          cmake -S . -B build -DNNG_ENABLE_TLS=Off
-          cmake --build build --config Release
-          cmake --install build
+          cmake -S . -B build -DNNG_ENABLE_TLS=Off -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr -DCMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%/usr
+          cmake --build build --config Release && cmake --install build
         shell: cmd          
 
       - name: CML
         working-directory: thirdparty/cml
         run: |
-          cmake -S . -B build
-          cmake --build build --config Release
-          cmake --install build        
+          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr
+          cmake --build build --config Release && cmake --install build
+        shell: cmd
 
       - name: CRC
         working-directory: thirdparty/crccpp
         run: |
-          cmake -S . -B build
-          cmake --build build --config Release
-          cmake --install build
+          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr
+          cmake --build build --config Release && cmake --install build
+        shell: cmd
 
       - name: FlatBuffers
         working-directory: thirdparty/flatbuffers
         run: |
-          cmake -S . -B build
-          cmake --build build --config Release
-          cmake --install build              
+          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr
+          cmake --build build --config Release && cmake --install build          
+        shell: cmd
 
       - name: Open3DStream
         run: |
-          echo cmake -S . -B build -DVERSION_TAG="${{ steps.get_version.outputs.version-without-v }}" -DCMAKE_INSTALL_PREFIX=out
-          cmake -S . -B build -DVERSION_TAG="${{ steps.get_version.outputs.version-without-v }}"  -DCMAKE_INSTALL_PREFIX=out
-          cmake --build build --config Release
-          cmake --install build        
+          cmake -S . -B build -DVERSION_TAG=${{ steps.get_version.outputs.version-without-v }} -DCMAKE_PREFIX_PATH=usr -DCMAKE_INSTALL_PREFIX=out
+          cmake --build build --config Release && cmake --install build
+        shell: cmd
