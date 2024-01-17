@@ -47,16 +47,18 @@ jobs:
         working-directory: thirdparty/mbedtls
         run: |
           mkdir build
-          cmake -S . -B build -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=$env:GITHUB_WORKSPACE/usr
+          cmake -S . -B build -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr
           cmake --build build --config Release
           cmake --install build
+        shell: cmd
 
       - name: NNG
         working-directory: thirdparty/nng
         run: |
-          cmake -S . -B build -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=$env:GITHUB_WORKSPACE/usr -DCMAKE_PREFIX_PATH$env:GITHUB_WORKSPACE/usr
+          cmake -S . -B build -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr -DCMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%/usr
           cmake --build build
           cmake --install build
+        shell: cmd          
 
       - name: CML
         working-directory: thirdparty/cml
