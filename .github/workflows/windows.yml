@@ -26,7 +26,7 @@ jobs:
         run: mkdir -p usr
 
       - name: Perl
-        uses: shogo82148/actions-setup-perl@v2
+        uses: shogo82148/actions-setup-perl@v1.27.0
         with:
           perl-version: '5.32'
         
