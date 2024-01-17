@@ -51,7 +51,7 @@ jobs:
       - name: NNG
         working-directory: thirdparty/nng
         run: |
-          cmake -B build -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=%RUNNER_TEMP%/usr -DCMAKE_PREFIX_PATH=$env:RUNNER_TEMP/usr
+          cmake -B build -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=$env:RUNNER_TEMP/usr -DCMAKE_PREFIX_PATH=$env:RUNNER_TEMP/usr
           cmake --build build
           cmake --install build
 
