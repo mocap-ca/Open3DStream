@@ -13,6 +13,10 @@ jobs:
   build:
     runs-on: windows-latest
 
+    env:
+      CMAKE_INSTALL_PREFIX: ${{ env.GITHUB_WORKSPACE }}/usr
+      CMAKE_PREFIX_PATH: ${{ env.GITHUB_WORKSPACE }}/usr
+
     steps:
       - id: get_version
         uses: dhkatz/get-version-action@v3.0.0
@@ -25,8 +29,6 @@ jobs:
       - name: mkdir usr
         run: |
           mkdir -p $env:GITHUB_WORKSPACE/usr
-          echo $env:GITHUB_WORKSPACE
-          dir $env:GITHUB_WORKSPACE
 
       - name: Perl
         uses: shogo82148/actions-setup-perl@v1.27.0
@@ -47,7 +49,7 @@ jobs:
         working-directory: thirdparty/mbedtls
         run: |
           mkdir build
-          cmake -S . -B build -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr
+          cmake -S . -B build -DGEN_FILES=ON -DENABLE_TESTING=Off
           cmake --build build --config Release
           cmake --install build
         shell: cmd
@@ -55,7 +57,7 @@ jobs:
       - name: NNG
         working-directory: thirdparty/nng
         run: |
-          cmake -S . -B build -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr -DCMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%/usr
+          cmake -S . -B build -DNNG_ENABLE_TLS=Off
           cmake --build build
           cmake --install build
         shell: cmd          
@@ -63,21 +65,21 @@ jobs:
       - name: CML
         working-directory: thirdparty/cml
         run: |
-          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$env:GITHUB_WORKSPACE/usr
+          cmake -S . -B build
           cmake --build build
           cmake --install build        
 
       - name: CRC
         working-directory: thirdparty/crccpp
         run: |
-          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$env:GITHUB_WORKSPACE/usr
+          cmake -S . -B build
           cmake --build build
           cmake --install build
 
       - name: FlatBuffers
         working-directory: thirdparty/flatbuffers
         run: |
-          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$env:GITHUB_WORKSPACE/usr
+          cmake -S . -B build
           cmake --build build
           cmake --install build              
 
