@@ -21,6 +21,7 @@ jobs:
         run: |
           echo "CMAKE_INSTALL_PREFIX=${{ env.GITHUB_WORKSPACE }}/usr" >> $GITHUB_ENV  
           echo "CMAKE_PREFIX_PATH=${{ env.GITHUB_WORKSPACE }}/usr" >> $GITHUB_ENV 
+          echo Prefix is: ${{ env.GITHUB_WORKSPACE }}/usr
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -86,6 +87,6 @@ jobs:
 
       - name: Open3DStream
         run: |
-          cmake -S . -B build -DVERSION_TAG=\"${{ steps.get_version.outputs.version-without-v }}\" -DNNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=usr -DCMAKE_INSTALL_PREFIX=out
+          cmake -S . -B build -DVERSION_TAG=\"${{ steps.get_version.outputs.version-without-v }}\" -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=out
           cmake --build build --config Release
           cmake --install build        
