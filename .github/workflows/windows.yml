@@ -82,3 +82,31 @@ jobs:
           cmake -S . -B build -DVERSION_TAG=${{ steps.get_version.outputs.version-without-v }} -DCMAKE_PREFIX_PATH=usr -DCMAKE_INSTALL_PREFIX=out
           cmake --build build --config Release && cmake --install build
         shell: cmd
+
+      - name: Create Zip File for Release
+        run: |
+          cd out
+          Compress-Archive -Path * -DestinationPath ../o3ds_${{ steps.get_version.outputs.version-without-v }}.zip
+        shell: pwsh
+        
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false       
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: o3ds.tgz
+          asset_name: o3ds_${{ steps.get_version.outputs.version-without-v }}.zip
+          asset_content_type: application/zip            
