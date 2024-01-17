@@ -25,10 +25,15 @@ jobs:
       - name: mkdir usr
         run: mkdir -p usr
 
+      - name: Perl
+        uses: shogo82148/actions-setup-perl@v2
+        with:
+          perl-version: '5.32'
+        
       - name: mbedtls
         working-directory: thirdparty/mbedtls
         run: |
-          cmake -B build -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
+          cmake -B build -DENABLE_TESTING=Off  -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
           cmake --build build
           cmake --install build
 
