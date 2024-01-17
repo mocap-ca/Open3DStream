@@ -33,6 +33,7 @@ jobs:
       - name: mbedtls
         working-directory: thirdparty/mbedtls
         run: |
+          pip install jsonschema
           cmake -B build -DENABLE_TESTING=Off  -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
           cmake --build build
           cmake --install build
