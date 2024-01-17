@@ -35,14 +35,18 @@ jobs:
         with:
           python-version: '3.9'
           cache: 'pip' # caching pip dependencies
-      - run: pip install jsonschema jinja2          
-        
+      - run: pip install jsonschema jinja2         
+
+      - name: CMake
+        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+            
       - name: mbedtls
         working-directory: thirdparty/mbedtls
         run: |
-          cmake -B build -DENABLE_TESTING=Off  -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
-          cmake --build build
-          cmake --install build
+          mkdir build
+          cmake -S . -B build -DGEN_FILES=ON -DENABLE_TESTING=Off
+          cmake --build build --config Release
+          cmake cmake --install build --prefix $RUNNER_TEMP/usr
 
       - name: NNG
         working-directory: thirdparty/nng
