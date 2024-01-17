@@ -23,7 +23,10 @@ jobs:
           submodules: 'recursive'
 
       - name: mkdir usr
-        run: mkdir -p usr
+        run: |
+          mkdir -p $env:GITHUB_WORKSPACE/usr
+          echo $env:GITHUB_WORKSPACE
+          dir $env:GITHUB_WORKSPACE
 
       - name: Perl
         uses: shogo82148/actions-setup-perl@v1.27.0
@@ -44,35 +47,35 @@ jobs:
         working-directory: thirdparty/mbedtls
         run: |
           mkdir build
-          cmake -S . -B build -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=..\..\usr
+          cmake -S . -B build -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=$env:GITHUB_WORKSPACE/usr
           cmake --build build --config Release
           cmake --install build
 
       - name: NNG
         working-directory: thirdparty/nng
         run: |
-          cmake -S . -B build -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=..\..\usr -DCMAKE_PREFIX_PATH=..\..\usr
+          cmake -S . -B build -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=$env:GITHUB_WORKSPACE/usr -DCMAKE_PREFIX_PATH$env:GITHUB_WORKSPACE/usr
           cmake --build build
           cmake --install build
 
       - name: CML
         working-directory: thirdparty/cml
         run: |
-          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=..\..\usr
+          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$env:GITHUB_WORKSPACE/usr
           cmake --build build
           cmake --install build        
 
       - name: CRC
         working-directory: thirdparty/crccpp
         run: |
-          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=..\..\usr
+          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$env:GITHUB_WORKSPACE/usr
           cmake --build build
           cmake --install build
 
       - name: FlatBuffers
         working-directory: thirdparty/flatbuffers
         run: |
-          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=..\..\usr
+          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=$env:GITHUB_WORKSPACE/usr
           cmake --build build
           cmake --install build              
 
