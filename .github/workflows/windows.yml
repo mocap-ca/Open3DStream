@@ -86,7 +86,7 @@ jobs:
       - name: Create Zip File for Release
         run: |
           cd out
-          Compress-Archive -Path * -DestinationPath ../o3ds_${{ steps.get_version.outputs.version-without-v }}.zip
+          Compress-Archive -Path * -DestinationPath ../o3ds.zip
         shell: pwsh
         
       - name: Create Release
@@ -107,6 +107,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: o3ds.tgz
+          asset_path: o3ds.zip
           asset_name: o3ds_${{ steps.get_version.outputs.version-without-v }}.zip
           asset_content_type: application/zip            
