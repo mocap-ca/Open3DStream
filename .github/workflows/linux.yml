@@ -1,4 +1,4 @@
-name: linux
+name: O3DS linux
 on:
   push:
     tags:
@@ -25,7 +25,7 @@ jobs:
         submodules: 'recursive'
 
     - name: Get Tools
-      run: sudo apt-get install -y cmake ninja-build libmbedtls-dev
+      run: sudo apt-get install -y cmake ninja-build libmbedtls-dev patchelf
 
     - name: NNG
       working-directory: thirdparty/nng
@@ -64,7 +64,9 @@ jobs:
 
     - name: Package Release
       run: |
-        cp -d /usr/lib/x86_64-linux-gnu/libmbed*.so* ./out/bin/
+        mkdir ./out/bin/lib
+        cp -d /usr/lib/x86_64-linux-gnu/libmbed*.so* ./out/bin/lib/
+        patchelf --set-rpath '$ORIGIN/lib' ./out/bin/Repeater
         tar -czvf o3ds.tgz -C out .
 
     - name: Create Release
