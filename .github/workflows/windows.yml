@@ -35,7 +35,7 @@ jobs:
         with:
           python-version: '3.9'
           cache: 'pip' # caching pip dependencies
-      - run: pip install jsonschema          
+      - run: pip install jsonschema jinja2          
         
       - name: mbedtls
         working-directory: thirdparty/mbedtls
