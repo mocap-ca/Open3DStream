@@ -13,13 +13,14 @@ jobs:
   build:
     runs-on: windows-latest
 
-    env:
-      CMAKE_INSTALL_PREFIX: ${{ env.GITHUB_WORKSPACE }}/usr
-      CMAKE_PREFIX_PATH: ${{ env.GITHUB_WORKSPACE }}/usr
-
     steps:
       - id: get_version
         uses: dhkatz/get-version-action@v3.0.0
+
+      - name: Set env vars
+        run: |
+          echo "CMAKE_INSTALL_PREFIX=${{ env.GITHUB_WORKSPACE }}/usr" >> $GITHUB_ENV  
+          echo "CMAKE_PREFIX_PATH=${{ env.GITHUB_WORKSPACE }}/usr" >> $GITHUB_ENV 
 
       - name: Checkout code
         uses: actions/checkout@v2
