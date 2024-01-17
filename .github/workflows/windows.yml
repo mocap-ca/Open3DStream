@@ -55,4 +55,4 @@ jobs:
         run: |
           cmake -B build -DVERSION_TAG=\"${{ steps.get_version.outputs.version-without-v }}\" -DNNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=$RUNNER_TEMP/usr -DCMAKE_INSTALL_PREFIX=out
           cmake --build build
-        cmake --install build        
+          cmake --install build        
