@@ -59,7 +59,7 @@ jobs:
         working-directory: thirdparty/nng
         run: |
           cmake -S . -B build -DNNG_ENABLE_TLS=Off
-          cmake --build build
+          cmake --build build --config Release
           cmake --install build
         shell: cmd          
 
@@ -67,25 +67,25 @@ jobs:
         working-directory: thirdparty/cml
         run: |
           cmake -S . -B build
-          cmake --build build
+          cmake --build build --config Release
           cmake --install build        
 
       - name: CRC
         working-directory: thirdparty/crccpp
         run: |
           cmake -S . -B build
-          cmake --build build
+          cmake --build build --config Release
           cmake --install build
 
       - name: FlatBuffers
         working-directory: thirdparty/flatbuffers
         run: |
           cmake -S . -B build
-          cmake --build build
+          cmake --build build --config Release
           cmake --install build              
 
       - name: Open3DStream
         run: |
           cmake -S . -B build -DVERSION_TAG=\"${{ steps.get_version.outputs.version-without-v }}\" -DNNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=usr -DCMAKE_INSTALL_PREFIX=out
-          cmake --build build
+          cmake --build build --config Release
           cmake --install build        
