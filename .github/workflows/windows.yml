@@ -96,7 +96,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.get_version.outputs.version-without-v }}-win
-          release_name: Release ${{ github.ref }}
+          release_name: Release ${{ github.ref }}-win
           draft: false
           prerelease: false       
 
