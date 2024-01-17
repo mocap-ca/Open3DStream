@@ -29,11 +29,17 @@ jobs:
         uses: shogo82148/actions-setup-perl@v1.27.0
         with:
           perl-version: '5.32'
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          cache: 'pip' # caching pip dependencies
+      - run: pip install jsonschema          
         
       - name: mbedtls
         working-directory: thirdparty/mbedtls
         run: |
-          pip install jsonschema
           cmake -B build -DENABLE_TESTING=Off  -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
           cmake --build build
           cmake --install build
