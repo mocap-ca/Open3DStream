@@ -22,10 +22,19 @@ jobs:
         with:
           submodules: 'recursive'
 
+      - name: mkdir usr
+        run: mkdir -p usr
+
+      - name: mbedtls
+        working-directory: thirdparty/mbedtls
+        run: |
+          cmake -B build -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
+          cmake --build build
+          cmake --install build
+
       - name: NNG
         working-directory: thirdparty/nng
         run: |
-          mkdir -p usr
           cmake -B build -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
           cmake --build build
           cmake --install build
