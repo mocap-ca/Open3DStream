@@ -46,7 +46,7 @@ jobs:
           mkdir build
           cmake -S . -B build -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=%RUNNER_TEMP%/usr
           cmake --build build --config Release
-          cmake cmake --install build
+          cmake --install build
 
       - name: NNG
         working-directory: thirdparty/nng
