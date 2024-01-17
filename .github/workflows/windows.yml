@@ -44,40 +44,40 @@ jobs:
         working-directory: thirdparty/mbedtls
         run: |
           mkdir build
-          cmake -S . -B build -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=$env:RUNNER_TEMP/usr
+          cmake -S . -B build -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=../../usr
           cmake --build build --config Release
           cmake --install build
 
       - name: NNG
         working-directory: thirdparty/nng
         run: |
-          cmake -B build -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=$env:RUNNER_TEMP/usr -DCMAKE_PREFIX_PATH=$env:RUNNER_TEMP/usr
+          cmake -B build -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=../../usr -DCMAKE_PREFIX_PATH=../../usr
           cmake --build build
           cmake --install build
 
       - name: CML
         working-directory: thirdparty/cml
         run: |
-          cmake -B build -DCMAKE_INSTALL_PREFIX=$env:RUNNER_TEMP/usr
+          cmake -B build -DCMAKE_INSTALL_PREFIX=../../usr
           cmake --build build
           cmake --install build        
 
       - name: CRC
         working-directory: thirdparty/crccpp
         run: |
-          cmake -B build -DCMAKE_INSTALL_PREFIX=$env:RUNNER_TEMP/usr
+          cmake -B build -DCMAKE_INSTALL_PREFIX=../../usr
           cmake --build build
           cmake --install build
 
       - name: FlatBuffers
         working-directory: thirdparty/flatbuffers
         run: |
-          cmake -B build -DCMAKE_INSTALL_PREFIX=$env:RUNNER_TEMP/usr
+          cmake -B build -DCMAKE_INSTALL_PREFIX=../../usr
           cmake --build build
           cmake --install build              
 
       - name: Open3DStream
         run: |
-          cmake -B build -DVERSION_TAG=\"${{ steps.get_version.outputs.version-without-v }}\" -DNNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH$env:RUNNER_TEMP/usr -DCMAKE_INSTALL_PREFIX=out
+          cmake -B build -DVERSION_TAG=\"${{ steps.get_version.outputs.version-without-v }}\" -DNNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=usr -DCMAKE_INSTALL_PREFIX=out
           cmake --build build
           cmake --install build        
