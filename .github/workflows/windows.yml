@@ -1,8 +1,8 @@
 name: O3DS windows
 on:
   push:
-  tags:
-    - 'v*'  # Trigger the workflow on tags starting with 'v'
+    tags:
+      - 'v*'  # Trigger the workflow on tags starting with 'v'
   workflow_dispatch:
     inputs:
       tag:
