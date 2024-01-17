@@ -17,43 +17,42 @@ jobs:
       - id: get_version
         uses: dhkatz/get-version-action@v3.0.0
 
-    - name: Checkout code
-      uses: actions/checkout@v2
-      with:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
         submodules: 'recursive'
 
+      - name: NNG
+        working-directory: thirdparty/nng
+        run: |
+          mkdir -p usr
+          cmake -B build -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
+          cmake --build build
+          cmake --install build
 
-    - name: NNG
-      working-directory: thirdparty/nng
-      run: |
-        mkdir -p usr
-        cmake -B build -DNNG_ENABLE_TLS=ON -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
-        cmake --build build
-        cmake --install build
+      - name: CML
+        working-directory: thirdparty/cml
+        run: |
+          cmake -B build -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
+          cmake --build build
+          cmake --install build        
 
-    - name: CML
-      working-directory: thirdparty/cml
-      run: |
-        cmake -B build -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
-        cmake --build build
-        cmake --install build        
+      - name: CRC
+        working-directory: thirdparty/crccpp
+        run: |
+          cmake -B build -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
+          cmake --build build
+          cmake --install build
 
-    - name: CRC
-      working-directory: thirdparty/crccpp
-      run: |
-        cmake -B build -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
-        cmake --build build
-        cmake --install build
+      - name: FlatBuffers
+        working-directory: thirdparty/flatbuffers
+        run: |
+          cmake -B build -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
+          cmake --build build
+          cmake --install build              
 
-    - name: FlatBuffers
-      working-directory: thirdparty/flatbuffers
-      run: |
-        cmake -B build -DCMAKE_INSTALL_PREFIX=$RUNNER_TEMP/usr
-        cmake --build build
-        cmake --install build              
-
-    - name: Open3DStream
-      run: |
-        cmake -B build -DVERSION_TAG=\"${{ steps.get_version.outputs.version-without-v }}\" -DNNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=$RUNNER_TEMP/usr -DCMAKE_INSTALL_PREFIX=out
-        cmake --build build
+      - name: Open3DStream
+        run: |
+          cmake -B build -DVERSION_TAG=\"${{ steps.get_version.outputs.version-without-v }}\" -DNNG_ENABLE_TLS=ON -DCMAKE_PREFIX_PATH=$RUNNER_TEMP/usr -DCMAKE_INSTALL_PREFIX=out
+          cmake --build build
         cmake --install build        
