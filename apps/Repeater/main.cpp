@@ -8,13 +8,13 @@
 //O3DS::WebsocketBroadcastServer server2;
 
 #include "o3ds/async_publisher.h"
-#include "o3ds/pair.h"
+#include "o3ds/pipeline.h"
 #include "o3ds/o3ds_version.h"
 
 
 namespace O3DS
 {
-    ServerPair listener;
+    PipelinePull listener;
     AsyncPublisher broadcast;
 }
 
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
         sz = O3DS::listener.read(&data, &bufsz);
         if (sz > 0)
         {
-            printf("%ld\n", sz);
+//            printf("%ld\n", sz);
             O3DS::broadcast.write(data, sz);
         }
     }
