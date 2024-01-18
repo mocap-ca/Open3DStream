@@ -34,10 +34,12 @@ SOFTWARE.
 namespace O3DS
 {
 	// The client pulls data down from a listen server
+	//! Implementation of nng sub pattern, to connect to a publisher.
 	class AsyncSubscriber : public AsyncNngConnector
 	{
 	public:
 
+		//! Start the server using the provided url - usually starts with tcp://
 		bool start(const char*url);
 
 		void callback_()

@@ -52,6 +52,9 @@ namespace O3DS
 		//! Write bytes - len is the size of data 
 		virtual bool write(const char* data, size_t len) = 0;
 
+		//! Read bytes - len is the fixed size of buffer, returns the number of bytes read
+		virtual size_t read(char* data, size_t len) = 0;
+
 		//! Read a message, realloc and rezie *data if needed.
 		//! If the buffer is reszied, len will be updated.
 		//! Returns the size of the message, which may be less than the buffer size

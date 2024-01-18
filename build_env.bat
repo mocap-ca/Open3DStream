@@ -38,5 +38,6 @@ EXIT /B 1
 :CLOK
 
 IF EXIST "C:\Program Files\CMake\bin\cmake.exe" SET PATH=C:\Program Files\CMake\bin;%PATH%
+IF EXIST "D:\bin\Python310" SET PATH=D:\bin\Python310;D:\bin\Python310\scripts;%PATH%
 
 SET OPEN3DSBLD=1

@@ -158,6 +158,9 @@ enum O3DS::Direction dir(O3DS::Data::Direction d)
 
 namespace O3DS
 {
+
+	// Transform 
+
 	Transform::Transform(std::string& name, int parentId, void *ref)
 		: bWorldMatrix(false)
 		, mName(name)
@@ -181,6 +184,27 @@ namespace O3DS
 
 	Transform::~Transform()
 	{};
+
+	bool Transform::nan()
+	{
+		if (mMatrix.HasNan()) return true;
+		if (mWorldMatrix.HasNan()) return true;
+		if (translation.value.v[0] != translation.value.v[0]) return true;
+		if (translation.value.v[1] != translation.value.v[1]) return true;
+		if (translation.value.v[2] != translation.value.v[2]) return true;
+		if (rotation.value.v[0] != rotation.value.v[0]) return true;
+		if (rotation.value.v[1] != rotation.value.v[1]) return true;
+		if (rotation.value.v[2] != rotation.value.v[2]) return true;
+		if (rotation.value.v[3] != rotation.value.v[3]) return true;
+		if (scale.value.v[0] != scale.value.v[0]) return true;
+		if (scale.value.v[1] != scale.value.v[1]) return true;
+		if (scale.value.v[2] != scale.value.v[2]) return true;
+
+		for (const auto& i : matrices) {
+			if(i.value.HasNan()) { return true; }
+		}
+		return false;
+	}
 
 	bool Subject::CalcMatrices()
 	{
@@ -307,7 +331,7 @@ namespace O3DS
 			t->rotation >> rotation;
 			t->scale >> scale;
 
-			for (auto component : t->transformOrder) {
+			for (const auto component : t->transformOrder) {
 				if (component == O3DS::TTranslation)
 				components.push_back(O3DS::Data::Component::Component_Translation);
 
@@ -353,8 +377,12 @@ namespace O3DS
 
 		int transformId = 0;
 
-		for (auto& t : this->mTransforms)
+		for (const auto& t : this->mTransforms)
 		{
+			if (t->nan())
+			{
+				continue;
+			}
 			if (t->translation.delta() > deltaThreshold)
 			{
 				translations.push_back(O3DS::Data::TranslationUpdate(
@@ -376,7 +404,7 @@ namespace O3DS
 				count++;
 			}
 
-			
+			/*
 		if (t->scale.delta() > 0.001)
 		{
 			scales.push_back(O3DS::Data::ScaleUpdate(
@@ -384,7 +412,7 @@ namespace O3DS
 				(float)t->scale.value.v[1],
 				(float)t->scale.value.v[2], transformId));
 			t->scale.sent();
-		}
+		}*/
 
 			transformId++;
 		}
@@ -484,6 +512,10 @@ namespace O3DS
 		// Data
 		std::copy(buf, buf + size, back_inserter(outbuf));
 	}
+
+
+
+	// Subject List
 
 	int SubjectList::SerializeUpdate(std::vector<char> &outbuf, size_t& count, double timestamp)
 	{

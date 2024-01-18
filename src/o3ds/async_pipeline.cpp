@@ -26,11 +26,11 @@ SOFTWARE.
 
 namespace O3DS
 {
-	bool AsyncClient::start(const char *url)
+	bool AsyncPipelinePush::start(const char *url)
 	{
 		int ret;
 
-		ret = nng_pair1_open(&mSocket);
+		ret = nng_push0_open(&mSocket);
 		if (ret != 0) { return false; }
 
 		ret = nng_aio_alloc(&aio, AsyncPipeline::Callback, this);
@@ -44,11 +44,12 @@ namespace O3DS
 		return true;
 	}
 
-	bool AsyncServer::start(const char *url)
+	// Pipeline 
+	bool AsyncPipelinePull::start(const char *url)
 	{
 		int ret;
 
-		ret = nng_pair1_open(&mSocket);
+		ret = nng_pull0_open(&mSocket);
 		if (ret != 0) { return false; }
 
 		ret = nng_aio_alloc(&aio, AsyncPipeline::Callback, this);

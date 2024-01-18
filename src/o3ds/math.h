@@ -124,7 +124,7 @@ namespace O3DS
 
 		}
 
-		bool HasNan()
+		bool HasNan() const
 		{
 			for(int u=0; u < 4; u++) {
 				for(int v = 0; v < 4; v++) {

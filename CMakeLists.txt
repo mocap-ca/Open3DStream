@@ -13,6 +13,6 @@ set(CMAKE_DEBUG_POSTFIX d)
 add_subdirectory(src)     
 add_subdirectory(apps/Repeater)
 add_subdirectory(apps/SubscribeTest)
-#add_subdirectory(plugins/mobu)
+add_subdirectory(plugins/mobu)
 #add_subdirectory(plugins/maya)
 
