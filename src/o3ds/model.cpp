@@ -27,6 +27,7 @@ SOFTWARE.
 #include "CRC.h"
 #include <algorithm>
 #include <iterator>
+#include <sstream>
 
 using namespace O3DS::Data;
 
@@ -184,13 +185,40 @@ namespace O3DS
 	Transform::~Transform()
 	{};
 
-	void Subject::CalcMatrices()
+	bool Transform::nan()
+	{
+		if (mMatrix.HasNan()) return true;
+		if (mWorldMatrix.HasNan()) return true;
+		if (translation.value.v[0] != translation.value.v[0]) return true;
+		if (translation.value.v[1] != translation.value.v[1]) return true;
+		if (translation.value.v[2] != translation.value.v[2]) return true;
+		if (rotation.value.v[0] != rotation.value.v[0]) return true;
+		if (rotation.value.v[1] != rotation.value.v[1]) return true;
+		if (rotation.value.v[2] != rotation.value.v[2]) return true;
+		if (rotation.value.v[3] != rotation.value.v[3]) return true;
+		if (scale.value.v[0] != scale.value.v[0]) return true;
+		if (scale.value.v[1] != scale.value.v[1]) return true;
+		if (scale.value.v[2] != scale.value.v[2]) return true;
+
+		for (const auto& i : matrices) {
+			if(i.value.HasNan()) { return true; }
+		}
+		return false;
+	}
+
+	bool Subject::CalcMatrices()
 	{
 		for (auto& transform : this->mTransforms)
 		{
 			transform->bWorldMatrix = false;
 			auto &m = transform->mMatrix;
 			m = Matrixd();
+
+			if(m.HasNan())
+			{
+				mError = "Matrix NAN";
+				return false;
+			}
 
 			int matrixId = 0;
 
@@ -216,40 +244,70 @@ namespace O3DS
 		}
 
 		// Calculate world matrix
+
+		// Find the root first
+		int rootCount = 0;	
+		for(auto transform : this->mTransforms) {
+			if (transform->mParentId == -1)
+			{
+				// No Parent - matrix is world matrix
+				transform->mWorldMatrix = transform->mMatrix;
+				transform->bWorldMatrix = true;
+				rootCount++;
+			}
+		}
+
+		if(rootCount == 0)
+		{
+			mError = "Could not find a root";
+			return false;
+		}
+		if(rootCount > 1)
+		{
+			mError = "More than one root found";
+			return false;
+		}
+
 		bool done = false;
 		while (!done)
 		{
+			// Assume we are done, and flag as not done when we do work
 			done = true;
-			for (auto& transform : this->mTransforms)
+			for (int transformId = 0; transformId < this->mTransforms.size(); transformId++)
 			{
-				if (transform->bWorldMatrix) continue;
-				if (transform->mParentId == -1)
+				auto transform = this->mTransforms[transformId];
+				if (transform->bWorldMatrix) {
+					 continue;
+				}
+
+				if (transformId == transform->mParentId)
 				{
-					// No Parent - matrix is world matrix
-					transform->mWorldMatrix = transform->mMatrix;
-					transform->bWorldMatrix = true;
-					continue;
+					std::ostringstream oss;
+					oss << "ParentId of " << transform->mName << " points to self (" << transformId << ")";
+					mError = oss.str();
+					return false;
 				}
 
 				if (transform->mParentId < 0 || transform->mParentId > this->mTransforms.size())
 				{
-					// TODO: Error handling
-					done = true;
-					break;
+					mError = "Invalid Parent Id";
+					return false;
 				}
 
 				auto& parentTransform = this->mTransforms.mItems[transform->mParentId];
 				if (!parentTransform->bWorldMatrix)
 				{
 					// Parent has not been calculated yet
-					done = false;
 					continue;
 				}
 
 				transform->mWorldMatrix = transform->mMatrix * parentTransform->mWorldMatrix;
 				transform->bWorldMatrix = true;
+				done = false;
 			}
 		}
+
+		return true;
 	}
 
 	bool Transform::nan()
@@ -502,16 +560,22 @@ namespace O3DS
 
 	bool SubjectList::Parse(const char *data, size_t len, TransformBuilder *builder)
 	{
-        std::uint32_t crc = CRCPP::CRC::Calculate(data + 8, len - 8, CRCPP::CRC::CRC_32());
+		std::uint32_t crc = CRCPP::CRC::Calculate(data + 8, len - 8, CRCPP::CRC::CRC_32());
 
 		std::uint32_t flags = *(std::uint32_t*)data;
-        std::uint32_t check = *(std::uint32_t*)(data + 4);
+		std::uint32_t check = *(std::uint32_t*)(data + 4);
 
-		if (flags != 1)
-			return false;
+		mError = "";
 
-		if (crc != check)
+		if (flags != 0x0001) {
+			mError = "Invalid data structure";
 			return false;
+		}
+
+		if (crc != check) {
+			mError = "CRC Check failed";
+			return false;
+		}
 
 		auto root = GetSubjectList(data+8);
 
@@ -540,8 +604,12 @@ namespace O3DS
 			}
 		}
 
-		for (auto subject : this->mItems)
-			subject->CalcMatrices();
+		for (auto subject : this->mItems) {
+			if(!subject->CalcMatrices()) {
+				mError = subject->mError;
+				return false;
+			}
+		}
 
 		return true;
 	}

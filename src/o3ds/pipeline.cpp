@@ -29,42 +29,50 @@ SOFTWARE.
 
 namespace O3DS
 {
+<<<<<<< HEAD
 	bool PipelinePull::start(const char* url)
+=======
+	bool PipelinePush::start(const char* url)
+>>>>>>> develop
 	{
 		int ret;
 
 		ret = nng_push0_open(&mSocket);
 		if (ret != 0)
 		{
-			setError("Could not create pair socket for dial", ret);
+			setError("Could not create push socket for dial", ret);
 			return false;
 		}
 
 		ret = nng_dial(mSocket, url, NULL, 0);
 		if (ret != 0)
 		{
-			setError("Could not dial using pair", ret);
+			setError("Could not dial using push", ret);
 			return false;
 		}
 
 		return true;
 	}
 
+<<<<<<< HEAD
 	bool PipelinePush::start(const char *url)
+=======
+	bool PipelinePull::start(const char *url)
+>>>>>>> develop
 	{
 		int ret;
 
 		ret = nng_pull0_open(&mSocket);
 		if (ret != 0)
 		{
-			setError("Could not create pair socket for listen", ret);
+			setError("Could not create pull socket for listen", ret);
 			return false;
 		}
 
 		ret = nng_listen(mSocket, url, NULL, 0);
 		if (ret != 0)
 		{
-			setError("Could not listen on pair connection", ret);
+			setError("Could not listen on pull connection", ret);
 			return false;
 		}
 

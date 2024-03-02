@@ -123,6 +123,7 @@ redo:
 		}
 		else
 		{
+			count = 0;
 			ret = subjects.SerializeUpdate(buffer, count, zerof + t.GetSecondDouble());
 		}
 		

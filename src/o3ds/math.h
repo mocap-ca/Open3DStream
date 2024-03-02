@@ -124,6 +124,17 @@ namespace O3DS
 
 		}
 
+		bool HasNan() const
+		{
+			for(int u=0; u < 4; u++) {
+				for(int v = 0; v < 4; v++) {
+					if(m[u][v] != m[u][v]) return true;
+				}
+			}
+			return false;
+		}
+					
+
 		double& operator()(int u, int v) { return m[u][v]; }
 
 		const Matrix Transpose() const

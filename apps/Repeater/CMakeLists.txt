@@ -6,7 +6,9 @@ project(Repeater)
 find_package(nng CONFIG REQUIRED)
 
 add_executable(Repeater main.cpp)
-target_link_libraries(Repeater open3dstreamstatic)
+target_link_libraries(Repeater open3dstreamstatic ${NNG_LIBRARY})
+
+install(TARGETS Repeater DESTINATION bin)
 
 if(WIN32)
 if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
@@ -17,5 +19,4 @@ add_custom_command(TARGET Repeater POST_BUILD
 endif()
 endif()
 
-target_link_libraries(Repeater ${NNG_LIBRARY})
 

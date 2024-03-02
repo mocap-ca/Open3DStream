@@ -9,12 +9,12 @@ project(Open3DStream VERSION 0.1.3)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_DEBUG_POSTFIX d)
 
-add_subdirectory(apps/FbxStream)
-add_subdirectory(apps/Repeater)
-#add_subdirectory(apps/SubscribeTest)
+#add_subdirectory(apps/FbxStream)
 add_subdirectory(src)     
+add_subdirectory(apps/Repeater)
+add_subdirectory(apps/SubscribeTest)
 add_subdirectory(plugins/mobu)
-add_subdirectory(plugins/maya)
+#add_subdirectory(plugins/maya)
 
 add_subdirectory(apps/Test1)
 

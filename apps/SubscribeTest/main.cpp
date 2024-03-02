@@ -2,9 +2,9 @@
 //#include "o3ds/async_subscriber.h"
 //#include "o3ds/async_request.h"
 //#include "o3ds/async_pipeline.h"
-#include "o3ds/async_subscriber.h"
-#include "o3ds/async_pair.h"
-#include "o3ds/websocket.h"
+#include "o3ds/subscriber.h"
+#include "o3ds/pair.h"
+//#include "o3ds/websocket.h"
 #include <nng/nng.h>
 #include <chrono>
 #include <thread>
@@ -28,43 +28,41 @@ int main(int argc, char *argv[])
 	if (argc != 3)
 	{
 		fprintf(stderr, "%s protocol url\n", argv[0]);
-		fprintf(stderr, "Protocols: client server\n");
+		fprintf(stderr, "Protocols: sub client client server\n");
 		return 1;
 	}
 
-	O3DS::AsyncConnector* connector = nullptr;
+	O3DS::Connector* connector = nullptr;
 
 	if (strcmp(argv[1], "sub") == 0)
 	{
 		printf("Connecting to: %s\n", argv[2]);
-		connector = new O3DS::AsyncSubscriber();
+		connector = new O3DS::Subscriber();
 	}
 
 	if (strcmp(argv[1], "client") == 0)
 	{
 		printf("Connecting to: %s\n", argv[2]);
-		connector = new O3DS::AsyncPairClient();
+		connector = new O3DS::ClientPair();
 	}
 
 	if (strcmp(argv[1], "server") == 0)
 	{
 		printf("Connecting to: %s\n", argv[2]);
-		connector = new O3DS::AsyncPairServer();
+		connector = new O3DS::ServerPair();
 	}
 	
-	if (strcmp(argv[1], "ws") == 0)
-	{
-		printf("Connecting to: %s\n", argv[2]);
-		connector = new O3DS::WebsocketClient();
-	}
+	//if (strcmp(argv[1], "ws") == 0)
+	//{
+		//printf("Connecting to: %s\n", argv[2]);
+		//connector = new O3DS::WebsocketClient();
+	//}
 
 	if (!connector)
 	{
 		fprintf(stderr, "Invalid Protocol: %s\n", argv[1]);
 		return 2;
 	}
-
-	connector->setFunc(nullptr, &ReadFunc);
 
 	if (!connector->start(argv[2]))
 	{
@@ -74,13 +72,39 @@ int main(int argc, char *argv[])
 
 	using namespace std::literals::chrono_literals;
 
-	char buf[1024 * 60];
+	size_t bufsz = 1024 * 80;
+	char *data = (char*)malloc(bufsz);
+
+        O3DS::SubjectList sl;
+
+	int n = 0;
 
 	while (1)
 	{
-		size_t ret = connector->read(buf, 1024 * 60);
-		nng_msleep(1000);
-		printf(".");
-		continue;
+		size_t ret = connector->read(&data, &bufsz);
+
+                if(ret > 0)
+		{
+			char buf[1024];
+			sprintf(buf, "data.%d.dat", n++);
+			FILE *fp = fopen(buf, "wb");
+			if(fp)
+			{
+				fwrite(data, ret, 1, fp);
+				fclose(fp);
+			}
+			printf("Data: %ld\n", ret);
+
+			if(!sl.Parse(data, ret)) {
+				printf("Could not parse packet: %s\n", sl.mError.c_str());
+			}
+			else
+			{
+				for(auto i : sl.mItems)
+				{
+					printf("%s has %ld transforms\n", i->mName.c_str(), i->size());
+				}
+			}
+		}
 	}
 }

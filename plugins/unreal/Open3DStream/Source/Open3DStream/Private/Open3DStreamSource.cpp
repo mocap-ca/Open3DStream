@@ -5,7 +5,7 @@
 #include "Roles/LiveLinkAnimationRole.h"
 #include "Common/UdpSocketBuilder.h"
 
-#include "o3ds_generated.h"
+#include "schema_generated.h"
 #include "UnrealModel.h"
 #include "o3ds/model.h"
 
@@ -45,13 +45,15 @@ FOpen3DStreamSource::FOpen3DStreamSource(const FOpen3DStreamSettings& Settings)
 
 	server.OnData.BindRaw(this, &FOpen3DStreamSource::OnPackage);
 	server.OnState.BindRaw(this, &FOpen3DStreamSource::OnStatus);
+
 }
 
 FOpen3DStreamSource::~FOpen3DStreamSource()
 {}
 
 void FOpen3DStreamSource::InitializeSettings(ULiveLinkSourceSettings* InSettings)
-{}
+{
+}
 
 TSubclassOf < ULiveLinkSourceSettings > FOpen3DStreamSource::GetSettingsClass() const
 {
@@ -78,14 +80,6 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 	SourceGuid = InSourceGuid;
 	bIsValid = true;
 
-	const FRegexPattern pattern(TEXT("^[0-9:.]+$"));
-	FRegexMatcher matcher(pattern, Url.ToString());
-
-	if (matcher.FindNext())
-	{
-		Url = FText::Format(LOCTEXT("FormattedUrl", "tcp://{0}"), Url);
-	}
-
 	if (!server.start(Url, Protocol))
 	{
 		bIsValid = false;
@@ -93,10 +87,14 @@ void FOpen3DStreamSource::ReceiveClient(ILiveLinkClient* InClient, FGuid InSourc
 	UpdateConnectionLastActive();
 }
 
+
+#pragma optimize( "", off )
 void FOpen3DStreamSource::Tick(float DeltaTime)
 {
 	this->server.tick();
 }
+
+#pragma optimize( "", on )
 
 bool FOpen3DStreamSource::IsTickable() const
 {
@@ -141,6 +139,7 @@ void operator >>(const O3DS::Matrixd& src, FMatrix& dst)
 	//dst.Mirror(EAxis::Z, EAxis::X);
 
 	dst.Mirror(EAxis::X, EAxis::Y);  // - NEARLY
+
 }
 
 void FOpen3DStreamSource::OnPackage(const TArray<uint8>& data)
@@ -148,11 +147,14 @@ void FOpen3DStreamSource::OnPackage(const TArray<uint8>& data)
 	if (!bIsValid)
 		return;
 
+
 	if(!LogFlag)
 	{
 		SourceStatus = FText::Format(LOCTEXT("ReceivingString", "Receiving {0}"), Protocol);
 		LogFlag = true;
 	}
+	//
+
 
 	//O3DS::Unreal::UnBuilder builder;
 	if (!mSubjects.Parse((const char*)data.GetData(), data.Num(), 0))
@@ -161,11 +163,13 @@ void FOpen3DStreamSource::OnPackage(const TArray<uint8>& data)
 		return;
 	}
 
+
 	TArray<FName>      BoneNames;
 	TArray<int32>      BoneParents;
 
 	for (O3DS::Subject* subject : mSubjects)
 	{
+
 		FLiveLinkFrameDataStruct FrameDataStruct(FLiveLinkAnimationFrameData::StaticStruct());
 		FLiveLinkAnimationFrameData& FrameData = *FrameDataStruct.Cast<FLiveLinkAnimationFrameData>();
 
@@ -270,7 +274,10 @@ void FOpen3DStreamSource::OnPackage(const TArray<uint8>& data)
 		}
 
 		Client->PushSubjectFrameData_AnyThread(SubjectKey, MoveTemp(FrameDataStruct));
+
 	}
+
+
 }
 
 bool FOpen3DStreamSource::RequestSourceShutdown()
@@ -283,6 +290,7 @@ bool FOpen3DStreamSource::RequestSourceShutdown()
 
 	return true;
 }
+
 
 void FOpen3DStreamSource::Update()
 {

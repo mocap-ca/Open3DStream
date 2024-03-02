@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION  3.13)
 
 project(Open3DStreamLib)
 
-find_package(Flatbuffers CONFIG REQUIRED flatbuffers flatc)
-find_package(nng CONFIG REQUIRED)
+find_package(Flatbuffers CONFIG REQUIRED flatbuffers flatc HINTS ${CMAKE_CURRENT_LIST_DIR}/../usr)
+find_package(nng CONFIG REQUIRED HINTS ${CMAKE_CURRENT_LIST_DIR}/../usr)
 
 add_custom_command(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/_generated/o3ds_generated.h
@@ -39,6 +39,8 @@ set(pub_headers
 	o3ds/socket_address.h
 	o3ds/binary_stream.h
 	o3ds/xsens_parser.h
+	o3ds/o3ds_version.h
+	o3ds/o3ds_version.h
 )	
 
 set(SOURCES 
@@ -67,6 +69,7 @@ set(SOURCES
 	o3ds/socket_address.cpp
 	o3ds/binary_stream.cpp
 	o3ds/xsens_parser.cpp	
+	o3ds/o3ds_version.cpp	
 )
 	
 if(WIN32)
@@ -92,12 +95,15 @@ add_dependencies(open3dstreamstatic protocol)
 list(JOIN pub_headers ";" pub_headers_str)
 set_target_properties(open3dstreamstatic PROPERTIES PUBLIC_HEADER "${pub_headers_str}")
 
-target_compile_definitions(open3dstreamstatic PUBLIC NNG_STATIC_LIB CRCPP_USE_NAMESPACE)
+if(NOT DEFINED VERSION_TAG)
+	set(VERSION_TAG dev CACHE STRING "Version Tag")
+endif()
+target_compile_definitions(open3dstreamstatic PUBLIC NNG_STATIC_LIB CRCPP_USE_NAMESPACE VERSION_TAG=${VERSION_TAG})
 
 install(TARGETS open3dstreamstatic 
-    LIBRARY DESTINATION lib
+	LIBRARY DESTINATION lib
 	PUBLIC_HEADER DESTINATION include/o3ds
 	CONFIGURATIONS RelWithDebInfo)
 
 install(FILES 	${CMAKE_CURRENT_BINARY_DIR}/_generated/o3ds_generated.h
-    DESTINATION include)
+	DESTINATION include)
