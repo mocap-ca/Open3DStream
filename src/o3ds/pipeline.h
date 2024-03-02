@@ -32,14 +32,14 @@ SOFTWARE.
 
 namespace O3DS
 {
-	class Push : public BlockingNngConnector
+	class PipelinePush : public BlockingNngConnector
 	{
 		// Request connector (blocking)
 	public:
 		bool start(const char *url);
 	};
 
-	class Pull : public BlockingNngConnector
+	class PipelinePull : public BlockingNngConnector
 	{
 		// Reply connector (blocking)
 	public:

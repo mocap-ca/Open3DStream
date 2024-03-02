@@ -313,20 +313,22 @@ void Open3D_Device_Layout::UIConfigure()
 	// Populate the dynamic elements of the ui
 	
 	mListProtocol.Items.Clear();
+	mListProtocol.Items.Add("NNG-PipelinePush");
+	mListProtocol.Items.Add("NNG-PairServer");
+	mListProtocol.Items.Add("NNG-PairClient");
+	mListProtocol.Items.Add("NNG-Publish");
 	mListProtocol.Items.Add("UDP");
 	mListProtocol.Items.Add("TCP Server");
 	mListProtocol.Items.Add("TCP Client");
-	mListProtocol.Items.Add("NNG-Server");
-	mListProtocol.Items.Add("NNG-Client");
-	mListProtocol.Items.Add("NNG-Publish");
 
 	Open3D_Device::TProtocol protocol = mDevice->GetProtocol();
-	if (protocol == Open3D_Device::kUDP) mListProtocol.ItemIndex = 0;
-	if (protocol == Open3D_Device::kTCPServer) mListProtocol.ItemIndex = 1;
-	if (protocol == Open3D_Device::kTCPClient) mListProtocol.ItemIndex = 2;
-	if (protocol == Open3D_Device::kNNGServer) mListProtocol.ItemIndex = 3;
-	if (protocol == Open3D_Device::kNNGClient) mListProtocol.ItemIndex = 4;
-	if (protocol == Open3D_Device::kNNGPublish) mListProtocol.ItemIndex = 5;
+	if (protocol == Open3D_Device::kNNGPipeline) mListProtocol.ItemIndex = 0;
+	if (protocol == Open3D_Device::kNNGPairServer) mListProtocol.ItemIndex = 1;
+	if (protocol == Open3D_Device::kNNGPairClient) mListProtocol.ItemIndex = 2;
+	if (protocol == Open3D_Device::kNNGPublish) mListProtocol.ItemIndex = 3;
+	if (protocol == Open3D_Device::kUDP) mListProtocol.ItemIndex = 4;
+	if (protocol == Open3D_Device::kTCPServer) mListProtocol.ItemIndex = 5;
+	if (protocol == Open3D_Device::kTCPClient) mListProtocol.ItemIndex = 6;
 	 
 	PopulateSubjectList();
 	PopulateSubjectFields();
@@ -536,17 +538,14 @@ void Open3D_Device_Layout::EventEditProtocol(HISender pSender, HKEvent pEvent)
 {
 	mEditDestPort.Enabled = true;
 	int id = mListProtocol.ItemIndex;
-	if (id == 0) mDevice->SetProtocol(Open3D_Device::TProtocol::kUDP);
-	if (id == 1) mDevice->SetProtocol(Open3D_Device::TProtocol::kTCPServer);
-	if (id == 2) mDevice->SetProtocol(Open3D_Device::TProtocol::kTCPClient);
-	if (id == 3) mDevice->SetProtocol(Open3D_Device::TProtocol::kNNGServer);
-	if (id == 4) mDevice->SetProtocol(Open3D_Device::TProtocol::kNNGClient);
-	if (id == 5) mDevice->SetProtocol(Open3D_Device::TProtocol::kNNGPublish);
+	if (id == 0) mDevice->SetProtocol(Open3D_Device::TProtocol::kNNGPipeline);
+	if (id == 1) mDevice->SetProtocol(Open3D_Device::TProtocol::kNNGPairServer);
+	if (id == 2) mDevice->SetProtocol(Open3D_Device::TProtocol::kNNGPairClient);
+	if (id == 3) mDevice->SetProtocol(Open3D_Device::TProtocol::kNNGPublish);
+	if (id == 4) mDevice->SetProtocol(Open3D_Device::TProtocol::kUDP);
+	if (id == 5) mDevice->SetProtocol(Open3D_Device::TProtocol::kTCPServer);
+	if (id == 6) mDevice->SetProtocol(Open3D_Device::TProtocol::kTCPClient);
 
-	if (id == 3 || id == 4 || id == 5)
-	{
-		mEditDestPort.Enabled = false;
-	}
 }
 
 void Open3D_Device_Layout::EventEditSampleRate(HISender pSender, HKEvent pEvent)

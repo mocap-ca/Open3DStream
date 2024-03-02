@@ -1,10 +1,9 @@
 @ECHO OFF
 
+REM This script copies the most recent built .lib and .h files to a ue plugin's lib dir
 
-SET PROJECT=D:\Unreal Projects\O3DS_Oct2022_UE5
-
-REM SET PROJECT=M:\CLIENTS\Shocap\2022_10_28-TcpIssues\LiveSwitch-O3DS-TCPRelay-Test
-REM SET PROJECT=D:\Unreal Projects\O3DS_UE5
+REM The top level project dir:
+SET PROJECT=D:\P4_PD\o3ds
 
 SET DST=%PROJECT%\Plugins\Open3DStream
 
@@ -33,14 +32,13 @@ IF NOT EXIST "%DST%"\lib\include\nng MKDIR "%DST%"\lib\include\flatbuffers
 
 COPY "%BLD%\src\RelWithDebInfo\open3dstreamstatic.lib"  "%DST%"\lib
 COPY "%BLD%\src\RelWithDebInfo\open3dstreamstatic.pdb"  "%DST%"\lib
-REM COPY "%BLD%\src\RelWithDebInfo\open3dstreamstatic.bsr"  "%DST%"\lib
 
 COPY "%~DP0..\..\..\thirdparty\build\nng\RelWithDebInfo\nng.lib" "%DST%"\lib
 COPY "%~DP0..\..\..\thirdparty\build\flatbuffers\RelWithDebInfo\flatbuffers.lib" "%DST%"\lib
 
 COPY "%~DP0..\..\..\src\o3ds\*.h" "%DST%\lib\include\o3ds\"
-XCOPY /S /I /Y "%~DP0..\..\..\include\nng" "%DST%\lib\include\nng\"
-XCOPY /S /I /Y "%~DP0..\..\..\include\flatbuffers" "%DST%\lib\include\flatbuffers\"
-COPY "%~DP0..\..\..\include\*.h" "%DST%\lib\include\"
+XCOPY /S /I /Y "%~DP0..\..\..\usr\include\nng" "%DST%\lib\include\nng\"
+XCOPY /S /I /Y "%~DP0..\..\..\usr\include\flatbuffers" "%DST%\lib\include\flatbuffers\"
+COPY "%~DP0..\..\..\usr\include\*.h" "%DST%\lib\include\"
 
 pause

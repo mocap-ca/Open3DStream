@@ -2,6 +2,7 @@
 #include "o3ds/math.h"
 #include "o3ds/publisher.h"
 #include "o3ds/async_pair.h"
+#include "o3ds/async_pipeline.h"
 #include "o3ds/udp_fragment.h"
 #include "o3ds/socket_exception.h"
 
@@ -69,10 +70,10 @@ void dataFn(void *ctx, void *data, size_t len)
 
 bool Open3D_Device::FBCreate()
 {
-	mNetworkAddress = "tcp://meta.o3ds.net:6001";
-	mNetworkPort = 3001;
+	mNetworkAddress = "meta.o3ds.net";
+	mNetworkPort = 9000;
 	mStreaming = true;
-	mProtocol = kNNGServer;
+	mProtocol = kNNGPipeline;
 	mKey = nullptr;
 	mServer = nullptr;
 
@@ -225,15 +226,20 @@ bool Open3D_Device::Start()
 
 	}
 
-	if (mProtocol == Open3D_Device::kNNGServer ||
-		mProtocol == Open3D_Device::kNNGClient || 
-		mProtocol == Open3D_Device::kNNGPublish)
+	if (mProtocol == Open3D_Device::kNNGPairServer ||
+		mProtocol == Open3D_Device::kNNGPairClient || 
+		mProtocol == Open3D_Device::kNNGPublish ||
+		mProtocol == Open3D_Device::kNNGPipeline)
 	{
-		if (mProtocol == Open3D_Device::kNNGServer)  mServer = new O3DS::AsyncPairServer();
-		if (mProtocol == Open3D_Device::kNNGClient)	 mServer = new O3DS::AsyncPairClient();
-		if (mProtocol == Open3D_Device::kNNGPublish) mServer = new O3DS::Publisher();
+		if (mProtocol == Open3D_Device::kNNGPairServer)   mServer = new O3DS::AsyncPairServer();
+		if (mProtocol == Open3D_Device::kNNGPairClient)	  mServer = new O3DS::AsyncPairClient();
+		if (mProtocol == Open3D_Device::kNNGPublish)      mServer = new O3DS::Publisher();
+		if (mProtocol == Open3D_Device::kNNGPipeline)     mServer = new O3DS::AsyncPipelinePush();
 
-		if (mServer->start(mNetworkAddress))
+		std::ostringstream oss;
+		oss << "tcp://" << mNetworkAddress << ":" << mNetworkPort;
+
+		if (mServer->start(oss.str().c_str()))
 		{
 			Status = "Running";
 			return true;
@@ -433,9 +439,10 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 
 			}
 
-			if (mProtocol == Open3D_Device::kNNGClient ||
-				mProtocol == Open3D_Device::kNNGServer ||
-				mProtocol == Open3D_Device::kNNGPublish)
+			if (mProtocol == Open3D_Device::kNNGPairClient ||
+				mProtocol == Open3D_Device::kNNGPairServer ||
+				mProtocol == Open3D_Device::kNNGPublish ||
+				mProtocol == Open3D_Device::kNNGPipeline )
 			{
 				if(mServer)
 					mServer->write((const char*)&buf[0], bucketSize);

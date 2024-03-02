@@ -16,6 +16,7 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 	Options.Add(MakeShareable(new FString("NNG Subscribe (to NNG Publish)")));
 	Options.Add(MakeShareable(new FString("NNG Client (to NNG Server)")));
 	Options.Add(MakeShareable(new FString("NNG Server (to NNG Client)")));
+	Options.Add(MakeShareable(new FString("NNG Server (to NNG Client)")));
 	Options.Add(MakeShareable(new FString("TCP Client")));
 	Options.Add(MakeShareable(new FString("UDP Server")));
 
@@ -23,7 +24,7 @@ void SOpen3DStreamFactory::Construct(const FArguments& Args)
 
 	if (SOpen3DStreamFactory::LastUrl.IsEmpty())
 	{
-		LastUrl = LOCTEXT("Open3DStreamUrlValue", "127.0.0.1:3001");
+		LastUrl = LOCTEXT("Open3DStreamUrlValue", "tcp://meta.o3ds.net:9001");
 	}
 
 	CurrentProtocol = Options[LastComboId];

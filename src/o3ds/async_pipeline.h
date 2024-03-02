@@ -26,7 +26,8 @@ SOFTWARE.
 #define O3DS_ASYNC_PIPELINE
 
 #include <nng/nng.h>
-#include <nng/protocol/pair1/pair.h>
+#include <nng/protocol/pipeline0/pull.h>
+#include <nng/protocol/pipeline0/push.h>
 #include "nng_connector.h"
 #include <string>
 
@@ -41,17 +42,17 @@ namespace O3DS
 		void Callback_();
 	};
 
-	/*! \class AsyncClient async_pipeline.h o3ds/async_pipeline.h */
-	//! Wrapper for nng pipeline pattern with asynchronous calls
-	class AsyncClient : public AsyncPipeline
+	/*! \class AsyncPipelinePush async_pipeline.h o3ds/async_pipeline.h */
+	//! Wrapper for nng pipeline client pattern with asynchronous calls
+	class AsyncPipelinePush : public AsyncPipeline
 	{
 	public:
 		bool start(const char* url) override;
 	};
 
-	/*! \class AsyncServer async_pipeline.h o3ds/async_pipeline.h */
-	//! Wrapper for nng pipeline pattern with asynchronous calls
-	class AsyncServer : public AsyncPipeline
+	/*! \class AsyncPipelinePull async_pipeline.h o3ds/async_pipeline.h */
+	//! Wrapper for nng pipeline server pattern with asynchronous calls
+	class AsyncPipelinePull : public AsyncPipeline
 	{
 	public:
 		bool start(const char* url) override;
