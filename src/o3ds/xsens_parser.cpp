@@ -135,7 +135,7 @@ enum class SegmentIndexes
 	XS_SEG_NUM_FINGERS = 67//number of segments with fingers enabled
 };
 
-enum class  O3DS::XSENS::ProtocolID O3DS::XSENS::get_protocol_id(uint8_t* data)
+enum O3DS::XSENS::ProtocolID O3DS::XSENS::get_protocol_id(uint8_t* data)
 {
 	char buf[3];
 	buf[0] = data[0];
@@ -161,7 +161,7 @@ enum class  O3DS::XSENS::ProtocolID O3DS::XSENS::get_protocol_id(uint8_t* data)
 	return O3DS::XSENS::ProtocolID::Error;
 }
 
-std::string O3DS::XSENS::protocol_name(enum class O3DS::XSENS::ProtocolID id)
+std::string O3DS::XSENS::protocol_name(enum O3DS::XSENS::ProtocolID id)
 {
 	switch (id)
 	{
@@ -295,7 +295,7 @@ bool O3DS::XSENS::Parser::parse(const char* data, size_t sz)
 
 	uint8_t* payload = (uint8_t*)(data + 24);
 	size_t len = sz - 24;
-	enum class O3DS::XSENS::ProtocolID protocolId = O3DS::XSENS::get_protocol_id((uint8_t*)(data + 4));
+	enum O3DS::XSENS::ProtocolID protocolId = O3DS::XSENS::get_protocol_id((uint8_t*)(data + 4));
 
 	std::string name = O3DS::XSENS::protocol_name(protocolId);
 

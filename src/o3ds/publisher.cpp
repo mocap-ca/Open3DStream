@@ -30,14 +30,12 @@ bool O3DS::Publisher::start(const char *url)
 {
 	int ret;
 
-	if ((ret = nng_pub0_open(&mSocket)) != 0) {
-		setError("Could not open socket", ret);
-		return false;
-	}
-	if ((ret = nng_listen(mSocket, url, NULL, 0)) != 0) {
-		setError("Could not listen", ret);
-		return false;
-	}
+	ret = nng_pub0_open(&mSocket);
+	NNG_ERROR("Could not open socket");
+
+	ret = nng_listen(mSocket, url, NULL, 0);
+	NNG_ERROR("Could not listen");
+
 	return true;
 }
 

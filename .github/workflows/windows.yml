@@ -1,0 +1,112 @@
+name: O3DS windows
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger the workflow on tags starting with 'v'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Specify the tag for manual run'
+        required: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - id: get_version
+        uses: dhkatz/get-version-action@v3.0.0
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: 'recursive'
+
+      - name: mkdir usr
+        run: |
+          mkdir -p $env:GITHUB_WORKSPACE/usr
+
+      - name: Perl
+        uses: shogo82148/actions-setup-perl@v1.27.0
+        with:
+          perl-version: '5.32'
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          cache: 'pip' # caching pip dependencies
+      - run: pip install jsonschema jinja2         
+
+      - name: CMake
+        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+            
+      - name: mbedtls
+        working-directory: thirdparty/mbedtls
+        run: |
+          mkdir build
+          cmake -S . -B build -DGEN_FILES=ON -DENABLE_TESTING=Off -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr
+          cmake --build build --config Release && cmake --install build
+        shell: cmd
+
+      - name: NNG
+        working-directory: thirdparty/nng
+        run: |
+          cmake -S . -B build -DNNG_ENABLE_TLS=Off -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr -DCMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%/usr
+          cmake --build build --config Release && cmake --install build
+        shell: cmd          
+
+      - name: CML
+        working-directory: thirdparty/cml
+        run: |
+          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr
+          cmake --build build --config Release && cmake --install build
+        shell: cmd
+
+      - name: CRC
+        working-directory: thirdparty/crccpp
+        run: |
+          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr
+          cmake --build build --config Release && cmake --install build
+        shell: cmd
+
+      - name: FlatBuffers
+        working-directory: thirdparty/flatbuffers
+        run: |
+          cmake -S . -B build -DCMAKE_INSTALL_PREFIX=%GITHUB_WORKSPACE%/usr
+          cmake --build build --config Release && cmake --install build          
+        shell: cmd
+
+      - name: Open3DStream
+        run: |
+          cmake -S . -B build -DVERSION_TAG=${{ steps.get_version.outputs.version-without-v }} -DCMAKE_PREFIX_PATH=usr -DCMAKE_INSTALL_PREFIX=out
+          cmake --build build --config Release && cmake --install build
+        shell: cmd
+
+      - name: Create Zip File for Release
+        run: |
+          cd out
+          Compress-Archive -Path * -DestinationPath ../o3ds.zip
+        shell: pwsh
+        
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.version-without-v }}-win
+          release_name: Release ${{ github.ref }}-win
+          draft: false
+          prerelease: false       
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: o3ds.zip
+          asset_name: o3ds_${{ steps.get_version.outputs.version-without-v }}.zip
+          asset_content_type: application/zip            

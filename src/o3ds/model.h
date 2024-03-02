@@ -52,6 +52,8 @@ namespace O3DS
 		virtual void update() {}
 		virtual std::string info() { return std::string(); }
 
+		bool nan();
+
 		TransformTranslation translation;
 		TransformRotation    rotation;
 		TransformScale       scale;
@@ -152,6 +154,7 @@ namespace O3DS
 		TransformList mTransforms;
 		void*         mReference;
 		Context       mContext;
+		std::string   mError;
 
 		Transform* addTransform(std::string &name, int parentId, TransformBuilder *builder = nullptr)
 		{
@@ -182,7 +185,7 @@ namespace O3DS
 			return mTransforms.mItems.size();
 		}
 
-		void CalcMatrices();
+		bool CalcMatrices();
 
 		flatbuffers::Offset<O3DS::Data::Subject> Serialize(flatbuffers::FlatBufferBuilder& builder);
 
@@ -252,7 +255,7 @@ namespace O3DS
 
 		double mTime;
 		double mDeltaThreshold;
-
+		std::string mError;
 
 		//! Encode all of the items in the subject list as binary data
 		int Serialize(std::vector<char> &outbuf, double timestamp=0.0);

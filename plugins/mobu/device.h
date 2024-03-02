@@ -20,8 +20,9 @@ public:
 		kUDP = 0,
 		kTCPServer,
 		kTCPClient,
-		kNNGClient,
-		kNNGServer,
+		kNNGPipeline,
+		kNNGPairClient,
+		kNNGPairServer,
 		kNNGPublish
 	} TProtocol;
 

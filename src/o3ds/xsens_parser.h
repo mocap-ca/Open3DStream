@@ -66,11 +66,11 @@ namespace O3DS
 			uint16_t  payloadSize;
 		};
 
-		enum class ProtocolID get_protocol_id(uint8_t*);
+		enum ProtocolID get_protocol_id(uint8_t*);
 
 		int32_t segment_parent(int32_t id);
 
-		std::string protocol_name(enum class ProtocolID);
+		std::string protocol_name(enum ProtocolID);
 
 		std::string segment_name(int32_t id);
 

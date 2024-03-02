@@ -8,11 +8,13 @@
 //O3DS::WebsocketBroadcastServer server2;
 
 #include "o3ds/async_publisher.h"
-#include "o3ds/pair.h"
+#include "o3ds/pipeline.h"
+#include "o3ds/o3ds_version.h"
+
 
 namespace O3DS
 {
-    ServerPair listener;
+    PipelinePull listener;
     AsyncPublisher broadcast;
 }
 
@@ -20,6 +22,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 3)
     {
+        printf("O3DS Repeater - %s\n", O3DS::getVersion().c_str());
         printf("Usage: %s listen-addr broadcast-addr\n", argv[0]);
         return 1;
     }
@@ -39,20 +42,21 @@ int main(int argc, char *argv[])
         return 3;
     }
     
-
-    char* data = (char*)malloc(1024 * 80);
+    size_t bufsz = 1024 * 80;
+    char* data = (char*)malloc(bufsz);
 
     size_t sz;
     
     while (1)
     {
-        sz = O3DS::listener.read(data, 1024 * 80);
+        sz = O3DS::listener.read(&data, &bufsz);
         if (sz > 0)
         {
-            printf("%d\n", sz);
+//            printf("%ld\n", sz);
             O3DS::broadcast.write(data, sz);
         }
     }
 
+    free(data);
     return 0;
 }

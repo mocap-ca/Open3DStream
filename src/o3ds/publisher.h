@@ -35,6 +35,7 @@ namespace O3DS
 {
 	class Publisher : public BlockingNngConnector
 	{
+		//! Implemetation of nng publish pattern
 	public:
 		bool start(const char*url);
 
