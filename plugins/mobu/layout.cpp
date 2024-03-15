@@ -403,16 +403,22 @@ void Open3D_Device_Layout::EventDeviceStatusChange( HISender pSender, HKEvent pE
 void Open3D_Device_Layout::EventUIIdle( HISender pSender, HKEvent pEvent )
 {
 	bool active = mDevice->Online;
-	mEditSource.Enabled = !active;
-	mEditSubject.Enabled = !active;
 	mEditDestIp.Enabled = !active;
 	mEditDestPort.Enabled = !active;
 	mListProtocol.Enabled = !active;
 	mEditKey.Enabled = !active;
-	mEditSamplingRate.Enabled = !active;
-	mMemoJoints.Enabled = !active;
+	mEditSamplingRate.Enabled = !active;	
 	mButtonAdd.Enabled = !active;
 	mButtonDel.Enabled = !active;
+
+	bool subjectConnected = mSourcesList.ItemIndex >= 0;
+	mMemoJoints.Enabled = subjectConnected;
+	mEditSubject.Enabled = subjectConnected;
+	mEditSource.Enabled = subjectConnected;
+	mEditDelta.Enabled = subjectConnected;
+	mLabelDelta.Enabled = subjectConnected;
+	mLabelSubject.Enabled = subjectConnected;
+	mLabelJoints.Enabled = subjectConnected;
 
 	if( mDevice->Online && mDevice->Live )
 	{
@@ -429,6 +435,7 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 	{
 		mEditSubject.Text = "";
 		mEditSource.Text = "";
+		mEditDelta.Text = "";
 	}
 	else
 	{
