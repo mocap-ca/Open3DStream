@@ -18,6 +18,36 @@ def get_version():
     return None
     
     
+
+def build_ue(plugin, ue_base, version):
+
+    out = ue_base + "\\" + version + "\\PeelVCam"
+    
+    exe = r"d:\UnrealEngine\UE_" + version + "\Engine\Build\BatchFiles\RunUAT.bat"
+    
+    if not os.path.isfile(exe) :
+        exe = r"d:\EpicGames\UE_" + version + "\Engine\Build\BatchFiles\RunUAT.bat"
+      
+    if not os.path.isfile(exe) :      
+        raise RuntimeError("Could not find unreal: " + version)
+    
+    cmd = [exe,
+            "BuildPlugin",
+            "-Plugin=" + plugin,
+            "-TargetPlatforms=Win64",
+            "-Package=" + out,
+            "-Rocket",
+            "-VS2022"
+            ]
+            
+    pr = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    out, error = pr.communicate()
+    print(out.decode("utf8"), error.decode('utf8'))
+    
+    if pr.returncode != 0:
+        raise RuntimeError("Plugin Build Failed")
+
+
 version_input = get_version()
 if version_input is None:
     raise RuntimeError("Could not determine version")
@@ -41,38 +71,19 @@ for d, _, f in os.walk(out_dir):
         fp.write(src, out)
 
 # Unreal    
-unreal_src_base = os.path.abspath("plugins/unreal/Open3DStream")
-unreal_dst_base = os.path.join("plugins/unreal", "Open3DStream")
-for base, _, files in os.walk(unreal_src_base):
-    sub = base[len(unreal_src_base)+1:]
-    #if os.path.split(sub)[0] in ["Source", "Resources", "lib", "Content"]:
-       
-    for file in files: 
-        if len(sub) == 0:
-            if file.endswith(".uplugin"):
-                dst = os.path.join(unreal_dst_base, file)
-                print(dst)
-                fp.write(os.path.join(base, file), dst)
-            continue
+# unreal_src_plugin = os.path.abspath("plugins/unreal/Open3DStream/Open3DStream.uplugin")
+unreal_dst_base = os.path.join(cwd, "plugins", "unreal")
 
-        src = os.path.join(base, file)
-        dst = os.path.join(unreal_dst_base, sub, file)
-        print(dst)
-        fp.write(src, dst)
-    
-fp.write("usr/lib/nng.lib", unreal_dst_base + "/lib/nng.lib")
-fp.write("usr/lib/flatbuffers.lib", unreal_dst_base + "/lib/flatbuffers.lib")
-fp.write("usr/lib/open3dstreamstatic.lib", unreal_dst_base + "/lib/open3dstreamstatic.lib")
+unreal_src_plugin = r"D:\P4_PD\o3ds\Plugins\Open3DStream\Open3DStream.uplugin"
 
-root = "usr/include"
-for base, _, files in os.walk(root):
-    for file in files:
-        sub = base[len(root)+1:]
-        src = os.path.join(base, file)
-        dst = os.path.join(unreal_dst_base, "lib", "include", sub, file)
-        print(dst)
-        fp.write(src, dst)
+build_ue(unreal_src_plugin, unreal_dst_base, "5.0")
+build_ue(unreal_src_plugin, unreal_dst_base, "5.1")
+build_ue(unreal_src_plugin, unreal_dst_base, "5.2")
+build_ue(unreal_src_plugin, unreal_dst_base, "5.3")
 
+
+
+raise RuntimeError("Here")
 fp.close()    
         
 #installer
