@@ -310,16 +310,6 @@ namespace O3DS
 		return true;
 	}
 
-	bool Transform::nan()
-	{
-		for (int i = 0; i < 3; i++) {
-			if (std::isnan(translation.value[i])) { return true; }
-			if (std::isnan(rotation.value[i])) { return true; }
-			if (std::isnan(scale.value[i])) { return true; }
-		}
-		return false;
-	}
-
 
 
 	// Subject
