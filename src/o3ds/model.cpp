@@ -310,6 +310,20 @@ namespace O3DS
 		return true;
 	}
 
+	bool Transform::nan()
+	{
+		for (int i = 0; i < 3; i++) {
+			if (std::isnan(translation.value[i])) { return true; }
+			if (std::isnan(rotation.value[i])) { return true; }
+			if (std::isnan(scale.value[i])) { return true; }
+		}
+		return false;
+	}
+
+
+
+	// Subject
+
 	flatbuffers::Offset<O3DS::Data::Subject> Subject::Serialize(flatbuffers::FlatBufferBuilder& builder)
 	{
 		
@@ -619,7 +633,7 @@ namespace O3DS
 
 		// Get the nodes (transforms) for this subject
 		auto ovNodes = inSubject->nodes();
-
+			
 		// Clear the subject and add the transfoms
 		outSubject->clear();
 		for (int n = 0; n < (int)ovNodes->size(); n++)

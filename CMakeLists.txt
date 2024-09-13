@@ -16,3 +16,5 @@ add_subdirectory(apps/SubscribeTest)
 add_subdirectory(plugins/mobu)
 #add_subdirectory(plugins/maya)
 
+add_subdirectory(apps/Test1)
+

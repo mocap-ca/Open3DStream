@@ -78,6 +78,11 @@ bool O3DSServer::start(FText Url, FText Protocol )
 			parseme = parseme.Right(parseme.Len() - 6);
 		}
 
+		if (parseme.StartsWith("tcp://")) {
+			OnState.ExecuteIfBound(LOCTEXT("InvalidAddressUdpPrefix", "Invalid Address (TCP)"), true);
+			return false;
+		}
+
 		int32 pos;
 		if (parseme.FindChar(':', pos))
 		{
@@ -94,6 +99,11 @@ bool O3DSServer::start(FText Url, FText Protocol )
 				.AsReusable()
 				.BoundToEndpoint(Endpoint)
 				.WithReceiveBufferSize(65507u);
+
+			if (mUdp == nullptr) {
+				OnState.ExecuteIfBound(LOCTEXT("InvalidUDP", "Could not create udp socket"), true);
+				return false;
+			}
 
 			FTimespan ThreadWaitTime = FTimespan::FromMilliseconds(100);
 			FString ThreadName = FString::Printf(TEXT("O3DS UDP Receiver"));

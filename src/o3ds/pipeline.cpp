@@ -29,7 +29,11 @@ SOFTWARE.
 
 namespace O3DS
 {
+<<<<<<< HEAD
+	bool PipelinePull::start(const char* url)
+=======
 	bool PipelinePush::start(const char* url)
+>>>>>>> develop
 	{
 		int ret;
 
@@ -50,7 +54,11 @@ namespace O3DS
 		return true;
 	}
 
+<<<<<<< HEAD
+	bool PipelinePush::start(const char *url)
+=======
 	bool PipelinePull::start(const char *url)
+>>>>>>> develop
 	{
 		int ret;
 

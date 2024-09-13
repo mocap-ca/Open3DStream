@@ -1,7 +1,4 @@
-REM #SET S=C:\Users\Al\Documents\Unreal Projects\Open3dStream1\Plugins\Open3DStream\Source\Open3DStream
-REM #SET S=D:\Unreal Projects\Open3dStream1\Plugins\Open3DStream\Source\Open3DStream
-
-SET SRC_PROJECT=M:\CLIENTS\Shocap\2022_10_28-TcpIssues\LiveSwitch-O3DS-TCPRelay-Test
+SET SRC_PROJECT=D:\P4_PD\o3ds
 
 SET S=%SRC_PROJECT%\Plugins\Open3DStream\Source\Open3DStream
 

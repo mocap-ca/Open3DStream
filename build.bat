@@ -1,6 +1,8 @@
 @ECHO OFF
 
 CALL build_env.bat
+IF EXIST D:\bin\Python310\python.exe SET PATH=%PATH%;D:\bin\Python310\
+
 if %errorlevel% neq 0 exit /b %errorlevel%
 
 IF XX%CMAKE_VS_VERSION% NEQ XX GOTO VSCHECKED
@@ -10,6 +12,8 @@ EXIT /B 1
 :VSCHECKED
 
 IF EXIST %~DP0usr GOTO USROK
+
+
 
 cd thirdparty
 build.bat

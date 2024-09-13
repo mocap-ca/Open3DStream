@@ -71,6 +71,8 @@ redo:
 
 	int frame = 0;
 
+	size_t count = 0;
+
 	O3DS::SubjectList subjectTest;
 
 
@@ -121,7 +123,7 @@ redo:
 		}
 		else
 		{
-			size_t count = 0;
+			count = 0;
 			ret = subjects.SerializeUpdate(buffer, count, zerof + t.GetSecondDouble());
 		}
 		
