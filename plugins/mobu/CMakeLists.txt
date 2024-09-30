@@ -14,43 +14,51 @@ function(build_mobu version path)
   set(mobu_target O3DSMobu${version}Device)
   add_library(${mobu_target} SHARED ${SRCS} )
 
-  if(${version} STREQUAL "2024")
-     target_compile_definitions(${mobu_target} PUBLIC ORSDKPRODUCT_VERSION=ORSDK2024 )
+  if(${version} GREATER_EQUAL "2024")
+     target_compile_definitions(${mobu_target} PUBLIC ORSDKPRODUCT_VERSION=ORSDK${version} )
   endif()
   
   target_link_libraries(${mobu_target} fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib open3dstreamstatic ${NNG_LIBRARY})
-  target_include_directories(${mobu_target} PUBLIC "${path}/include" ${CMAKE_CURENT_LIST_DIR}../src)
-  target_link_directories(${mobu_target} PUBLIC "${path}/lib/x64" "${path}/lib/x64/HIK2016")
+  target_include_directories(${mobu_target} PUBLIC "${path}/OpenRealitySDK/include" ${CMAKE_CURENT_LIST_DIR}../src)
+  target_link_directories(${mobu_target} PUBLIC "${path}/OpenRealitySDK/lib/x64" "${path}/OpenRealitySDK/lib/x64/HIK2016")
   target_compile_definitions(${mobu_target} PUBLIC NNG_STATIC_LIB)
-  foreach(mbdir "C:/Program Files/Autodesk/MotionBuilder ${version}/bin/x64"
-	            "D:/Programs/Autodesk/MotionBuilder ${version}/bin/x64")
-
-    install(TARGETS ${mobu_target} RUNTIME DESTINATION "plugins/mobu")
-    set_target_properties(${mobu_target} PROPERTIES VS_DEBUGGER_COMMAND "${mbdir}/motionbuilder.exe")
-  endforeach()
+  install(TARGETS ${mobu_target} RUNTIME DESTINATION "plugins/mobu")
+  set_target_properties(${mobu_target} PROPERTIES VS_DEBUGGER_COMMAND "${path}/bin/x64/motionbuilder.exe")
 endfunction()
 
-if(EXISTS  "M:/code/api/windows/mobu/2018/OpenRealitySDK")
-build_mobu("2018" "M:/code/api/windows/mobu/2018/OpenRealitySDK")
-endif()
+# Query the registry to find subkeys (versions)
+set(MOTIONBUILDER_REG_PREFIX "HKEY_LOCAL_MACHINE\\SOFTWARE\\Autodesk\\MotionBuilder")
+execute_process(
+  COMMAND reg query ${MOTIONBUILDER_REG_PREFIX}
+  OUTPUT_VARIABLE MOTIONBUILDER_REG_OUTPUT
+  ERROR_QUIET
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
-if(EXISTS  "M:/code/api/windows/mobu/2019/OpenRealitySDK")
-build_mobu("2019" "M:/code/api/windows/mobu/2019/OpenRealitySDK")
-endif()
+if(MOTIONBUILDER_REG_OUTPUT)
+  # Split the registry output into lines to extract version information
+  string(REGEX MATCHALL "HKEY_LOCAL_MACHINE\\\\[^\n\r]+" MOTIONBUILDER_VERSIONS ${MOTIONBUILDER_REG_OUTPUT})
 
-if(EXISTS  "M:/code/api/windows/mobu/2020/OpenRealitySDK")
-build_mobu("2020" "M:/code/api/windows/mobu/2020/OpenRealitySDK")
-endif()
+  if (MOTIONBUILDER_VERSIONS)
+    # Loop through all found versions
+    foreach (VERSION_KEY ${MOTIONBUILDER_VERSIONS})
 
-if(EXISTS  "M:/code/api/windows/mobu/2022/OpenRealitySDK")
-build_mobu("2022" "M:/code/api/windows/mobu/2022/OpenRealitySDK")
-endif()
+      string(REPLACE "${MOTIONBUILDER_REG_PREFIX}\\" "" MOBU_VERSION ${VERSION_KEY})
+      message(STATUS "Found MotionBuilder version: ${MOBU_VERSION}")
+      
+      # Query the InstallPath for each version
+      GET_FILENAME_COMPONENT(MOTIONBUILDER_INSTALL_PATH "[${VERSION_KEY};InstallPath]" ABSOLUTE CACHE)
 
-if(EXISTS  "M:/code/api/windows/mobu/2023/OpenRealitySDK")
-build_mobu("2023" "M:/code/api/windows/mobu/2023/OpenRealitySDK")
+      if (MOTIONBUILDER_INSTALL_PATH)
+        message(STATUS "MotionBuilder ${MOBU_VERSION} is installed at: ${MOTIONBUILDER_INSTALL_PATH}")
+        build_mobu(${MOBU_VERSION} ${MOTIONBUILDER_INSTALL_PATH})
+      else()
+        message(WARNING "Failed to get the installation path for MotionBuilder version: ${MOBU_VERSION}")
+      endif()
+    endforeach()
+  else()
+      message(WARNING "No Autodesk MotionBuilder versions found in the registry.")
+  endif()
+else()
+  message(WARNING "Autodesk MotionBuilder is not installed or registry key is missing.")
 endif()
-
-if(EXISTS  "M:/code/api/windows/mobu/2024/OpenRealitySDK")
-build_mobu("2024" "M:/code/api/windows/mobu/2024/OpenRealitySDK")
-endif()
-
