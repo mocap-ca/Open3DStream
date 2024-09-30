@@ -17,6 +17,7 @@ public:
 
 	void    PopulateSubjectList();
 	void    PopulateSubjectFields();
+	void	PopulateMicrophoneList();
 
 	// Events
 	void	EventDeviceStatusChange( HISender pSender, HKEvent pEvent );
@@ -26,6 +27,7 @@ public:
 	void	EventSelectDevice(HISender pSender, HKEvent pEvent);
 	void	EventEditSubject(HISender pSender, HKEvent pEvent);
 	void	EventEditJoints(HISender pSender, HKEvent pEvent);
+	void	EventSelectMicSource(HISender pSender, HKEvent pEvent);
 	void	EventEditIP(HISender pSender, HKEvent pEvent);
 	void	EventEditPort(HISender pSender, HKEvent pEvent);
 	void	EventEditProtocol(HISender pSender, HKEvent pEvent);
@@ -57,6 +59,8 @@ private:
 	FBEdit        mEditKey;
 	FBLabel		  mLabelSamplingRate;
 	FBEditNumber  mEditSamplingRate;
+	FBLabel		  mLabelMicSource;
+	FBList		  mListMicSource;
 	FBLabel       mLabelPluginVersion;
 	FBLabel       mLabelJoints;
 	FBEdit        mMemoJoints;

@@ -3,6 +3,7 @@
 
 #include "o3ds/o3ds.h" // for version#
 #include <sstream>
+#include <fbsdk/fbaudio.h>
 
 #define OPEN3D_DEVICE__LAYOUT	Open3D_Device_Layout
 
@@ -195,6 +196,25 @@ void Open3D_Device_Layout::UICreate()
 	mLayoutLeft.SetControl("JointsList", mMemoJoints);
 	mMemoJoints.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditJoints);
 
+	// Microphone Source label - under JointsList
+	mLayoutLeft.AddRegion("LabelMicSource", "LabelMicSource",
+		lS, kFBAttachRight, "SourcesList", 1.00,
+		2, kFBAttachBottom, "JointsList", 1.00,
+		155, kFBAttachNone, "", 1.00,
+		lH, kFBAttachNone, NULL, 1.00);
+	mLayoutLeft.SetControl("LabelMicSource", mLabelMicSource);
+	mLabelJoints.Caption = "Microphone Source:";
+
+	// Microphones list - Under Microphone Source Label
+	mLayoutLeft.AddRegion("ListMicSource", "ListMicSource",
+		lS, kFBAttachRight, "SourcesList", 1.00,
+		2, kFBAttachBottom, "LabelMicSource", 1.00,
+		155, kFBAttachNone, "", 1.00,
+		lH, kFBAttachNone, NULL, 1.00);
+	mLayoutLeft.SetControl("ListMicSource", mListMicSource);
+	mListMicSource.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventSelectMicSource);
+	mListMicSource.Style = FBListStyle::kFBDropDownList;
+
 	// Version info - at bottom
 	mLayoutLeft.AddRegion("VersionInfo", "VersionInfo",
 		lS, kFBAttachRight, "SourcesList", 1.00,
@@ -332,6 +352,7 @@ void Open3D_Device_Layout::UIConfigure()
 	 
 	PopulateSubjectList();
 	PopulateSubjectFields();
+	PopulateMicrophoneList();
 
 	mMemoLog.Enabled = false;
 
@@ -480,6 +501,15 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 	}
 }
 
+void Open3D_Device_Layout::PopulateMicrophoneList() {
+	mListMicSource.Items.Clear();
+	auto micList = FBPropertyListAudioIn();
+	FBAudioIn* mic;
+	for (auto i=0; (mic = micList[i]) != nullptr; i++) {
+		mListMicSource.Items.Add(mic->Name);
+	}
+}
+
 void Open3D_Device_Layout::EventSelectDevice(HISender pSender, HKEvent pEvent)
 {
 	PopulateSubjectFields();
@@ -578,4 +608,7 @@ void Open3D_Device_Layout::EventEditJoints(HISender pSender, HKEvent pEvent)
 	std::vector<std::string> vstrings(begin, end);
 	mDevice->Items[id]->mJoints.clear();
 	std::copy(vstrings.begin(), vstrings.end(), std::back_inserter(mDevice->Items[id]->mJoints));
-} 
+}
+
+void Open3D_Device_Layout::EventSelectMicSource(HISender pSender, HKEvent pEvent) {
+}
