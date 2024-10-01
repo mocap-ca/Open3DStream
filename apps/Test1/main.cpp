@@ -1,11 +1,9 @@
-#pragma once
- 
- 
 #include "o3ds/async_publisher.h"
 #include "o3ds/model.h"
 #include "o3ds/o3ds.h"
 #include <chrono>
 #include <iostream>
+#include <thread>
 
 void verify(std::vector<char> buffer, double rotate, O3DS::SubjectList &subjectList)
 {
