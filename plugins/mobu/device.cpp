@@ -257,6 +257,16 @@ bool Open3D_Device::Start()
 	return true;
 }
 
+void Open3D_Device::SetSelectedMicrophone(FBAudioIn *mic) {
+	if (mSelectedMicrophone != nullptr) {
+		if (mSelectedMicrophone->IsOnline()) {
+			mSelectedMicrophone->SetOnline(false);
+			mSelectedMicrophone->SetDestination(nullptr);
+		}
+	}
+	mSelectedMicrophone = mic;
+}
+
 bool Open3D_Device::IsActive()
 {
 	if (mNetworkSocket != -1) return true;

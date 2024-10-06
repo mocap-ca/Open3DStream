@@ -203,7 +203,7 @@ void Open3D_Device_Layout::UICreate()
 		155, kFBAttachNone, "", 1.00,
 		lH, kFBAttachNone, NULL, 1.00);
 	mLayoutLeft.SetControl("LabelMicSource", mLabelMicSource);
-	mLabelJoints.Caption = "Microphone Source:";
+	mLabelMicSource.Caption = "Microphone Source:";
 
 	// Microphones list - Under Microphone Source Label
 	mLayoutLeft.AddRegion("ListMicSource", "ListMicSource",
@@ -503,9 +503,11 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 
 void Open3D_Device_Layout::PopulateMicrophoneList() {
 	mListMicSource.Items.Clear();
-	auto micList = FBPropertyListAudioIn();
-	FBAudioIn* mic;
-	for (auto i=0; (mic = micList[i]) != nullptr; i++) {
+	mListMicSource.Items.Add("None");
+
+	auto& micList = FBSystem::TheOne().AudioInputs;
+	for (auto i = 0; i < micList.GetCount(); ++i) {
+		const auto mic = micList[i];
 		mListMicSource.Items.Add(mic->Name);
 	}
 }
@@ -611,4 +613,10 @@ void Open3D_Device_Layout::EventEditJoints(HISender pSender, HKEvent pEvent)
 }
 
 void Open3D_Device_Layout::EventSelectMicSource(HISender pSender, HKEvent pEvent) {
+	if (mListMicSource.ItemIndex == 0)
+		mDevice->SetSelectedMicrophone(nullptr);
+	else {
+		auto& micList = FBSystem::TheOne().AudioInputs;
+		mDevice->SetSelectedMicrophone(micList[mListMicSource.ItemIndex - 1]);
+	}
 }

@@ -67,6 +67,8 @@ public:
 	FBDeviceSamplingMode	GetSamplingType()								{ return mSamplingType;			}
 	void					SetSamplingType( FBDeviceSamplingMode pType )	{ mSamplingType = pType;		}
 
+	void SetSelectedMicrophone(FBAudioIn* mic);
+
 	bool  IsActive();
 
 	void InData(void *, size_t);
@@ -92,6 +94,7 @@ private:
 	int             mFrameCounter;
 	uint32_t        mIdSeq;
 
+	FBAudioIn*		mSelectedMicrophone;
 };
 
 #endif 
