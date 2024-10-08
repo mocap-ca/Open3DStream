@@ -161,7 +161,7 @@ namespace O3DS
 
 	// Transform 
 
-	Transform::Transform(std::string& name, int parentId, void *ref)
+	Transform::Transform(const std::string& name, int parentId, void *ref)
 		: bWorldMatrix(false)
 		, mName(name)
 		, mParentId(parentId)

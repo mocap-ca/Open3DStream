@@ -41,7 +41,7 @@ namespace O3DS
 	class Transform
 	{
 	public:
-		Transform(std::string& name, int parentId, void *ref = nullptr);
+		Transform(const std::string& name, int parentId, void *ref = nullptr);
 
 		Transform(int parentId);
 
@@ -156,7 +156,7 @@ namespace O3DS
 		Context       mContext;
 		std::string   mError;
 
-		Transform* addTransform(std::string &name, int parentId, TransformBuilder *builder = nullptr)
+		Transform* addTransform(const std::string& name, int parentId, TransformBuilder *builder = nullptr)
 		{
 			Transform *ret;
 			if (builder) ret = builder->build(name, parentId);
