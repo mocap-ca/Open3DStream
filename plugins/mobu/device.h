@@ -3,6 +3,8 @@
 
 #include <fbsdk/fbsdk.h>
 #include <vector>
+
+#include "audio.h"
 #include "mobuModel.h"
 #include "o3ds/base_connector.h"
 #include "o3ds/tcp.h"
@@ -94,7 +96,7 @@ private:
 	int             mFrameCounter;
 	uint32_t        mIdSeq;
 
-	FBAudioIn*		mSelectedMicrophone;
+	Open3D_AudioInput    mAudioRecord;
 };
 
 #endif 
