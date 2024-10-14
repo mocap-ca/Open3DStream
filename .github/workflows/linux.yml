@@ -2,7 +2,7 @@ name: O3DS linux
 on:
   push:
     tags:
-      - 'v*'  # Trigger the workflow on tags starting with 'v'
+      - 'v[0-9]+.[0-9]+.[0-9]+'  # Trigger the workflow on version tags
   workflow_dispatch:
     inputs:
       tag:
