@@ -83,6 +83,8 @@ public:
 	SOCKET                  mNetworkSocket;
 	std::vector<int>        mClients;
 
+	Open3D_AudioInput    mAudioRecord;
+
 private:
 	double                mSamplingRate;
 	FBDeviceSamplingMode  mSamplingType;
@@ -94,9 +96,7 @@ private:
 	int				mNetworkPort;
 	bool			mStreaming;
 	int             mFrameCounter;
-	uint32_t        mIdSeq;
-
-	Open3D_AudioInput    mAudioRecord;
+	uint32_t        mIdSeq;	
 };
 
 #endif 

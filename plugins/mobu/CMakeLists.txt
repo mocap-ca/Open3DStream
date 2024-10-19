@@ -3,7 +3,7 @@ project(MobuStreamDevice)
 
 find_package(nng CONFIG REQUIRED)
 
-set(SRCS plugin.cpp layout.cpp device.cpp device.h layout.h mobuModel.h mobuModel.cpp audio.cpp)
+set(SRCS plugin.cpp layout.cpp device.cpp device.h layout.h mobuModel.h mobuModel.cpp audio.h audio.cpp)
 
 function(build_mobu version path)
   if(NOT EXISTS ${path})

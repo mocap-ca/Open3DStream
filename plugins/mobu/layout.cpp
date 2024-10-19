@@ -20,6 +20,7 @@ bool Open3D_Device_Layout::FBCreate()
 	// Add device & system callbacks
 	mDevice->OnStatusChange.Add	( this,(FBCallback)&Open3D_Device_Layout::EventDeviceStatusChange		);
 	OnIdle.Add					( this,(FBCallback)&Open3D_Device_Layout::EventUIIdle					);
+	mDevice->mAudioRecord.subscribe(this);
 
 	return true;
 }
@@ -29,6 +30,7 @@ void Open3D_Device_Layout::FBDestroy()
 	// Remove device & system callbacks
 	OnIdle.Remove					( this,(FBCallback)&Open3D_Device_Layout::EventUIIdle				);
 	mDevice->OnStatusChange.Remove	( this,(FBCallback)&Open3D_Device_Layout::EventDeviceStatusChange	);
+	mDevice->mAudioRecord.unsubscribe(this);
 }
 
 void Open3D_Device_Layout::UICreate()
@@ -213,7 +215,24 @@ void Open3D_Device_Layout::UICreate()
 		lH, kFBAttachNone, NULL, 1.00);
 	mLayoutLeft.SetControl("ListMicSource", mListMicSource);
 	mListMicSource.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventSelectMicSource);
-	mListMicSource.Style = FBListStyle::kFBDropDownList;
+	mListMicSource.Style = kFBDropDownList;
+
+	// Microphone Capture Indicator - Under Microphones List
+	mLayoutLeft.AddRegion("MicCaptureIndicator", "MicCaptureIndicator",
+		lS, kFBAttachRight, "SourcesList", 1.00,
+		5, kFBAttachBottom, "ListMicSource", 1.00,
+		155, kFBAttachNone, "", 1.00,
+		lH, kFBAttachNone, NULL, 1.00);
+	mLayoutLeft.SetControl("MicCaptureIndicator", mMicCaptureIndicator);
+	mMicCaptureIndicator.Height = 10;
+	mMicCaptureIndicator.Max = 0;
+	mMicCaptureIndicator.Max = 1;
+	mMicCaptureIndicator.Value = 0;
+	mMicCaptureIndicator.LargeStep = 0.01;
+	mMicCaptureIndicator.SmallStep = 0.01;
+	mMicCaptureIndicator.Visible = false;
+	mMicCaptureIndicator.Orientation = kFBHorizontal;
+	mMicCaptureIndicator.ReadOnly = true;
 
 	// Version info - at bottom
 	mLayoutLeft.AddRegion("VersionInfo", "VersionInfo",
@@ -416,6 +435,12 @@ void Open3D_Device_Layout::EventEditDelta(HISender pSender, HKEvent pEvent)
 	mDevice->SetDeltaThreshold(value);
 }
 
+void Open3D_Device_Layout::audio_captured(const BYTE* captureBuffer, const UINT32 nFrames)
+{
+	const auto captureBufferFloat = reinterpret_cast<const float*>(captureBuffer);
+	mMicCaptureIndicator.Value = fabsf(captureBufferFloat[0]);
+}
+
 void Open3D_Device_Layout::EventDeviceStatusChange( HISender pSender, HKEvent pEvent )
 {
 	UIReset();
@@ -613,10 +638,14 @@ void Open3D_Device_Layout::EventEditJoints(HISender pSender, HKEvent pEvent)
 }
 
 void Open3D_Device_Layout::EventSelectMicSource(HISender pSender, HKEvent pEvent) {
-	if (mListMicSource.ItemIndex == 0)
+	if (mListMicSource.ItemIndex == 0) {
 		mDevice->SetSelectedMicrophone(nullptr);
+		mMicCaptureIndicator.Value = 0;
+		mMicCaptureIndicator.Visible = false;
+	}
 	else {
 		auto& micList = FBSystem::TheOne().AudioInputs;
 		mDevice->SetSelectedMicrophone(micList[mListMicSource.ItemIndex - 1]);
+		mMicCaptureIndicator.Visible = true;
 	}
 }

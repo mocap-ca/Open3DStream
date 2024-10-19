@@ -8,6 +8,9 @@
 
 #include <locale>
 #include <system_error>
+#include <thread>
+
+constexpr int REFTIMES_PER_SEC = 10000000;
 
 // Throw a std::system_error if the HRESULT indicates failure.
 template<typename T>
@@ -17,7 +20,7 @@ void ThrowIfFailed(HRESULT hr, T&& msg) {
     }
 }
 
-int WideCompare(const LPWSTR wstr, const char* str)
+int WideCompare(LPWSTR wstr, const char* str)
 {
     wchar_t ws[255];
     swprintf(ws, 255, L"%hs", str);
@@ -28,28 +31,91 @@ Open3D_AudioInput::Open3D_AudioInput() {
     //auto hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
     //ThrowIfFailed(hr, "Failed to initialize the MMDeviceAPI.");
 
-    GUID IDevice_FriendlyName = {
+    mNameKey.pid = 14;
+    mNameKey.fmtid = {
         0xa45c254e, 0xdf1c, 0x4efd,
         { 0x80, 0x20, 0x67, 0xd1, 0x46, 0xa8, 0x50, 0xe0 }
     };
-    mNameKey.pid = 14;
-    mNameKey.fmtid = IDevice_FriendlyName;
 }
 
-void Open3D_AudioInput::recorder_release() {
+void Open3D_AudioInput::publish_audio_captured() const {
+    for (const auto subscriber : subscribers) {
+        subscriber->audio_captured(captureBuffer, nFrames);
+    }
+}
+
+void Open3D_AudioInput::activate() {
+    if (recorder == nullptr) {
+        return;
+    }
+
+    auto hr = recorder->Activate(__uuidof(IAudioClient), CLSCTX_ALL,
+                                         nullptr, reinterpret_cast<void**>(&recorderClient));
+    ThrowIfFailed(hr, "Failed to activate the recorder.");
+
+    hr = recorderClient->GetMixFormat(&format);
+    ThrowIfFailed(hr, "Failed to get the recording format.");
+
+    hr = recorderClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, REFTIMES_PER_SEC,
+                                    0, format, nullptr);
+    ThrowIfFailed(hr, "Failed to initialize the recording client with the recording format.");
+
+    hr = recorderClient->GetService(__uuidof(IAudioCaptureClient), reinterpret_cast<void**>(&recorderService));
+    ThrowIfFailed(hr, "Failed to get the capture service for the recorder client.");
+
+    hr = recorderClient->Start();
+    ThrowIfFailed(hr, "Failed to start the recorder.");
+
+    recordThread = new std::thread(&Open3D_AudioInput::loop, this);
+}
+
+void Open3D_AudioInput::release() {
+    if (recordThread) {
+        stopThread = true;
+        recordThread->join();
+        delete recordThread;
+        recordThread = nullptr;
+        stopThread = false;
+    }
+    if (recorderClient) {
+        recorderClient->Stop();
+
+        if (recorderService) {
+            recorderService->Release();
+            recorderService = nullptr;
+        }
+        recorderClient->Release();
+        recorderClient = nullptr;
+    }
     if (recorder) {
         recorder->Release();
         recorder = nullptr;
     }
 }
 
+void Open3D_AudioInput::loop() {
+    HRESULT hr;
+    while (!stopThread) {
+        hr = recorderService->GetBuffer(&captureBuffer, &nFrames, &flags, nullptr, nullptr);
+        ThrowIfFailed(hr, "Failed to get recording buffer.");
+
+        if (captureBuffer == nullptr)
+            continue;
+
+        hr = recorderService->ReleaseBuffer(nFrames);
+        ThrowIfFailed(hr, "Failed to release recording buffer");        
+
+        publish_audio_captured();
+    }
+}
+
 Open3D_AudioInput::~Open3D_AudioInput() {
-    recorder_release();
+    release();
     //CoUninitialize();
 }
 
 void Open3D_AudioInput::set_device(FBAudioIn *mic) {
-    recorder_release();
+    release();
     if (mic == nullptr) {
         return;
     }
@@ -86,7 +152,7 @@ void Open3D_AudioInput::set_device(FBAudioIn *mic) {
 
         if (varName.vt != VT_EMPTY) {
             if (WideCompare(varName.pwszVal, mic->Name.AsString()) == 0) {
-                recorder = device;
+                recorder = device;                
                 properties->Release();
                 break;
             }
@@ -97,4 +163,6 @@ void Open3D_AudioInput::set_device(FBAudioIn *mic) {
     }
     recorderCollection->Release();
     enumerator->Release();
+
+    activate();
 }
