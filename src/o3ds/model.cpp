@@ -421,10 +421,11 @@ namespace O3DS
 			transformId++;
 		}
 
+		auto audio = builder.CreateVector(mAudioBuffer);
 		auto tr = builder.CreateVectorOfStructs(translations);
 		auto ro = builder.CreateVectorOfStructs(rotations);
 		auto sc = builder.CreateVectorOfStructs(scales);
-		return CreateSubjectUpdate(builder, oSubjectName, tr, ro, sc);
+		return CreateSubjectUpdate(builder, oSubjectName, audio, tr, ro, sc);
 	}
 
 	int Subject::Serialize(std::vector<char> &outbuf, double timestamp)

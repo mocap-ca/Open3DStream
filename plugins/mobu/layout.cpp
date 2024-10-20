@@ -420,7 +420,13 @@ void Open3D_Device_Layout::EventEditSubject(HISender pSender, HKEvent pEvent)
 	int id = mSourcesList.ItemIndex;
 	if (id < 0) return;
 
-	FBString newValue = mEditSubject.Text.AsString();
+	const FBString newValue = mEditSubject.Text.AsString();
+
+	// Don't let changing the name of the Audio subject.
+	if (mDevice->Items[id]->mName == audioSubjectName && newValue != audioSubjectName) {
+		mEditSubject.Text.SetString(audioSubjectName);
+		return;
+	}
 
 	mDevice->Items[id]->mName = newValue.operator char *();
 	mSourcesList.Items.RemoveAt(id);
@@ -487,32 +493,36 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 	{
 		if (id < mDevice->Items.size())
 		{
+			std::ostringstream oss;
 			O3DS::Subject* subject = mDevice->Items[id];
-			FBModel *model = static_cast<FBModel*>(subject->mReference);
+			const auto model = static_cast<FBModel*>(subject->mReference);
 
-			mEditSubject.Text = mDevice->Items[id]->mName.c_str();
-			mEditSource.Text = model->GetFullName();
+			mEditSubject.Text = subject->mName.c_str();
 
-			std::ostringstream imploded, oss;
-			std::copy(mDevice->Items[id]->mJoints.begin(), mDevice->Items[id]->mJoints.end(),
-				std::ostream_iterator<std::string>(imploded, " "));
+			if (model != nullptr) {
+				mEditSource.Text = model->GetFullName();
 
-			mMemoJoints.Text = imploded.str().c_str();
+				std::ostringstream imploded;
+				std::copy(subject->mJoints.begin(), subject->mJoints.end(),
+					std::ostream_iterator<std::string>(imploded, " "));
 
-			O3DS::Mobu::TraverseSubject(subject, model);
+				mMemoJoints.Text = imploded.str().c_str();
 
-			if (model->Is(FBModelNull::TypeInfo))
-				oss << "Null" << std::endl;
-			if (model->Is(FBModelRoot::TypeInfo))
-				oss << "Root" << std::endl;
-			if (model->Is(FBCamera::TypeInfo))
-				oss << "Camera" << std::endl;
-			if (model->Is(FBModelSkeleton::TypeInfo))
-				oss << "Joint" << std::endl;
+				O3DS::Mobu::TraverseSubject(subject, model);
 
-			oss << "Items: " << mDevice->Items[id]->mTransforms.size() << std::endl;
+				if (model->Is(FBModelNull::TypeInfo))
+					oss << "Null" << std::endl;
+				if (model->Is(FBModelRoot::TypeInfo))
+					oss << "Root" << std::endl;
+				if (model->Is(FBCamera::TypeInfo))
+					oss << "Camera" << std::endl;
+				if (model->Is(FBModelSkeleton::TypeInfo))
+					oss << "Joint" << std::endl;
+			}
 
-			oss << "Joints: " << mDevice->Items[id]->mJoints.size() << std::endl;
+			oss << "Items: " << subject->mTransforms.size() << std::endl;
+
+			oss << "Joints: " << subject->mJoints.size() << std::endl;
 
 			std::vector<char> buf;
 			mDevice->Items.Serialize(buf, count);
@@ -575,12 +585,15 @@ void Open3D_Device_Layout::EventAdd(HISender pSender, HKEvent pEvent)
 
 void Open3D_Device_Layout::EventDel(HISender pSender, HKEvent pEvent)
 {
-	int id = mSourcesList.ItemIndex;
-	if (id >= 0)
-	{
-		mDevice->Items.mItems.erase(mDevice->Items.begin() + id);
-		PopulateSubjectList();
-	}
+	const int id = mSourcesList.ItemIndex;
+	if (id < 0) return;
+
+	// Don't let changing the name of the Audio subject.
+	if (mDevice->Items[id]->mName == audioSubjectName)
+		return;
+
+	mDevice->Items.mItems.erase(mDevice->Items.begin() + id);
+	PopulateSubjectList();
 }
 
 void Open3D_Device_Layout::EventEditIP(HISender pSender, HKEvent pEvent)
@@ -648,4 +661,5 @@ void Open3D_Device_Layout::EventSelectMicSource(HISender pSender, HKEvent pEvent
 		mDevice->SetSelectedMicrophone(micList[mListMicSource.ItemIndex - 1]);
 		mMicCaptureIndicator.Visible = true;
 	}
+	PopulateSubjectList();
 }

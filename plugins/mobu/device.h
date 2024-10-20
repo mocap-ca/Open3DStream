@@ -12,8 +12,10 @@
 #define OPEN3D_DEVICE__CLASSNAME	Open3D_Device
 #define OPEN3D_DEVICE__CLASSSTR		"Open3D_Device"
 
+constexpr auto audioSubjectName = "Audio";
 
-class Open3D_Device : public FBDevice
+
+class Open3D_Device : public FBDevice, IAudioSubscriber
 {
 	FBDeviceDeclare( Open3D_Device, FBDevice );
 public:
@@ -86,6 +88,8 @@ public:
 	Open3D_AudioInput    mAudioRecord;
 
 private:
+	void audio_captured(const BYTE *captureBuffer, UINT32 nFrames) override;
+
 	double                mSamplingRate;
 	FBDeviceSamplingMode  mSamplingType;
 	FBPlayerControl       mPlayerControl;
