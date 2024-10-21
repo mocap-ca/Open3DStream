@@ -377,7 +377,7 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 	case kIOPlayModeWrite:
 	case kIOStopModeWrite:
 	{
-		if (Online == true)
+		if (mNetworkSocket != -1)
 		{
 			Items.update();
 
@@ -393,8 +393,8 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				bucketSize = Items.SerializeUpdate(buf, count, MobuTime.GetSecondDouble());
 
 				// Clear the sent pieces of audio buffers.
-				auto audioSubject = Items.findSubject(audioSubjectName);
-				audioSubject->mAudioBuffer.clear();
+				if (auto audioSubject = Items.findSubject(audioSubjectName); audioSubject != nullptr)
+					audioSubject->mAudioBuffer.clear();
 			}
 
 			if (mFrameCounter > 100) {
