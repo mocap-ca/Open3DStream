@@ -3,6 +3,8 @@
 
 #include <fbsdk/fbsdk.h>
 #include <vector>
+
+#include "audio.h"
 #include "mobuModel.h"
 #include "o3ds/base_connector.h"
 #include "o3ds/tcp.h"
@@ -10,8 +12,10 @@
 #define OPEN3D_DEVICE__CLASSNAME	Open3D_Device
 #define OPEN3D_DEVICE__CLASSSTR		"Open3D_Device"
 
+constexpr auto audioSubjectName = "Audio";
 
-class Open3D_Device : public FBDevice
+
+class Open3D_Device : public FBDevice, IAudioSubscriber
 {
 	FBDeviceDeclare( Open3D_Device, FBDevice );
 public:
@@ -67,6 +71,8 @@ public:
 	FBDeviceSamplingMode	GetSamplingType()								{ return mSamplingType;			}
 	void					SetSamplingType( FBDeviceSamplingMode pType )	{ mSamplingType = pType;		}
 
+	void SetSelectedMicrophone(FBAudioIn* mic);
+
 	bool  IsActive();
 
 	void InData(void *, size_t);
@@ -79,7 +85,11 @@ public:
 	SOCKET                  mNetworkSocket;
 	std::vector<int>        mClients;
 
+	Open3D_AudioInput    mAudioRecord;
+
 private:
+	void audio_captured(const BYTE *captureBuffer, UINT32 nFrames) override;
+
 	double                mSamplingRate;
 	FBDeviceSamplingMode  mSamplingType;
 	FBPlayerControl       mPlayerControl;
@@ -90,8 +100,7 @@ private:
 	int				mNetworkPort;
 	bool			mStreaming;
 	int             mFrameCounter;
-	uint32_t        mIdSeq;
-
+	uint32_t        mIdSeq;	
 };
 
 #endif 

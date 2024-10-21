@@ -150,6 +150,7 @@ namespace O3DS
 
 		std::string   mName;
 		std::vector<std::string> mJoints;
+		std::vector<int8_t>      mAudioBuffer;
 
 		TransformList mTransforms;
 		void*         mReference;
@@ -236,6 +237,18 @@ namespace O3DS
 					return i;
 			}
 			return nullptr;
+		}
+
+		void removeSubject(const std::string &name)
+		{
+			const auto item = findSubject(name);
+			if (item == nullptr) {
+				return;
+			}
+			// move item to the end
+			const auto iter = std::remove(mItems.begin(), mItems.end(), item);
+			// remove item from the end
+			mItems.erase(iter, mItems.end());
 		}
 
 		void update()

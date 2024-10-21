@@ -3,6 +3,7 @@
 
 #include "o3ds/o3ds.h" // for version#
 #include <sstream>
+#include <fbsdk/fbaudio.h>
 
 #define OPEN3D_DEVICE__LAYOUT	Open3D_Device_Layout
 
@@ -19,6 +20,7 @@ bool Open3D_Device_Layout::FBCreate()
 	// Add device & system callbacks
 	mDevice->OnStatusChange.Add	( this,(FBCallback)&Open3D_Device_Layout::EventDeviceStatusChange		);
 	OnIdle.Add					( this,(FBCallback)&Open3D_Device_Layout::EventUIIdle					);
+	mDevice->mAudioRecord.subscribe(this);
 
 	return true;
 }
@@ -28,6 +30,7 @@ void Open3D_Device_Layout::FBDestroy()
 	// Remove device & system callbacks
 	OnIdle.Remove					( this,(FBCallback)&Open3D_Device_Layout::EventUIIdle				);
 	mDevice->OnStatusChange.Remove	( this,(FBCallback)&Open3D_Device_Layout::EventDeviceStatusChange	);
+	mDevice->mAudioRecord.unsubscribe(this);
 }
 
 void Open3D_Device_Layout::UICreate()
@@ -195,6 +198,42 @@ void Open3D_Device_Layout::UICreate()
 	mLayoutLeft.SetControl("JointsList", mMemoJoints);
 	mMemoJoints.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventEditJoints);
 
+	// Microphone Source label - under JointsList
+	mLayoutLeft.AddRegion("LabelMicSource", "LabelMicSource",
+		lS, kFBAttachRight, "SourcesList", 1.00,
+		2, kFBAttachBottom, "JointsList", 1.00,
+		155, kFBAttachNone, "", 1.00,
+		lH, kFBAttachNone, NULL, 1.00);
+	mLayoutLeft.SetControl("LabelMicSource", mLabelMicSource);
+	mLabelMicSource.Caption = "Microphone Source:";
+
+	// Microphones list - Under Microphone Source Label
+	mLayoutLeft.AddRegion("ListMicSource", "ListMicSource",
+		lS, kFBAttachRight, "SourcesList", 1.00,
+		2, kFBAttachBottom, "LabelMicSource", 1.00,
+		155, kFBAttachNone, "", 1.00,
+		lH, kFBAttachNone, NULL, 1.00);
+	mLayoutLeft.SetControl("ListMicSource", mListMicSource);
+	mListMicSource.OnChange.Add(this, (FBCallback)&Open3D_Device_Layout::EventSelectMicSource);
+	mListMicSource.Style = kFBDropDownList;
+
+	// Microphone Capture Indicator - Under Microphones List
+	mLayoutLeft.AddRegion("MicCaptureIndicator", "MicCaptureIndicator",
+		lS, kFBAttachRight, "SourcesList", 1.00,
+		5, kFBAttachBottom, "ListMicSource", 1.00,
+		155, kFBAttachNone, "", 1.00,
+		lH, kFBAttachNone, NULL, 1.00);
+	mLayoutLeft.SetControl("MicCaptureIndicator", mMicCaptureIndicator);
+	mMicCaptureIndicator.Height = 10;
+	mMicCaptureIndicator.Max = 0;
+	mMicCaptureIndicator.Max = 1;
+	mMicCaptureIndicator.Value = 0;
+	mMicCaptureIndicator.LargeStep = 0.01;
+	mMicCaptureIndicator.SmallStep = 0.01;
+	mMicCaptureIndicator.Visible = false;
+	mMicCaptureIndicator.Orientation = kFBHorizontal;
+	mMicCaptureIndicator.ReadOnly = true;
+
 	// Version info - at bottom
 	mLayoutLeft.AddRegion("VersionInfo", "VersionInfo",
 		lS, kFBAttachRight, "SourcesList", 1.00,
@@ -332,6 +371,7 @@ void Open3D_Device_Layout::UIConfigure()
 	 
 	PopulateSubjectList();
 	PopulateSubjectFields();
+	PopulateMicrophoneList();
 
 	mMemoLog.Enabled = false;
 
@@ -380,7 +420,13 @@ void Open3D_Device_Layout::EventEditSubject(HISender pSender, HKEvent pEvent)
 	int id = mSourcesList.ItemIndex;
 	if (id < 0) return;
 
-	FBString newValue = mEditSubject.Text.AsString();
+	const FBString newValue = mEditSubject.Text.AsString();
+
+	// Don't let changing the name of the Audio subject.
+	if (mDevice->Items[id]->mName == audioSubjectName && newValue != audioSubjectName) {
+		mEditSubject.Text.SetString(audioSubjectName);
+		return;
+	}
 
 	mDevice->Items[id]->mName = newValue.operator char *();
 	mSourcesList.Items.RemoveAt(id);
@@ -393,6 +439,12 @@ void Open3D_Device_Layout::EventEditDelta(HISender pSender, HKEvent pEvent)
 	FBString newValue = mEditDelta.Text.AsString();
 	float value = atof(newValue);
 	mDevice->SetDeltaThreshold(value);
+}
+
+void Open3D_Device_Layout::audio_captured(const BYTE* captureBuffer, const UINT32 nFrames)
+{
+	const auto captureBufferFloat = reinterpret_cast<const float*>(captureBuffer);
+	mMicCaptureIndicator.Value = fabsf(captureBufferFloat[0]);
 }
 
 void Open3D_Device_Layout::EventDeviceStatusChange( HISender pSender, HKEvent pEvent )
@@ -441,32 +493,36 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 	{
 		if (id < mDevice->Items.size())
 		{
+			std::ostringstream oss;
 			O3DS::Subject* subject = mDevice->Items[id];
-			FBModel *model = static_cast<FBModel*>(subject->mReference);
+			const auto model = static_cast<FBModel*>(subject->mReference);
 
-			mEditSubject.Text = mDevice->Items[id]->mName.c_str();
-			mEditSource.Text = model->GetFullName();
+			mEditSubject.Text = subject->mName.c_str();
 
-			std::ostringstream imploded, oss;
-			std::copy(mDevice->Items[id]->mJoints.begin(), mDevice->Items[id]->mJoints.end(),
-				std::ostream_iterator<std::string>(imploded, " "));
+			if (model != nullptr) {
+				mEditSource.Text = model->GetFullName();
 
-			mMemoJoints.Text = imploded.str().c_str();
+				std::ostringstream imploded;
+				std::copy(subject->mJoints.begin(), subject->mJoints.end(),
+					std::ostream_iterator<std::string>(imploded, " "));
 
-			O3DS::Mobu::TraverseSubject(subject, model);
+				mMemoJoints.Text = imploded.str().c_str();
 
-			if (model->Is(FBModelNull::TypeInfo))
-				oss << "Null" << std::endl;
-			if (model->Is(FBModelRoot::TypeInfo))
-				oss << "Root" << std::endl;
-			if (model->Is(FBCamera::TypeInfo))
-				oss << "Camera" << std::endl;
-			if (model->Is(FBModelSkeleton::TypeInfo))
-				oss << "Joint" << std::endl;
+				O3DS::Mobu::TraverseSubject(subject, model);
 
-			oss << "Items: " << mDevice->Items[id]->mTransforms.size() << std::endl;
+				if (model->Is(FBModelNull::TypeInfo))
+					oss << "Null" << std::endl;
+				if (model->Is(FBModelRoot::TypeInfo))
+					oss << "Root" << std::endl;
+				if (model->Is(FBCamera::TypeInfo))
+					oss << "Camera" << std::endl;
+				if (model->Is(FBModelSkeleton::TypeInfo))
+					oss << "Joint" << std::endl;
+			}
 
-			oss << "Joints: " << mDevice->Items[id]->mJoints.size() << std::endl;
+			oss << "Items: " << subject->mTransforms.size() << std::endl;
+
+			oss << "Joints: " << subject->mJoints.size() << std::endl;
 
 			std::vector<char> buf;
 			mDevice->Items.Serialize(buf, count);
@@ -477,6 +533,17 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 
 			mMemoLog.Text = oss.str().c_str();
 		}
+	}
+}
+
+void Open3D_Device_Layout::PopulateMicrophoneList() {
+	mListMicSource.Items.Clear();
+	mListMicSource.Items.Add("None");
+
+	auto& micList = FBSystem::TheOne().AudioInputs;
+	for (auto i = 0; i < micList.GetCount(); ++i) {
+		const auto mic = micList[i];
+		mListMicSource.Items.Add(mic->Name);
 	}
 }
 
@@ -518,12 +585,15 @@ void Open3D_Device_Layout::EventAdd(HISender pSender, HKEvent pEvent)
 
 void Open3D_Device_Layout::EventDel(HISender pSender, HKEvent pEvent)
 {
-	int id = mSourcesList.ItemIndex;
-	if (id >= 0)
-	{
-		mDevice->Items.mItems.erase(mDevice->Items.begin() + id);
-		PopulateSubjectList();
-	}
+	const int id = mSourcesList.ItemIndex;
+	if (id < 0) return;
+
+	// Don't let changing the name of the Audio subject.
+	if (mDevice->Items[id]->mName == audioSubjectName)
+		return;
+
+	mDevice->Items.mItems.erase(mDevice->Items.begin() + id);
+	PopulateSubjectList();
 }
 
 void Open3D_Device_Layout::EventEditIP(HISender pSender, HKEvent pEvent)
@@ -578,4 +648,18 @@ void Open3D_Device_Layout::EventEditJoints(HISender pSender, HKEvent pEvent)
 	std::vector<std::string> vstrings(begin, end);
 	mDevice->Items[id]->mJoints.clear();
 	std::copy(vstrings.begin(), vstrings.end(), std::back_inserter(mDevice->Items[id]->mJoints));
-} 
+}
+
+void Open3D_Device_Layout::EventSelectMicSource(HISender pSender, HKEvent pEvent) {
+	if (mListMicSource.ItemIndex == 0) {
+		mDevice->SetSelectedMicrophone(nullptr);
+		mMicCaptureIndicator.Value = 0;
+		mMicCaptureIndicator.Visible = false;
+	}
+	else {
+		auto& micList = FBSystem::TheOne().AudioInputs;
+		mDevice->SetSelectedMicrophone(micList[mListMicSource.ItemIndex - 1]);
+		mMicCaptureIndicator.Visible = true;
+	}
+	PopulateSubjectList();
+}

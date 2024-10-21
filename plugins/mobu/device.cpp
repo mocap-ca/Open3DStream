@@ -84,6 +84,8 @@ bool Open3D_Device::FBCreate()
 
 	mFrameCounter = 0;
 	mIdSeq = 0;
+
+	mAudioRecord.subscribe(this);
 	return true;
 }
 
@@ -257,6 +259,19 @@ bool Open3D_Device::Start()
 	return true;
 }
 
+void Open3D_Device::SetSelectedMicrophone(FBAudioIn* mic) {
+	mAudioRecord.set_device(mic);
+
+	// check if there should be a subject for audio.
+	if (mic == nullptr) {
+		Items.removeSubject(audioSubjectName);
+	} else {
+		if (Items.findSubject(audioSubjectName) == nullptr) {
+			Items.addSubject(audioSubjectName);
+		}
+	}
+}
+
 bool Open3D_Device::IsActive()
 {
 	if (mNetworkSocket != -1) return true;
@@ -334,6 +349,18 @@ uint32_t Open3D_Device::WriteTcp(O3DS::TcpSocket &socket, void *data, uint32_t b
 	
 }
 
+void Open3D_Device::audio_captured(const BYTE *captureBuffer, UINT32 nFrames) {
+	const auto audioSubject = Items.findSubject(audioSubjectName);
+	if (Online == true) {
+		audioSubject->mAudioBuffer.insert(audioSubject->mAudioBuffer.end(),
+	 	                                  captureBuffer, captureBuffer + nFrames);
+	}
+	else
+	{
+		audioSubject->mAudioBuffer.assign(captureBuffer, captureBuffer + nFrames);
+	}
+}
+
 void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDeviceNotifyInfo)
 {
 	std::vector<char> buf;
@@ -364,6 +391,10 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			else
 			{
 				bucketSize = Items.SerializeUpdate(buf, count, MobuTime.GetSecondDouble());
+
+				// Clear the sent pieces of audio buffers.
+				if (auto audioSubject = Items.findSubject(audioSubjectName); audioSubject != nullptr)
+					audioSubject->mAudioBuffer.clear();
 			}
 
 			if (mFrameCounter > 100) {
@@ -383,23 +414,27 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				if (mTcpIp.Accept(newSocket))
 					mClients.push_back(newSocket);
 
-				for (std::vector<int>::iterator client = mClients.begin(); client != mClients.end();)
-				{
-					O3DS::TcpSocket s(*client);
-					if (WriteTcp(s, &buf[0], bucketSize)) {
-						client++;
+					for (std::vector<int>::iterator client = mClients.begin(); client != mClients.end();)
+					{
+						O3DS::TcpSocket s(*client);
+						if (WriteTcp(s, &buf[0], bucketSize)) {
+							client++;
+						}
+						else {
+							client = mClients.erase(client);
+						}
 					}
-					else {
-						client = mClients.erase(client);
-					}
+
+					std::ostringstream oss;
+					oss << bucketSize << " bytes";
+					Status = oss.str().c_str();
 				}
-			}
 
 			if (mProtocol == Open3D_Device::kTCPClient) {
-				if(mTcpIp.Valid())
-				{
-					if (WriteTcp(mTcpIp, &buf[0], bucketSize) == 0)
+					if(mTcpIp.Valid())
 					{
+						if (WriteTcp(mTcpIp, &buf[0], bucketSize) == 0)
+						{
 						Status = "TCP Disconnected";
 					}
 				}
@@ -410,28 +445,28 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				struct in_addr ret;
 				if (!inet_pton_alt(AF_INET, mNetworkAddress.operator char *(), &ret))		
 				{
-					Status = "UDP ERROR";
-					return;
-				}
+						Status = "UDP ERROR";
+						return;
+					}
 
-				struct sockaddr_in dest_addr;
-				dest_addr.sin_family = AF_INET;
-				dest_addr.sin_addr.s_addr = ret.S_un.S_addr;
-				dest_addr.sin_port = htons(mNetworkPort);
+					struct sockaddr_in dest_addr;
+					dest_addr.sin_family = AF_INET;
+					dest_addr.sin_addr.s_addr = ret.S_un.S_addr;
+					dest_addr.sin_port = htons(mNetworkPort);
 
-				size_t sentSz = 0;
+					size_t sentSz = 0;
 
-				mIdSeq++;
+					mIdSeq++;
 
-				std::vector<char> fragData;
-				UdpFragmenter frag(buf.data(), bucketSize, 512);
-				for (int i = 0; i < frag.mFrames; i++)
-				{
-					frag.makeFragment(mIdSeq, i, fragData);
-					sentSz+= sendto(mNetworkSocket, fragData.data(), fragData.size(), 0,
-						(struct sockaddr*)&dest_addr,
-						(int)sizeof(struct sockaddr_in));
-				}
+					std::vector<char> fragData;
+					UdpFragmenter frag(buf.data(), bucketSize, 512);
+					for (int i = 0; i < frag.mFrames; i++)
+					{
+						frag.makeFragment(mIdSeq, i, fragData);
+						sentSz+= sendto(mNetworkSocket, fragData.data(), fragData.size(), 0,
+							(struct sockaddr*)&dest_addr,
+							(int)sizeof(struct sockaddr_in));
+					}
 
 				std::ostringstream oss;
 				oss << frag.mFrames << "/" << sentSz << " bytes";
