@@ -3,7 +3,7 @@
 
 #include "device.h"
 
-class Open3D_Device_Layout : public FBDeviceLayout
+class Open3D_Device_Layout : public FBDeviceLayout, IAudioSubscriber
 {
 	FBDeviceLayoutDeclare( Open3D_Device_Layout, FBDeviceLayout );
 public:
@@ -17,6 +17,7 @@ public:
 
 	void    PopulateSubjectList();
 	void    PopulateSubjectFields();
+	void	PopulateMicrophoneList();
 
 	// Events
 	void	EventDeviceStatusChange( HISender pSender, HKEvent pEvent );
@@ -26,12 +27,14 @@ public:
 	void	EventSelectDevice(HISender pSender, HKEvent pEvent);
 	void	EventEditSubject(HISender pSender, HKEvent pEvent);
 	void	EventEditJoints(HISender pSender, HKEvent pEvent);
+	void	EventSelectMicSource(HISender pSender, HKEvent pEvent);
 	void	EventEditIP(HISender pSender, HKEvent pEvent);
 	void	EventEditPort(HISender pSender, HKEvent pEvent);
 	void	EventEditProtocol(HISender pSender, HKEvent pEvent);
 	void	EventEditSampleRate(HISender pSender, HKEvent pEvent);
 	void	EventEditKey(HISender pSender, HKEvent pEvent);
 	void	EventEditDelta(HISender pSender, HKEvent pEvent);
+	void    audio_captured(const BYTE* captureBuffer, UINT32 nFrames) override;
 
 private:
 	FBLayout      mLayoutLeft;
@@ -57,6 +60,9 @@ private:
 	FBEdit        mEditKey;
 	FBLabel		  mLabelSamplingRate;
 	FBEditNumber  mEditSamplingRate;
+	FBLabel		  mLabelMicSource;
+	FBList		  mListMicSource;
+	FBSlider      mMicCaptureIndicator;
 	FBLabel       mLabelPluginVersion;
 	FBLabel       mLabelJoints;
 	FBEdit        mMemoJoints;
