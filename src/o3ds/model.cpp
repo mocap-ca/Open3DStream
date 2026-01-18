@@ -21,22 +21,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
+#include "math.h"
 #include "model.h"
 #include "getTime.h"
 #include "CRC.h"
 #include <algorithm>
 #include <iterator>
 #include <sstream>
-
-using namespace O3DS::Data;
+#include <iostream>
 
 void operator >>(const O3DS::TransformTranslation& src, O3DS::Data::Translation &dst)
 {
 	dst = O3DS::Data::Translation(
-		(float)src.value.v[0],
-		(float)src.value.v[1],
-		(float)src.value.v[2]);
+		(float)src.value.x(),
+		(float)src.value.y(),
+		(float)src.value.z());
 }
 
 void operator >>(const O3DS::Data::Translation& src, O3DS::TransformTranslation &dst)
@@ -52,10 +51,10 @@ void operator >>(const O3DS::Data::TranslationUpdate& src, O3DS::TransformTransl
 void operator >>(const O3DS::TransformRotation& src, O3DS::Data::Rotation &dst)
 {
 	dst = O3DS::Data::Rotation(
-		(float)src.value.v[0],
-		(float)src.value.v[1],
-		(float)src.value.v[2],
-		(float)src.value.v[3]);
+		(float)src.value.x(),
+		(float)src.value.y(),
+		(float)src.value.z(),
+		(float)src.value.w());
 }
 
 void operator >>(const O3DS::Data::Rotation& src, O3DS::TransformRotation &dst)
@@ -72,9 +71,9 @@ void operator >>(const O3DS::Data::RotationUpdate& src, O3DS::TransformRotation 
 void operator >>(const O3DS::TransformScale& src, O3DS::Data::Scale &dst)
 {
 	dst = O3DS::Data::Scale(
-		(float)src.value.v[0],
-		(float)src.value.v[1],
-		(float)src.value.v[2]);
+		(float)src.value.x(),
+		(float)src.value.y(),
+		(float)src.value.z());
 }
 
 void operator >>(const O3DS::Data::Scale& src, O3DS::TransformScale &dst)
@@ -90,43 +89,38 @@ void operator >>(const O3DS::Data::ScaleUpdate& src, O3DS::TransformScale &dst)
 void operator >>(const O3DS::TransformMatrix& src, O3DS::Data::Matrix &dst)
 {
 	dst = O3DS::Data::Matrix(
-		(float)src.value.m[0][0],
-		(float)src.value.m[0][1],
-		(float)src.value.m[0][2],
-		(float)src.value.m[0][3],
-		(float)src.value.m[1][0],
-		(float)src.value.m[1][1],
-		(float)src.value.m[1][2],
-		(float)src.value.m[1][3],
-		(float)src.value.m[2][0],
-		(float)src.value.m[2][1],
-		(float)src.value.m[2][2],
-		(float)src.value.m[2][3],
-		(float)src.value.m[3][0],
-		(float)src.value.m[3][1],
-		(float)src.value.m[3][2],
-		(float)src.value.m[3][3]);
+		static_cast<float>(src.value(0, 0)),
+		static_cast<float>(src.value(0, 1)),
+		static_cast<float>(src.value(0, 2)),
+		static_cast<float>(src.value(0, 3)),
+
+		static_cast<float>(src.value(1, 0)),
+		static_cast<float>(src.value(1, 1)),
+		static_cast<float>(src.value(1, 2)),
+		static_cast<float>(src.value(1, 3)),
+
+		static_cast<float>(src.value(2, 0)),
+		static_cast<float>(src.value(2, 1)),
+		static_cast<float>(src.value(2, 2)),
+		static_cast<float>(src.value(2, 3)),
+
+		static_cast<float>(src.value(3, 0)),
+		static_cast<float>(src.value(3, 1)),
+		static_cast<float>(src.value(3, 2)),
+		static_cast<float>(src.value(3, 3))
+	);
 }
 
-void operator >>(const O3DS::Data::Matrix& src, O3DS::TransformMatrix &dst)
+void operator>>(const O3DS::Data::Matrix& src,
+	O3DS::TransformMatrix& dst)
 {
-	dst.value.m[0][0] = src.m00();
-	dst.value.m[0][1] = src.m01();
-	dst.value.m[0][2] = src.m02();
-	dst.value.m[0][3] = src.m03();
-	dst.value.m[1][0] = src.m10();
-	dst.value.m[1][1] = src.m11();
-	dst.value.m[1][2] = src.m12();
-	dst.value.m[1][3] = src.m13();
-	dst.value.m[2][0] = src.m20();
-	dst.value.m[2][1] = src.m21();
-	dst.value.m[2][2] = src.m22();
-	dst.value.m[2][3] = src.m23();
-	dst.value.m[3][0] = src.m30();
-	dst.value.m[3][1] = src.m31();
-	dst.value.m[3][2] = src.m32();
-	dst.value.m[3][3] = src.m33();
+	dst.value <<
+		src.m00(), src.m01(), src.m02(), src.m03(),
+		src.m10(), src.m11(), src.m12(), src.m13(),
+		src.m20(), src.m21(), src.m22(), src.m23(),
+		src.m30(), src.m31(), src.m32(), src.m33();
 }
+
 
 O3DS::Data::Direction dir(enum O3DS::Direction d)
 {
@@ -155,10 +149,8 @@ enum O3DS::Direction dir(O3DS::Data::Direction d)
 	}
 	return O3DS::Direction::None;
 }
-
 namespace O3DS
 {
-
 	// Transform 
 
 	Transform::Transform(const std::string& name, int parentId, void *ref)
@@ -185,26 +177,53 @@ namespace O3DS
 	Transform::~Transform()
 	{};
 
-	bool Transform::nan()
+	bool Transform::nan() const
 	{
-		if (mMatrix.HasNan()) return true;
-		if (mWorldMatrix.HasNan()) return true;
-		if (translation.value.v[0] != translation.value.v[0]) return true;
-		if (translation.value.v[1] != translation.value.v[1]) return true;
-		if (translation.value.v[2] != translation.value.v[2]) return true;
-		if (rotation.value.v[0] != rotation.value.v[0]) return true;
-		if (rotation.value.v[1] != rotation.value.v[1]) return true;
-		if (rotation.value.v[2] != rotation.value.v[2]) return true;
-		if (rotation.value.v[3] != rotation.value.v[3]) return true;
-		if (scale.value.v[0] != scale.value.v[0]) return true;
-		if (scale.value.v[1] != scale.value.v[1]) return true;
-		if (scale.value.v[2] != scale.value.v[2]) return true;
+		if (!mMatrix.allFinite())      return true;
+		if (!mWorldMatrix.allFinite()) return true;
 
-		for (const auto& i : matrices) {
-			if(i.value.HasNan()) { return true; }
+		if (!translation.value.allFinite()) return true;
+		if (!scale.value.allFinite())       return true;
+
+		if (!rotation.value.coeffs().allFinite()) return true;
+		// coeffs() = (x, y, z, w)
+
+		for (const auto& i : matrices)
+		{
+			if (!i.value.allFinite())
+				return true;
 		}
+
 		return false;
 	}
+
+	bool Transform::operator==(const Transform &other) const
+	{
+		if (this->mName != other.mName) return false;
+		if (this->mParentId != other.mParentId) return false;
+
+		if (this->translation.value != other.translation.value) return false;
+
+		auto a = this->rotation.value.normalized();
+		auto b = other.rotation.value.normalized();
+		auto d = a.angularDistance(b);
+		if (d > 1e-6) { return false; }
+
+		if (this->scale.value != other.scale.value) return false;
+
+		if (this->transformOrder != other.transformOrder) return false;
+
+		if (this->matrices.size() != other.matrices.size()) return false;
+		for (size_t i = 0; i < this->matrices.size(); i++)
+		{
+			if (this->matrices[i].value != other.matrices[i].value)
+				return false;
+		}
+
+		return true;
+	}
+
+	// Subject
 
 	bool Subject::CalcMatrices()
 	{
@@ -212,9 +231,8 @@ namespace O3DS
 		{
 			transform->bWorldMatrix = false;
 			auto &m = transform->mMatrix;
-			m = Matrixd();
 
-			if(m.HasNan())
+			if(m.hasNaN())
 			{
 				mError = "Matrix NAN";
 				return false;
@@ -226,7 +244,7 @@ namespace O3DS
 			{
 				if (op == O3DS::TTranslation)
 				{
-					m = Matrixd::TranslateXYZ(transform->translation.value) * m;
+					m = translate(transform->translation.value) * m;
 				}
 				if (op == O3DS::TRotation)
 				{
@@ -234,7 +252,7 @@ namespace O3DS
 				}
 				if (op == O3DS::TScale)
 				{
-					m = m.Scale(transform->scale.value) * m;
+					m = scale(transform->scale.value) * m;
 				}
 				if (op == O3DS::TMatrix)
 				{
@@ -269,8 +287,15 @@ namespace O3DS
 		}
 
 		bool done = false;
+		int iterations = 0;
 		while (!done)
 		{
+			if (++iterations > this->mTransforms.size())
+			{
+				mError = "Cycle detected in transform hierarchy";
+				return false;
+			}
+
 			// Assume we are done, and flag as not done when we do work
 			done = true;
 			for (int transformId = 0; transformId < this->mTransforms.size(); transformId++)
@@ -288,13 +313,13 @@ namespace O3DS
 					return false;
 				}
 
-				if (transform->mParentId < 0 || transform->mParentId > this->mTransforms.size())
+				if (transform->mParentId < 0 || transform->mParentId >= this->mTransforms.size())
 				{
 					mError = "Invalid Parent Id";
 					return false;
 				}
 
-				auto& parentTransform = this->mTransforms.mItems[transform->mParentId];
+				auto parentTransform = this->mTransforms[transform->mParentId];
 				if (!parentTransform->bWorldMatrix)
 				{
 					// Parent has not been calculated yet
@@ -397,9 +422,9 @@ namespace O3DS
 			if (t->translation.delta() > deltaThreshold)
 			{
 				translations.push_back(O3DS::Data::TranslationUpdate(
-					(float)t->translation.value.v[0],
-					(float)t->translation.value.v[1],
-					(float)t->translation.value.v[2], transformId));
+					(float)t->translation.value.x(),
+					(float)t->translation.value.y(),
+					(float)t->translation.value.z(), transformId));
 				t->translation.sent();
 				count++;
 			}
@@ -407,10 +432,10 @@ namespace O3DS
 			if (t->rotation.delta() > deltaThreshold)
 			{
 				rotations.push_back(O3DS::Data::RotationUpdate(
-					(float)t->rotation.value.v[0],
-					(float)t->rotation.value.v[1],
-					(float)t->rotation.value.v[2],
-					(float)t->rotation.value.v[3], transformId));
+					(float)t->rotation.value.x(),
+					(float)t->rotation.value.y(),
+					(float)t->rotation.value.z(),
+					(float)t->rotation.value.w(), transformId));
 				t->rotation.sent();
 				count++;
 			}
@@ -516,7 +541,7 @@ namespace O3DS
 		std::copy(flagptr, flagptr + 4, back_inserter(outbuf));
 
 		// Checksum
-		std::uint32_t crc = CRCPP::CRC::Calculate(buf, size, CRCPP::CRC::CRC_32());
+		std::uint32_t crc = CRC::Calculate(buf, size, CRC::CRC_32());
 		const char* crcptr = (const char*)&crc;
 		std::copy(crcptr, crcptr + 4, back_inserter(outbuf));
 
@@ -557,7 +582,7 @@ namespace O3DS
 
 	bool SubjectList::Parse(const char *data, size_t len, TransformBuilder *builder, bool clearInactive)
 	{
-		std::uint32_t crc = CRCPP::CRC::Calculate(data + 8, len - 8, CRCPP::CRC::CRC_32());
+		std::uint32_t crc = CRC::Calculate(data + 8, len - 8, CRC::CRC_32());
 
 		std::uint32_t flags = *(std::uint32_t*)data;
 		std::uint32_t check = *(std::uint32_t*)(data + 4);
@@ -574,7 +599,7 @@ namespace O3DS
 			return false;
 		}
 
-		auto root = GetSubjectList(data+8);
+		auto root = O3DS::Data::GetSubjectList(data+8);
 
 		this->mTime = root->time();
 
@@ -726,7 +751,6 @@ namespace O3DS
 				break;
 		}
 	}
-
 
 
 } // namespace O3DS

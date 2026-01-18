@@ -30,6 +30,7 @@ SOFTWARE.
 #include <map>
 
 #include "o3ds/model.h"
+#include <Eigen/Dense>
 
 namespace O3DS
 {
@@ -77,7 +78,7 @@ namespace O3DS
 		struct SubjectInfo
 		{
 			std::vector<std::string> names;
-			std::vector<O3DS::Vector3d> scale;
+			std::vector<Eigen::Vector3d> scale;
 		};
 
 		class Parser

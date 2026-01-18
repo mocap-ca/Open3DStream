@@ -271,10 +271,7 @@ void O3DS::XSENS::Parser::get_quaternion_pose(uint8_t* payload, size_t len)
 		transform->translation.value[1] = -y * 100.0;
 		transform->translation.value[2] = z * 100.0;
 
-		transform->rotation.value[0] = -q1;
-		transform->rotation.value[1] = q2;
-		transform->rotation.value[2] = -q3;
-		transform->rotation.value[3] = q0;
+		transform->rotation.value = Eigen::Quaternion(-q1, q2, -q3, q0);
 
 		if (n < meta.scale.size())
 				transform->scale.value = meta.scale[i];
@@ -362,7 +359,7 @@ void O3DS::XSENS::Parser::get_scale(uint8_t* payload, size_t len)
 		stream.get(z);
 
 		meta.names.push_back(name);
-		meta.scale.push_back(O3DS::Vector3d(x * 100.0, y * -100.0, z * 100.0));
+		meta.scale.push_back(Eigen::Vector3d(x * 100.0, y * -100.0, z * 100.0));
 	}
 }
 

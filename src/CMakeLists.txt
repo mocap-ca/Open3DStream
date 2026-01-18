@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION  3.13)
 
 project(Open3DStreamLib)
 
-find_package(Flatbuffers CONFIG REQUIRED flatbuffers flatc HINTS ${CMAKE_CURRENT_LIST_DIR}/../usr)
+find_package(flatbuffers CONFIG REQUIRED HINTS ${CMAKE_CURRENT_LIST_DIR}/../usr)
 find_package(nng CONFIG REQUIRED HINTS ${CMAKE_CURRENT_LIST_DIR}/../usr)
 
 add_custom_command(
@@ -12,10 +12,16 @@ add_custom_command(
 
 add_custom_target(protocol DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/_generated/o3ds_generated.h)
 
-set(pub_headers			
+set(core_headers 
 	o3ds/o3ds.h
 	o3ds/getTime.h
 	o3ds/model.h
+	o3ds/context.h
+	o3ds/math.h
+	o3ds/o3ds_version.h
+)
+
+set(net_headers			
 	o3ds/base_connector.h
 	o3ds/nng_connector.h
 	o3ds/subscriber.h
@@ -29,8 +35,6 @@ set(pub_headers
 	o3ds/request.h
 	o3ds/pipeline.h
 	o3ds/async_pipeline.h
-	o3ds/context.h
-	o3ds/math.h
 	o3ds/tcp.h
 	o3ds/udp_fragment.h
 	o3ds/socket_exception.h
@@ -38,15 +42,19 @@ set(pub_headers
 	o3ds/udp.h
 	o3ds/socket_address.h
 	o3ds/binary_stream.h
-	o3ds/xsens_parser.h
-	o3ds/o3ds_version.h
-	o3ds/o3ds_version.h
+	# o3ds/xsens_parser.h
 )	
 
-set(SOURCES 
+set(core_sources 
 	o3ds/o3ds.cpp
 	o3ds/getTime.cpp
 	o3ds/model.cpp	
+	o3ds/o3ds_version.cpp	
+	o3ds/math.cpp
+	o3ds/context.cpp
+)
+
+set(net_sources
 	o3ds/base_connector.cpp
 	o3ds/nng_connector.cpp
 	o3ds/subscriber.cpp
@@ -59,8 +67,6 @@ set(SOURCES
 	o3ds/request.cpp
 	o3ds/pipeline.cpp
 	o3ds/async_pipeline.cpp
-	o3ds/context.cpp
-	o3ds/math.cpp
 	o3ds/tcp.cpp
 	o3ds/udp_fragment.cpp
 	o3ds/socket_exception.cpp
@@ -68,12 +74,12 @@ set(SOURCES
 	o3ds/udp.cpp
 	o3ds/socket_address.cpp
 	o3ds/binary_stream.cpp
-	o3ds/xsens_parser.cpp	
-	o3ds/o3ds_version.cpp	
+	# o3ds/xsens_parser.cpp	
+
 )
 	
 if(WIN32)
-set(xtralibs wsock32 ws2_32)
+set(net_libs wsock32 ws2_32)
 endif()
 
 # Shared library
@@ -82,28 +88,44 @@ endif()
 # add_dependencies(open3dstream protocol)
 
 # Static linkable library
-add_library(open3dstreamstatic STATIC ${SOURCES} ${pub_headers})
+add_library(o3dscore STATIC ${core_sources} ${core_headers})
+add_library(o3dsnet  STATIC ${net_sources} ${net_headers})
 
-target_include_directories(open3dstreamstatic PUBLIC 
-	${CMAKE_CURRENT_BINARY_DIR}/_generated ${CMAKE_CURRENT_LIST_DIR}
-	${FLATBUFFERS_INCLUDE_DIRS} 
-	${NNG_INCLUDE_DIRS}/..)
+target_include_directories(o3dscore PUBLIC 
+	${CMAKE_CURRENT_BINARY_DIR}/_generated 
+	${CMAKE_CURRENT_LIST_DIR}/../usr/include
+	${CMAKE_CURRENT_LIST_DIR}/../thirdparty/Eigen
+	${CMAKE_CURRENT_LIST_DIR}/../thirdparty/crccpp/inc
+	${CMAKE_CURRENT_LIST_DIR} 
+)
+
+target_include_directories(o3dsnet PUBLIC ${NNG_INCLUDE_DIRS}/.. )
+
+target_link_libraries(o3dscore PRIVATE flatbuffers::flatbuffers  )
+target_link_libraries(o3dsnet PRIVATE flatbuffers::flatbuffers o3dscore )
+
+
 
 # target_link_libraries(open3dstreamstatic PRIVATE ${NNG_LIBRARIES} ${FLATBUFFERS_LIBRARIES} ${xtralibs})        
-add_dependencies(open3dstreamstatic protocol)
+add_dependencies(o3dscore protocol)
 
-list(JOIN pub_headers ";" pub_headers_str)
-set_target_properties(open3dstreamstatic PROPERTIES PUBLIC_HEADER "${pub_headers_str}")
+# list(JOIN pub_headers ";" pub_headers_str)
+#set_target_properties(open3dstreamstatic PROPERTIES PUBLIC_HEADER "${pub_headers_str}")
 
 if(NOT DEFINED O3DS_VERSION_TAG)
 	message(FATAL "No version defined")
 endif()
-target_compile_definitions(open3dstreamstatic PUBLIC NNG_STATIC_LIB CRCPP_USE_NAMESPACE O3DS_VERSION_TAG=${O3DS_VERSION_TAG})
+target_compile_definitions(o3dscore PUBLIC O3DS_VERSION_TAG=${O3DS_VERSION_TAG})
+target_compile_definitions(o3dsnet PUBLIC NNG_STATIC_LIB O3DS_VERSION_TAG=${O3DS_VERSION_TAG})
 
-install(TARGETS open3dstreamstatic 
-	LIBRARY DESTINATION lib
-	PUBLIC_HEADER DESTINATION include/o3ds
-	CONFIGURATIONS RelWithDebInfo)
+#install(TARGETS o3dscore 
+#	LIBRARY DESTINATION lib
+#	PUBLIC_HEADER DESTINATION include/o3ds
+#	CONFIGURATIONS RelWithDebInfo Debug)
 
-install(FILES 	${CMAKE_CURRENT_BINARY_DIR}/_generated/o3ds_generated.h
-	DESTINATION include)
+#install(TARGETS o3dsnet 
+#	LIBRARY DESTINATION lib
+#	PUBLIC_HEADER DESTINATION include/o3ds
+#	CONFIGURATIONS RelWithDebInfo Debug)
+
+install(FILES 	${CMAKE_CURRENT_BINARY_DIR}/_generated/o3ds_generated.h DESTINATION include)

@@ -22,9 +22,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef O3DS_MATRIX_H
-#define O3DS_MATRIX_H
+#ifndef O3DS_MATH_H
+#define O3DS_MATH_H
 
+#include <Eigen/Dense>
+
+
+namespace O3DS
+{
+	using Matrix = Eigen::Matrix<double, 4, 4, Eigen::RowMajor>;
+
+	double rad(double deg);
+
+	Matrix  rotateX(double a);
+
+	Matrix  rotateY(double a);
+
+	Matrix  rotateZ(double a);
+
+	Matrix  fromQuaternion(const Eigen::Quaterniond& q);
+
+	Eigen::Quaterniond toQuaternion(const Matrix& m);
+
+	Matrix  scale(const Eigen::Vector3d& s);
+
+	Matrix  translate(double tx, double ty, double tz);
+
+	Matrix  translate(const Eigen::Vector3d& value);
+
+}
+
+
+
+#if 0
 #include <math.h>
 
 namespace O3DS
@@ -401,3 +431,6 @@ namespace O3DS
 } // O3DS
 
 #endif // O3DS_MATRIX_H
+
+
+#endif

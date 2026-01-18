@@ -10,20 +10,18 @@ namespace O3DS
 {
 	namespace Mobu
 	{
-		void operator >> (const FBVector3d& src, O3DS::Vector3d& dst)
+		void operator >> (const FBVector3d& src, Eigen::Vector3d& dst)
 		{
-			dst.v[0] = src.mValue[0];
-			dst.v[1] = src.mValue[1];
-			dst.v[2] = src.mValue[2];
+			dst = Eigen::Vector3d(src.mValue[0], src.mValue[1], src.mValue[2]);
 		}
 
-		void setRotation(const FBVector3d& src, const FBModelRotationOrder& order, O3DS::Matrixd& dst)
+		void setRotation(const FBVector3d& src, const FBModelRotationOrder& order, O3DS::Matrix& dst)
 		{
-			O3DS::Matrixd x = O3DS::Matrixd::RotateX(O3DS::rad(src.mValue[0]));
-			O3DS::Matrixd y = O3DS::Matrixd::RotateY(O3DS::rad(src.mValue[1]));
-			O3DS::Matrixd z = O3DS::Matrixd::RotateZ(O3DS::rad(src.mValue[2]));
+			O3DS::Matrix x = O3DS::rotateX(O3DS::rad(src.mValue[0]));
+			O3DS::Matrix y = O3DS::rotateY(O3DS::rad(src.mValue[1]));
+			O3DS::Matrix z = O3DS::rotateZ(O3DS::rad(src.mValue[2]));
 
-			O3DS::Matrixd m;
+			O3DS::Matrix m;
 
 			if (order == FBModelRotationOrder::kFBEulerXYZ) dst = x * y * z;
 			if (order == FBModelRotationOrder::kFBEulerXZY) dst = x * z * y;
@@ -37,11 +35,11 @@ namespace O3DS
 			}
 		}
 
-		void setRotation(const FBVector3d& src, const FBModelRotationOrder &order, O3DS::Vector4d& dst)
+		void setRotation(const FBVector3d& src, const FBModelRotationOrder &order, Eigen::Quaterniond& dst)
 		{
-			O3DS::Matrixd m;
+			O3DS::Matrix m;
 			setRotation(src, order, m);
-			dst = m.GetQuaternion();
+			dst = toQuaternion(m);
 		}
 
 		MobuTransform::MobuTransform(FBModel *model, int parentId)
@@ -57,8 +55,8 @@ namespace O3DS
 			setRotation(mModel->Rotation, rotOrder, this->rotation.value);
 			(FBVector3d)(mModel->Scaling) >> this->scale.value;
 
-			O3DS::Matrixd pre;
-			O3DS::Matrixd post;
+			O3DS::Matrix pre;
+			O3DS::Matrix post;
 
 			//setRotation(mModel->PreRotation, rotOrder, pre);
 			//setRotation(mModel->PostRotation, rotOrder, post);

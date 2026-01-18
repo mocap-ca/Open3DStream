@@ -28,19 +28,22 @@ SOFTWARE.
 #include <vector>
 #include <string>
 
-#include "math.h"
 #include "context.h"
 #include "transform_component.h"
 #include "o3ds_generated.h"
-
+#include "math.h"
 
 namespace O3DS
 {
+
 	/*! \class Transform model.h o3ds/model.h */
 	//! Defines a single transform with name and parent id reference
 	class Transform
 	{
 	public:
+
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 		Transform(const std::string& name, int parentId, void *ref = nullptr);
 
 		Transform(int parentId);
@@ -52,15 +55,17 @@ namespace O3DS
 		virtual void update() {}
 		virtual std::string info() { return std::string(); }
 
-		bool nan();
+		bool nan() const;
+
+		bool operator == (const Transform &other) const;
 
 		TransformTranslation translation;
 		TransformRotation    rotation;
 		TransformScale       scale;
 
-		Matrixd       mMatrix;
-		Matrixd       mWorldMatrix;
-		bool          bWorldMatrix;
+		Matrix      mMatrix;
+		Matrix      mWorldMatrix;
+		bool        bWorldMatrix;
 
 		std::vector<TransformMatrix> matrices;
 		std::vector<enum ComponentType> transformOrder;
@@ -85,21 +90,23 @@ namespace O3DS
 	class TransformList
 	{
 	private:
-		TransformList(const TransformList &other)
-		{}
+		TransformList(const TransformList&) = delete;
+		TransformList& operator=(const TransformList&) = delete;
+		TransformList(TransformList&&) = delete;
+		TransformList& operator=(TransformList&&) = delete;
 
 	public:
 		TransformList() {}
 
 		//! deletes the transform objects in the list
-		virtual ~TransformList()
+		~TransformList()
 		{
 			for (auto i : mItems)
 				delete i;
 		}
 
 		//! Returns the number of transforms
-		size_t size() { return mItems.size(); }
+		size_t size() const { return mItems.size(); }
 
 		//! Delete the transform objects and clear the least.
 		void clear()
@@ -115,20 +122,43 @@ namespace O3DS
 				i->update();
 		}
 
-		std::vector <Transform*>::iterator begin() { return mItems.begin(); }
-		std::vector <Transform*>::iterator end()   { return mItems.end(); }
+		auto begin() { return mItems.begin(); }
+		auto end() { return mItems.end(); }
+		auto begin() const { return mItems.begin(); }
+		auto end()   const { return mItems.end(); }
+
+		Transform* at(size_t id)
+		{
+			if (id >= mItems.size()) return nullptr;
+			return mItems[id];
+		}
+
 		Transform *operator[](size_t id)           { return mItems[id]; }
 
 		std::vector<Transform*> mItems;
 
 		Transform* find(const std::string &name)
 		{
-			for (auto i = 0; i < mItems.size(); i++)
+			for (size_t i = 0; i < mItems.size(); i++)
 			{
 				if (mItems[i]->mName == name)
 					return mItems[i];
 			}
 			return nullptr;
+		}
+
+		bool operator ==(const TransformList &other) const
+		{
+			if (mItems.size() != other.mItems.size())
+				return false;
+
+			for (size_t i = 0; i < mItems.size(); i++)
+			{
+				if (mItems[i]->operator==(*other.mItems[i]) == false) {
+					return false;
+				}
+			}
+			return true;
 		}
 	};
 
@@ -196,6 +226,7 @@ namespace O3DS
 		int SerializeUpdate(std::vector<char>& outbuf, size_t& count, double deltaThreshold, double timestamp);
 
 	};
+
 
 	/*! \class SubjectList model.h o3ds/model.h */
 	//!  A collection of subjects.

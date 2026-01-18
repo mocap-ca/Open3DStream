@@ -27,18 +27,21 @@ SOFTWARE.
 
 #include "o3ds/math.h"
 
+
 namespace O3DS
 {
 	enum ComponentType { TTranslation, TRotation, TOrientation, TScale, TMatrix };
 
 	class TransformComponent
 	{
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 	public:
-		virtual ~TransformComponent() {};
+		virtual ~TransformComponent() = default;
 
-		virtual Matrixd asMatrix() = 0;
+		virtual Matrix asMatrix() const = 0;
 
-		Matrixd operator *(Matrixd &other)
+		Matrix operator * (const Matrix& other) const
 		{
 			return this->asMatrix() * other;
 		}
@@ -48,69 +51,85 @@ namespace O3DS
 
 	class TransformTranslation : public TransformComponent
 	{
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 	public:
 		TransformTranslation()
-			: value(0.0, 0.0, 0.0) {}
-
-		TransformTranslation(Vector3d v)
-			: value(v) {}
-
-		TransformTranslation(double x, double y, double z) 
-			: value(x, y, z) {}
+			: value(Eigen::Vector3d::Zero())
+			, lastSentValue(Eigen::Vector3d::Zero())
+		{}
+		TransformTranslation(const Eigen::Vector3d& v)
+			: value(v)
+			, lastSentValue(Eigen::Vector3d::Zero())
+		{}
+		
+		TransformTranslation(double x, double y, double z)
+			: value(Eigen::Vector3d(x, y, z))
+			, lastSentValue(Eigen::Vector3d::Zero())
+		{}
 
 		virtual ~TransformTranslation() {};
-
-		Matrixd asMatrix() override
+		
+		Matrix asMatrix() const override
 		{
-			return Matrixd::TranslateXYZ(value[0], value[1], value[2]);
+			return translate(Eigen::Vector3d(value[0], value[1], value[2]));
 		}
 
 		enum ComponentType transformType() override { return TTranslation;  }
 
-		double delta() { return dist(value, lastSentValue); }
+		double delta() { return (value - lastSentValue).norm(); }
 
 		void sent() { lastSentValue = value; }
 
-		Vector3d value;
-		Vector3d lastSentValue;
+		Eigen::Vector3d value;
+		Eigen::Vector3d lastSentValue;
 	};
 
 	class TransformRotation : public TransformComponent
 	{
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 	public:
 		TransformRotation()
-			: value(0.0, 0.0, 0.0, 1.0) {}
+			: value(1.0, 0.0, 0.0, 0.0) {}
 
-		TransformRotation(Vector4d v)
+		TransformRotation(const Eigen::Quaterniond& v)
 			:value(v) {}
 
+		// Note eigein has w first, we use w last here.
 		TransformRotation(double x, double y, double z, double w)
-			: value(x, y, z, w) {}
+			: value(w, x, y, z) {}
 
 		virtual ~TransformRotation() {};
 
-		Matrixd asMatrix() override
+		Matrix asMatrix() const override
 		{
-			return Matrixd::Quaternion(value);
+			return fromQuaternion(value);
 		}
 
 		enum ComponentType transformType() override { return TRotation; }
 
-		double delta() { return dist(value, lastSentValue); }
+		double delta() { 			
+			Eigen::Quaterniond dq = lastSentValue.conjugate() * value;
+			dq.normalize();
+			return Eigen::AngleAxisd(dq).angle();
+		}
 
 		void sent() { lastSentValue = value; }
 
-		Vector4d value;
-		Vector4d lastSentValue;
+		Eigen::Quaterniond value;
+		Eigen::Quaterniond lastSentValue;
 	};
 
 	class TransformScale : public TransformComponent
 	{
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 	public:
 		TransformScale()
 			: value(1.0, 1.0, 1.0) {}
 
-		TransformScale(Vector3d v)
+		TransformScale(const Eigen::Vector3d& v)
 			: value(v) {}
 
 		TransformScale(double x, double y, double z)
@@ -118,48 +137,53 @@ namespace O3DS
 
 		virtual ~TransformScale() {};
 
-		Matrixd asMatrix() override
+		Matrix asMatrix() const override
 		{
-			return Matrixd::Scale(value);
+			return scale(value);
 		}
 
 		enum ComponentType transformType() override { return TScale; }
 
-		double delta() { return dist(value, lastSentValue); }
+		double delta() { return (value - lastSentValue).norm(); }
 
 		void sent() { lastSentValue = value; }
 
-		Vector3d value;
-		Vector3d lastSentValue;
+		Eigen::Vector3d value;
+		Eigen::Vector3d lastSentValue;
 	};
 
 	class TransformMatrix : public TransformComponent
 	{
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 	public:
-		TransformMatrix(O3DS::Matrixd m)
+		TransformMatrix(Matrix m)
 			: value(m) {}
 
-		TransformMatrix(double m[])
-			: value(m) {}
+		TransformMatrix(const double* m)
+		{
+			value <<
+				m[0], m[1], m[2], m[3],
+				m[4], m[5], m[6], m[7],
+				m[8], m[9], m[10], m[11],
+				m[12], m[13], m[14], m[15];
+		}
 
 		TransformMatrix()
-			: value(1.0, 0.0, 0.0, 0.0,
-				0.0, 1.0, 0.0, 0.0,
-				0.0, 0.0, 1.0, 0.0,
-				0.0, 0.0, 0.0, 1.0) {}
+			: value(Matrix::Identity()) {}
 
 		virtual ~TransformMatrix() {};
 
-		Matrixd asMatrix() override
+		Matrix asMatrix() const override
 		{
 			return value;
 		}
 
 		enum ComponentType transformType() override { return TMatrix; }
 
-		Matrixd value;
+		Matrix value;
 	};
-
 }
+
 
 #endif

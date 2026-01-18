@@ -18,8 +18,12 @@ function(build_mobu version path)
      target_compile_definitions(${mobu_target} PUBLIC ORSDKPRODUCT_VERSION=ORSDK${version} )
   endif()
   
-  target_link_libraries(${mobu_target} fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib open3dstreamstatic ${NNG_LIBRARY})
-  target_include_directories(${mobu_target} PUBLIC "${path}/OpenRealitySDK/include" ${CMAKE_CURENT_LIST_DIR}../src)
+  target_link_libraries(${mobu_target} fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib o3dscore o3dsnet ${NNG_LIBRARY})
+  target_include_directories(${mobu_target} PUBLIC 
+    "${path}/OpenRealitySDK/include" 
+    ${CMAKE_CURENT_LIST_DIR}../src
+    ${CMAKE_CURENT_LIST_DIR}../thirdparty/crccpp/inc
+  )
   target_link_directories(${mobu_target} PUBLIC "${path}/OpenRealitySDK/lib/x64" "${path}/OpenRealitySDK/lib/x64/HIK2016")
   target_compile_definitions(${mobu_target} PUBLIC NNG_STATIC_LIB)
   install(TARGETS ${mobu_target} RUNTIME DESTINATION "plugins/mobu")
