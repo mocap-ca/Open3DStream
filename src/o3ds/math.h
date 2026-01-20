@@ -30,7 +30,7 @@ SOFTWARE.
 
 namespace O3DS
 {
-	using Matrix = Eigen::Matrix<double, 4, 4, Eigen::RowMajor>;
+	using Matrix = Eigen::Matrix<double, 4, 4, Eigen::ColMajor>;
 
 	double rad(double deg);
 

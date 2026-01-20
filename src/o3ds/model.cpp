@@ -154,21 +154,27 @@ namespace O3DS
 	// Transform 
 
 	Transform::Transform(const std::string& name, int parentId, void *ref)
-		: bWorldMatrix(false)
+		: mMatrix(Matrix::Identity())
+		, mWorldMatrix(Matrix::Identity())
+		, bWorldMatrix(false)
 		, mName(name)
 		, mParentId(parentId)
-		, mReference(ref)	
+		, mReference(ref)
 	{}
 
 	Transform::Transform(int parentId)
-		: bWorldMatrix(false)
+		: mMatrix(Matrix::Identity())
+		, mWorldMatrix(Matrix::Identity())
+		, bWorldMatrix(false)
 		, mName()
 		, mParentId(parentId)
 		, mReference(nullptr)
 	{}
 
 	Transform::Transform()
-		: bWorldMatrix(false)
+		: mMatrix(Matrix::Identity())
+		, mWorldMatrix(Matrix::Identity())
+		, bWorldMatrix(false)
 		, mName()
 		, mParentId(-1)
 		, mReference(nullptr)
@@ -244,19 +250,19 @@ namespace O3DS
 			{
 				if (op == O3DS::TTranslation)
 				{
-					m = translate(transform->translation.value) * m;
+					m = m * translate(transform->translation.value);
 				}
 				if (op == O3DS::TRotation)
 				{
-					m = transform->rotation.asMatrix() * m;
+					m = m * transform->rotation.asMatrix();
 				}
 				if (op == O3DS::TScale)
 				{
-					m = scale(transform->scale.value) * m;
+					m = m * scale(transform->scale.value);
 				}
 				if (op == O3DS::TMatrix)
 				{
-					m = transform->matrices[matrixId++].value * m;
+					m = m * transform->matrices[matrixId++].value;
 				}
 			}
 		}
@@ -326,7 +332,7 @@ namespace O3DS
 					continue;
 				}
 
-				transform->mWorldMatrix = transform->mMatrix * parentTransform->mWorldMatrix;
+				transform->mWorldMatrix = parentTransform->mWorldMatrix * transform->mMatrix;
 				transform->bWorldMatrix = true;
 				done = false;
 			}
