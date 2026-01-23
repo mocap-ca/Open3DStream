@@ -81,7 +81,7 @@ namespace O3DS
 	class TransformBuilder
 	{
 	public:
-		virtual Transform* build(std::string name, int parentId) = 0;
+		virtual std::unique_ptr<Transform> build(std::string name, int parentId) = 0;
 	};
 
 
@@ -101,8 +101,7 @@ namespace O3DS
 		//! deletes the transform objects in the list
 		~TransformList()
 		{
-			for (auto i : mItems)
-				delete i;
+			mItems.clear();
 		}
 
 		//! Returns the number of transforms
@@ -111,38 +110,43 @@ namespace O3DS
 		//! Delete the transform objects and clear the least.
 		void clear()
 		{
-			for (auto i : mItems)
-				delete i;
 			mItems.clear();
 		}
 
 		void update()
 		{
-			for (auto i : mItems)
+			for (auto& i : mItems)
 				i->update();
 		}
 
-		auto begin() { return mItems.begin(); }
-		auto end() { return mItems.end(); }
-		auto begin() const { return mItems.begin(); }
-		auto end()   const { return mItems.end(); }
+		struct iterator {
+			using inner_it = std::vector<std::unique_ptr<Transform>>::iterator;
+			inner_it it;
+
+			Transform* operator*() const { return it->get(); }
+			iterator& operator++() { ++it; return *this; }
+			bool operator!=(const iterator& other) const { return it != other.it; }
+		};
+
+		iterator begin() { return { mItems.begin() }; }
+		iterator end() { return { mItems.end() }; }
 
 		Transform* at(size_t id)
 		{
 			if (id >= mItems.size()) return nullptr;
-			return mItems[id];
+			return mItems[id].get();
 		}
 
-		Transform *operator[](size_t id)           { return mItems[id]; }
+		Transform *operator[](size_t id) { return mItems[id].get(); }
 
-		std::vector<Transform*> mItems;
+		std::vector<std::unique_ptr<Transform>> mItems;
 
 		Transform* find(const std::string &name)
 		{
 			for (size_t i = 0; i < mItems.size(); i++)
 			{
 				if (mItems[i]->mName == name)
-					return mItems[i];
+					return mItems[i].get();
 			}
 			return nullptr;
 		}
@@ -188,16 +192,18 @@ namespace O3DS
 
 		Transform* addTransform(const std::string& name, int parentId, TransformBuilder *builder = nullptr)
 		{
-			Transform *ret;
-			if (builder) ret = builder->build(name, parentId);
-			else         ret = new Transform(name, parentId);
-			mTransforms.mItems.push_back(ret);
+			std::unique_ptr<Transform> transform;
+			Transform* ret = nullptr;
+			if (builder) transform = builder->build(name, parentId);
+			else         transform = std::make_unique<Transform>(name, parentId);
+			ret = transform.get();
+			mTransforms.mItems.push_back(std::move(transform));
 			return ret;
 		}
 
-		void addTransform(Transform* item)
+		void addTransform(std::unique_ptr<Transform> item)
 		{
-			mTransforms.mItems.push_back(item);
+			mTransforms.mItems.push_back(std::move(item));
 		}
 
 		void clear()
@@ -239,50 +245,55 @@ namespace O3DS
 			, mDeltaThreshold(std::numeric_limits<double>::min())
 		{}
 
-		SubjectList(const SubjectList &other)
-			: mTime(0.0)
-			, mDeltaThreshold(std::numeric_limits<double>::min())
-		{}
+		SubjectList(const SubjectList& other) = delete;
 
 		virtual ~SubjectList()
 		{
-			for (auto i : mItems)
-			{
-				delete i;
-			}
+			mItems.clear();
 		}
 
 		Subject* addSubject(std::string name, void* ref=nullptr)
 		{
-			auto s = new Subject(name, ref);
-			mItems.push_back(s);
-			return s;
+			auto s = std::make_unique<Subject>(name, ref);
+			Subject*  sptr = s.get();
+			mItems.push_back(std::move(s));
+			return sptr;
 		}
 
 		Subject* findSubject(const std::string &name)
 		{
-			for (auto i : mItems)
+			for (auto& i : mItems)
 			{
 				if (i->mName == name)
-					return i;
+					return i.get();
 			}
 			return nullptr;
 		}
 
 		void update()
 		{
-			for (auto i : mItems)
+			for (auto& i : mItems)
 			{
 				i->update();
 			}
 		}
 
-		std::vector<Subject*> mItems;
+		std::vector<std::unique_ptr<Subject>> mItems;
+
+		struct iterator {
+			using inner_it = std::vector<std::unique_ptr<Subject>>::iterator;
+			inner_it it;
+
+			Subject* operator*() const { return it->get(); }
+			iterator& operator++() { ++it; return *this; }
+			bool operator!=(const iterator& other) const { return it != other.it; }
+		};
 
 		size_t size() { return mItems.size(); }
-		std::vector <Subject*>::iterator begin() { return mItems.begin(); }
-		std::vector <Subject*>::iterator end() { return mItems.end(); }
-		Subject* operator [] (int ref) { return mItems.operator[](ref); }
+		Subject* operator [] (int i) { return mItems[i].get(); }
+
+		iterator begin() { return { mItems.begin() }; }
+		iterator end() { return { mItems.end() }; }
 
 		double mTime;
 		double mDeltaThreshold;

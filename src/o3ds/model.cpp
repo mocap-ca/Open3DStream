@@ -233,7 +233,7 @@ namespace O3DS
 
 	bool Subject::CalcMatrices()
 	{
-		for (auto& transform : this->mTransforms)
+		for (Transform* transform : this->mTransforms)
 		{
 			transform->bWorldMatrix = false;
 			auto &m = transform->mMatrix;
@@ -356,7 +356,7 @@ namespace O3DS
 		O3DS::Data::Rotation rotation;
 		O3DS::Data::Scale scale;
 
-		for (auto& t : this->mTransforms) {
+		for (Transform* t : this->mTransforms) {
 			int matrixId = 0;
 
 			std::vector<O3DS::Data::Matrix> matrices;
@@ -384,7 +384,7 @@ namespace O3DS
 				}
 			}
 
-			for (auto& m : t->matrices) {
+			for (int i = 0; i < t->matrices.size(); i++) {
 				// Copy all matrices.  This allows embedding other data (offsets)
 				O3DS::Data::Matrix matrix;
 				t->matrices[matrixId++] >> matrix;
@@ -517,7 +517,7 @@ namespace O3DS
 
 		std::vector<flatbuffers::Offset<O3DS::Data::Subject> > subjects;
 
-		for (O3DS::Subject* subject : this->mItems)
+		for (const auto& subject : mItems)
 		{
 			flatbuffers::Offset<O3DS::Data::Subject> s = subject->Serialize(builder);
 			subjects.push_back(s);
@@ -636,7 +636,7 @@ namespace O3DS
 			}
 		}
 
-		for (auto subject : this->mItems) {
+		for (const auto& subject : mItems) {
 			if(!subject->CalcMatrices()) {
 				mError = subject->mError;
 				return false;
