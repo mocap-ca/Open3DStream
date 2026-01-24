@@ -649,13 +649,14 @@ namespace O3DS
 	void SubjectList::ParseSubject(const O3DS::Data::Subject *inSubject,  TransformBuilder *builder )
 	{
 		std::string subjectName = inSubject->name()->str();
+		std::string subjectUuid = inSubject->uuid()->str();
 
 		// Check to see if this subject already exists
-		Subject *outSubject = this->findSubject(subjectName);
+		Subject *outSubject = this->findSubjectByUuid(subjectUuid);
 		if (outSubject == nullptr)
 		{
 			// Add it
-			outSubject = this->addSubject(subjectName);
+			outSubject = this->addSubject(subjectName, subjectUuid);
 		}
 
 		outSubject->mContext.mX = dir(inSubject->x_axis());
@@ -721,10 +722,11 @@ namespace O3DS
 		TransformBuilder *builder)
 	{
 		std::string name = inUpdate->name()->str();
+		std::string uuid = inUpdate->uuid()->str();
 		int id;
 
 		// Find the subject to update, by name
-		O3DS::Subject *outSubject = this->findSubject(name);
+		O3DS::Subject *outSubject = this->findSubjectByUuid(uuid);
 		if (!outSubject)
 			return;
 

@@ -82,6 +82,7 @@ table Subject {
   y_axis:Direction;
   z_axis:Direction;
   format:string;
+  uuid:string;
 }
 
 table SubjectUpdate {
@@ -89,6 +90,7 @@ table SubjectUpdate {
   translations:[TranslationUpdate];
   rotation:[RotationUpdate];
   scale:[ScaleUpdate];
+  uuid:string;
 }
 
 table SubjectList {

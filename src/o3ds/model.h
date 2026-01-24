@@ -177,12 +177,14 @@ namespace O3DS
 			: mReference(info)
 		{}
 
-		Subject(std::string name, void *info = nullptr)
+		Subject(std::string name, std::string uuid, void *info = nullptr)
 			: mName(name)
 			, mReference(info) 
+			, mUuid(uuid)
 		{}
 
 		std::string   mName;
+		std::string   mUuid;
 		std::vector<std::string> mJoints;
 
 		TransformList mTransforms;
@@ -252,19 +254,29 @@ namespace O3DS
 			mItems.clear();
 		}
 
-		Subject* addSubject(std::string name, void* ref=nullptr)
+		Subject* addSubject(std::string name, std::string uuid, void* ref=nullptr)
 		{
-			auto s = std::make_unique<Subject>(name, ref);
+			auto s = std::make_unique<Subject>(name, uuid, ref);
 			Subject*  sptr = s.get();
 			mItems.push_back(std::move(s));
 			return sptr;
 		}
 
-		Subject* findSubject(const std::string &name)
+		Subject* findSubjectByName(const std::string &name)
 		{
 			for (auto& i : mItems)
 			{
 				if (i->mName == name)
+					return i.get();
+			}
+			return nullptr;
+		}
+
+		Subject* findSubjectByUuid(const std::string& uuid)
+		{
+			for (auto& i : mItems)
+			{
+				if (i->mUuid == uuid)
 					return i.get();
 			}
 			return nullptr;

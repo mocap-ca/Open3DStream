@@ -178,10 +178,10 @@ namespace O3DS
 		ret = nng_msg_append(msg, data, len);
 		NNG_ERROR("Creating message")
 
-			ret = nng_sendmsg(mSocket, msg, NNG_FLAG_NONBLOCK);
+		ret = nng_sendmsg(mSocket, msg, NNG_FLAG_NONBLOCK);
 		NNG_ERROR("Sending message")
 
-			return true;
+		return true;
 	}
 
 
