@@ -175,6 +175,7 @@ namespace O3DS
 	public:
 		Subject(void *info = nullptr) 
 			: mReference(info)
+			, mEnabled(true)
 		{}
 
 		Subject(std::string name, std::string uuid, void *info = nullptr)
@@ -233,6 +234,7 @@ namespace O3DS
 
 		int SerializeUpdate(std::vector<char>& outbuf, size_t& count, double deltaThreshold, double timestamp);
 
+		bool mEnabled;
 	};
 
 
@@ -244,7 +246,7 @@ namespace O3DS
 
 		SubjectList()
 			: mTime(0.0)
-			, mDeltaThreshold(std::numeric_limits<double>::min())
+			, mDeltaThreshold(1e-6 /*std::numeric_limits<double>::min()*/)
 		{}
 
 		SubjectList(const SubjectList& other) = delete;

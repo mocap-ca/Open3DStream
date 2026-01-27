@@ -238,6 +238,8 @@ namespace O3DS
 			transform->bWorldMatrix = false;
 			auto &m = transform->mMatrix;
 
+			m = Matrix::Identity();
+
 			if(m.hasNaN())
 			{
 				mError = "Matrix NAN";
@@ -349,6 +351,7 @@ namespace O3DS
 	{
 		
 		auto oSubjectName = builder.CreateString(this->mName);
+		auto oSubjectUuid = builder.CreateString(this->mUuid);
 		auto oFormat = builder.CreateString(this->mContext.mFormat);
 		std::vector<flatbuffers::Offset<O3DS::Data::Transform>> ovSkeleton;
 
@@ -365,6 +368,9 @@ namespace O3DS
 			t->translation >> translation;
 			t->rotation >> rotation;
 			t->scale >> scale;
+
+			t->translation.sent();
+			t->rotation.sent();
 
 			for (const auto component : t->transformOrder) {
 				if (component == O3DS::TTranslation) {
@@ -406,23 +412,26 @@ namespace O3DS
 		auto transforms = builder.CreateVector(ovSkeleton);
 		return CreateSubject(builder, transforms, oSubjectName,
 						dir(this->mContext.mX), dir(this->mContext.mY),
-						dir(this->mContext.mZ), oFormat);
+						dir(this->mContext.mZ), oFormat, oSubjectUuid);
 	}
 
 	flatbuffers::Offset<O3DS::Data::SubjectUpdate> Subject::SerializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t &count, double deltaThreshold)
 	{
 		auto oSubjectName = builder.CreateString(this->mName);
+		auto oSubjectUuid = builder.CreateString(this->mUuid);
 
 		std::vector<O3DS::Data::TranslationUpdate> translations;
 		std::vector<O3DS::Data::RotationUpdate> rotations;
 		std::vector<O3DS::Data::ScaleUpdate> scales;
 
-		int transformId = 0;
-
-		for (const auto& t : this->mTransforms)
+		for (int transformId=0; transformId < this->mTransforms.size(); transformId++)
 		{
+			const auto& t = this->mTransforms[transformId];
+
+
 			if (t->nan())
 			{
+				// std::cout << "NAN " << t->mName << std::endl;
 				continue;
 			}
 			if (t->translation.delta() > deltaThreshold)
@@ -435,7 +444,8 @@ namespace O3DS
 				count++;
 			}
 
-			if (t->rotation.delta() > deltaThreshold)
+			auto delta = t->rotation.delta();
+			if (delta > deltaThreshold)
 			{
 				rotations.push_back(O3DS::Data::RotationUpdate(
 					(float)t->rotation.value.x(),
@@ -447,22 +457,21 @@ namespace O3DS
 			}
 
 			/*
-		if (t->scale.delta() > 0.001)
-		{
-			scales.push_back(O3DS::Data::ScaleUpdate(
-				(float)t->scale.value.v[0],
-				(float)t->scale.value.v[1],
-				(float)t->scale.value.v[2], transformId));
-			t->scale.sent();
-		}*/
+			if (t->scale.delta() > 0.001)
+			{
+				scales.push_back(O3DS::Data::ScaleUpdate(
+					(float)t->scale.value.v[0],
+					(float)t->scale.value.v[1],
+					(float)t->scale.value.v[2], transformId));
+				t->scale.sent();
+			}*/
 
-			transformId++;
 		}
 
 		auto tr = builder.CreateVectorOfStructs(translations);
 		auto ro = builder.CreateVectorOfStructs(rotations);
 		auto sc = builder.CreateVectorOfStructs(scales);
-		return CreateSubjectUpdate(builder, oSubjectName, tr, ro, sc);
+		return CreateSubjectUpdate(builder, oSubjectName, tr, ro, sc, oSubjectUuid);
 	}
 
 	int Subject::Serialize(std::vector<char> &outbuf, double timestamp)
@@ -519,8 +528,10 @@ namespace O3DS
 
 		for (const auto& subject : mItems)
 		{
-			flatbuffers::Offset<O3DS::Data::Subject> s = subject->Serialize(builder);
-			subjects.push_back(s);
+			if (subject->mEnabled) {
+				flatbuffers::Offset<O3DS::Data::Subject> s = subject->Serialize(builder);
+				subjects.push_back(s);
+			}
 		}
 
 		auto ovSubjects = builder.CreateVector(subjects);
@@ -572,7 +583,9 @@ namespace O3DS
 
 		for (auto& subject : this->mItems)
 		{			
-			outSubjectUpdates.push_back(subject->SerializeUpdate(builder, count, mDeltaThreshold));
+			if (subject->mEnabled) {
+				outSubjectUpdates.push_back(subject->SerializeUpdate(builder, count, mDeltaThreshold));
+			}
 		}
 
 		auto ovSubjectUpdates = builder.CreateVector(outSubjectUpdates);
@@ -732,31 +745,28 @@ namespace O3DS
 
 		// Update TRS
 
-		for (auto inTranslation : *inUpdate->translations())
+		for (const auto& inTranslation : *inUpdate->translations())
 		{
 			id = inTranslation->i();
-			if (id < outSubject->mTransforms.size())
+			if (id < outSubject->mTransforms.size()) {
 				*inTranslation >> outSubject->mTransforms[id]->translation;
-			else
-				break;
+			}
 		}
 
 		for (auto inRotation : *inUpdate->rotation())
 		{
 			id = inRotation->i();
-			if (id < outSubject->mTransforms.size())
+			if (id < outSubject->mTransforms.size()) {
 				*inRotation >> outSubject->mTransforms[id]->rotation;
-			else
-				break;
+			}
 		}
 
-		for (auto inScale : *inUpdate->scale())
+		for (const auto& inScale : *inUpdate->scale())
 		{
 			id = inScale->i();
-			if (id < outSubject->mTransforms.size())
+			if (id < outSubject->mTransforms.size()) {
 				*inScale >> outSubject->mTransforms[id]->scale;
-			else
-				break;
+			}
 		}
 	}
 

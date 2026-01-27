@@ -109,13 +109,13 @@ namespace O3DS
 
 		enum ComponentType transformType() override { return TRotation; }
 
-		double delta() { 			
-			Eigen::Quaterniond dq = lastSentValue.conjugate() * value;
-			dq.normalize();
-			return Eigen::AngleAxisd(dq).angle();
+		double delta() { 	
+			return std::abs(lastSentValue.angularDistance(value));
+			// return Eigen::AngleAxisd(lastSentValue * value.conjugate()).angle();
 		}
 
-		void sent() { lastSentValue = value; }
+		void sent() { lastSentValue = Eigen::Quaterniond(value);
+		}
 
 		Eigen::Quaterniond value;
 		Eigen::Quaterniond lastSentValue;
