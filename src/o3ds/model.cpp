@@ -488,6 +488,7 @@ namespace O3DS
 			done = true;
 			for (int transformId = 0; transformId < this->mTransforms.size(); transformId++)
 			{
+
 				auto transform = this->mTransforms[transformId];
 				if (transform->bWorldMatrix) {
 					 continue;
@@ -690,9 +691,7 @@ namespace O3DS
 	{}
 
 	SubjectList::~SubjectList()
-	{
-		mItems.clear();
-	}
+	{}
 
 	bool SubjectList::allFinite()
 	{
@@ -869,13 +868,13 @@ namespace O3DS
 			return false;
 		}
 
-
 		auto root = O3DS::Data::GetSubjectList(fb);
 
 		this->mTime = root->time();
 
 		auto subjects_data = root->subjects();
 		auto updates_data = root->updates();
+
 
 		if (subjects_data)
 		{
@@ -910,6 +909,7 @@ namespace O3DS
 				return false;
 			}
 		}
+		
 
 		return true;
 	}

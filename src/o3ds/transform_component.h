@@ -26,7 +26,7 @@ SOFTWARE.
 #define TRANSFORM_COMPONENT_H
 
 #include "o3ds/math.h"
-
+#include <cassert>
 
 namespace O3DS
 {
@@ -58,15 +58,22 @@ namespace O3DS
 			: value(Eigen::Vector3d::Zero())
 			, lastSentValue(Eigen::Vector3d::Zero())
 		{}
+
 		TransformTranslation(const Eigen::Vector3d& v)
 			: value(v)
 			, lastSentValue(Eigen::Vector3d::Zero())
-		{}
+		{
+			assert(v.allFinite());
+		}
 		
 		TransformTranslation(double x, double y, double z)
 			: value(Eigen::Vector3d(x, y, z))
 			, lastSentValue(Eigen::Vector3d::Zero())
-		{}
+		{
+			assert(x == x);
+			assert(y == y);
+			assert(z == z);
+		}
 
 		virtual ~TransformTranslation() {};
 		
@@ -79,7 +86,7 @@ namespace O3DS
 
 		double delta() { return (value - lastSentValue).norm(); }
 
-		void sent() { lastSentValue = value; }
+		void sent() { lastSentValue = value; assert(value.allFinite()); }
 
 		Eigen::Vector3d value;
 		Eigen::Vector3d lastSentValue;

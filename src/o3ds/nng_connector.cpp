@@ -273,7 +273,7 @@ namespace O3DS
 		// Only calls nng_recv_aio if the message was okay.
 		int ret;
 
-		std::lock_guard<std::mutex> guard(mutex);
+		// std::lock_guard<std::mutex> guard(mutex);
 
 		ret = nng_aio_result(aio);
 		if (ret != 0)
@@ -284,6 +284,10 @@ namespace O3DS
 		}
 
 		nng_msg* msg = nng_aio_get_msg(aio);
+
+		// Re arm right away
+		nng_recv_aio(mSocket, aio);
+
 		if (msg == nullptr)
 		{
 			Connector::setError("No message wile doing an async read");
@@ -291,11 +295,14 @@ namespace O3DS
 			return false;
 		}
 
-		if (mInDataFunc) mInDataFunc(mContext, nng_msg_body(msg), nng_msg_len(msg));
+		void* data = nng_msg_body(msg);
+		size_t sz = nng_msg_len(msg);
+
+		if (data && sz> 0 && mInDataFunc) mInDataFunc(mContext, data , sz);
 
 		nng_msg_free(msg);
 
-		nng_recv_aio(mSocket, aio);
+		// nng_recv_aio(mSocket, aio);
 
 		mState = Connector::READING;
 
