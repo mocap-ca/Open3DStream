@@ -58,9 +58,10 @@ O3DS::Matrix  O3DS::fromQuaternion(const Eigen::Quaterniond& q)
 Eigen::Quaterniond O3DS::toQuaternion(const Matrix& m)
 {
 	Eigen::Matrix3d r = m.block<3, 3>(0, 0);
-	r = r.normalized();
-	return Eigen::Quaterniond(r);
-};
+	Eigen::Quaterniond q(r);
+	q.normalize();   // normalize the quaternion, NOT the matrix
+	return q;
+}
 
 O3DS::Matrix  O3DS::scale(const Eigen::Vector3d& s)
 {

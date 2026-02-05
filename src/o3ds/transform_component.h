@@ -1,7 +1,7 @@
 /*
 Open 3D Stream
 
-Copyright 2022 Alastair Macleod
+Copyright 2026 Alastair Macleod
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -90,15 +90,20 @@ namespace O3DS
 		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
 	public:
+		// Note eigein has w first, we use w last here.
 		TransformRotation()
-			: value(1.0, 0.0, 0.0, 0.0) {}
+			: value(1.0, 0.0, 0.0, 0.0)
+		    , lastSentValue(0.0, 0.0, 0.0, 0.0) 
+		{}
 
 		TransformRotation(const Eigen::Quaterniond& v)
 			:value(v) {}
 
 		// Note eigein has w first, we use w last here.
 		TransformRotation(double x, double y, double z, double w)
-			: value(w, x, y, z) {}
+			: value(w, x, y, z)
+			, lastSentValue(0.0, 0.0, 0.0, 0.0)
+		{}
 
 		virtual ~TransformRotation() {};
 
@@ -127,13 +132,18 @@ namespace O3DS
 
 	public:
 		TransformScale()
-			: value(1.0, 1.0, 1.0) {}
+			: value(1.0, 1.0, 1.0)
+		    , lastSentValue(0.0, 0.0, 0.0)
+		{}
 
 		TransformScale(const Eigen::Vector3d& v)
-			: value(v) {}
+			: value(v)
+			, lastSentValue(0.0, 0.0, 0.0) {}
 
 		TransformScale(double x, double y, double z)
-			: value(x, y, z) {}
+			: value(x, y, z)
+			, lastSentValue(0.0, 0.0, 0.0)
+		{}
 
 		virtual ~TransformScale() {};
 

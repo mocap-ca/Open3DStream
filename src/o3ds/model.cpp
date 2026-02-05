@@ -30,6 +30,9 @@ SOFTWARE.
 #include <sstream>
 #include <iostream>
 
+//////////////////////////////////
+// Operators
+
 void operator >>(const O3DS::TransformTranslation& src, O3DS::Data::Translation &dst)
 {
 	dst = O3DS::Data::Translation(
@@ -151,10 +154,14 @@ enum O3DS::Direction dir(O3DS::Data::Direction d)
 }
 namespace O3DS
 {
+	/////////////////////////////////////////
 	// Transform 
 
 	Transform::Transform(const std::string& name, int parentId, void *ref)
-		: mMatrix(Matrix::Identity())
+		: translation(0, 0, 0)
+		, rotation(Eigen::Quaterniond::Identity())
+		, scale(1, 1, 1)
+		, mMatrix(Matrix::Identity())
 		, mWorldMatrix(Matrix::Identity())
 		, bWorldMatrix(false)
 		, mName(name)
@@ -163,7 +170,10 @@ namespace O3DS
 	{}
 
 	Transform::Transform(int parentId)
-		: mMatrix(Matrix::Identity())
+		: translation(0, 0, 0)
+		, rotation(Eigen::Quaterniond::Identity())
+		, scale(1, 1, 1)
+		, mMatrix(Matrix::Identity())
 		, mWorldMatrix(Matrix::Identity())
 		, bWorldMatrix(false)
 		, mName()
@@ -172,7 +182,10 @@ namespace O3DS
 	{}
 
 	Transform::Transform()
-		: mMatrix(Matrix::Identity())
+		: translation(0, 0, 0)
+		, rotation(Eigen::Quaterniond::Identity())
+		, scale(1, 1, 1)
+		, mMatrix(Matrix::Identity())
 		, mWorldMatrix(Matrix::Identity())
 		, bWorldMatrix(false)
 		, mName()
@@ -180,27 +193,91 @@ namespace O3DS
 		, mReference(nullptr)
 	{}
 
+	Transform::Transform(const Transform& other)
+	{
+		//translation.value = other.translation.value.eval();	
+		translation.value.x() = other.translation.value.x();
+		translation.value.y() = other.translation.value.y();
+		translation.value.z() = other.translation.value.z();
+
+		translation.lastSentValue = Eigen::Vector3d::Zero();
+		rotation.value = Eigen::Quaterniond(other.rotation.value);
+		rotation.lastSentValue = Eigen::Quaterniond::Identity();
+
+		scale.value = other.scale.value.eval();
+		scale.lastSentValue = Eigen::Vector3d::Zero();
+
+		mMatrix = other.mMatrix.eval();
+
+		mWorldMatrix = other.mMatrix.eval();
+
+		bWorldMatrix = other.bWorldMatrix;
+
+		for(auto &m : other.matrices) {
+			matrices.push_back(TransformMatrix(m.value.eval()));
+		}
+
+		for(auto &op : other.transformOrder) {
+			transformOrder.push_back(op);
+		}
+
+		mName = other.mName;
+		mParentId = other.mParentId;
+		mReference = nullptr; // probably not a good idea to copy this.
+	}
+
 	Transform::~Transform()
 	{};
 
-	bool Transform::nan() const
+	void Transform::update()
 	{
-		if (!mMatrix.allFinite())      return true;
-		if (!mWorldMatrix.allFinite()) return true;
+		// No implementation here
 
-		if (!translation.value.allFinite()) return true;
-		if (!scale.value.allFinite())       return true;
+		bWorldMatrix = false;
 
-		if (!rotation.value.coeffs().allFinite()) return true;
+		mMatrix = Matrix::Identity();
+
+		int matrixId = 0;
+
+		for (auto op : transformOrder)
+		{
+			if (op == O3DS::TTranslation)
+			{
+				mMatrix = mMatrix * translate(translation.value);
+			}
+			if (op == O3DS::TRotation)
+			{
+				mMatrix = mMatrix * rotation.asMatrix();
+			}
+			if (op == O3DS::TScale)
+			{
+				mMatrix = mMatrix * O3DS::scale(scale.value);
+			}
+			if (op == O3DS::TMatrix)
+			{
+				mMatrix = mMatrix * matrices[matrixId++].value;
+			}
+		}
+	}
+
+	bool Transform::allFinite()
+	{
+		if (!mMatrix.allFinite())      return false;
+		if (!mWorldMatrix.allFinite()) return false;
+
+		if (!translation.value.allFinite()) return false;
+		if (!scale.value.allFinite())       return false;
+
+		if (!rotation.value.coeffs().allFinite()) return false;
 		// coeffs() = (x, y, z, w)
 
 		for (const auto& i : matrices)
 		{
 			if (!i.value.allFinite())
-				return true;
+				return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	bool Transform::operator==(const Transform &other) const
@@ -229,43 +306,146 @@ namespace O3DS
 		return true;
 	}
 
+	///////////////////////////////
+	// Transform List
+
+	TransformList::~TransformList()
+	{
+		mItems.clear();
+	}
+
+	size_t TransformList::size() const
+	{
+		return mItems.size();
+	}	
+
+	void TransformList::clear() {
+		mItems.clear();	
+	}
+
+	void TransformList::update()
+	{
+		for (auto& i : mItems)
+			i->update();
+	}
+
+	TransformList::iterator TransformList::begin() { return { mItems.begin() }; }
+	TransformList::iterator TransformList::end() { return { mItems.end() }; }
+
+	Transform* TransformList::at(size_t id)
+	{
+		if (id >= mItems.size()) return nullptr;
+		return mItems[id].get();
+	}
+
+	Transform* TransformList::operator[](size_t id) { return mItems[id].get(); }
+
+	Transform* TransformList::find(const std::string& name)
+	{
+		for (size_t i = 0; i < mItems.size(); i++)
+		{
+			if (mItems[i]->mName == name)
+				return mItems[i].get();
+		}
+		return nullptr;
+	}
+
+	bool TransformList::operator ==(const TransformList& other) const
+	{
+		if (mItems.size() != other.mItems.size())
+			return false;
+
+		// TODO - allow for out of order compare of lists
+		for (size_t i = 0; i < mItems.size(); i++)
+		{
+			if (mItems[i]->operator==(*other.mItems[i]) == false) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	// Subject
+
+	Subject::Subject(void* info)
+		: mReference(info)
+		, mEnabled(true)
+	{}
+
+	Subject::Subject(std::string name, std::string uuid, void* info)
+		: mName(name)
+		, mReference(info)
+		, mUuid(uuid)
+		, mEnabled(true)
+	{}
+
+	bool Subject::allFinite()
+	{
+		for (auto i : mTransforms) {
+			if (!i->allFinite()) {
+				mError = "Invalid transform: " + i->mName;
+				return false;
+			}
+		}
+		return true;
+	}
+
+	Transform* Subject::addTransform(const std::string& name, int parentId, TransformBuilder* builder)
+	{
+		std::unique_ptr<Transform> transform;
+		Transform* ret = nullptr;
+		if (builder) transform = builder->build(name, parentId);
+		else         transform = std::make_unique<Transform>(name, parentId);
+		ret = transform.get();
+		mTransforms.mItems.push_back(std::move(transform));
+		return ret;
+	}
+
+	void Subject::addTransform(std::unique_ptr<Transform> item)
+	{
+		mTransforms.mItems.push_back(std::move(item));
+	}
+
+	void Subject::clearTransforms()
+	{
+		mTransforms.clear();	
+	}
+
+	void Subject::clearAll()
+	{
+		mTransforms.clear();
+		mName.clear();
+		mUuid.clear();
+		mJoints.clear();
+		mReference = nullptr;
+		mError.clear();
+	}
+
+	void Subject::update()
+	{
+		mTransforms.update();
+	}
+
+	size_t Subject::size()
+	{
+		return mTransforms.mItems.size();
+	}
 
 	bool Subject::CalcMatrices()
 	{
 		for (Transform* transform : this->mTransforms)
 		{
-			transform->bWorldMatrix = false;
-			auto &m = transform->mMatrix;
-
-			m = Matrix::Identity();
-
-			if(m.hasNaN())
+			if (!transform->allFinite())
 			{
-				mError = "Matrix NAN";
+				mError = "Invalid xform: " + transform->mName;
 				return false;
 			}
 
-			int matrixId = 0;
-
-			for (auto op : transform->transformOrder)
-			{
-				if (op == O3DS::TTranslation)
-				{
-					m = m * translate(transform->translation.value);
-				}
-				if (op == O3DS::TRotation)
-				{
-					m = m * transform->rotation.asMatrix();
-				}
-				if (op == O3DS::TScale)
-				{
-					m = m * scale(transform->scale.value);
-				}
-				if (op == O3DS::TMatrix)
-				{
-					m = m * transform->matrices[matrixId++].value;
-				}
+			transform->update();
+			
+			if (!transform->allFinite()) {
+				mError = "Bad calc for: " + transform->mName;
+				return false;
 			}
 		}
 
@@ -273,7 +453,7 @@ namespace O3DS
 
 		// Find the root first
 		int rootCount = 0;	
-		for(auto transform : this->mTransforms) {
+		for(Transform* transform : this->mTransforms) {
 			if (transform->mParentId == -1)
 			{
 				// No Parent - matrix is world matrix
@@ -330,12 +510,17 @@ namespace O3DS
 				auto parentTransform = this->mTransforms[transform->mParentId];
 				if (!parentTransform->bWorldMatrix)
 				{
-					// Parent has not been calculated yet
+					// Parent has not been calculated yet - will get on next outer loop
 					continue;
 				}
 
 				transform->mWorldMatrix = parentTransform->mWorldMatrix * transform->mMatrix;
 				transform->bWorldMatrix = true;
+
+				if (!transform->mWorldMatrix.allFinite()) {
+					mError = "WM Error: " + transform->mName;
+					return false;
+				}
 				done = false;
 			}
 		}
@@ -343,13 +528,8 @@ namespace O3DS
 		return true;
 	}
 
-
-
-	// Subject
-
 	flatbuffers::Offset<O3DS::Data::Subject> Subject::Serialize(flatbuffers::FlatBufferBuilder& builder)
 	{
-		
 		auto oSubjectName = builder.CreateString(this->mName);
 		auto oSubjectUuid = builder.CreateString(this->mUuid);
 		auto oFormat = builder.CreateString(this->mContext.mFormat);
@@ -368,6 +548,13 @@ namespace O3DS
 			t->translation >> translation;
 			t->rotation >> rotation;
 			t->scale >> scale;
+
+			if (!t->translation.value.allFinite()) {
+								std::cerr << "ERROR" << std::endl;
+			}
+			if (!t->rotation.value.coeffs().allFinite()) {
+								std::cerr << "ERROR" << std::endl;
+			}
 
 			t->translation.sent();
 			t->rotation.sent();
@@ -428,10 +615,9 @@ namespace O3DS
 		{
 			const auto& t = this->mTransforms[transformId];
 
-
-			if (t->nan())
+			if (!t->allFinite())
 			{
-				// std::cout << "NAN " << t->mName << std::endl;
+				mError = "Transform has non-finite values: " + t->mName;
 				continue;
 			}
 			if (t->translation.delta() > deltaThreshold)
@@ -495,12 +681,75 @@ namespace O3DS
 		return static_cast<int>(outbuf.size());
 	}
 
+	//////////////////////////////
+	// Subject List
+
+	SubjectList::SubjectList()
+		: mTime(0.0)
+		, mDeltaThreshold(1e-6 /*std::numeric_limits<double>::min()*/)
+	{}
+
+	SubjectList::~SubjectList()
+	{
+		mItems.clear();
+	}
+
+	bool SubjectList::allFinite()
+	{
+		for (const auto& s : mItems)
+		{
+			if (!s->allFinite()) {
+				mError = s->mError;
+				return false;
+			}
+		}
+		return true;
+	}
+
+	Subject* SubjectList::addSubject(std::string name, std::string uuid, void* ref)
+	{
+		auto s = std::make_unique<Subject>(name, uuid, ref);
+		Subject* sptr = s.get();
+		mItems.push_back(std::move(s));
+		return sptr;
+	}
+
+	Subject* SubjectList::findSubjectByName(const std::string& name)
+	{
+		for (auto& i : mItems)
+		{
+			if (i->mName == name)
+				return i.get();
+		}
+		return nullptr;
+	}
+
+	Subject* SubjectList::findSubjectByUuid(const std::string& uuid)
+	{
+		for (auto& i : mItems)
+		{
+			if (i->mUuid == uuid)
+				return i.get();
+		}
+		return nullptr;
+	}
+
+	void SubjectList::update()
+	{
+		for (auto& i : mItems)
+		{
+			i->update();
+		}
+	}
+
 	int Subject::SerializeUpdate(std::vector<char>& outbuf, size_t& count, double deltaThreshold, double timestamp)
 	{
-		if (timestamp == 0.0)
-		{
-			timestamp = GetTime();
+		if (!allFinite()) {
+			// All finite should set the error with the invalid joint name
+			return 0;
 		}
+
+		if (timestamp == 0.0) { timestamp = GetTime(); }
 
 		flatbuffers::FlatBufferBuilder builder;
 
@@ -513,13 +762,18 @@ namespace O3DS
 
 		builder.Finish(root);
 
-		finalize(builder, outbuf, 1);
+		finalize(builder, outbuf, 2);
 
 		return static_cast<int>(outbuf.size());
 	}
 
 	int SubjectList::Serialize(std::vector<char> &outbuf, double timestamp)
 	{	
+		if (!allFinite()) {
+			// All finite should set the error with the invalid joint name
+			return 0;
+		}
+
 		if(timestamp == 0.0) timestamp = GetTime();
 
 		flatbuffers::FlatBufferBuilder builder;
@@ -545,37 +799,16 @@ namespace O3DS
 		return static_cast<int>(outbuf.size());
 	}
 
-	void finalize(flatbuffers::FlatBufferBuilder& builder, std::vector<char>& outbuf, std::uint32_t flags)
-	{
-		outbuf.resize(0);
 
-		uint8_t* buf = builder.GetBufferPointer();
-		int size = builder.GetSize();
-
-		// Flags
-		//std::uint32_t flags = 0x0001;
-		const char* flagptr = (const char*)&flags;
-		std::copy(flagptr, flagptr + 4, back_inserter(outbuf));
-
-		// Checksum
-		std::uint32_t crc = CRC::Calculate(buf, size, CRC::CRC_32());
-		const char* crcptr = (const char*)&crc;
-		std::copy(crcptr, crcptr + 4, back_inserter(outbuf));
-
-		// Data
-		std::copy(buf, buf + size, back_inserter(outbuf));
-	}
-
-
-
-	// Subject List
 
 	int SubjectList::SerializeUpdate(std::vector<char> &outbuf, size_t& count, double timestamp)
 	{
-		if (timestamp == 0.0)
-		{
-			timestamp = GetTime();
+		if (!this->allFinite()) {
+			// All finite should set the error with the invalid joint name
+			return 0;
 		}
+
+		if (timestamp == 0.0) { timestamp = GetTime(); }
 
 		flatbuffers::FlatBufferBuilder builder;
 
@@ -594,21 +827,30 @@ namespace O3DS
 
 		builder.Finish(root);
 
-		finalize(builder, outbuf, 1);
+		finalize(builder, outbuf, 2);
 
 		return static_cast<int>(outbuf.size());
 	}
 
+
+
 	bool SubjectList::Parse(const char *data, size_t len, TransformBuilder *builder, bool clearInactive)
 	{
+		if (len < 8) {
+			mError = "Buffer too small";
+			return false;
+		}
+	
 		std::uint32_t crc = CRC::Calculate(data + 8, len - 8, CRC::CRC_32());
 
-		std::uint32_t flags = *(std::uint32_t*)data;
-		std::uint32_t check = *(std::uint32_t*)(data + 4);
+		std::uint32_t flags;
+		std::uint32_t check;
+		std::memcpy(&flags, data, 4);
+		std::memcpy(&check, data + 4, 4);
 
 		mError = "";
 
-		if (flags != 0x0001) {
+		if (flags != 0x0001 && flags != 0x0002) {
 			mError = "Invalid data structure";
 			return false;
 		}
@@ -618,14 +860,22 @@ namespace O3DS
 			return false;
 		}
 
-		auto root = O3DS::Data::GetSubjectList(data+8);
+		const uint8_t* fb = reinterpret_cast<const uint8_t*>(data + 8);
+		size_t fb_len = len - 8;
+
+		flatbuffers::Verifier verifier(fb, fb_len);
+		if (!verifier.VerifyBuffer<O3DS::Data::SubjectList>()) {
+			mError = "FlatBuffer verification failed";
+			return false;
+		}
+
+
+		auto root = O3DS::Data::GetSubjectList(fb);
 
 		this->mTime = root->time();
 
 		auto subjects_data = root->subjects();
 		auto updates_data = root->updates();
-
-		auto ovSubjects = root->subjects();
 
 		if (subjects_data)
 		{
@@ -647,6 +897,11 @@ namespace O3DS
 				// For each update
 				this->ParseUpdate(updates_data->Get(i), builder);
 			}
+		}
+
+		if (!allFinite()) {
+			// All finite should set the error with the invalid joint name
+			return false;
 		}
 
 		for (const auto& subject : mItems) {
@@ -671,7 +926,13 @@ namespace O3DS
 			// Add it
 			outSubject = this->addSubject(subjectName, subjectUuid);
 		}
+		else
+		{
+			outSubject->clearTransforms();
+		}
 
+		outSubject->mName = subjectName;
+		outSubject->mUuid = subjectUuid;
 		outSubject->mContext.mX = dir(inSubject->x_axis());
 		outSubject->mContext.mY = dir(inSubject->y_axis());
 		outSubject->mContext.mZ = dir(inSubject->z_axis());
@@ -681,7 +942,6 @@ namespace O3DS
 		auto ovNodes = inSubject->nodes();
 			
 		// Clear the subject and add the transforms
-		outSubject->clear();
 		for (int n = 0; n < (int)ovNodes->size(); n++)
 		{
 			auto inNode = ovNodes->Get(n);
@@ -768,6 +1028,28 @@ namespace O3DS
 				*inScale >> outSubject->mTransforms[id]->scale;
 			}
 		}
+	}
+
+
+	void finalize(flatbuffers::FlatBufferBuilder& builder, std::vector<char>& outbuf, std::uint32_t flags)
+	{
+		outbuf.resize(0);
+
+		uint8_t* buf = builder.GetBufferPointer();
+		int size = builder.GetSize();
+
+		// Flags
+		//std::uint32_t flags = 0x0001;
+		const char* flagptr = (const char*)&flags;
+		std::copy(flagptr, flagptr + 4, back_inserter(outbuf));
+
+		// Checksum
+		std::uint32_t crc = CRC::Calculate(buf, size, CRC::CRC_32());
+		const char* crcptr = (const char*)&crc;
+		std::copy(crcptr, crcptr + 4, back_inserter(outbuf));
+
+		// Data
+		std::copy(buf, buf + size, back_inserter(outbuf));
 	}
 
 

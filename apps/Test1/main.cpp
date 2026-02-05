@@ -21,7 +21,7 @@ int main(int arc, char** argv)
 	O3DS::SubjectList subjectList;
 
 
-	O3DS::Subject *subject = subjectList.addSubject("Test1");
+	O3DS::Subject *subject = subjectList.addSubject("Test1", "uuid1");
 
 	O3DS::Transform* root = subject->addTransform(std::string("Root"), -1);
 	O3DS::Transform* bone = subject->addTransform(std::string("Bone"), 0);
@@ -59,7 +59,7 @@ int main(int arc, char** argv)
 		return 1;
 	}
 
-	O3DS::Subject* subjectCopy = subjectListCopy.findSubject("Test1");
+	O3DS::Subject* subjectCopy = subjectListCopy.findSubjectByName("Test1");
 	if (subjectCopy == nullptr)
 	{
 		std::cout << "Verify failed on find subject" << std::endl;

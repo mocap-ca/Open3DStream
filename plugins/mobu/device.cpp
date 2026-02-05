@@ -106,6 +106,49 @@ bool Open3D_Device::DeviceOperation( kDeviceOperations pOperation )
 
 #pragma warning( disable : 4189 )
 
+// Source - https://stackoverflow.com/a/60198074
+// Posted by happy_sisyphus, modified by community. See post 'Timeline' for change history
+// Retrieved 2026-01-28, License - CC BY-SA 4.0
+
+#include <random>
+#include <sstream>
+
+namespace uuid {
+	static std::random_device              rd;
+	static std::mt19937                    gen(rd());
+	static std::uniform_int_distribution<> dis(0, 15);
+	static std::uniform_int_distribution<> dis2(8, 11);
+
+	std::string generate_uuid_v4() {
+		std::stringstream ss;
+		int i;
+		ss << std::hex;
+		for (i = 0; i < 8; i++) {
+			ss << dis(gen);
+		}
+		ss << "-";
+		for (i = 0; i < 4; i++) {
+			ss << dis(gen);
+		}
+		ss << "-4";
+		for (i = 0; i < 3; i++) {
+			ss << dis(gen);
+		}
+		ss << "-";
+		ss << dis2(gen);
+		for (i = 0; i < 3; i++) {
+			ss << dis(gen);
+		}
+		ss << "-";
+		for (i = 0; i < 12; i++) {
+			ss << dis(gen);
+		};
+		return ss.str();
+	}
+}
+
+
+
 void Open3D_Device::AddItem(FBModel *model)
 {
 	// Add a model (called by the layout) 
@@ -127,7 +170,8 @@ void Open3D_Device::AddItem(FBModel *model)
 		model->Is(FBCamera::TypeInfo) ||
 		model->Is(FBModelSkeleton::TypeInfo))
 	{
-		Items.addSubject(name.operator char *(), (void*)model);
+		std::string uid = uuid::generate_uuid_v4();
+		Items.addSubject(name.operator char *(), uid.c_str(), (void*)model);
 	}
 
 }
@@ -334,8 +378,34 @@ uint32_t Open3D_Device::WriteTcp(O3DS::TcpSocket &socket, void *data, uint32_t b
 	
 }
 
+
+struct InProgressGuard
+{
+	std::atomic<bool>& flag;
+	bool acquired = false;
+
+	explicit InProgressGuard(std::atomic<bool>& f)
+		: flag(f)
+	{
+		bool expected = false;
+		acquired = flag.compare_exchange_strong(
+			expected, true, std::memory_order_acquire);
+	}
+
+	~InProgressGuard()
+	{
+		if (acquired) {
+			flag.store(false, std::memory_order_release);
+		}
+	}
+
+	explicit operator bool() const { return acquired; }
+};
+
 void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDeviceNotifyInfo)
 {
+	InProgressGuard guard(inProgress);	
+
 	std::vector<char> buf;
 	std::vector<char> buf2;
 
@@ -353,6 +423,10 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 		if (mNetworkSocket != -1)
 		{
 			Items.update();
+			if (!Items.allFinite()) {
+				Status = FBString("Invalid: ") + Items.mError.c_str();
+				return;
+			}
 
 			FBTime MobuTime = FBSystem().LocalTime;
 			int32_t bucketSize;
@@ -365,6 +439,24 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			{
 				bucketSize = Items.SerializeUpdate(buf, count, MobuTime.GetSecondDouble());
 			}
+
+			if (bucketSize == 0) {
+				Status = FBString("No Data ") + Items.mError.c_str();
+				return;
+			}
+
+			if (!ItemsTest.Parse(buf.data(), bucketSize)) {
+				Status = FBString("Error: ") + ItemsTest.mError.c_str();
+				return;
+			} 
+
+			for (const auto& subject : ItemsTest) {
+				if (!subject->CalcMatrices()) {
+					Status = FBString("Calc err: ") + ItemsTest.mError.c_str();
+					return;
+				}
+			}
+			
 
 			if (mFrameCounter > 100) {
 				mFrameCounter = 0;
@@ -597,7 +689,8 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 			if (component)
 			{
 				FBModel *model = dynamic_cast<FBModel*>(component);
-				auto s = Items.addSubject(subjectName.operator char *(), (void*)model);
+				std::string uid = uuid::generate_uuid_v4();
+				auto s = Items.addSubject(subjectName.operator char *(), uid.c_str(), (void*)model);
 				O3DS::Mobu::TraverseSubject(s, model);
 			}
 		}

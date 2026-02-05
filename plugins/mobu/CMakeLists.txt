@@ -18,13 +18,13 @@ function(build_mobu version path)
      target_compile_definitions(${mobu_target} PUBLIC ORSDKPRODUCT_VERSION=ORSDK${version} )
   endif()
   
-  target_link_libraries(${mobu_target} fbsdk.lib opengl32.lib glu32.lib Ws2_32.lib o3dscore o3dsnet ${NNG_LIBRARY})
+  target_link_libraries(${mobu_target} "${path}/OpenRealitySDK/lib/x64/fbsdk.lib" opengl32.lib glu32.lib Ws2_32.lib o3dscore o3dsnet ${NNG_LIBRARY})
   target_include_directories(${mobu_target} PUBLIC 
-    "${path}/OpenRealitySDK/include" 
+    ${path}/OpenRealitySDK/include
     ${CMAKE_CURENT_LIST_DIR}../src
     ${CMAKE_CURENT_LIST_DIR}../thirdparty/crccpp/inc
   )
-  target_link_directories(${mobu_target} PUBLIC "${path}/OpenRealitySDK/lib/x64" "${path}/OpenRealitySDK/lib/x64/HIK2016")
+  # target_link_directories(${mobu_target} PUBLIC "" "${path}/OpenRealitySDK/lib/x64/HIK2016")
   target_compile_definitions(${mobu_target} PUBLIC NNG_STATIC_LIB)
   install(TARGETS ${mobu_target} RUNTIME DESTINATION "plugins/mobu")
   set_target_properties(${mobu_target} PROPERTIES VS_DEBUGGER_COMMAND "${path}/bin/x64/motionbuilder.exe")
@@ -51,7 +51,7 @@ if(MOTIONBUILDER_REG_OUTPUT)
       message(STATUS "Found MotionBuilder version: ${MOBU_VERSION}")
       
       # Query the InstallPath for each version
-      GET_FILENAME_COMPONENT(MOTIONBUILDER_INSTALL_PATH "[${VERSION_KEY};InstallPath]" ABSOLUTE CACHE)
+      GET_FILENAME_COMPONENT(MOTIONBUILDER_INSTALL_PATH "[${VERSION_KEY};InstallPath]" ABSOLUTE)
 
       if (MOTIONBUILDER_INSTALL_PATH)
         message(STATUS "MotionBuilder ${MOBU_VERSION} is installed at: ${MOTIONBUILDER_INSTALL_PATH}")

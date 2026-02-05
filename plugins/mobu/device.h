@@ -74,6 +74,7 @@ public:
 	uint32_t WriteTcp(O3DS::TcpSocket& socket, void *data, uint32_t bucketSize);
 
 	O3DS::SubjectList       Items;
+	O3DS::SubjectList       ItemsTest;
 	O3DS::TcpSocket         mTcpIp;
 	O3DS::Connector*        mServer;
 	SOCKET                  mNetworkSocket;
@@ -91,6 +92,8 @@ private:
 	bool			mStreaming;
 	int             mFrameCounter;
 	uint32_t        mIdSeq;
+
+	std::atomic<bool> inProgress{ false };
 
 };
 

@@ -23,15 +23,15 @@ namespace O3DS
 
 			O3DS::Matrix m;
 
-			if (order == FBModelRotationOrder::kFBEulerXYZ) dst = x * y * z;
-			if (order == FBModelRotationOrder::kFBEulerXZY) dst = x * z * y;
-			if (order == FBModelRotationOrder::kFBEulerYZX) dst = y * z * x;
-			if (order == FBModelRotationOrder::kFBEulerYXZ) dst = y * x * z;
-			if (order == FBModelRotationOrder::kFBEulerZXY) dst = z * x * y;
-			if (order == FBModelRotationOrder::kFBEulerZYX) dst = z * y * x;
+			if (order == FBModelRotationOrder::kFBEulerXYZ) dst = z * y * x;
+			if (order == FBModelRotationOrder::kFBEulerXZY) dst = y * z * x;
+			if (order == FBModelRotationOrder::kFBEulerYZX) dst = x * z * y;
+			if (order == FBModelRotationOrder::kFBEulerYXZ) dst = z * x * y;
+			if (order == FBModelRotationOrder::kFBEulerZXY) dst = y * x * z;
+			if (order == FBModelRotationOrder::kFBEulerZYX) dst = x * y * z;
 			if (order == kFBSphericXYZ)
 			{
-				dst = x * y * z;
+				dst = z * y * x;
 			}
 		}
 
@@ -96,20 +96,21 @@ namespace O3DS
 
 			if (parentId == -1)
 			{
-				// Clear the subject list when starting
-				subject->clear();
+				// Clear the subject list transform list when starting
+				subject->clearTransforms();
 			}
 
 			if (subject->mJoints.size() > 0)
 			{
-				// Search for matching joint names
+				// Search for matching joint names in the joint name list 
+				// Used to filter the parsed joints to a subset used for sending
 				std::vector<std::string>& names = subject->mJoints;
 				std::string jointNameStr(model->Name.operator const char* ());
 				if (std::find(names.begin(), names.end(), jointNameStr) == names.end())
 					return;
 			}
 
-			subject->addTransform(new MobuTransform(model, parentId));
+			subject->addTransform(std::make_unique<MobuTransform>(model, parentId));
 
 
 			int nextId = (int)subject->size() - 1;
