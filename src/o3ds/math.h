@@ -26,7 +26,7 @@ SOFTWARE.
 #define O3DS_MATH_H
 
 #include <Eigen/Dense>
-
+#include <Eigen/Geometry>
 
 namespace O3DS
 {

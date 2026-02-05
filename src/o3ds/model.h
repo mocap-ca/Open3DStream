@@ -1,7 +1,7 @@
 /*
 Open 3D Stream
 
-Copyright 2020 Alastair Macleod
+Copyright 2026 Alastair Macleod
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -26,6 +26,7 @@ SOFTWARE.
 #define OPEN3D_STREAM_MODEL_H
 
 #include <vector>
+#include <deque>
 #include <string>
 
 #include "context.h"
@@ -44,35 +45,63 @@ namespace O3DS
 
 		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
+		//! Default constructor
 		Transform(const std::string& name, int parentId, void *ref = nullptr);
+		
+		//! Copy constructor
+		Transform(const Transform&);
 
+		//! Parent only constructor
 		Transform(int parentId);
 
+		//! Empty constructor
 		Transform();
 
 		virtual ~Transform();
 
-		virtual void update() {}
+		//! No implementation here
+		virtual void update();
+
+		//! No implementation here
 		virtual std::string info() { return std::string(); }
 
-		bool nan() const;
+		//! Verify there are no nan or inf values, sets mError with the name if fails.
+		bool allFinite();
 
+		//! Check if values are all ==
 		bool operator == (const Transform &other) const;
 
+		//! Translation calue and last sent
 		TransformTranslation translation;
+
+		//! Rotation and last sent
 		TransformRotation    rotation;
+
+		//! Scale and last sent
 		TransformScale       scale;
 
+		//! Local Matrix
 		Matrix      mMatrix;
+
+		//! World Matrix
 		Matrix      mWorldMatrix;
+
+		//! World Matrix has been populated
 		bool        bWorldMatrix;
 
+		//! Any matrices as part of the transform
 		std::vector<TransformMatrix> matrices;
+
+		//! Order of calculation, e.g. T R S or T mat R mat S, etc.
 		std::vector<enum ComponentType> transformOrder;
 
+		//! Name of this Transform
 		std::string mName;
+
+		//! Parent id in subject list
 		int mParentId;
 
+		//! User value, used for updating this item
 		void *mReference;
 
 	};
@@ -86,7 +115,7 @@ namespace O3DS
 
 
 	/*! \class TransformList model.h o3ds/model.h */
-	//! A list (std::vector) of Transform objects
+	//! A list (std::deque) of Transform objects
 	class TransformList
 	{
 	private:
@@ -99,28 +128,20 @@ namespace O3DS
 		TransformList() {}
 
 		//! deletes the transform objects in the list
-		~TransformList()
-		{
-			mItems.clear();
-		}
+		~TransformList();
 
 		//! Returns the number of transforms
-		size_t size() const { return mItems.size(); }
+		size_t size() const;
 
 		//! Delete the transform objects and clear the least.
-		void clear()
-		{
-			mItems.clear();
-		}
+		void clear();
 
-		void update()
-		{
-			for (auto& i : mItems)
-				i->update();
-		}
+		//! Calls all tranform->update()
+		void update();
 
+		//! Raw pointer interator 
 		struct iterator {
-			using inner_it = std::vector<std::unique_ptr<Transform>>::iterator;
+			using inner_it = std::deque<std::unique_ptr<Transform>>::iterator;
 			inner_it it;
 
 			Transform* operator*() const { return it->get(); }
@@ -128,42 +149,26 @@ namespace O3DS
 			bool operator!=(const iterator& other) const { return it != other.it; }
 		};
 
-		iterator begin() { return { mItems.begin() }; }
-		iterator end() { return { mItems.end() }; }
+		//! Raw pointer iterator begin
+		iterator begin();
 
-		Transform* at(size_t id)
-		{
-			if (id >= mItems.size()) return nullptr;
-			return mItems[id].get();
-		}
+		//! Raw pointer iterator end
+		iterator end();
 
-		Transform *operator[](size_t id) { return mItems[id].get(); }
+		//! Raw pointer getter
+		Transform* at(size_t id);
 
-		std::vector<std::unique_ptr<Transform>> mItems;
+		//! Raw pointer getter
+		Transform* operator[](size_t id);
 
-		Transform* find(const std::string &name)
-		{
-			for (size_t i = 0; i < mItems.size(); i++)
-			{
-				if (mItems[i]->mName == name)
-					return mItems[i].get();
-			}
-			return nullptr;
-		}
+		//! Find a transform by name
+		Transform* find(const std::string& name);
 
-		bool operator ==(const TransformList &other) const
-		{
-			if (mItems.size() != other.mItems.size())
-				return false;
+		//! Tests equality of all transforms in the list.  Must have same order.
+		bool operator ==(const TransformList& other) const;
 
-			for (size_t i = 0; i < mItems.size(); i++)
-			{
-				if (mItems[i]->operator==(*other.mItems[i]) == false) {
-					return false;
-				}
-			}
-			return true;
-		}
+		//! The transform items (owned)
+		std::deque<std::unique_ptr<Transform>> mItems;
 	};
 
 
@@ -173,67 +178,68 @@ namespace O3DS
 	class Subject
 	{
 	public:
-		Subject(void *info = nullptr) 
-			: mReference(info)
-			, mEnabled(true)
-		{}
+		Subject(void* info = nullptr);
 
-		Subject(std::string name, std::string uuid, void *info = nullptr)
-			: mName(name)
-			, mReference(info) 
-			, mUuid(uuid)
-		{}
+		Subject(std::string name, std::string uuid, void* info = nullptr);
 
+		//! The name of the subject
 		std::string   mName;
+
+		//! Unique idenfitier for this subject
 		std::string   mUuid;
+
+		//! Optional list of joints to send.  Used to limit the sent joints from being the 
 		std::vector<std::string> mJoints;
 
+		//! Subject transforms
 		TransformList mTransforms;
+
+		//! User reference pointer
 		void*         mReference;
+
+		//! The context for this subject ( yup / zup etc)
 		Context       mContext;
+
+		//! Error string from last operation, e.g. allFinite or parsing error.
 		std::string   mError;
 
-		Transform* addTransform(const std::string& name, int parentId, TransformBuilder *builder = nullptr)
-		{
-			std::unique_ptr<Transform> transform;
-			Transform* ret = nullptr;
-			if (builder) transform = builder->build(name, parentId);
-			else         transform = std::make_unique<Transform>(name, parentId);
-			ret = transform.get();
-			mTransforms.mItems.push_back(std::move(transform));
-			return ret;
-		}
+		//! Verify all transforms are finite, sets mError with the name of the first invalid transform
+		bool allFinite();
 
-		void addTransform(std::unique_ptr<Transform> item)
-		{
-			mTransforms.mItems.push_back(std::move(item));
-		}
+		//! Create a new (owned) transform object and return a reference
+		Transform* addTransform(const std::string& name, int parentId, TransformBuilder* builder = nullptr);
 
-		void clear()
-		{
-			mTransforms.clear();
-		}
+		//! Add a new transform object (owned)
+		void addTransform(std::unique_ptr<Transform> item);
 
-		void update()
-		{
-			mTransforms.update();
-		}
+		//! Clear all the data
+		void clearAll();
+
+		//! Clear just the transform data keep the name, id, ref, etc
+		void clearTransforms();
+
+		//! virtual update call
+		void update();
 		
-		size_t size()
-		{
-			return mTransforms.mItems.size();
-		}
+		//! number of transforms
+		size_t size();
 
+		//! Calculate the world matrices, check mError if this fails
 		bool CalcMatrices();
 
+		//! Flatbuffer serialization
 		flatbuffers::Offset<O3DS::Data::Subject> Serialize(flatbuffers::FlatBufferBuilder& builder);
 
+		//!	Flatbuffers serialization of updates only
 		flatbuffers::Offset<O3DS::Data::SubjectUpdate> SerializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t& count, double deltaThreshold);
 
+		//! Encode the subject as binary data
 		int Serialize(std::vector<char>& outbuf, double timestamp);	
 
+		//! Encode only the changed transforms as binary data
 		int SerializeUpdate(std::vector<char>& outbuf, size_t& count, double deltaThreshold, double timestamp);
 
+		//! Set to true to tell the parse to skip this subject while encoding.
 		bool mEnabled;
 	};
 
@@ -244,58 +250,32 @@ namespace O3DS
 	{
 	public:
 
-		SubjectList()
-			: mTime(0.0)
-			, mDeltaThreshold(1e-6 /*std::numeric_limits<double>::min()*/)
-		{}
+		SubjectList();
 
 		SubjectList(const SubjectList& other) = delete;
 
-		virtual ~SubjectList()
-		{
-			mItems.clear();
-		}
+		virtual ~SubjectList();
 
-		Subject* addSubject(std::string name, std::string uuid, void* ref=nullptr)
-		{
-			auto s = std::make_unique<Subject>(name, uuid, ref);
-			Subject*  sptr = s.get();
-			mItems.push_back(std::move(s));
-			return sptr;
-		}
+		//! Check for nan or inf
+		bool allFinite();
 
-		Subject* findSubjectByName(const std::string &name)
-		{
-			for (auto& i : mItems)
-			{
-				if (i->mName == name)
-					return i.get();
-			}
-			return nullptr;
-		}
+		//! Add a new subject to the list
+		Subject* addSubject(std::string name, std::string uuid, void* ref = nullptr);
 
-		Subject* findSubjectByUuid(const std::string& uuid)
-		{
-			for (auto& i : mItems)
-			{
-				if (i->mUuid == uuid)
-					return i.get();
-			}
-			return nullptr;
-		}
+		//! Find a subject by name.  nullptr if not found
+		Subject* findSubjectByName(const std::string& name);
 
-		void update()
-		{
-			for (auto& i : mItems)
-			{
-				i->update();
-			}
-		}
+		//! Find a subject by unique id.  nullptr if not found
+		Subject* findSubjectByUuid(const std::string& uuid);
 
-		std::vector<std::unique_ptr<Subject>> mItems;
+		//! update transforms (virtual)
+		void update();
 
+		std::deque<std::unique_ptr<Subject>> mItems;
+
+		//! Raw pointer iterator
 		struct iterator {
-			using inner_it = std::vector<std::unique_ptr<Subject>>::iterator;
+			using inner_it = std::deque<std::unique_ptr<Subject>>::iterator;
 			inner_it it;
 
 			Subject* operator*() const { return it->get(); }
@@ -303,26 +283,40 @@ namespace O3DS
 			bool operator!=(const iterator& other) const { return it != other.it; }
 		};
 
-		size_t size() { return mItems.size(); }
-		Subject* operator [] (int i) { return mItems[i].get(); }
-
+		//! Raw pointer begin
 		iterator begin() { return { mItems.begin() }; }
+		
+		//! Raw pointer end
 		iterator end() { return { mItems.end() }; }
 
+		//! Number of subjecsts
+		size_t size() { return mItems.size(); }
+
+		//! Raw pointer getter
+		Subject* operator [] (int i) { return mItems[i].get(); }
+
+		//! Time stamp of last serialization
 		double mTime;
+
+		//! Threshold for delta updates
 		double mDeltaThreshold;
+
+		//! Error string from last parse
 		std::string mError;
 
 		//! Encode all of the items in the subject list as binary data
 		int Serialize(std::vector<char> &outbuf, double timestamp=0.0);
 
+		//! Serialize changes to translation and rotation since last send
 		int SerializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp=0.0);
 
 		//! Populate or update the subject list with the binary data provided (created by Serialize)
 		bool Parse(const char *data, size_t len, TransformBuilder* = nullptr, bool clearInactive = true);
 
+		//! Parse a subject buffer (complete hierarchy)
 		void ParseSubject(const O3DS::Data::Subject*, TransformBuilder* = nullptr);
-
+		
+		//! Parse an update buffer (spare translation and rotations)
 		void ParseUpdate(const O3DS::Data::SubjectUpdate*, TransformBuilder* = nullptr);
 
 		//! Change distance threshold below which O3DS skips transmitting a transform update.
@@ -330,6 +324,7 @@ namespace O3DS
 
 	};
 
+	// Write the header
 	void finalize(flatbuffers::FlatBufferBuilder& builder, std::vector<char>& outbuf, std::uint32_t flags);
 
 
