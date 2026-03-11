@@ -292,6 +292,9 @@ namespace O3DS
 		//! Number of subjecsts
 		size_t size() { return mItems.size(); }
 
+		//! Number of active Subjects
+		size_t activeCount() const;
+
 		//! Raw pointer getter
 		Subject* operator [] (int i) { return mItems[i].get(); }
 
@@ -305,10 +308,10 @@ namespace O3DS
 		std::string mError;
 
 		//! Encode all of the items in the subject list as binary data
-		int Serialize(std::vector<char> &outbuf, double timestamp=0.0);
+		bool Serialize(std::vector<char> &outbuf, double timestamp=0.0);
 
 		//! Serialize changes to translation and rotation since last send
-		int SerializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp=0.0);
+		bool SerializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp=0.0);
 
 		//! Populate or update the subject list with the binary data provided (created by Serialize)
 		bool Parse(const char *data, size_t len, TransformBuilder* = nullptr, bool clearInactive = true);

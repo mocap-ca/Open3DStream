@@ -30,6 +30,7 @@ SOFTWARE.
 #include <nng/supplemental/util/platform.h>
 #include "nng_connector.h"
 #include <string>
+#include <atomic>
 
 namespace O3DS
 {
@@ -61,6 +62,8 @@ namespace O3DS
 		bool write(const char* data, size_t ptr) { return false; }
 
 		//virtual void in_pipe() = 0;
+
+		std::atomic<bool> connected{ false };
 
 	};
 

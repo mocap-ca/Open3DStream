@@ -285,7 +285,6 @@ namespace O3DS
 
 		nng_msg* msg = nng_aio_get_msg(aio);
 
-		// Re arm right away
 		nng_recv_aio(mSocket, aio);
 
 		if (msg == nullptr)
@@ -301,8 +300,6 @@ namespace O3DS
 		if (data && sz> 0 && mInDataFunc) mInDataFunc(mContext, data , sz);
 
 		nng_msg_free(msg);
-
-		// nng_recv_aio(mSocket, aio);
 
 		mState = Connector::READING;
 
