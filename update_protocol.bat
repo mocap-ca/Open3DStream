@@ -1,16 +1,18 @@
 @ECHO OFF
-cd %~dp0protocol
-%~dp0\bin\flatc --cpp schema.fbs
+cd %~dp0
+%~dp0\usr\bin\flatc --cpp src\o3ds.fbs
 IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 
-move schema_generated.h ..\include
+move o3ds_generated.h ..\include
 IF %ERRORLEVEL% NEQ 0 GOTO FAIL
 
 ECHO Update successful.  Have a nice day!
-cd %~dp0
+pause
 EXIT /B
 
 :FAIL
+ECHO Update failed - sorry!
+
 pause
 
 

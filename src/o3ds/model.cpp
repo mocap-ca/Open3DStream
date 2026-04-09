@@ -226,9 +226,6 @@ namespace O3DS
 		mReference = nullptr; // probably not a good idea to copy this.
 	}
 
-	Transform::~Transform()
-	{};
-
 	void Transform::update()
 	{
 		// No implementation here
@@ -364,7 +361,23 @@ namespace O3DS
 		}
 		return true;
 	}
+	
+	
+	//////////////////////////////
+	// Camera
 
+	Camera::Camera(void* info)
+		: mReference(info)
+	{}
+
+	Camera::Camera(const std::string& name, const std::string& uuid, void* info)
+		: mName(name)
+		, mReference(info)
+		, mUuid(uuid)
+	{}
+
+
+	//////////////////////////////
 	// Subject
 
 	Subject::Subject(void* info)
@@ -372,7 +385,7 @@ namespace O3DS
 		, mEnabled(true)
 	{}
 
-	Subject::Subject(std::string name, std::string uuid, void* info)
+	Subject::Subject(const std::string& name, const std::string& uuid, void* info)
 		: mName(name)
 		, mReference(info)
 		, mUuid(uuid)
@@ -705,7 +718,7 @@ namespace O3DS
 		return true;
 	}
 
-	Subject* SubjectList::addSubject(std::string name, std::string uuid, void* ref)
+	Subject* SubjectList::addSubject(const std::string& name, const std::string& uuid, void* ref)
 	{
 		auto s = std::make_unique<Subject>(name, uuid, ref);
 		Subject* sptr = s.get();
@@ -726,6 +739,34 @@ namespace O3DS
 	Subject* SubjectList::findSubjectByUuid(const std::string& uuid)
 	{
 		for (auto& i : mItems)
+		{
+			if (i->mUuid == uuid)
+				return i.get();
+		}
+		return nullptr;
+	}
+
+	Camera* SubjectList::addCamera(const std::string& name, const std::string& uuid, void* ref)
+	{
+		auto s = std::make_unique<Camera>(name, uuid, ref);
+		Camera* sptr = s.get();
+		mCameras.push_back(std::move(s));
+		return sptr;
+	}
+
+	Camera* SubjectList::findCameraByName(const std::string& name)
+	{
+		for (auto& i : mCameras)
+		{
+			if (i->mName == name)
+				return i.get();
+		}
+		return nullptr;
+	}
+
+	Camera* SubjectList::findCameraByUuid(const std::string& uuid)
+	{
+		for (auto& i : mCameras)
 		{
 			if (i->mUuid == uuid)
 				return i.get();

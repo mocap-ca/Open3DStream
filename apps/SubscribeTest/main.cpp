@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
 	int n = 0;
 
-	while (1)
+	while (1)	
 	{
 		size_t ret = connector->read(&data, &bufsz);
 
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				for(auto i : sl.mItems)
+				for(auto &i : sl.mItems)
 				{
 					printf("%s has %ld transforms\n", i->mName.c_str(), i->size());
 				}

@@ -6,7 +6,7 @@ project(Repeater)
 find_package(nng CONFIG REQUIRED)
 
 add_executable(Repeater main.cpp)
-target_link_libraries(Repeater open3dstreamstatic ${NNG_LIBRARY})
+target_link_libraries(Repeater  o3dscore o3dsnet ${NNG_LIBRARY})
 
 install(TARGETS Repeater DESTINATION bin)
 

@@ -57,7 +57,7 @@ namespace O3DS
 		//! Empty constructor
 		Transform();
 
-		virtual ~Transform();
+		virtual ~Transform() = default;
 
 		//! No implementation here
 		virtual void update();
@@ -171,6 +171,47 @@ namespace O3DS
 		std::deque<std::unique_ptr<Transform>> mItems;
 	};
 
+	/*! \class Camera model.h o3ds/model.h
+	 * Representation of a 3d camera including some lens and filmback information 
+	 */
+	//! Moving Camera, e.g. VCam.
+	class Camera : public Transform
+	{
+	public:
+		Camera(void* info = nullptr);
+
+		Camera(const std::string& name, const std::string& uuid, void* info = nullptr);
+
+		//! Camera name, e.g. "persp"
+		std::string mName;
+
+		//! Unique id for this camera, so it can be renamed.
+		std::string mUuid;
+
+		//! Film back width in mm  
+		float filmBackWidth;
+
+		//! Film back height in mm
+		float filmBackHeight;
+
+		//! Lens focal length in mm
+		float focalLength;
+
+		//! Aspect Ratio (crop?)
+		float aspect;
+
+		//! Focus distance in mm
+		float focusDistance;
+
+		//! Aperture in f-stops
+		float aperture;
+
+		//! User reference pointer
+		void* mReference;
+
+
+	};
+
 
 	/*! \class Subject model.h o3ds/model.h
 	 *  The subject can also have a SubjectInfo reference for implementation specific data */
@@ -180,7 +221,7 @@ namespace O3DS
 	public:
 		Subject(void* info = nullptr);
 
-		Subject(std::string name, std::string uuid, void* info = nullptr);
+		Subject(const std::string& name, const std::string& uuid, void* info = nullptr);
 
 		//! The name of the subject
 		std::string   mName;
@@ -260,7 +301,7 @@ namespace O3DS
 		bool allFinite();
 
 		//! Add a new subject to the list
-		Subject* addSubject(std::string name, std::string uuid, void* ref = nullptr);
+		Subject* addSubject(const std::string& name, const std::string& uuid, void* ref = nullptr);
 
 		//! Find a subject by name.  nullptr if not found
 		Subject* findSubjectByName(const std::string& name);
@@ -268,10 +309,23 @@ namespace O3DS
 		//! Find a subject by unique id.  nullptr if not found
 		Subject* findSubjectByUuid(const std::string& uuid);
 
+		//! Add a new camera to the subject definition
+		Camera* addCamera(const std::string& name, const std::string& uuid, void* ref = nullptr);
+
+		//! Find a camera by name, or nullptr
+		Camera* findCameraByName(const std::string& name);
+
+		//! Find a camera by uuid, or nullptr
+		Camera* findCameraByUuid(const std::string& uuid);
+
 		//! update transforms (virtual)
 		void update();
 
+		//! Subject item list (owned)
 		std::deque<std::unique_ptr<Subject>> mItems;
+
+		//! Camera list
+		std::deque<std::unique_ptr<Camera>> mCameras;
 
 		//! Raw pointer iterator
 		struct iterator {

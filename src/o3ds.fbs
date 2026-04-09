@@ -1,3 +1,5 @@
+// 4/9/2026 - added Camera
+
 namespace O3DS.Data;
 
 enum Direction : byte { None = 0, Left, Right, Forward, Back, Up, Down }
@@ -82,7 +84,8 @@ table Subject {
   y_axis:Direction;
   z_axis:Direction;
   format:string;
-  uuid:string;
+  uuid:string;  // unique identifier, so name can be changed
+  type:string;  // performer or prop
 }
 
 table SubjectUpdate {
@@ -93,11 +96,27 @@ table SubjectUpdate {
   uuid:string;
 }
 
+table Camera {
+  transform:Transform;  
+  filmback_width:float;
+  filmback_height:float;
+}
+
+table CameraUpdate {
+  focal_length:float;
+  aspect:float;
+  focus_distance:float;
+  aperture:float;
+  translation:TranslationUpdate;
+  rotation:RotationUpdate;
+}
+
 table SubjectList {
    subjects:[Subject];
    updates:[SubjectUpdate];
+   cameras:[Camera];
+   camera_updates:[CameraUpdate];
    time:double;
 }
-
 
 root_type SubjectList;
