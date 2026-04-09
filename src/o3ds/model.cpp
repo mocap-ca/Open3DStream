@@ -807,11 +807,24 @@ namespace O3DS
 		return static_cast<int>(outbuf.size());
 	}
 
-	int SubjectList::Serialize(std::vector<char> &outbuf, double timestamp)
+	size_t SubjectList::activeCount() const
+	{
+		size_t ret = 0;
+		for (const auto& subject : mItems)
+		{
+			if (subject->mEnabled) {
+				ret++;
+			}
+		}
+
+		return ret;
+	}
+
+	bool SubjectList::Serialize(std::vector<char> &outbuf, double timestamp)
 	{	
 		if (!allFinite()) {
 			// All finite should set the error with the invalid joint name
-			return 0;
+			return false;
 		}
 
 		if(timestamp == 0.0) timestamp = GetTime();
@@ -836,16 +849,18 @@ namespace O3DS
 
 		finalize(builder, outbuf, 1);
 
-		return static_cast<int>(outbuf.size());
+		return true;
 	}
 
 
 
-	int SubjectList::SerializeUpdate(std::vector<char> &outbuf, size_t& count, double timestamp)
+	bool SubjectList::SerializeUpdate(std::vector<char> &outbuf, size_t& count, double timestamp)
 	{
+		count = 0;
+
 		if (!this->allFinite()) {
 			// All finite should set the error with the invalid joint name
-			return 0;
+			return false;
 		}
 
 		if (timestamp == 0.0) { timestamp = GetTime(); }
@@ -869,7 +884,7 @@ namespace O3DS
 
 		finalize(builder, outbuf, 2);
 
-		return static_cast<int>(outbuf.size());
+		return true;
 	}
 
 
