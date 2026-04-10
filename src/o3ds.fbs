@@ -89,7 +89,6 @@ table Subject {
 }
 
 table SubjectUpdate {
-  name:string;
   translations:[TranslationUpdate];
   rotation:[RotationUpdate];
   scale:[ScaleUpdate];
@@ -97,6 +96,7 @@ table SubjectUpdate {
 }
 
 table Camera {
+  uuid:string;
   transform:Transform;  
   filmback_width:float;
   filmback_height:float;
@@ -107,15 +107,16 @@ table CameraUpdate {
   aspect:float;
   focus_distance:float;
   aperture:float;
-  translation:TranslationUpdate;
-  rotation:RotationUpdate;
+  translation:Translation;
+  rotation:Rotation;
+  uuid:string;
 }
 
 table SubjectList {
    subjects:[Subject];
    updates:[SubjectUpdate];
    cameras:[Camera];
-   camera_updates:[CameraUpdate];
+   cameras_updates:[CameraUpdate];
    time:double;
 }
 

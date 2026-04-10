@@ -58,6 +58,12 @@ namespace O3DS
 		Transform();
 
 		virtual ~Transform() = default;
+		
+		//! Convert to flatbuffers using the given builder
+		flatbuffers::Offset<O3DS::Data::Transform> serialize(flatbuffers::FlatBufferBuilder& builder);
+
+		//! Parse the given flatbuffer data to populate this transform
+		void parse(const O3DS::Data::Transform* data);
 
 		//! No implementation here
 		virtual void update();
@@ -114,6 +120,8 @@ namespace O3DS
 	};
 
 
+
+
 	/*! \class TransformList model.h o3ds/model.h */
 	//! A list (std::deque) of Transform objects
 	class TransformList
@@ -155,7 +163,7 @@ namespace O3DS
 		//! Raw pointer iterator end
 		iterator end();
 
-		//! Raw pointer getter
+		//! Raw pointer getter, bounds checked
 		Transform* at(size_t id);
 
 		//! Raw pointer getter
@@ -178,12 +186,24 @@ namespace O3DS
 	class Camera : public Transform
 	{
 	public:
-		Camera(void* info = nullptr);
 
-		Camera(const std::string& name, const std::string& uuid, void* info = nullptr);
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-		//! Camera name, e.g. "persp"
-		std::string mName;
+		Camera();
+
+		Camera(const std::string& name, const std::string& uuid, int parentId = -1, void* ref = nullptr);
+
+		//! Convert to flatbuffers using the given builder
+		flatbuffers::Offset<O3DS::Data::Camera> serialize(flatbuffers::FlatBufferBuilder& builder);
+
+		//! Parse the given flatbuffer data to populate this camera, no null checking.
+		void parse(const O3DS::Data::Camera* data);
+
+		//! Parse the given flatbuffer data to populate this camera, no null checking.
+		void parseUpdate(const O3DS::Data::CameraUpdate*);
+
+		//! Flatbuffers serialization of updates only
+		flatbuffers::Offset<O3DS::Data::CameraUpdate> serializeUpdate(flatbuffers::FlatBufferBuilder& builder, double deltaThreshold);
 
 		//! Unique id for this camera, so it can be renamed.
 		std::string mUuid;
@@ -205,11 +225,14 @@ namespace O3DS
 
 		//! Aperture in f-stops
 		float aperture;
-
-		//! User reference pointer
-		void* mReference;
+	};
 
 
+	//! Platform specific builder to make a camera object (optional)
+	class CameraBuilder
+	{
+	public:
+		virtual std::unique_ptr<Camera> build(std::string name, int parentId) = 0;
 	};
 
 
@@ -219,9 +242,13 @@ namespace O3DS
 	class Subject
 	{
 	public:
-		Subject(void* info = nullptr);
+		Subject(void* ref = nullptr);
 
-		Subject(const std::string& name, const std::string& uuid, void* info = nullptr);
+		Subject(const std::string& name, const std::string& uuid, void* ref = nullptr);
+
+		void parse(const O3DS::Data::Subject* data, TransformBuilder* transformBuilder = nullptr);
+
+		void parseUpdate(const O3DS::Data::SubjectUpdate* inUpdate);
 
 		//! The name of the subject
 		std::string   mName;
@@ -229,7 +256,7 @@ namespace O3DS
 		//! Unique idenfitier for this subject
 		std::string   mUuid;
 
-		//! Optional list of joints to send.  Used to limit the sent joints from being the 
+		//! Optional list of joints to send.  Used to filter the joints to be sent, used by mobu plugin only rn 
 		std::vector<std::string> mJoints;
 
 		//! Subject transforms
@@ -266,21 +293,15 @@ namespace O3DS
 		size_t size();
 
 		//! Calculate the world matrices, check mError if this fails
-		bool CalcMatrices();
+		bool calcMatrices();
 
 		//! Flatbuffer serialization
-		flatbuffers::Offset<O3DS::Data::Subject> Serialize(flatbuffers::FlatBufferBuilder& builder);
+		flatbuffers::Offset<O3DS::Data::Subject> serialize(flatbuffers::FlatBufferBuilder& builder);
 
 		//!	Flatbuffers serialization of updates only
-		flatbuffers::Offset<O3DS::Data::SubjectUpdate> SerializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t& count, double deltaThreshold);
+		flatbuffers::Offset<O3DS::Data::SubjectUpdate> serializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t& count, double deltaThreshold);
 
-		//! Encode the subject as binary data
-		int Serialize(std::vector<char>& outbuf, double timestamp);	
-
-		//! Encode only the changed transforms as binary data
-		int SerializeUpdate(std::vector<char>& outbuf, size_t& count, double deltaThreshold, double timestamp);
-
-		//! Set to true to tell the parse to skip this subject while encoding.
+		//! Set to false to tell the parse to skip this subject while encoding.
 		bool mEnabled;
 	};
 
@@ -301,7 +322,7 @@ namespace O3DS
 		bool allFinite();
 
 		//! Add a new subject to the list
-		Subject* addSubject(const std::string& name, const std::string& uuid, void* ref = nullptr);
+		Subject* findOrAddSubject(const std::string& uuid);
 
 		//! Find a subject by name.  nullptr if not found
 		Subject* findSubjectByName(const std::string& name);
@@ -310,7 +331,7 @@ namespace O3DS
 		Subject* findSubjectByUuid(const std::string& uuid);
 
 		//! Add a new camera to the subject definition
-		Camera* addCamera(const std::string& name, const std::string& uuid, void* ref = nullptr);
+		Camera* findOrAddCamera(const std::string& uuid);
 
 		//! Find a camera by name, or nullptr
 		Camera* findCameraByName(const std::string& name);
@@ -362,26 +383,24 @@ namespace O3DS
 		std::string mError;
 
 		//! Encode all of the items in the subject list as binary data
-		bool Serialize(std::vector<char> &outbuf, double timestamp=0.0);
+		bool serialize(std::vector<char> &outbuf, double timestamp=0.0);
 
 		//! Serialize changes to translation and rotation since last send
-		bool SerializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp=0.0);
+		bool serializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp=0.0);
 
 		//! Populate or update the subject list with the binary data provided (created by Serialize)
-		bool Parse(const char *data, size_t len, TransformBuilder* = nullptr, bool clearInactive = true);
-
-		//! Parse a subject buffer (complete hierarchy)
-		void ParseSubject(const O3DS::Data::Subject*, TransformBuilder* = nullptr);
-		
-		//! Parse an update buffer (spare translation and rotations)
-		void ParseUpdate(const O3DS::Data::SubjectUpdate*, TransformBuilder* = nullptr);
+		bool parse(const char *data, 
+			size_t len, 
+			TransformBuilder* = nullptr,
+			CameraBuilder* = nullptr,
+			bool clearInactive = true);
 
 		//! Change distance threshold below which O3DS skips transmitting a transform update.
-		void SetDeltaThreshold(double newThreshold) { mDeltaThreshold = newThreshold; }
+		void setDeltaThreshold(double newThreshold) { mDeltaThreshold = newThreshold; }
 
 	};
 
-	// Write the header
+	//! Write the header, uint32 flags, uint32 checksum and data blob 
 	void finalize(flatbuffers::FlatBufferBuilder& builder, std::vector<char>& outbuf, std::uint32_t flags);
 
 

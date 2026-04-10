@@ -171,7 +171,9 @@ void Open3D_Device::AddItem(FBModel *model)
 		model->Is(FBModelSkeleton::TypeInfo))
 	{
 		std::string uid = uuid::generate_uuid_v4();
-		Items.addSubject(name.operator char *(), uid.c_str(), (void*)model);
+		O3DS::Subject * s = Items.findOrAddSubject(uid.c_str());
+		s->mName = name.operator char* ();
+		s->mReference = (void*)model;
 	}
 
 }
@@ -433,11 +435,11 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 			
 			if (mFrameCounter++ == 0)
 			{
-				bucketSize = Items.Serialize(buf, MobuTime.GetSecondDouble());
+				bucketSize = Items.serialize(buf, MobuTime.GetSecondDouble());
 			}
 			else
 			{
-				bucketSize = Items.SerializeUpdate(buf, count, MobuTime.GetSecondDouble());
+				bucketSize = Items.serializeUpdate(buf, count, MobuTime.GetSecondDouble());
 			}
 
 			if (bucketSize == 0) {
@@ -445,18 +447,17 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				return;
 			}
 
-			if (!ItemsTest.Parse(buf.data(), bucketSize)) {
+			if (!ItemsTest.parse(buf.data(), bucketSize)) {
 				Status = FBString("Error: ") + ItemsTest.mError.c_str();
 				return;
 			} 
 
 			for (const auto& subject : ItemsTest) {
-				if (!subject->CalcMatrices()) {
+				if (!subject->calcMatrices()) {
 					Status = FBString("Calc err: ") + ItemsTest.mError.c_str();
 					return;
 				}
-			}
-			
+			}			
 
 			if (mFrameCounter > 100) {
 				mFrameCounter = 0;
@@ -467,7 +468,6 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				Status = "Buffer Error";
 				return;
 			}
-
 
 			if (mProtocol == Open3D_Device::kTCPServer)
 			{
@@ -690,7 +690,9 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 			{
 				FBModel *model = dynamic_cast<FBModel*>(component);
 				std::string uid = uuid::generate_uuid_v4();
-				auto s = Items.addSubject(subjectName.operator char *(), uid.c_str(), (void*)model);
+				auto s = Items.findOrAddSubject(uid.c_str());
+				s->mName = subjectName.operator char* ();
+				s->mReference = (void*)model;
 				O3DS::Mobu::TraverseSubject(s, model);
 			}
 		}

@@ -1,21 +1,18 @@
 #include <stdio.h>
-//#include "o3ds/async_subscriber.h"
-//#include "o3ds/async_request.h"
-//#include "o3ds/async_pipeline.h"
 #include "o3ds/subscriber.h"
 #include "o3ds/pair.h"
-//#include "o3ds/websocket.h"
 #include <nng/nng.h>
 #include <chrono>
 #include <thread>
+#include <sstream>
 
 #include "o3ds/model.h"
 
 void ReadFunc(void *ptr, void *buf, size_t len)
 {
-	printf("DATA: %ld\n", len);
+	printf("DATA: %zu\n", len);
 	O3DS::SubjectList subjects;
-	subjects.Parse((const char*)buf, len);
+	subjects.parse((const char*)buf, len);
 	printf("%zd\n", len);
 	for (auto i : subjects)
 	{
@@ -83,26 +80,26 @@ int main(int argc, char *argv[])
 	{
 		size_t ret = connector->read(&data, &bufsz);
 
-                if(ret > 0)
+		if(ret > 0)
 		{
-			char buf[1024];
-			sprintf(buf, "data.%d.dat", n++);
-			FILE *fp = fopen(buf, "wb");
+			std::ostringstream oss;
+			oss << "data." << n++ << ".dat";
+			FILE *fp = fopen(oss.str().c_str(), "wb");
 			if(fp)
 			{
 				fwrite(data, ret, 1, fp);
 				fclose(fp);
 			}
-			printf("Data: %ld\n", ret);
+			printf("Data: %zu\n", ret);
 
-			if(!sl.Parse(data, ret)) {
+			if(!sl.parse(data, ret)) {
 				printf("Could not parse packet: %s\n", sl.mError.c_str());
 			}
 			else
 			{
 				for(auto &i : sl.mItems)
 				{
-					printf("%s has %ld transforms\n", i->mName.c_str(), i->size());
+					printf("%s has %zu transforms\n", i->mName.c_str(), i->size());
 				}
 			}
 		}

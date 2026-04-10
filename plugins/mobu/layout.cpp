@@ -469,10 +469,10 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 			oss << "Joints: " << mDevice->Items[id]->mJoints.size() << std::endl;
 
 			std::vector<char> buf;
-			mDevice->Items.Serialize(buf, count);
+			mDevice->Items.serialize(buf, count);
 			oss << "Packet1: " << buf.size() << std::endl;
 
-			mDevice->Items.SerializeUpdate(buf, count);
+			mDevice->Items.serializeUpdate(buf, count);
 			oss << "Packet2: " << buf.size() << std::endl;
 
 			mMemoLog.Text = oss.str().c_str();
