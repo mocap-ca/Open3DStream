@@ -376,6 +376,9 @@ namespace O3DS
 		//! Time stamp of last serialization
 		double mTime;
 
+		//! Timecode of the frame/update
+		std::string mTimecode;
+
 		//! Threshold for delta updates
 		double mDeltaThreshold;
 
@@ -383,10 +386,10 @@ namespace O3DS
 		std::string mError;
 
 		//! Encode all of the items in the subject list as binary data
-		bool serialize(std::vector<char> &outbuf, double timestamp=0.0);
+		bool serialize(std::vector<char> &outbuf, double timestamp=0.0, const std::string& timcode = std::string());
 
 		//! Serialize changes to translation and rotation since last send
-		bool serializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp=0.0);
+		bool serializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp=0.0, const std::string& timcode = std::string());
 
 		//! Populate or update the subject list with the binary data provided (created by Serialize)
 		bool parse(const char *data, 

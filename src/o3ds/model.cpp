@@ -943,7 +943,7 @@ namespace O3DS
 		return ret;
 	}
 
-	bool SubjectList::serialize(std::vector<char> &outbuf, double timestamp)
+	bool SubjectList::serialize(std::vector<char> &outbuf, double timestamp, const std::string &timecode)
 	{	
 		if (!allFinite()) {
 			// All finite should set the error with the invalid joint name
@@ -982,7 +982,9 @@ namespace O3DS
 
 		// Finish
 
-		auto root = CreateSubjectList(builder, ovSubjects, 0, ovCameras, 0, timestamp);
+		auto oTimecode = builder.CreateString(timecode);
+
+		auto root = CreateSubjectList(builder, ovSubjects, 0, ovCameras, 0, timestamp, oTimecode);
 
 		builder.Finish(root);
 
@@ -991,7 +993,7 @@ namespace O3DS
 		return true;
 	}
 
-	bool SubjectList::serializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp)
+	bool SubjectList::serializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp, const std::string& timecode)
 	{		
 		count = 0;
 
@@ -1028,7 +1030,9 @@ namespace O3DS
 
 		auto ovCameraUpdates = builder.CreateVector(outCameraUpdates);
 
-		auto root = CreateSubjectList(builder, 0, ovSubjectUpdates, 0, ovCameraUpdates, timestamp);
+		auto oTimecode = builder.CreateString(timecode);
+
+		auto root = CreateSubjectList(builder, 0, ovSubjectUpdates, 0, ovCameraUpdates, timestamp, oTimecode);
 
 		builder.Finish(root);
 
@@ -1086,6 +1090,7 @@ namespace O3DS
 		auto root = O3DS::Data::GetSubjectList(fb);
 
 		this->mTime = root->time();
+		this->mTimecode = root->timecode()->str();
 
 		auto subjects_data = root->subjects();
 		auto updates_data = root->updates();

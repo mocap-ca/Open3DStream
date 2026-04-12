@@ -118,6 +118,7 @@ table SubjectList {
    cameras:[Camera];
    cameras_updates:[CameraUpdate];
    time:double;
+   timecode:string;
 }
 
 root_type SubjectList;
