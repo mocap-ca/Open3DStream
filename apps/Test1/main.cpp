@@ -67,10 +67,10 @@ static void fillTransform(O3DS::Transform& t,
     double rx, double ry, double rz, double rw,
     double sx, double sy, double sz)
 {
-    t.transformOrder.clear();
-    t.transformOrder.push_back(O3DS::TTranslation);
-    t.transformOrder.push_back(O3DS::TRotation);
-    t.transformOrder.push_back(O3DS::TScale);
+    t.mTransformOrder.clear();
+    t.mTransformOrder.push_back(O3DS::TTranslation);
+    t.mTransformOrder.push_back(O3DS::TRotation);
+    t.mTransformOrder.push_back(O3DS::TScale);
     t.translation.value = Eigen::Vector3d(tx, ty, tz);
     t.rotation.value = Eigen::Quaterniond(rw, rx, ry, rz).normalized();
     t.scale.value = Eigen::Vector3d(sx, sy, sz);
@@ -113,15 +113,16 @@ static void suite_RoundTrip_SingleSubjectNoTransforms()
     beginSuite("RoundTrip: single subject, no transforms");
 
     O3DS::SubjectList src, dst;
-    O3DS::Subject *srcSubject = src.findOrAddSubject("uuid-actor1");
+    O3DS::PerformerSubject*srcSubject = src.findOrAddSubject<O3DS::PerformerSubject>("uuid-actor1");
     srcSubject->mName = "Actor1";
-    srcSubject->addTransform("Root", -1);
+    auto t1 = srcSubject->addTransform();
+    t1->mName = "Root";
 
     bool ok = roundTrip(src, dst);
     CHECK_MSG(ok, "serialize+parse succeeds");
     CHECK_MSG(dst.size() == 1, "one subject recovered");
 
-    O3DS::Subject* s = dst.findSubjectByName("Actor1");
+    O3DS::PerformerSubject* s = dst.findSubjectByName<O3DS::PerformerSubject>("Actor1");
     CHECK_MSG(s != nullptr, "subject found by name");
     if (!s) return;
     CHECK_MSG(s->mName == "Actor1", "subject name matches");
@@ -134,9 +135,10 @@ static void suite_RoundTrip_SingleTransformValues()
     beginSuite("RoundTrip: single transform value fidelity");
 
     O3DS::SubjectList src, dst;
-    O3DS::Subject* subj = src.findOrAddSubject("uuid-a");
+    O3DS::PerformerSubject* subj = src.findOrAddSubject<O3DS::PerformerSubject>("uuid-a");
     subj->mName = "Actor";
-    O3DS::Transform* t = subj->addTransform("Hips", -1);
+    O3DS::Transform* t = subj->addTransform();
+    t->mName = "Hips";
 
     const double tx = 1.5, ty = -2.0, tz = 3.25;
     const double rx = 0.0, ry = 0.707, rz = 0.0, rw = 0.707;
@@ -146,7 +148,7 @@ static void suite_RoundTrip_SingleTransformValues()
     bool ok = roundTrip(src, dst);
     CHECK_MSG(ok, "serialize+parse succeeds");
 
-    O3DS::Subject* ps = dst.findSubjectByName("Actor");
+    O3DS::PerformerSubject* ps = dst.findSubjectByName<O3DS::PerformerSubject>("Actor");
     CHECK_MSG(ps != nullptr, "subject recovered");
     if (!ps) return;
 
@@ -171,25 +173,28 @@ static void suite_RoundTrip_MultipleSubjects()
     beginSuite("RoundTrip: multiple subjects");
 
     O3DS::SubjectList src, dst;
-    auto s1 = src.findOrAddSubject("uuid-1");
-    s1->addTransform("Root", -1);
+    auto s1 = src.findOrAddSubject<O3DS::PerformerSubject>("uuid-1");
+    auto t1 = s1->addTransform();
+    t1->mName = "Root";
     s1->mName = "Actor1";
     
-    auto s2 = src.findOrAddSubject("uuid-2");
-    s2->addTransform("Root", -1);
+    auto s2 = src.findOrAddSubject<O3DS::PerformerSubject>("uuid-2");
+    auto t2 = s2->addTransform();
+    t2->mName = "Root";
     s2->mName = "Actor2";
 
-    auto s3= src.findOrAddSubject("uuid-3");
-    s3->addTransform("Root", -1);
+    auto s3 = src.findOrAddSubject<O3DS::PerformerSubject>("uuid-3");
+    auto t3 = s3->addTransform();
+    t3->mName = "Root";
     s3->mName = "Actor3";
 
     bool ok = roundTrip(src, dst);
     CHECK_MSG(ok, "serialize+parse succeeds");
     CHECK_MSG(dst.size() == 3, "three subjects recovered");
-    CHECK_MSG(dst.findSubjectByName("Actor1") != nullptr, "Actor1 found by name");
-    CHECK_MSG(dst.findSubjectByName("Actor2") != nullptr, "Actor2 found by name");
-    CHECK_MSG(dst.findSubjectByName("Actor3") != nullptr, "Actor3 found by name");
-    CHECK_MSG(dst.findSubjectByUuid("uuid-2") != nullptr, "Actor2 found by uuid");
+    CHECK_MSG(dst.findSubjectByName<O3DS::PerformerSubject>("Actor1") != nullptr, "Actor1 found by name");
+    CHECK_MSG(dst.findSubjectByName<O3DS::PerformerSubject>("Actor2") != nullptr, "Actor2 found by name");
+    CHECK_MSG(dst.findSubjectByName<O3DS::PerformerSubject>("Actor3") != nullptr, "Actor3 found by name");
+    CHECK_MSG(dst.findSubjectByUuid<O3DS::PerformerSubject>("uuid-2") != nullptr, "Actor2 found by uuid");
 }
 
 static void suite_RoundTrip_ParentChildHierarchy()
@@ -197,16 +202,22 @@ static void suite_RoundTrip_ParentChildHierarchy()
     beginSuite("RoundTrip: parent-child transform hierarchy");
 
     O3DS::SubjectList src, dst;
-    O3DS::Subject* subj = src.findOrAddSubject("uuid-s");
+    O3DS::Subject* subj = src.findOrAddSubject<O3DS::PerformerSubject>("uuid-s");
     subj->mName = "Skeleton";
-    subj->addTransform("Root", -1);
-    subj->addTransform("Spine", 0);
-    subj->addTransform("Head", 1);
+    auto t1 = subj->addTransform();
+    t1->mName = "Root";
+    auto t2 = subj->addTransform();
+    t2->mName = "Spine";
+    t2->mParentId = 0;
+    auto t3 = subj->addTransform();
+    t3->mName = "Head";
+    t3->mParentId = 1;
+
 
     bool ok = roundTrip(src, dst);
     CHECK_MSG(ok, "serialize+parse succeeds");
 
-    O3DS::Subject* ps = dst.findSubjectByName("Skeleton");
+    O3DS::PerformerSubject* ps = dst.findSubjectByName<O3DS::PerformerSubject>("Skeleton");
     CHECK_MSG(ps != nullptr, "subject recovered");
     if (!ps) return;
 
@@ -222,7 +233,7 @@ static void suite_RoundTrip_Camera()
     beginSuite("RoundTrip: camera lens properties");
 
     O3DS::SubjectList src, dst;
-    O3DS::Camera* cam = src.findOrAddCamera("uuid-cam");
+    O3DS::CameraSubject* cam = src.findOrAddSubject<O3DS::CameraSubject>("uuid-cam");
     cam->mName = "MainCam";
     cam->focalLength = 35.0f;
     cam->filmBackWidth = 36.0f;
@@ -230,14 +241,16 @@ static void suite_RoundTrip_Camera()
     cam->aperture = 2.8f;
     cam->focusDistance = 5000.0f;
 
+    cam->addTransform()->mName = "CameraRoot";
+
     bool ok = roundTrip(src, dst);
     CHECK_MSG(ok, "serialize+parse succeeds");
 
-    O3DS::Camera* pc = dst.findCameraByName("MainCam");
+    O3DS::CameraSubject* pc = dst.findSubjectByName<O3DS::CameraSubject>("MainCam");
     CHECK_MSG(pc != nullptr, "camera recovered by name");
     if (!pc) return;
 
-    CHECK_MSG(dst.findCameraByUuid("uuid-cam") != nullptr, "camera found by uuid");
+    CHECK_MSG(dst.findSubjectByUuid<O3DS::CameraSubject>("uuid-cam") != nullptr, "camera found by uuid");
 
     /*
     const float kEps = 1e-4f;
@@ -254,19 +267,20 @@ static void suite_RoundTrip_DisabledSubjectSkipped()
     beginSuite("RoundTrip: disabled subject excluded from encoding");
 
     O3DS::SubjectList src, dst;
-    O3DS::Subject* a = src.findOrAddSubject("uuid-a");
+    O3DS::Subject* a = src.findOrAddSubject<O3DS::PerformerSubject>("uuid-a");
     a->mName = "Active";
     a->mEnabled = true;
-    a->addTransform("Root", -1);
+    auto t = a->addTransform();
+    t->mName = "Root";
 
-    O3DS::Subject* b = src.findOrAddSubject("uuid-d");
+    O3DS::Subject* b = src.findOrAddSubject<O3DS::PerformerSubject>("uuid-d");
     b->mName = "Disabled";
     b->mEnabled = false;   // must not appear in serialized output
 
     bool ok = roundTrip(src, dst);
     CHECK_MSG(ok, "serialize+parse succeeds");
-    CHECK_MSG(dst.findSubjectByName("Active") != nullptr, "active subject present");
-    CHECK_MSG(dst.findSubjectByName("Disabled") == nullptr, "disabled subject absent");
+    CHECK_MSG(dst.findSubjectByName<O3DS::PerformerSubject>("Active") != nullptr, "active subject present");
+    CHECK_MSG(dst.findSubjectByName<O3DS::PerformerSubject>("Disabled") == nullptr, "disabled subject absent");
 }
 
 
@@ -279,8 +293,9 @@ static void suite_WorldMatrix_SingleTransform()
     beginSuite("WorldMatrix: single root transform");
 
     O3DS::SubjectList sl;
-    O3DS::Subject* subj = sl.findOrAddSubject("u");
-    O3DS::Transform* t = subj->addTransform("Root", -1);
+    O3DS::Subject* subj = sl.findOrAddSubject<O3DS::PerformerSubject>("u");
+    O3DS::Transform* t = subj->addTransform();
+    t->mName = "Root";
 
     // Identity rotation, unit scale, translation only
     fillTransform(*t, 1.0, 2.0, 3.0, 0, 0, 0, 1, 1, 1, 1);
@@ -303,10 +318,13 @@ static void suite_WorldMatrix_ParentChildTranslation()
     beginSuite("WorldMatrix: parent-child translation accumulation");
 
     O3DS::SubjectList sl;
-    O3DS::Subject* subj = sl.findOrAddSubject("u");
+    O3DS::Subject* subj = sl.findOrAddSubject<O3DS::PerformerSubject>("u");
 
-    O3DS::Transform* parent = subj->addTransform("Parent", -1);
-    O3DS::Transform* child = subj->addTransform("Child", 0);
+    O3DS::Transform* parent = subj->addTransform();
+    parent->mName = "Parent";
+    O3DS::Transform* child = subj->addTransform();
+    child->mName = "Child";
+    child->mParentId = 0;
 
     // Parent at (10,0,0), child local at (5,0,0) -> world (15,0,0)
     fillTransform(*parent, 10.0, 0.0, 0.0, 0, 0, 0, 1, 1, 1, 1);
@@ -327,11 +345,17 @@ static void suite_WorldMatrix_ThreeLevelHierarchy()
     beginSuite("WorldMatrix: three-level translation chain");
 
     O3DS::SubjectList sl;
-    O3DS::Subject* subj = sl.findOrAddSubject("u");
+    O3DS::Subject* subj = sl.findOrAddSubject<O3DS::PerformerSubject>("u");
 
-    O3DS::Transform* a = subj->addTransform("A", -1);
-    O3DS::Transform* b = subj->addTransform("B", 0);
-    O3DS::Transform* c = subj->addTransform("C", 1);
+    O3DS::Transform* a = subj->addTransform();
+    a->mName = "A";
+    a->mParentId = -1;
+    O3DS::Transform* b = subj->addTransform();
+    b->mName = "B";
+    b->mParentId = 0;
+    O3DS::Transform* c = subj->addTransform();
+    c->mName = "C";
+    c->mParentId = 1;
 
     fillTransform(*a, 1.0, 0, 0, 0, 0, 0, 1, 1, 1, 1);
     fillTransform(*b, 2.0, 0, 0, 0, 0, 0, 1, 1, 1, 1);
@@ -350,10 +374,13 @@ static void suite_WorldMatrix_ScaleInherited()
     beginSuite("WorldMatrix: parent scale is inherited by child");
 
     O3DS::SubjectList sl;
-    O3DS::Subject* subj = sl.findOrAddSubject("u");
+    O3DS::Subject* subj = sl.findOrAddSubject<O3DS::PerformerSubject>("u");
 
-    O3DS::Transform* parent = subj->addTransform("Parent", -1);
-    O3DS::Transform* child = subj->addTransform("Child", 0);
+    O3DS::Transform* parent = subj->addTransform();
+    parent->mName = "Parent";
+    O3DS::Transform* child = subj->addTransform();
+    child->mName = "Child";
+    child->mParentId = 0;
 
     // Parent 2x on X, child local at (1,0,0) -> world Tx == 2
     fillTransform(*parent, 0, 0, 0, 0, 0, 0, 1, 2.0, 1.0, 1.0);
@@ -372,10 +399,14 @@ static void suite_WorldMatrix_90DegRotation()
     beginSuite("WorldMatrix: 90-degree parent rotation re-maps child axis");
 
     O3DS::SubjectList sl;
-    O3DS::Subject* subj = sl.findOrAddSubject("u");
+    O3DS::Subject* subj = sl.findOrAddSubject<O3DS::PerformerSubject>("u");
 
-    O3DS::Transform* parent = subj->addTransform("Parent", -1);
-    O3DS::Transform* child = subj->addTransform("Child", 0);
+    O3DS::Transform* parent = subj->addTransform();
+    parent->mName = "Parent";
+    O3DS::Transform* child = subj->addTransform();
+    child->mName = "Child";
+    child->mParentId = 0;
+
 
     // Rotate parent 90° around Y: local +X becomes world -Z
     // Quaternion for 90° around Y: (w=cos45°, x=0, y=sin45°, z=0)
@@ -428,8 +459,9 @@ static void suite_Edge_AllFinite_Clean()
     beginSuite("Edge: allFinite passes for valid data");
 
     O3DS::SubjectList sl;
-    O3DS::Subject* subj = sl.findOrAddSubject("u");
-    O3DS::Transform* t = subj->addTransform("Root", -1);
+    O3DS::Subject* subj = sl.findOrAddSubject<O3DS::PerformerSubject>("u");
+    O3DS::Transform* t = subj->addTransform();
+    t->mName = "Root";
     fillTransform(*t, 1, 2, 3, 0, 0, 0, 1, 1, 1, 1);
 
     CHECK_MSG(t->allFinite(), "Transform::allFinite() true for clean data");
@@ -444,8 +476,9 @@ static void suite_Edge_AllFinite_NaN()
     const double nan = std::numeric_limits<double>::quiet_NaN();
 
     O3DS::SubjectList sl;
-    O3DS::Subject* subj = sl.findOrAddSubject("u");
-    O3DS::Transform* t = subj->addTransform("Hips", -1);
+    O3DS::Subject* subj = sl.findOrAddSubject<O3DS::PerformerSubject>("u");
+    O3DS::Transform* t = subj->addTransform();
+    t->mName = "Hips";
     fillTransform(*t, nan, 0, 0, 0, 0, 0, 1, 1, 1, 1);
 
     CHECK_MSG(!t->allFinite(), "Transform::allFinite() false for NaN tx");
@@ -462,8 +495,9 @@ static void suite_Edge_AllFinite_NaN_Scale()
     const double nan = std::numeric_limits<double>::quiet_NaN();
 
     O3DS::SubjectList sl;
-    O3DS::Subject* subj = sl.findOrAddSubject("u");
-    O3DS::Transform* t = subj->addTransform("Root", -1);
+    O3DS::Subject* subj = sl.findOrAddSubject<O3DS::PerformerSubject>("u");
+    O3DS::Transform* t = subj->addTransform();
+    t->mName = "Root";
     fillTransform(*t, 0, 0, 0, 0, 0, 0, 1, nan, 1, 1);
 
     CHECK_MSG(!t->allFinite(), "Transform::allFinite() false for NaN scale");
@@ -476,8 +510,9 @@ static void suite_Edge_AllFinite_Inf()
     const double inf = std::numeric_limits<double>::infinity();
 
     O3DS::SubjectList sl;
-    O3DS::Subject* subj = sl.findOrAddSubject("u");
-    O3DS::Transform* t = subj->addTransform("Root", -1);
+    O3DS::Subject* subj = sl.findOrAddSubject<O3DS::PerformerSubject>("u");
+    O3DS::Transform* t = subj->addTransform();
+    t->mName = "Root";
     fillTransform(*t, 0, inf, 0, 0, 0, 0, 1, 1, 1, 1);
 
     CHECK_MSG(!t->allFinite(), "Transform::allFinite() false for +Inf ty");
@@ -489,15 +524,15 @@ static void suite_Edge_FindNonexistent()
     beginSuite("Edge: find methods return nullptr for unknown keys");
 
     O3DS::SubjectList sl;
-    auto s = sl.findOrAddSubject("uuid-real");
+    auto s = sl.findOrAddSubject<O3DS::PerformerSubject>("uuid-real");
     s->mName = "Real";
 
-    CHECK_MSG(sl.findSubjectByName("Ghost") == nullptr, "unknown name -> nullptr");
-    CHECK_MSG(sl.findSubjectByUuid("uuid-ghost") == nullptr, "unknown uuid -> nullptr");
-    CHECK_MSG(sl.findCameraByName("NoCamera") == nullptr, "unknown camera -> nullptr");
-    CHECK_MSG(sl.findCameraByUuid("uuid-nc") == nullptr, "unknown camera uuid -> nullptr");
+    CHECK_MSG(sl.findSubjectByName<O3DS::PerformerSubject>("Ghost") == nullptr, "unknown name -> nullptr");
+    CHECK_MSG(sl.findSubjectByUuid<O3DS::PerformerSubject>("uuid-ghost") == nullptr, "unknown uuid -> nullptr");
+    CHECK_MSG(sl.findSubjectByName<O3DS::PerformerSubject>("NoCamera") == nullptr, "unknown camera -> nullptr");
+    CHECK_MSG(sl.findSubjectByUuid<O3DS::CameraSubject>("uuid-nc") == nullptr, "unknown camera uuid -> nullptr");
 
-    O3DS::Subject* subj = sl.findSubjectByName("Real");
+    O3DS::Subject* subj = sl.findSubjectByName<O3DS::PerformerSubject>("Real");
     CHECK_MSG(subj->mTransforms.find("missing") == nullptr,
         "TransformList::find() returns nullptr for unknown name");
 }
@@ -507,10 +542,13 @@ static void suite_Edge_ClearTransforms()
     beginSuite("Edge: clearTransforms keeps subject metadata");
 
     O3DS::SubjectList sl;
-    O3DS::Subject* subj = sl.findOrAddSubject("uuid-actor");
+    O3DS::Subject* subj = sl.findOrAddSubject<O3DS::PerformerSubject>("uuid-actor");
     subj->mName = "Actor";
-    subj->addTransform("Hips", -1);
-    subj->addTransform("Spine", 0);
+    auto t1 = subj->addTransform();
+    t1->mName = "Hips";
+    auto t2 = subj->addTransform();
+    t2->mName = "Spine";
+    t2->mParentId = 0;
 
     CHECK_MSG(subj->size() == 2, "two transforms before clear");
     subj->clearTransforms();
@@ -524,9 +562,10 @@ static void suite_Edge_ClearAll()
     beginSuite("Edge: clearAll resets transforms and metadata");
 
     O3DS::SubjectList sl;
-    O3DS::Subject* subj = sl.findOrAddSubject("uuid-actor");
+    O3DS::Subject* subj = sl.findOrAddSubject<O3DS::PerformerSubject>("uuid-actor");
     subj->mName = "Actor";
-    subj->addTransform("Hips", -1);
+    auto t= subj->addTransform();
+    t->mName = "Hips";
 
     subj->clearAll();
     CHECK_MSG(subj->size() == 0, "no transforms after clearAll");
@@ -539,9 +578,9 @@ static void suite_Edge_ActiveCount()
     beginSuite("Edge: activeCount reflects mEnabled flag");
 
     O3DS::SubjectList sl;
-    O3DS::Subject* a = sl.findOrAddSubject("ua");
-    O3DS::Subject* b = sl.findOrAddSubject("ub");
-    O3DS::Subject* c = sl.findOrAddSubject("uc");
+    O3DS::Subject* a = sl.findOrAddSubject<O3DS::PerformerSubject>("ua");
+    O3DS::Subject* b = sl.findOrAddSubject<O3DS::PerformerSubject>("ub");
+    O3DS::Subject* c = sl.findOrAddSubject<O3DS::PerformerSubject>("uc");
     a->mEnabled = true;
     b->mEnabled = false;
     c->mEnabled = true;
@@ -619,7 +658,7 @@ static void suite_DefUpdate_DefinitionPreservesHierarchy()
     // --- source ---
     O3DS::SubjectList src;
 
-    O3DS::Subject* actor = src.findOrAddSubject("uuid-actor");
+    O3DS::Subject* actor = src.findOrAddSubject<O3DS::PerformerSubject>("uuid-actor");
     actor->mName = "Actor";
     O3DS::Transform* root = actor->addTransform("Root", -1);
     O3DS::Transform* spine = actor->addTransform("Spine", 0);
@@ -628,21 +667,23 @@ static void suite_DefUpdate_DefinitionPreservesHierarchy()
     fillTransform(*spine, 0, 10, 0, 0, 0, 0, 1, 1, 1, 1);
     fillTransform(*head, 0, 5, 0, 0, 0, 0, 1, 1, 1, 1);
 
-    O3DS::Camera* cam = src.findOrAddCamera("uuid-vcam");
+    O3DS::CameraSubject* cam = src.findOrAddSubject<O3DS::CameraSubject>("uuid-vcam");
     cam->mName = "VCam";
     cam->focalLength = 50.0f;
     cam->filmBackWidth = 36.0f;
     cam->filmBackHeight = 24.0f;
     cam->aperture = 4.0f;
     cam->focusDistance = 3000.0f;
+    cam->addTransform("CameraRoot", -1);
 
     // --- receiver ---
     O3DS::SubjectList dst;
     bool ok = sendDefinition(src, dst);
+    if (!ok) { std::cerr << dst.mError << std::endl; }
     CHECK_MSG(ok, "definition serialize+parse succeeds");
 
     // Skeleton
-    O3DS::Subject* pa = dst.findSubjectByName("Actor");
+    O3DS::Subject* pa = dst.findSubjectByName<O3DS::PerformerSubject>("Actor");
     CHECK_MSG(pa != nullptr, "Actor subject received");
     if (pa)
     {
@@ -660,7 +701,7 @@ static void suite_DefUpdate_DefinitionPreservesHierarchy()
     CHECK_MSG(ok, "update serialize+parse succeeds");
 
     // Camera
-    O3DS::Camera* pc = dst.findCameraByName("VCam");
+    O3DS::CameraSubject* pc = dst.findSubjectByName<O3DS::CameraSubject>("VCam");
     CHECK_MSG(pc != nullptr, "VCam camera received");
     if (pc)
     {
@@ -682,7 +723,7 @@ static void suite_DefUpdate_UpdateChangesPose()
 
     // --- source: send definition with initial T-pose ---
     O3DS::SubjectList src;
-    O3DS::Subject* actor = src.findOrAddSubject("uuid-actor");
+    O3DS::Subject* actor = src.findOrAddSubject<O3DS::PerformerSubject>("uuid-actor");
     actor->mName = "Actor";
     O3DS::Transform* root = actor->addTransform("Root", -1);
     O3DS::Transform* spine = actor->addTransform("Spine", 0);
@@ -699,7 +740,7 @@ static void suite_DefUpdate_UpdateChangesPose()
     CHECK_MSG(ok, "definition sent successfully");
 
     // Verify initial pose on receiver
-    O3DS::Subject* pa = dst.findSubjectByName("Actor");
+    O3DS::Subject* pa = dst.findSubjectByName<O3DS::PerformerSubject>("Actor");
     CHECK_MSG(pa != nullptr, "Actor present after definition");
     if (pa)
     {
@@ -721,7 +762,7 @@ static void suite_DefUpdate_UpdateChangesPose()
         "update packet contains at least the two moved transforms");
 
     // Verify updated values on receiver
-    pa = dst.findSubjectByName("Actor");
+    pa = dst.findSubjectByName<O3DS::PerformerSubject>("Actor");
     CHECK_MSG(pa != nullptr, "Actor still present after update");
     if (!pa) return;
 
@@ -765,9 +806,10 @@ static void suite_DefUpdate_BelowThresholdProducesNoUpdate()
 
     // --- source ---
     O3DS::SubjectList src;
-    O3DS::Subject* actor = src.findOrAddSubject("uuid-actor");
+    O3DS::Subject* actor = src.findOrAddSubject<O3DS::PerformerSubject>("uuid-actor");
     actor->mName = "Actor";
-    O3DS::Transform* root = actor->addTransform("Root", -1);
+    O3DS::Transform* root = actor->addTransform();
+    root->mName = "Root";
     fillTransform(*root, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1);
 
     // Large threshold — tiny movements should not trigger an update
@@ -796,9 +838,10 @@ static void suite_DefUpdate_SequentialUpdates()
     const double kEps = 1e-5;
 
     O3DS::SubjectList src;
-    O3DS::Subject* actor = src.findOrAddSubject("uuid-actor");
+    O3DS::Subject* actor = src.findOrAddSubject<O3DS::PerformerSubject>("uuid-actor");
     actor->mName = "Actor";
-    O3DS::Transform* root = actor->addTransform("Root", -1);
+    O3DS::Transform* root = actor->addTransform();
+    root->mName = "Root";
     fillTransform(*root, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1);
     src.setDeltaThreshold(0.0001);
 
@@ -811,7 +854,7 @@ static void suite_DefUpdate_SequentialUpdates()
     sendUpdate(src, dst, count);
     CHECK_MSG(count == 1, "frame 1: one transform in update");
 
-    O3DS::Subject* pa = dst.findSubjectByName("Actor");
+    O3DS::Subject* pa = dst.findSubjectByName<O3DS::PerformerSubject>("Actor");
     if (pa && pa->mTransforms.at(0))
         CHECK_MSG(std::abs(pa->mTransforms.at(0)->translation.value.x() - 1.0) < kEps,
             "frame 1: receiver Root Tx == 1");
@@ -821,7 +864,7 @@ static void suite_DefUpdate_SequentialUpdates()
     sendUpdate(src, dst, count);
     CHECK_MSG(count == 1, "frame 2: one transform in update");
 
-    pa = dst.findSubjectByName("Actor");
+    pa = dst.findSubjectByName<O3DS::PerformerSubject>("Actor");
     if (pa && pa->mTransforms.at(0))
         CHECK_MSG(std::abs(pa->mTransforms.at(0)->translation.value.x() - 2.0) < kEps,
             "frame 2: receiver Root Tx == 2");
@@ -842,36 +885,39 @@ static void suite_DefUpdate_CameraUpdateOnly()
     O3DS::SubjectList src;
 
     // Skeleton
-    O3DS::Subject* actor = src.findOrAddSubject("uuid-actor");
+    O3DS::Subject* actor = src.findOrAddSubject<O3DS::PerformerSubject>("uuid-actor");
     actor->mName = "Actor";
-    O3DS::Transform* root = actor->addTransform("Root", -1);
+    O3DS::Transform* root = actor->addTransform();
+    root->mName = "Root";
     fillTransform(*root, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1);
 
     // Camera
-    O3DS::Camera* cam = src.findOrAddCamera("uuid-vcam");
+    O3DS::CameraSubject* cam = src.findOrAddSubject<O3DS::CameraSubject>("uuid-vcam");
     cam->mName = "VCam";
     cam->focalLength = 35.0f;
     cam->filmBackWidth = 36.0f;
     cam->filmBackHeight = 24.0f;
-    cam->aperture = 2.8f;
-    cam->focusDistance = 5000.0f;
+    cam->focusDistance = 5000.0f;  // initial, will be changed
     src.setDeltaThreshold(0.0001);
+    cam->addTransform("CameraRoot", -1);
 
     // Send full definition
     O3DS::SubjectList dst;
     bool ok = sendDefinition(src, dst);
+    if(!ok) { std::cerr << dst.mError << std::endl; }
     CHECK_MSG(ok, "definition sent successfully");
 
     // Change focal length and focus distance on source, send update
     cam->focalLength = 85.0f;
     cam->focusDistance = 1500.0f;
+    cam->aperture = 2.8f;
 
     size_t updateCount = 0;
     ok = sendUpdate(src, dst, updateCount);
     CHECK_MSG(ok, "update sent successfully");
 
     // Receiver camera should reflect new lens values
-    O3DS::Camera* pc = dst.findCameraByName("VCam");
+    O3DS::CameraSubject* pc = dst.findSubjectByName<O3DS::CameraSubject>("VCam");
     CHECK_MSG(pc != nullptr, "VCam still present after update");
     if (pc)
     {
@@ -887,7 +933,7 @@ static void suite_DefUpdate_CameraUpdateOnly()
     }
 
     // Skeleton should still be intact
-    O3DS::Subject* pa = dst.findSubjectByName("Actor");
+    O3DS::Subject* pa = dst.findSubjectByName<O3DS::PerformerSubject>("Actor");
     CHECK_MSG(pa != nullptr, "Actor skeleton intact after camera-only update");
     if (pa)
         CHECK_MSG(pa->mTransforms.size() == 1, "one skeleton transform intact");

@@ -27,7 +27,7 @@ SOFTWARE.
 
 namespace O3DS
 {
-	enum class Direction { None = 0, Left, Right, Forward, Back, Up, Down, Last };
+	enum class Direction { Unknown = 0, Left, Right, Forward, Back, Up, Down, Last };
 
 
 	//! Describes the axis alignment of the coordinate system
@@ -38,9 +38,9 @@ namespace O3DS
 	public:
 		//! All axis set to None
 		Context()
-			: mX(Direction::None)
-			, mY(Direction::None)
-			, mZ(Direction::None)
+			: mX(Direction::Unknown)
+			, mY(Direction::Unknown)
+			, mZ(Direction::Unknown)
 		{};
 
 		//! Copy constructor

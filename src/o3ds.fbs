@@ -1,124 +1,150 @@
-// 4/9/2026 - added Camera
+// Open 3D Stream — FlatBuffers schema
+// Coordinate system and units are carried in SubjectList so any receiver
+// can convert incoming data without out-of-band configuration.
 
 namespace O3DS.Data;
 
-enum Direction : byte { None = 0, Left, Right, Forward, Back, Up, Down }
+// --- Coordinate context ------------------------------------------------------
 
+// Which real-world direction each axis points toward.
+// Fully determines handedness when all three axes are set.
+// A receiver compares sender axes against its own to build a conversion.
+enum Direction : byte {
+  Unknown = 0,   // default / unset — treat as an error
+  Left, Right,
+  Forward, Back,
+  Up, Down
+}
+
+// Unit applied to all translation and distance values in this stream.
+// Lens measurements (filmback, focal length, focus distance) are always
+// in millimetres regardless of this setting.
+enum DistanceUnit : byte {
+  Millimeter = 0,
+  Centimeter,
+  Meter,
+  Kilometer,
+  Inch,
+  Foot,
+  Mile
+}
+
+// --- Primitive structs -------------------------------------------------------
+
+// Column-major 4×4 matrix (mROW_COL).
 struct Matrix {
-  m00:float;
-  m01:float;
-  m02:float;
-  m03:float;
-  m10:float;
-  m11:float;
-  m12:float;
-  m13:float;
-  m20:float;
-  m21:float;
-  m22:float;
-  m23:float;
-  m30:float;
-  m31:float;
-  m32:float;
-  m33:float;
+  m00:float; m01:float; m02:float; m03:float;
+  m10:float; m11:float; m12:float; m13:float;
+  m20:float; m21:float; m22:float; m23:float;
+  m30:float; m31:float; m32:float; m33:float;
 }
 
-struct Translation {
-  x:float;
-  y:float;
-  z:float;
-}
+// XYZ position in the stream's DistanceUnit.
+struct Translation { x:float; y:float; z:float; }
 
-struct Rotation {
-  x:float;
-  y:float;
-  z:float;
-  w:float;
-}
+// Unit quaternion (XYZW). Rotations are always quaternion — no Euler angles.
+struct Rotation    { x:float; y:float; z:float; w:float; }
 
-struct Scale {
-  x:float;
-  y:float;
-  z:float;
-}
+// Uniform or non-uniform scale factor per axis.
+struct Scale       { x:float; y:float; z:float; }
 
-struct TranslationUpdate {
-  x:float;
-  y:float;
-  z:float;
-  i:int;
-}
+// --- Delta-update structs ----------------------------------------------------
+// Used in per-frame updates. Only transforms that changed beyond the sender's
+// delta threshold are included. i = index into the subject's nodes array.
 
-struct RotationUpdate {
-  x:float;
-  y:float;
-  z:float;
-  w:float;
-  i:int;
-}
+struct TranslationUpdate { x:float; y:float; z:float; i:int; }
+struct RotationUpdate    { x:float; y:float; z:float; w:float; i:int; }
+struct ScaleUpdate       { x:float; y:float; z:float; i:int; }
 
-struct ScaleUpdate {
-  x:float;
-  y:float;
-  z:float;
-  i:int;
-}
+// --- Transform node ----------------------------------------------------------
 
-
+// Which components are present and in what evaluation order (e.g. T R S,
+// or T matrix R matrix S). Matches the ComponentType enum in the C++ layer.
 enum Component : byte { Translation, Rotation, Scale, Matrix }
 
-table Transform { 
+// A single node in a subject's transform hierarchy.
+// parent = -1 for root nodes; otherwise an index into the subject's nodes array.
+table Transform {
   parent:int;
   name:string;
   translation:Translation;
   rotation:Rotation;
   scale:Scale;
   matrix:[Matrix];
-  components:[Component];
+  components:[Component];  // evaluation order for this node's local matrix
 }
 
-table Subject {
+// --- Subject types ------------------------------------------------------------
+// A full SubjectData packet is sent once on connection or when the subject's
+// structure changes. Per-frame motion is sent as the corresponding *Update type.
+
+// Shared identity and transform hierarchy for all subject types.
+table SubjectData {
   nodes:[Transform];
   name:string;
-  x_axis:Direction;
-  y_axis:Direction;
-  z_axis:Direction;
-  format:string;
-  uuid:string;  // unique identifier, so name can be changed
-  type:string;  // performer or prop
+  uuid:string;  // stable identity — name may change, uuid does not
 }
 
+// A performer subject: a human or creature skeleton with a joint hierarchy.
+table Performer  { data:SubjectData; }
+
+// A rigidbody subject: a single tracked object with no joint hierarchy.
+table Rigidbody  { data:SubjectData; }
+
+// A camera subject with static lens/filmback properties.
+// filmback_width, filmback_height: sensor dimensions in millimetres.
+// aspect: width / height ratio (may differ from filmback ratio due to crop).
+// Variable lens values (focal_length, focus_distance, aperture) are in CameraUpdate.
+table Camera {
+  data:SubjectData;
+  filmback_width:float;   // mm
+  filmback_height:float;  // mm
+  aspect:float;            // width / height
+}
+
+// --- Per-frame update types ---------------------------------------------------
+// Only changed values are included. uuid matches the originating SubjectData.
+
 table SubjectUpdate {
-  translations:[TranslationUpdate];
+  translation:[TranslationUpdate];
   rotation:[RotationUpdate];
   scale:[ScaleUpdate];
   uuid:string;
 }
 
-table Camera {
-  uuid:string;
-  transform:Transform;  
-  filmback_width:float;
-  filmback_height:float;
-}
+table PerformerUpdate { data:SubjectUpdate; }
+table RigidbodyUpdate { data:SubjectUpdate; }
 
+// Per-frame camera update. Transform motion is in data (same as other subjects).
+// focal_length: mm. focus_distance: mm. aperture: f-stop number.
 table CameraUpdate {
-  focal_length:float;
-  aspect:float;
-  focus_distance:float;
-  aperture:float;
-  translation:Translation;
-  rotation:Rotation;
-  uuid:string;
+  data:SubjectUpdate;
+  focal_length:float;    // mm
+  focus_distance:float;  // mm
+  aperture:float;         // f-stop
 }
 
+// --- Root packet -------------------------------------------------------------
+// A single SubjectList packet may contain full definitions, per-frame updates,
+// or both. Senders should populate only the arrays relevant to each packet.
+//
+// Coordinate context fields describe the sender's space. Receivers that use a
+// different convention should convert on ingest using x_axis/y_axis/z_axis and
+// distance_unit. All three axis fields must be set (non-Unknown) for the context
+// to be considered valid.
 table SubjectList {
-   subjects:[Subject];
-   updates:[SubjectUpdate];
-   cameras:[Camera];
-   cameras_updates:[CameraUpdate];
-   time:double;
-   timecode:string;
+  performers:        [Performer];
+  performer_updates: [PerformerUpdate];
+  rigidbodies:       [Rigidbody];
+  rigidbody_updates: [RigidbodyUpdate];
+  cameras:           [Camera];
+  camera_updates:    [CameraUpdate];
+  time:double;        // sender wall-clock time in seconds
+  timecode:string;   // SMPTE timecode string, e.g. "01:00:00:00"
+  x_axis:Direction;  // sender coordinate context
+  y_axis:Direction;
+  z_axis:Direction;
+  distance_unit:DistanceUnit;
 }
 
 root_type SubjectList;

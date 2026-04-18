@@ -64,14 +64,14 @@ namespace O3DS
 			setRotation(mModel->PreRotation, FBModelRotationOrder::kFBEulerXYZ, pre);
 			setRotation(mModel->PostRotation, FBModelRotationOrder::kFBEulerXYZ, post);
 
-			this->matrices.push_back(pre);
-			this->matrices.push_back(post);
+			this->mMatrices.push_back(pre);
+			this->mMatrices.push_back(post);
 
-			this->transformOrder.push_back(O3DS::ComponentType::TTranslation);
-			this->transformOrder.push_back(O3DS::ComponentType::TMatrix);
-			this->transformOrder.push_back(O3DS::ComponentType::TRotation);
-			this->transformOrder.push_back(O3DS::ComponentType::TMatrix);
-			this->transformOrder.push_back(O3DS::ComponentType::TScale);
+			this->mTransformOrder.push_back(O3DS::ComponentType::TTranslation);
+			this->mTransformOrder.push_back(O3DS::ComponentType::TMatrix);
+			this->mTransformOrder.push_back(O3DS::ComponentType::TRotation);
+			this->mTransformOrder.push_back(O3DS::ComponentType::TMatrix);
+			this->mTransformOrder.push_back(O3DS::ComponentType::TScale);
 
 		}
 

@@ -96,10 +96,10 @@ namespace O3DS
 		bool        bWorldMatrix;
 
 		//! Any matrices as part of the transform
-		std::vector<TransformMatrix> matrices;
+		std::vector<TransformMatrix> mMatrices;
 
 		//! Order of calculation, e.g. T R S or T mat R mat S, etc.
-		std::vector<enum ComponentType> transformOrder;
+		std::vector<enum ComponentType> mTransformOrder;
 
 		//! Name of this Transform
 		std::string mName;
@@ -112,14 +112,33 @@ namespace O3DS
 
 	};
 
-	//! Platform specific builder to make a transform object
 	class TransformBuilder
 	{
-	public:
-		virtual std::unique_ptr<Transform> build(std::string name, int parentId) = 0;
+		public:
+		virtual std::unique_ptr<Transform> build() = 0;
 	};
 
+	//! Platform specific builder to make a rigibody object
+	class RigidbodyBuilder : public TransformBuilder
+	{
+	};
 
+	//! Platform specific builder to make a rigibody object
+	class JointBuilder : public TransformBuilder
+	{
+	};
+
+	//! Platform specific builder to make a camera object (optional)
+	class CameraBuilder : public TransformBuilder
+	{
+	public:
+	};
+
+	struct BuilderSet {
+		JointBuilder* joint = nullptr;
+		RigidbodyBuilder* rigidbody = nullptr;
+		CameraBuilder* camera = nullptr;
+	};
 
 
 	/*! \class TransformList model.h o3ds/model.h */
@@ -179,62 +198,6 @@ namespace O3DS
 		std::deque<std::unique_ptr<Transform>> mItems;
 	};
 
-	/*! \class Camera model.h o3ds/model.h
-	 * Representation of a 3d camera including some lens and filmback information 
-	 */
-	//! Moving Camera, e.g. VCam.
-	class Camera : public Transform
-	{
-	public:
-
-		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-		Camera();
-
-		Camera(const std::string& name, const std::string& uuid, int parentId = -1, void* ref = nullptr);
-
-		//! Convert to flatbuffers using the given builder
-		flatbuffers::Offset<O3DS::Data::Camera> serialize(flatbuffers::FlatBufferBuilder& builder);
-
-		//! Parse the given flatbuffer data to populate this camera, no null checking.
-		void parse(const O3DS::Data::Camera* data);
-
-		//! Parse the given flatbuffer data to populate this camera, no null checking.
-		void parseUpdate(const O3DS::Data::CameraUpdate*);
-
-		//! Flatbuffers serialization of updates only
-		flatbuffers::Offset<O3DS::Data::CameraUpdate> serializeUpdate(flatbuffers::FlatBufferBuilder& builder, double deltaThreshold);
-
-		//! Unique id for this camera, so it can be renamed.
-		std::string mUuid;
-
-		//! Film back width in mm  
-		float filmBackWidth;
-
-		//! Film back height in mm
-		float filmBackHeight;
-
-		//! Lens focal length in mm
-		float focalLength;
-
-		//! Aspect Ratio (crop?)
-		float aspect;
-
-		//! Focus distance in mm
-		float focusDistance;
-
-		//! Aperture in f-stops
-		float aperture;
-	};
-
-
-	//! Platform specific builder to make a camera object (optional)
-	class CameraBuilder
-	{
-	public:
-		virtual std::unique_ptr<Camera> build(std::string name, int parentId) = 0;
-	};
-
 
 	/*! \class Subject model.h o3ds/model.h
 	 *  The subject can also have a SubjectInfo reference for implementation specific data */
@@ -242,13 +205,25 @@ namespace O3DS
 	class Subject
 	{
 	public:
+		//! Create a subject with an optional reference pointer.
 		Subject(void* ref = nullptr);
 
+		//! Create a subject with the name and unique id, and optional user reference pointer
 		Subject(const std::string& name, const std::string& uuid, void* ref = nullptr);
 
-		void parse(const O3DS::Data::Subject* data, TransformBuilder* transformBuilder = nullptr);
+		virtual ~Subject() = default;
 
+		//! Parse the incoming flatbuffer data to populate this subject, no null checking.
+		void parse(const O3DS::Data::SubjectData* data, TransformBuilder* builder);
+
+		//! Parse the incoming flatbuffer update data to update the transforms in this subject, no null checking.
 		void parseUpdate(const O3DS::Data::SubjectUpdate* inUpdate);
+
+		//! Flatbuffer serialization
+		flatbuffers::Offset<O3DS::Data::SubjectData> serialize(flatbuffers::FlatBufferBuilder& builder);
+
+		//!	Flatbuffers serialization of updates only
+		flatbuffers::Offset<O3DS::Data::SubjectUpdate> serializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t& count, double deltaThreshold);
 
 		//! The name of the subject
 		std::string   mName;
@@ -256,23 +231,20 @@ namespace O3DS
 		//! Unique idenfitier for this subject
 		std::string   mUuid;
 
-		//! Optional list of joints to send.  Used to filter the joints to be sent, used by mobu plugin only rn 
-		std::vector<std::string> mJoints;
-
 		//! Subject transforms
 		TransformList mTransforms;
 
 		//! User reference pointer
 		void*         mReference;
 
-		//! The context for this subject ( yup / zup etc)
-		Context       mContext;
-
 		//! Error string from last operation, e.g. allFinite or parsing error.
 		std::string   mError;
 
 		//! Verify all transforms are finite, sets mError with the name of the first invalid transform
 		bool allFinite();
+
+		//! Create a new (owned) transform object and return a reference
+		Transform* addTransform(TransformBuilder* builder = nullptr);
 
 		//! Create a new (owned) transform object and return a reference
 		Transform* addTransform(const std::string& name, int parentId, TransformBuilder* builder = nullptr);
@@ -295,15 +267,109 @@ namespace O3DS
 		//! Calculate the world matrices, check mError if this fails
 		bool calcMatrices();
 
-		//! Flatbuffer serialization
-		flatbuffers::Offset<O3DS::Data::Subject> serialize(flatbuffers::FlatBufferBuilder& builder);
-
-		//!	Flatbuffers serialization of updates only
-		flatbuffers::Offset<O3DS::Data::SubjectUpdate> serializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t& count, double deltaThreshold);
-
 		//! Set to false to tell the parse to skip this subject while encoding.
 		bool mEnabled;
 	};
+
+
+	/*! \class RigidbodySubject model.h o3ds/model.h
+	 * A rigidbody, will usually only have one transform but > 1 is supported */
+    //! A rigidbody - e.g. prop.
+
+	class RigidbodySubject : public Subject
+	{
+	public:
+
+		RigidbodySubject(void* ref = nullptr);
+
+		RigidbodySubject(const std::string& name, const std::string& uuid, void* ref = nullptr);
+
+		void parse(const O3DS::Data::Rigidbody* data, RigidbodyBuilder* builder = nullptr);
+
+		void parseUpdate(const O3DS::Data::RigidbodyUpdate* inUpdate);
+
+		//! Flatbuffer serialization
+		flatbuffers::Offset<O3DS::Data::Rigidbody> serialize(flatbuffers::FlatBufferBuilder& builder);
+
+		//!	Flatbuffers serialization of updates only
+		flatbuffers::Offset<O3DS::Data::RigidbodyUpdate> serializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t& count, double deltaThreshold);
+	};
+
+
+	/*! \class PerformerSubject model.h o3ds/model.h 
+ 	 * A subject that has a hierarchy of joints (transforms)  */
+	//! A skeleton subject.
+
+	class PerformerSubject : public Subject
+	{
+	public:
+
+		PerformerSubject(void* ref = nullptr);
+
+		PerformerSubject(const std::string& name, const std::string& uuid, void* ref = nullptr);
+
+		void parse(const O3DS::Data::Performer* data, JointBuilder* builder = nullptr);
+
+		void parseUpdate(const O3DS::Data::PerformerUpdate* inUpdate);
+
+		//! Flatbuffer serialization
+		flatbuffers::Offset<O3DS::Data::Performer> serialize(flatbuffers::FlatBufferBuilder& builder);
+
+		//!	Flatbuffers serialization of updates only
+		flatbuffers::Offset<O3DS::Data::PerformerUpdate> serializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t& count, double deltaThreshold);
+
+		//! Optional list of joints to send.  Mobu uses this to limit the joints that are to be sent
+		std::vector<std::string> mJoints;
+	};
+
+
+
+	/*! \class CameraSubject model.h o3ds/model.h
+	 * Representation of a 3d camera including some lens and filmback information
+	 * Likely only has one transform but more than one are supported
+	 */
+	 //! Moving Camera, e.g. VCam.
+	class CameraSubject : public Subject
+	{
+	public:
+
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+		CameraSubject(void* ref = nullptr);
+
+		CameraSubject(const std::string& name, const std::string& uuid, void* ref = nullptr);
+
+		//! Convert to flatbuffers using the given builder
+		flatbuffers::Offset<O3DS::Data::Camera> serialize(flatbuffers::FlatBufferBuilder& builder);
+
+		//! Parse the given flatbuffer data to populate this camera, no null checking.
+		void parse(const O3DS::Data::Camera* data, CameraBuilder* camera = nullptr);
+
+		//! Parse the given flatbuffer data to populate this camera, no null checking.
+		void parseUpdate(const O3DS::Data::CameraUpdate*);
+
+		//! Flatbuffers serialization of updates only
+		flatbuffers::Offset<O3DS::Data::CameraUpdate> serializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t& count, double deltaThreshold);
+
+		//! Film back width in mm  
+		float filmBackWidth;
+
+		//! Film back height in mm
+		float filmBackHeight;
+
+		//! Lens focal length in mm
+		float focalLength;
+
+		//! Aspect Ratio (crop?)
+		float aspect;
+
+		//! Focus distance in mm
+		float focusDistance;
+
+		//! Aperture in f-stops
+		float aperture;
+	};
+
 
 
 	/*! \class SubjectList model.h o3ds/model.h */
@@ -322,31 +388,48 @@ namespace O3DS
 		bool allFinite();
 
 		//! Add a new subject to the list
-		Subject* findOrAddSubject(const std::string& uuid);
+		template<typename T>
+		T* findOrAddSubject(const std::string& uuid)
+		{
+			T* subject = findSubjectByUuid<T>(uuid);
+			if (subject) { return subject; }
+			auto s = std::make_unique<T>();
+			s->mUuid = uuid;
+			T* sptr = s.get();
+			mItems.push_back(std::move(s));
+			return sptr;
+		}
 
 		//! Find a subject by name.  nullptr if not found
-		Subject* findSubjectByName(const std::string& name);
+		template<typename T>
+		T* findSubjectByName(const std::string& name)
+		{
+			for (auto& i : mItems)
+			{
+				if (i->mName == name) {
+					return dynamic_cast<T*>(i.get());
+				}
+			}
+			return nullptr;
+		}
 
 		//! Find a subject by unique id.  nullptr if not found
-		Subject* findSubjectByUuid(const std::string& uuid);
-
-		//! Add a new camera to the subject definition
-		Camera* findOrAddCamera(const std::string& uuid);
-
-		//! Find a camera by name, or nullptr
-		Camera* findCameraByName(const std::string& name);
-
-		//! Find a camera by uuid, or nullptr
-		Camera* findCameraByUuid(const std::string& uuid);
+		template<typename T>
+		T* findSubjectByUuid(const std::string& uuid)
+		{
+			for (auto& i : mItems) {
+				if (i->mUuid == uuid) {
+					return dynamic_cast<T*>(i.get());
+				}
+			}
+			return nullptr;
+		}
 
 		//! update transforms (virtual)
 		void update();
 
 		//! Subject item list (owned)
 		std::deque<std::unique_ptr<Subject>> mItems;
-
-		//! Camera list
-		std::deque<std::unique_ptr<Camera>> mCameras;
 
 		//! Raw pointer iterator
 		struct iterator {
@@ -364,7 +447,7 @@ namespace O3DS
 		//! Raw pointer end
 		iterator end() { return { mItems.end() }; }
 
-		//! Number of subjecsts
+		//! Number of subjects
 		size_t size() { return mItems.size(); }
 
 		//! Number of active Subjects
@@ -394,12 +477,14 @@ namespace O3DS
 		//! Populate or update the subject list with the binary data provided (created by Serialize)
 		bool parse(const char *data, 
 			size_t len, 
-			TransformBuilder* = nullptr,
-			CameraBuilder* = nullptr,
-			bool clearInactive = true);
+			BuilderSet* builders = nullptr,
+			bool clearInactive = false);
 
 		//! Change distance threshold below which O3DS skips transmitting a transform update.
 		void setDeltaThreshold(double newThreshold) { mDeltaThreshold = newThreshold; }
+
+		//! The context for this subject ( yup / zup etc)
+		Context       mContext;
 
 	};
 
