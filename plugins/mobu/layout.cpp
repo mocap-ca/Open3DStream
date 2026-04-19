@@ -448,12 +448,19 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 			mEditSource.Text = model->GetFullName();
 
 			std::ostringstream imploded, oss;
-			std::copy(mDevice->Items[id]->mJoints.begin(), mDevice->Items[id]->mJoints.end(),
-				std::ostream_iterator<std::string>(imploded, " "));
+
+			O3DS::PerformerSubject *subjectPerformer = dynamic_cast<O3DS::PerformerSubject*>(mDevice->Items[id]);
+
+			if (!subjectPerformer) {
+				mMemoJoints.Text = "Not a performer subject";
+				return;
+			}
+
+			std::copy(subjectPerformer->mJoints.begin(), subjectPerformer->mJoints.end(), std::ostream_iterator<std::string>(imploded, " "));
 
 			mMemoJoints.Text = imploded.str().c_str();
 
-			O3DS::Mobu::TraverseSubject(subject, model);
+			O3DS::Mobu::TraverseSubject(subjectPerformer, model);
 
 			if (model->Is(FBModelNull::TypeInfo))
 				oss << "Null" << std::endl;
@@ -464,16 +471,24 @@ void Open3D_Device_Layout::PopulateSubjectFields()
 			if (model->Is(FBModelSkeleton::TypeInfo))
 				oss << "Joint" << std::endl;
 
-			oss << "Items: " << mDevice->Items[id]->mTransforms.size() << std::endl;
+			oss << "Items: " << subjectPerformer->mTransforms.size() << std::endl;
 
-			oss << "Joints: " << mDevice->Items[id]->mJoints.size() << std::endl;
+			oss << "Joints: " << subjectPerformer->mJoints.size() << std::endl;
 
 			std::vector<char> buf;
-			mDevice->Items.serialize(buf, count);
-			oss << "Packet1: " << buf.size() << std::endl;
+			if (!mDevice->Items.serialize(buf, count)) {
+				oss << "Packet1: " << mDevice->Items.mError << std::endl;
+			}
+			else {
+				oss << "Packet1: " << buf.size() << std::endl;
+			}
 
-			mDevice->Items.serializeUpdate(buf, count);
-			oss << "Packet2: " << buf.size() << std::endl;
+			if (!mDevice->Items.serializeUpdate(buf, count)) {
+				oss << "Packet2: " << mDevice->Items.mError << std::endl;
+			}
+			else {
+				oss << "Packet2: " << buf.size() << std::endl;
+			}
 
 			mMemoLog.Text = oss.str().c_str();
 		}
@@ -576,6 +591,10 @@ void Open3D_Device_Layout::EventEditJoints(HISender pSender, HKEvent pEvent)
 	std::istream_iterator<std::string> begin(ss);
 	std::istream_iterator<std::string> end;
 	std::vector<std::string> vstrings(begin, end);
-	mDevice->Items[id]->mJoints.clear();
-	std::copy(vstrings.begin(), vstrings.end(), std::back_inserter(mDevice->Items[id]->mJoints));
+
+	O3DS::PerformerSubject *performer = dynamic_cast<O3DS::PerformerSubject*>(mDevice->Items[id]);
+	if (performer) {
+		performer->mJoints.clear();
+		std::copy(vstrings.begin(), vstrings.end(), std::back_inserter(performer->mJoints));
+	}
 } 

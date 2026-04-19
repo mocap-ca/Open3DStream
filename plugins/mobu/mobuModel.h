@@ -26,7 +26,8 @@ namespace O3DS
 			std::string info() { return std::string(mModel->GetFullName()); }
 		};
 
-		void TraverseSubject(O3DS::Subject *subject, FBModel*, int parentId = -1);
+		void TraverseSubject(O3DS::PerformerSubject* subject);
+		void TraverseSubject(O3DS::PerformerSubject *subject, FBModel*, int parentId = -1);
 	}
 
 }

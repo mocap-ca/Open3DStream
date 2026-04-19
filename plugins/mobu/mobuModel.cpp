@@ -83,13 +83,13 @@ namespace O3DS
 			(FBVector3d)(mModel->Scaling) >> this->scale.value;
 		}
 
-		void TraverseSubject(O3DS::Subject* subject)
+		void TraverseSubject(O3DS::PerformerSubject* subject)
 		{
 			FBModel* model = static_cast<FBModel*>(subject->mReference);
 			TraverseSubject(subject, model);
 		}
 
-		void TraverseSubject(O3DS::Subject *subject, FBModel *model, int parentId)
+		void TraverseSubject(O3DS::PerformerSubject *subject, FBModel *model, int parentId)
 		{
 			// Called when mobu starts
 			if (model == nullptr) return;

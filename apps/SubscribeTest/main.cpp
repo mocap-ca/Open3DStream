@@ -12,7 +12,11 @@ void ReadFunc(void *ptr, void *buf, size_t len)
 {
 	printf("DATA: %zu\n", len);
 	O3DS::SubjectList subjects;
-	subjects.parse((const char*)buf, len);
+	if (!subjects.parse((const char*)buf, len)) {
+		printf("Could not parse packet: %s\n", subjects.mError.c_str());
+		return;	
+	}
+
 	printf("%zd\n", len);
 	for (auto i : subjects)
 	{

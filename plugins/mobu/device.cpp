@@ -171,7 +171,7 @@ void Open3D_Device::AddItem(FBModel *model)
 		model->Is(FBModelSkeleton::TypeInfo))
 	{
 		std::string uid = uuid::generate_uuid_v4();
-		O3DS::Subject * s = Items.findOrAddSubject(uid.c_str());
+		O3DS::PerformerSubject* s = Items.findOrAddSubject<O3DS::PerformerSubject>(uid.c_str());
 		s->mName = name.operator char* ();
 		s->mReference = (void*)model;
 	}
@@ -206,7 +206,8 @@ bool Open3D_Device::Start()
 	for (O3DS::Subject* subject : Items)
 	{
 		FBModel *model = static_cast<FBModel*>(subject->mReference);
-		O3DS::Mobu::TraverseSubject(subject, model);
+		O3DS::PerformerSubject* performer = dynamic_cast<O3DS::PerformerSubject*>(subject);
+		O3DS::Mobu::TraverseSubject(performer, model);
 	}
 
 	if (mProtocol == Open3D_Device::kTCPClient || mProtocol == Open3D_Device::kTCPServer)
@@ -690,7 +691,7 @@ bool Open3D_Device::FbxRetrieve(FBFbxObject* pFbxObject,kFbxObjectStore pStoreWh
 			{
 				FBModel *model = dynamic_cast<FBModel*>(component);
 				std::string uid = uuid::generate_uuid_v4();
-				auto s = Items.findOrAddSubject(uid.c_str());
+				auto s = Items.findOrAddSubject<O3DS::PerformerSubject>(uid.c_str());
 				s->mName = subjectName.operator char* ();
 				s->mReference = (void*)model;
 				O3DS::Mobu::TraverseSubject(s, model);
