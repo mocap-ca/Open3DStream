@@ -9,6 +9,8 @@ find_package(flatbuffers CONFIG REQUIRED HINTS ${CMAKE_CURRENT_LIST_DIR}/../../u
 
 add_executable(${AppName} 
 	main.cpp 
+	dataTest.cpp 
+	conversionTest.cpp
 	../../src/o3ds/model.cpp 
 	../../src/o3ds/o3ds.cpp 
 	../../src/o3ds/getTime.cpp

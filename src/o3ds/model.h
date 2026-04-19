@@ -63,7 +63,7 @@ namespace O3DS
 		flatbuffers::Offset<O3DS::Data::Transform> serialize(flatbuffers::FlatBufferBuilder& builder);
 
 		//! Parse the given flatbuffer data to populate this transform
-		void parse(const O3DS::Data::Transform* data);
+		void parse(const O3DS::Data::Transform* data, const ConversionContext* conv = nullptr);
 
 		//! No implementation here
 		virtual void update();
@@ -73,6 +73,9 @@ namespace O3DS
 
 		//! Verify there are no nan or inf values, sets mError with the name if fails.
 		bool allFinite();
+
+		//! Set Transform order to trs
+		void setOrderTRS();
 
 		//! Check if values are all ==
 		bool operator == (const Transform &other) const;
@@ -123,7 +126,7 @@ namespace O3DS
 	{
 	};
 
-	//! Platform specific builder to make a rigibody object
+	//! Platform specific builder to make a performer joint object
 	class JointBuilder : public TransformBuilder
 	{
 	};
@@ -214,10 +217,10 @@ namespace O3DS
 		virtual ~Subject() = default;
 
 		//! Parse the incoming flatbuffer data to populate this subject, no null checking.
-		void parse(const O3DS::Data::SubjectData* data, TransformBuilder* builder);
+		void parse(const O3DS::Data::SubjectData* data, TransformBuilder* builder, const ConversionContext* conv = nullptr);
 
 		//! Parse the incoming flatbuffer update data to update the transforms in this subject, no null checking.
-		void parseUpdate(const O3DS::Data::SubjectUpdate* inUpdate);
+		void parseUpdate(const O3DS::Data::SubjectUpdate* inUpdate, const ConversionContext* conv = nullptr);
 
 		//! Flatbuffer serialization
 		flatbuffers::Offset<O3DS::Data::SubjectData> serialize(flatbuffers::FlatBufferBuilder& builder);
@@ -284,9 +287,9 @@ namespace O3DS
 
 		RigidbodySubject(const std::string& name, const std::string& uuid, void* ref = nullptr);
 
-		void parse(const O3DS::Data::Rigidbody* data, RigidbodyBuilder* builder = nullptr);
+		void parse(const O3DS::Data::Rigidbody* data, RigidbodyBuilder* builder = nullptr, const ConversionContext* conv = nullptr);
 
-		void parseUpdate(const O3DS::Data::RigidbodyUpdate* inUpdate);
+		void parseUpdate(const O3DS::Data::RigidbodyUpdate* inUpdate, const ConversionContext* conv = nullptr);
 
 		//! Flatbuffer serialization
 		flatbuffers::Offset<O3DS::Data::Rigidbody> serialize(flatbuffers::FlatBufferBuilder& builder);
@@ -308,9 +311,9 @@ namespace O3DS
 
 		PerformerSubject(const std::string& name, const std::string& uuid, void* ref = nullptr);
 
-		void parse(const O3DS::Data::Performer* data, JointBuilder* builder = nullptr);
+		void parse(const O3DS::Data::Performer* data, JointBuilder* builder = nullptr, const ConversionContext* conv = nullptr);
 
-		void parseUpdate(const O3DS::Data::PerformerUpdate* inUpdate);
+		void parseUpdate(const O3DS::Data::PerformerUpdate* inUpdate, const ConversionContext* conv = nullptr);
 
 		//! Flatbuffer serialization
 		flatbuffers::Offset<O3DS::Data::Performer> serialize(flatbuffers::FlatBufferBuilder& builder);
@@ -343,10 +346,10 @@ namespace O3DS
 		flatbuffers::Offset<O3DS::Data::Camera> serialize(flatbuffers::FlatBufferBuilder& builder);
 
 		//! Parse the given flatbuffer data to populate this camera, no null checking.
-		void parse(const O3DS::Data::Camera* data, CameraBuilder* camera = nullptr);
+		void parse(const O3DS::Data::Camera* data, CameraBuilder* camera = nullptr, const ConversionContext* conv = nullptr);
 
 		//! Parse the given flatbuffer data to populate this camera, no null checking.
-		void parseUpdate(const O3DS::Data::CameraUpdate*);
+		void parseUpdate(const O3DS::Data::CameraUpdate*, const ConversionContext* conv = nullptr);
 
 		//! Flatbuffers serialization of updates only
 		flatbuffers::Offset<O3DS::Data::CameraUpdate> serializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t& count, double deltaThreshold);
@@ -469,13 +472,13 @@ namespace O3DS
 		std::string mError;
 
 		//! Encode all of the items in the subject list as binary data
-		bool serialize(std::vector<char> &outbuf, double timestamp=0.0, const std::string& timcode = std::string());
+		[[nodiscard]] bool serialize(std::vector<char> &outbuf, double timestamp=0.0, const std::string& timcode = std::string());
 
 		//! Serialize changes to translation and rotation since last send
-		bool serializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp=0.0, const std::string& timcode = std::string());
+		[[nodiscard]] bool serializeUpdate(std::vector<char>& outbuf, size_t& count, double timestamp=0.0, const std::string& timcode = std::string());
 
 		//! Populate or update the subject list with the binary data provided (created by Serialize)
-		bool parse(const char *data, 
+		[[nodiscard]] bool parse(const char *data,
 			size_t len, 
 			BuilderSet* builders = nullptr,
 			bool clearInactive = false);
@@ -483,7 +486,7 @@ namespace O3DS
 		//! Change distance threshold below which O3DS skips transmitting a transform update.
 		void setDeltaThreshold(double newThreshold) { mDeltaThreshold = newThreshold; }
 
-		//! The context for this subject ( yup / zup etc)
+		//! The context for this stream ( yup / zup etc)
 		Context       mContext;
 
 	};

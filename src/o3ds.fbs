@@ -20,13 +20,16 @@ enum Direction : byte {
 // Lens measurements (filmback, focal length, focus distance) are always
 // in millimetres regardless of this setting.
 enum DistanceUnit : byte {
-  Millimeter = 0,
+  Unknown = 0,
+  Millimeter,
   Centimeter,
   Meter,
   Kilometer,
   Inch,
   Foot,
-  Mile
+  Mile,
+  LightYear,
+  Parsec
 }
 
 // --- Primitive structs -------------------------------------------------------
