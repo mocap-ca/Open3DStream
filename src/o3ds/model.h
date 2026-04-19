@@ -63,7 +63,7 @@ namespace O3DS
 		flatbuffers::Offset<O3DS::Data::Transform> serialize(flatbuffers::FlatBufferBuilder& builder);
 
 		//! Parse the given flatbuffer data to populate this transform
-		void parse(const O3DS::Data::Transform* data, const ConversionContext* conv = nullptr);
+		void parse(const O3DS::Data::Transform* data);
 
 		//! No implementation here
 		virtual void update();
@@ -217,16 +217,19 @@ namespace O3DS
 		virtual ~Subject() = default;
 
 		//! Parse the incoming flatbuffer data to populate this subject, no null checking.
-		void parse(const O3DS::Data::SubjectData* data, TransformBuilder* builder, const ConversionContext* conv = nullptr);
+		void parse(const O3DS::Data::SubjectData* data, TransformBuilder* builder);
 
 		//! Parse the incoming flatbuffer update data to update the transforms in this subject, no null checking.
-		void parseUpdate(const O3DS::Data::SubjectUpdate* inUpdate, const ConversionContext* conv = nullptr);
+		void parseUpdate(const O3DS::Data::SubjectUpdate* inUpdate);
 
 		//! Flatbuffer serialization
 		flatbuffers::Offset<O3DS::Data::SubjectData> serialize(flatbuffers::FlatBufferBuilder& builder);
 
 		//!	Flatbuffers serialization of updates only
 		flatbuffers::Offset<O3DS::Data::SubjectUpdate> serializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t& count, double deltaThreshold);
+
+		//! Translation, Rotation Scale order
+		void setOrderTRS();
 
 		//! The name of the subject
 		std::string   mName;
@@ -268,7 +271,7 @@ namespace O3DS
 		size_t size();
 
 		//! Calculate the world matrices, check mError if this fails
-		bool calcMatrices();
+		bool calcMatrices(O3DS::ConversionContext *conv);
 
 		//! Set to false to tell the parse to skip this subject while encoding.
 		bool mEnabled;
@@ -287,9 +290,9 @@ namespace O3DS
 
 		RigidbodySubject(const std::string& name, const std::string& uuid, void* ref = nullptr);
 
-		void parse(const O3DS::Data::Rigidbody* data, RigidbodyBuilder* builder = nullptr, const ConversionContext* conv = nullptr);
+		void parse(const O3DS::Data::Rigidbody* data, RigidbodyBuilder* builder = nullptr);
 
-		void parseUpdate(const O3DS::Data::RigidbodyUpdate* inUpdate, const ConversionContext* conv = nullptr);
+		void parseUpdate(const O3DS::Data::RigidbodyUpdate* inUpdate);
 
 		//! Flatbuffer serialization
 		flatbuffers::Offset<O3DS::Data::Rigidbody> serialize(flatbuffers::FlatBufferBuilder& builder);
@@ -311,9 +314,9 @@ namespace O3DS
 
 		PerformerSubject(const std::string& name, const std::string& uuid, void* ref = nullptr);
 
-		void parse(const O3DS::Data::Performer* data, JointBuilder* builder = nullptr, const ConversionContext* conv = nullptr);
+		void parse(const O3DS::Data::Performer* data, JointBuilder* builder = nullptr);
 
-		void parseUpdate(const O3DS::Data::PerformerUpdate* inUpdate, const ConversionContext* conv = nullptr);
+		void parseUpdate(const O3DS::Data::PerformerUpdate* inUpdate);
 
 		//! Flatbuffer serialization
 		flatbuffers::Offset<O3DS::Data::Performer> serialize(flatbuffers::FlatBufferBuilder& builder);
@@ -346,10 +349,10 @@ namespace O3DS
 		flatbuffers::Offset<O3DS::Data::Camera> serialize(flatbuffers::FlatBufferBuilder& builder);
 
 		//! Parse the given flatbuffer data to populate this camera, no null checking.
-		void parse(const O3DS::Data::Camera* data, CameraBuilder* camera = nullptr, const ConversionContext* conv = nullptr);
+		void parse(const O3DS::Data::Camera* data, CameraBuilder* camera = nullptr);
 
 		//! Parse the given flatbuffer data to populate this camera, no null checking.
-		void parseUpdate(const O3DS::Data::CameraUpdate*, const ConversionContext* conv = nullptr);
+		void parseUpdate(const O3DS::Data::CameraUpdate*);
 
 		//! Flatbuffers serialization of updates only
 		flatbuffers::Offset<O3DS::Data::CameraUpdate> serializeUpdate(flatbuffers::FlatBufferBuilder& builder, size_t& count, double deltaThreshold);
@@ -431,6 +434,9 @@ namespace O3DS
 		//! update transforms (virtual)
 		void update();
 
+		//! Calculate the world matrices, with conversions applied
+		bool calcMatrices();
+
 		//! Subject item list (owned)
 		std::deque<std::unique_ptr<Subject>> mItems;
 
@@ -488,6 +494,9 @@ namespace O3DS
 
 		//! The context for this stream ( yup / zup etc)
 		Context       mContext;
+
+		std::unique_ptr<ConversionContext> conversion;
+
 
 	};
 

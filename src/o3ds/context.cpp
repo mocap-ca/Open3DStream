@@ -19,7 +19,7 @@ namespace O3DS
     {
         if (!to.computeConversion(from, axisRemap, axisSign, unitScale))
         {
-            // One or both contexts invalid — leave as identity and signal failure
+            // One or both contexts invalid - leave as identity and signal failure
             axisRemap = { 0, 1, 2 };
             axisSign = { 1.0f, 1.0f, 1.0f };
             unitScale = 1.0f;
@@ -146,7 +146,7 @@ namespace O3DS
     void ConversionContext::convertRotation(Eigen::Quaterniond& q) const
     {
         // Remap imaginary components using the same signed permutation as translation.
-        // No unit scaling — quaternion components are dimensionless.
+        // No unit scaling - quaternion components are dimensionless.
         double src[3] = { q.x(), q.y(), q.z() };
         double x = src[axisRemap[0]] * axisSign[0];
         double y = src[axisRemap[1]] * axisSign[1];
@@ -173,7 +173,7 @@ namespace O3DS
     void ConversionContext::convertScale(Eigen::Vector3d& s) const
     {
         // Permute axes to match the destination coordinate system.
-        // Signs are not applied — scale magnitude is always positive.
+        // Signs are not applied - scale magnitude is always positive.
         double src[3] = { s.x(), s.y(), s.z() };
         s.x() = src[axisRemap[0]];
         s.y() = src[axisRemap[1]];
@@ -185,7 +185,7 @@ namespace O3DS
         mBasis = Eigen::Matrix4d::Zero();
 
         // Each destination axis i draws from source axis axisRemap[i] with axisSign[i].
-        // The translation column is handled separately — unit scale goes in [3][3].
+        // The translation column is handled separately - unit scale goes in [3][3].
         for (int dst = 0; dst < 3; ++dst)
         {
             int   src = axisRemap[dst];
@@ -202,7 +202,7 @@ namespace O3DS
     {
         // Apply unit scale to the translation column before reorienting.
         // Rotation and scale components are dimensionless so unitScale doesn't
-        // apply to them — only to the translation (column 3, rows 0-2).
+        // apply to them - only to the translation (column 3, rows 0-2).
         m(0, 3) *= unitScale;
         m(1, 3) *= unitScale;
         m(2, 3) *= unitScale;

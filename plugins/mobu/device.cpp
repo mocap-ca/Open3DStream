@@ -453,13 +453,6 @@ void Open3D_Device::DeviceIONotify(kDeviceIOs  pAction, FBDeviceNotifyInfo &pDev
 				return;
 			} 
 
-			for (const auto& subject : ItemsTest) {
-				if (!subject->calcMatrices()) {
-					Status = FBString("Calc err: ") + ItemsTest.mError.c_str();
-					return;
-				}
-			}			
-
 			if (mFrameCounter > 100) {
 				mFrameCounter = 0;
 			}

@@ -35,11 +35,12 @@ namespace O3DS
 
 	//! Precomputed conversion between two coordinate contexts.
 	//! Produced by Context::computeConversion(), consumed during parsing.
-	struct ConversionContext
+	class ConversionContext
 	{
+	public:
 		ConversionContext();
 
-		ConversionContext::ConversionContext(const Context& from, const Context& to);
+		ConversionContext(const Context& from, const Context& to);
 
 		std::array<int, 3>   axisRemap = { 0, 1, 2 };  // identity
 		std::array<float, 3> axisSign = { 1, 1, 1 };  // no negation
@@ -55,7 +56,7 @@ namespace O3DS
 		void convertRotation(Eigen::Quaterniond&) const;
 
 		//! Apply to a scale vector
-		void ConversionContext::convertScale(Eigen::Vector3d& s) const;
+		void convertScale(Eigen::Vector3d& s) const;
 
 		//! True if this conversion is a no-op
 		bool isIdentity() const;

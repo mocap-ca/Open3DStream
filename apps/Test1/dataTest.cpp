@@ -291,7 +291,7 @@ static void suite_WorldMatrix_SingleTransform()
     // Identity rotation, unit scale, translation only
     fillTransform(*t, 1.0, 2.0, 3.0, 0, 0, 0, 1, 1, 1, 1);
 
-    bool ok = subj->calcMatrices();
+    bool ok = subj->calcMatrices(nullptr);
     CHECK_MSG(ok, "calcMatrices returns true");
     CHECK_MSG(t->bWorldMatrix, "bWorldMatrix flag is set");
 
@@ -321,7 +321,7 @@ static void suite_WorldMatrix_ParentChildTranslation()
     fillTransform(*parent, 10.0, 0.0, 0.0, 0, 0, 0, 1, 1, 1, 1);
     fillTransform(*child, 5.0, 0.0, 0.0, 0, 0, 0, 1, 1, 1, 1);
 
-    bool ok = subj->calcMatrices();
+    bool ok = sl.calcMatrices();
     CHECK_MSG(ok, "calcMatrices returns true");
 
     const double kEps = 1e-5;
@@ -352,7 +352,7 @@ static void suite_WorldMatrix_ThreeLevelHierarchy()
     fillTransform(*b, 2.0, 0, 0, 0, 0, 0, 1, 1, 1, 1);
     fillTransform(*c, 3.0, 0, 0, 0, 0, 0, 1, 1, 1, 1);
 
-    bool ok = subj->calcMatrices();
+    bool ok = sl.calcMatrices();
     CHECK_MSG(ok, "calcMatrices returns true");
 
     const double kEps = 1e-5;
@@ -377,7 +377,7 @@ static void suite_WorldMatrix_ScaleInherited()
     fillTransform(*parent, 0, 0, 0, 0, 0, 0, 1, 2.0, 1.0, 1.0);
     fillTransform(*child, 1, 0, 0, 0, 0, 0, 1, 1.0, 1.0, 1.0);
 
-    bool ok = subj->calcMatrices();
+    bool ok = sl.calcMatrices();
     CHECK_MSG(ok, "calcMatrices returns true");
 
     const double kEps = 1e-5;
@@ -406,7 +406,7 @@ static void suite_WorldMatrix_90DegRotation()
     // Child sitting at local (1, 0, 0)
     fillTransform(*child, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1);
 
-    bool ok = subj->calcMatrices();
+    bool ok = sl.calcMatrices();
     CHECK_MSG(ok, "calcMatrices returns true");
 
     const double kEps = 1e-5;
