@@ -991,8 +991,85 @@ namespace O3DS
 		return ret;
 	}
 
+	// Build the root table.
+	//
+	// Written against SubjectListBuilder rather than CreateSubjectList()
+	// because the time envelope takes the field count past thirty, and a
+	// thirty-argument positional call is exactly where a field ends up written
+	// into its neighbour's slot - both are scalars, both compile, and the
+	// resulting packet is wrong in a way no verifier can see. Named setters
+	// also mean an appended field is one added line here, not a re-count of
+	// every call site.
+	static flatbuffers::Offset<O3DS::Data::SubjectList> createRoot(
+		flatbuffers::FlatBufferBuilder& builder,
+		flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<O3DS::Data::Performer>>>       performers,
+		flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<O3DS::Data::PerformerUpdate>>> performerUpdates,
+		flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<O3DS::Data::Rigidbody>>>       rigidbodies,
+		flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<O3DS::Data::RigidbodyUpdate>>> rigidbodyUpdates,
+		flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<O3DS::Data::Camera>>>          cameras,
+		flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<O3DS::Data::CameraUpdate>>>    cameraUpdates,
+		double timestamp,
+		flatbuffers::Offset<flatbuffers::String> timecode,
+		const Context& context,
+		const TimeEnvelope& env)
+	{
+		O3DS::Data::SubjectListBuilder b(builder);
+
+		if (!performers.IsNull())        b.add_performers(performers);
+		if (!performerUpdates.IsNull())  b.add_performer_updates(performerUpdates);
+		if (!rigidbodies.IsNull())       b.add_rigidbodies(rigidbodies);
+		if (!rigidbodyUpdates.IsNull())  b.add_rigidbody_updates(rigidbodyUpdates);
+		if (!cameras.IsNull())           b.add_cameras(cameras);
+		if (!cameraUpdates.IsNull())     b.add_camera_updates(cameraUpdates);
+
+		b.add_time(timestamp);
+		b.add_timecode(timecode);
+
+		b.add_x_axis(dir(context.mX));
+		b.add_y_axis(dir(context.mY));
+		b.add_z_axis(dir(context.mZ));
+		b.add_distance_unit(distUnit(context.mDistance));
+
+		// version 0 means "this sender sets no envelope", so write nothing at
+		// all rather than a row of zeroes that reads as a real app-steady
+		// clock at estimated quality.
+		if (env.valid())
+		{
+			b.add_time_version(env.version);
+			b.add_clock_domain(env.clockDomain);
+			b.add_clock_instance(env.clockInstance);
+			b.add_time_ns(env.ns);
+			b.add_time_quality(env.quality);
+			b.add_time_source(env.source);
+			b.add_restamp_reason(env.restampReason);
+
+			b.add_has_device_time(env.hasDeviceTime);
+			b.add_device_instance(env.deviceInstance);
+			b.add_device_ns(env.deviceNs);
+
+			b.add_has_timecode(env.hasTimecode);
+			b.add_timecode_kind(env.timecodeKind);
+			b.add_timecode_instance(env.timecodeInstance);
+			b.add_timecode_ns(env.timecodeNs);
+
+			b.add_has_smpte(env.hasSmpte);
+			b.add_tc_hours(env.hours);
+			b.add_tc_minutes(env.minutes);
+			b.add_tc_seconds(env.seconds);
+			b.add_tc_frames(env.frames);
+			b.add_tc_subframe(env.subframe);
+			b.add_tc_subframes(env.subframes);
+			b.add_rate_code(env.rateCode);
+			b.add_drop_frame(env.dropFrame);
+			b.add_rate_num(env.rateNum);
+			b.add_rate_den(env.rateDen);
+		}
+
+		return b.Finish();
+	}
+
 	bool SubjectList::serialize(std::vector<char> &outbuf, double timestamp, const std::string &timecode)
-	{	
+	{
 		if (!allFinite()) {
 			// All finite should set the error with the invalid joint name
 			return false;
@@ -1050,12 +1127,12 @@ namespace O3DS
 		auto ovRigidbodyUpdates = builder.CreateVector(outRigidbodyUpdates);
 		auto ovCameraUpdates = builder.CreateVector(outCameraUpdates);
 
-		auto root = CreateSubjectList(builder, 
-			oPerformers, ovPerformerUpdates, 
-			oRigidbodies, ovRigidbodyUpdates, 
-			oCameras, ovCameraUpdates, 
+		auto root = createRoot(builder,
+			oPerformers, ovPerformerUpdates,
+			oRigidbodies, ovRigidbodyUpdates,
+			oCameras, ovCameraUpdates,
 			timestamp, oTimecode,
-			dir(this->mContext.mX), dir(this->mContext.mY), dir(this->mContext.mZ), distUnit(this->mContext.mDistance));
+			this->mContext, this->mTimeEnvelope);
 
 		builder.Finish(root);
 
@@ -1110,14 +1187,12 @@ namespace O3DS
 
 		auto oTimecode = builder.CreateString(timecode);
 
-		O3DS::Data::Direction x = dir(this->mContext.mX);
-		O3DS::Data::Direction y = dir(this->mContext.mY);
-		O3DS::Data::Direction z = dir(this->mContext.mZ);
-		O3DS::Data::DistanceUnit d = distUnit(this->mContext.mDistance);
-
-		auto root = CreateSubjectList(builder, 0, ovPerformerUpdates, 0, ovRigidbodyUpdates, 0, ovCameraUpdates,  
+		auto root = createRoot(builder,
+			0, ovPerformerUpdates,
+			0, ovRigidbodyUpdates,
+			0, ovCameraUpdates,
 			timestamp, oTimecode,
-			x, y, z, d);
+			this->mContext, this->mTimeEnvelope);
 
 		builder.Finish(root);
 
@@ -1181,7 +1256,45 @@ namespace O3DS
 		);
 
 		this->mTime = root->time();
-		this->mTimecode = root->timecode()->str();
+		this->mTimecode = root->timecode() ? root->timecode()->str() : std::string();
+
+		// The time envelope, or a cleared one when the sender predates it.
+		// Cleared rather than left over from the previous packet: a stale
+		// envelope beside a fresh mTime is worse than none, because it names a
+		// clock and a rate for a count that was not measured on them.
+		this->mTimeEnvelope = TimeEnvelope();
+		if (root->time_version() != 0)
+		{
+			TimeEnvelope& env = this->mTimeEnvelope;
+			env.version          = root->time_version();
+			env.clockDomain      = root->clock_domain();
+			env.clockInstance    = root->clock_instance();
+			env.ns               = root->time_ns();
+			env.quality          = root->time_quality();
+			env.source           = root->time_source();
+			env.restampReason    = root->restamp_reason();
+
+			env.hasDeviceTime    = root->has_device_time();
+			env.deviceInstance   = root->device_instance();
+			env.deviceNs         = root->device_ns();
+
+			env.hasTimecode      = root->has_timecode();
+			env.timecodeKind     = root->timecode_kind();
+			env.timecodeInstance = root->timecode_instance();
+			env.timecodeNs       = root->timecode_ns();
+
+			env.hasSmpte         = root->has_smpte();
+			env.hours            = root->tc_hours();
+			env.minutes          = root->tc_minutes();
+			env.seconds          = root->tc_seconds();
+			env.frames           = root->tc_frames();
+			env.subframe         = root->tc_subframe();
+			env.subframes        = root->tc_subframes();
+			env.rateCode         = root->rate_code();
+			env.dropFrame        = root->drop_frame();
+			env.rateNum          = root->rate_num();
+			env.rateDen          = root->rate_den();
+		}
 
 		auto performers_data = root->performers();
 		auto performer_updates = root->performer_updates();

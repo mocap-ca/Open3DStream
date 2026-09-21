@@ -1,4 +1,4 @@
-// Open 3D Stream — FlatBuffers schema
+// Open 3D Stream ï¿½ FlatBuffers schema
 // Coordinate system and units are carried in SubjectList so any receiver
 // can convert incoming data without out-of-band configuration.
 
@@ -10,7 +10,7 @@ namespace O3DS.Data;
 // Fully determines handedness when all three axes are set.
 // A receiver compares sender axes against its own to build a conversion.
 enum Direction : byte {
-  Unknown = 0,   // default / unset — treat as an error
+  Unknown = 0,   // default / unset ï¿½ treat as an error
   Left, Right,
   Forward, Back,
   Up, Down
@@ -34,7 +34,7 @@ enum DistanceUnit : byte {
 
 // --- Primitive structs -------------------------------------------------------
 
-// Column-major 4×4 matrix (mROW_COL).
+// Column-major 4ï¿½4 matrix (mROW_COL).
 struct Matrix {
   m00:float; m01:float; m02:float; m03:float;
   m10:float; m11:float; m12:float; m13:float;
@@ -45,7 +45,7 @@ struct Matrix {
 // XYZ position in the stream's DistanceUnit.
 struct Translation { x:float; y:float; z:float; }
 
-// Unit quaternion (XYZW). Rotations are always quaternion — no Euler angles.
+// Unit quaternion (XYZW). Rotations are always quaternion ï¿½ no Euler angles.
 struct Rotation    { x:float; y:float; z:float; w:float; }
 
 // Uniform or non-uniform scale factor per axis.
@@ -85,7 +85,7 @@ table Transform {
 table SubjectData {
   nodes:[Transform];
   name:string;
-  uuid:string;  // stable identity — name may change, uuid does not
+  uuid:string;  // stable identity ï¿½ name may change, uuid does not
 }
 
 // A performer subject: a human or creature skeleton with a joint hierarchy.
@@ -148,6 +148,74 @@ table SubjectList {
   y_axis:Direction;
   z_axis:Direction;
   distance_unit:DistanceUnit;
+
+  // --- Time envelope ---------------------------------------------------------
+  //
+  // `time` above is a bare double of seconds and `timecode` a bare
+  // "HH:MM:SS:FF". Neither says which clock counted it, at what rate, or
+  // whether the frame field is drop-frame, so a sender that has a timecode on
+  // one frame and only an arrival time on the next puts two unrelated epochs
+  // on the wire under one field name, and a receiver cannot tell - it cannot
+  // even rebuild the timecode, because a frame field means nothing without its
+  // rate. The fields below carry that context. Appended, so a receiver built
+  // before them reads a packet unchanged and a sender that does not set them
+  // leaves time_version at 0.
+  //
+  // Read them only when time_version != 0. Layout mirrors O3DS::TimeEnvelope
+  // in o3ds/model.h; append new fields, never reorder, and bump time_version
+  // when the meaning of an existing one changes.
+
+  time_version:ubyte;      // 0 = sender predates the envelope; ignore the rest
+
+  // The clock `time_ns` was counted on, and the count itself. `time_ns` is the
+  // same instant as `time`, exact rather than rounded through a double.
+  // clock_domain: 0 app-steady, 1 host-system, 2 device, 3 SMPTE, 4 PTP,
+  // 5 NTP, 6 synthetic. clock_instance distinguishes two clocks of one kind.
+  clock_domain:ubyte;
+  clock_instance:ushort;
+  time_ns:ulong;
+
+  // How far time_ns can be trusted: 0 locked (frame-accurate, from a genlocked
+  // device), 1 counted (derived by counting frames from an anchor - one
+  // dropped frame and it is permanently wrong), 2 estimated (arrival jitter).
+  time_quality:ubyte;
+
+  // Which of the sender's stamps time_ns came from: 0 arrival, 1 device,
+  // 2 timecode, 3 restamped. When it is 3 the sender deliberately replaced the
+  // time its source gave, and restamp_reason says why: 1 clock conversion,
+  // 2 resample, 3 interpolation, 4 retime, 5 repair.
+  time_source:ubyte;
+  restamp_reason:ubyte;
+
+  // The device's own clock, when it reports one, kept alongside rather than
+  // folded into time_ns.
+  has_device_time:bool;
+  device_instance:ushort;
+  device_ns:ulong;
+
+  // Externally synchronised timecode, when the sample carried one.
+  // timecode_kind: 0 SMPTE, 1 NTP, 2 PTP, 3 custom.
+  has_timecode:bool;
+  timecode_kind:ubyte;
+  timecode_instance:ushort;
+  timecode_ns:ulong;
+
+  // SMPTE fields, valid when has_smpte. tc_frames is a ushort because SMPTE is
+  // only defined to 60 fps and a mocap rig streaming at 500 Hz needs three
+  // digits. rate_code indexes the sender's rate table (0 = unset); drop_frame
+  // is carried separately so a receiver with no such table can still tell
+  // "01:00:00;00" from "01:00:00:00".
+  has_smpte:bool;
+  tc_hours:ubyte;
+  tc_minutes:ubyte;
+  tc_seconds:ubyte;
+  tc_frames:ushort;
+  tc_subframe:ushort;      // sub-frame value
+  tc_subframes:ushort;     // sub-frame divisions per frame (0 = none)
+  rate_code:ubyte;
+  drop_frame:bool;
+  rate_num:int;            // exact rational rate, so a receiver with a
+  rate_den:int;            // different rate table can still reconstruct it
 }
 
 root_type SubjectList;

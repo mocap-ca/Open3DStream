@@ -28,6 +28,7 @@ SOFTWARE.
 #include <vector>
 #include <deque>
 #include <string>
+#include <cstdint>
 
 #include "context.h"
 #include "transform_component.h"
@@ -36,6 +37,86 @@ SOFTWARE.
 
 namespace O3DS
 {
+
+	/*! \class TimeEnvelope model.h o3ds/model.h */
+	//! The context a bare timestamp loses: which clock counted it, how far it
+	//! can be trusted, and - for a timecode - at what rate and whether the
+	//! frame field is drop-frame.
+	//!
+	//! SubjectList::mTime is a double of seconds and SubjectList::mTimecode a
+	//! bare "HH:MM:SS:FF". A sender that has an embedded timecode on one frame
+	//! and only an arrival time on the next puts two unrelated epochs in mTime
+	//! under one name, and a receiver cannot tell them apart, nor rebuild the
+	//! timecode, because a frame field means nothing without its rate. This
+	//! travels beside them and says what they are.
+	//!
+	//! A sender fills it in and leaves mTime/mTimecode populated as well, so a
+	//! receiver built before this existed is unaffected. A receiver reads it
+	//! only when version != 0; a sender that predates it leaves version 0.
+	//!
+	//! Field-for-field the appended tail of SubjectList in o3ds.fbs. Append
+	//! only - other products persist and exchange this.
+	struct TimeEnvelope
+	{
+		//! Envelope version. 0 means "the sender set none of this".
+		std::uint8_t  version = 0;
+
+		//! Which clock counted ns, and the count. Same instant as
+		//! SubjectList::mTime, exact rather than rounded through a double.
+		//! domain: 0 app-steady, 1 host-system, 2 device, 3 SMPTE, 4 PTP,
+		//! 5 NTP, 6 synthetic. instance separates two clocks of one kind.
+		std::uint8_t  clockDomain   = 0;
+		std::uint16_t clockInstance = 0;
+		std::uint64_t ns            = 0;
+
+		//! 0 locked (frame-accurate, genlocked device), 1 counted (derived by
+		//! counting frames from an anchor - one dropped frame and it is
+		//! permanently wrong), 2 estimated (accurate to arrival jitter).
+		std::uint8_t  quality = 2;
+
+		//! Which of the sender's stamps ns came from: 0 arrival, 1 device,
+		//! 2 timecode, 3 restamped. When it is 3 the sender deliberately
+		//! replaced the time its source gave, and restampReason says why:
+		//! 1 clock conversion, 2 resample, 3 interpolation, 4 retime,
+		//! 5 repair.
+		std::uint8_t  source        = 0;
+		std::uint8_t  restampReason = 0;
+
+		//! The device's own clock, when it reports one - kept beside ns rather
+		//! than folded into it.
+		bool          hasDeviceTime  = false;
+		std::uint16_t deviceInstance = 0;
+		std::uint64_t deviceNs       = 0;
+
+		//! Externally synchronised timecode, when the sample carried one.
+		//! kind: 0 SMPTE, 1 NTP, 2 PTP, 3 custom.
+		bool          hasTimecode      = false;
+		std::uint8_t  timecodeKind     = 0;
+		std::uint16_t timecodeInstance = 0;
+		std::uint64_t timecodeNs       = 0;
+
+		//! SMPTE fields, valid when hasSmpte. frames is 16-bit because SMPTE
+		//! is only defined to 60 fps and a mocap rig streaming at 500 Hz needs
+		//! three digits. rateCode indexes the sender's own rate table and is
+		//! only meaningful to a receiver that shares it; rateNum/rateDen are
+		//! the same rate as an exact rational that anyone can read, and
+		//! dropFrame is carried on its own so a receiver with neither can
+		//! still tell "01:00:00;00" from "01:00:00:00".
+		bool          hasSmpte  = false;
+		std::uint8_t  hours     = 0;
+		std::uint8_t  minutes   = 0;
+		std::uint8_t  seconds   = 0;
+		std::uint16_t frames    = 0;
+		std::uint16_t subframe  = 0;
+		std::uint16_t subframes = 0;
+		std::uint8_t  rateCode  = 0;
+		bool          dropFrame = false;
+		std::int32_t  rateNum   = 0;
+		std::int32_t  rateDen   = 0;
+
+		//! True when a sender actually filled this in.
+		bool valid() const { return version != 0; }
+	};
 
 	/*! \class Transform model.h o3ds/model.h */
 	//! Defines a single transform with name and parent id reference
@@ -470,6 +551,12 @@ namespace O3DS
 
 		//! Timecode of the frame/update
 		std::string mTimecode;
+
+		//! What mTime and mTimecode actually are - clock, quality, rate,
+		//! drop-frame. A sender sets this before serialize()/serializeUpdate()
+		//! the same way it sets mContext; parse() fills it from the packet, or
+		//! leaves version 0 when the sender predates it. See TimeEnvelope.
+		TimeEnvelope mTimeEnvelope;
 
 		//! Threshold for delta updates
 		double mDeltaThreshold;
