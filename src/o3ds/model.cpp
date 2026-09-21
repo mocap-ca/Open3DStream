@@ -566,7 +566,17 @@ namespace O3DS
 		// Get the nodes (transforms) for this subject
 		auto ovNodes = inSubject->nodes();
 
-		// Clear the subject and add the transforms
+		// Clear the subject and add the transforms.
+		//
+		// The clear belongs here rather than at the call site: a full packet
+		// re-states a subject's whole transform list, so without it a
+		// re-parsed subject grows by its own joint count on every keyframe.
+		// SubjectList::parse() cleared performers and rigidbodies before
+		// calling this and did not clear cameras, so a camera accumulated.
+		// Found downstream in PeelUELink, which had carried this line as a
+		// local patch since 2026-09-17.
+		this->mTransforms.clear();
+
 		for (int n = 0; n < (int)ovNodes->size(); n++)
 		{
 			Transform* transform = this->addTransform(builder);
@@ -1333,7 +1343,6 @@ namespace O3DS
 
 				// Check to see if this subject already exists
 				PerformerSubject* outPerformer = this->findOrAddSubject<PerformerSubject>(subjectUuid);
-				outPerformer->clearTransforms();
 				JointBuilder* builder = nullptr;
 				if (builders) { builder = builders->joint; }
 				outPerformer->parse(performer, builder);
@@ -1364,7 +1373,6 @@ namespace O3DS
 
 				// Check to see if this subject already exists
 				RigidbodySubject* outRigidbody = this->findOrAddSubject<RigidbodySubject>(subjectUuid);
-				outRigidbody->clearTransforms();
 				RigidbodyBuilder* builder = nullptr;
 				if (builders) { builder = builders->rigidbody; }
 				outRigidbody->parse(rigidbody, builder);
